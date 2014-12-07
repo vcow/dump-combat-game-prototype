@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Прототип карты свалки, на которой расположены базы - свои и вражеские, а также
+	 элементы доступа к служебным окнам (доступ к своим и вражеским базам дублируется
+	 интерфейсом "Базы" и "Цели" соответственно) -->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:ui="views.ui.*"
+		title="@Resource(key='map.title', bundle='common')">
+	<s:layout>
+		<s:VerticalLayout gap="0"/>
+	</s:layout>
+	
+	<s:List id="uiListView" verticalScrollPolicy="on" horizontalScrollPolicy="off"
+			width="100%" height="100%" labelFunction="labelFunction" change="uiList_changeHandler(event)">
+		<s:dataProvider>
+			<s:ArrayCollection>
+				<fx:Object label="bases.title" view="{views.protoBasesView}"/>
+			</s:ArrayCollection>
+		</s:dataProvider>
+	</s:List>
+	
+	<ui:SimpleResourcesView/>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import spark.events.IndexChangeEvent;
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+			private function uiList_changeHandler(event:IndexChangeEvent):void
+			{
+				navigator.pushView(uiListView.selectedItem.view);
+			}
+			
+			private function labelFunction(item:Object):String
+			{
+				return item.label ? resourceManager.getString("common", item.label.toString()) : "???";
+			}
+		]]>
+	</fx:Script>
+</s:View>

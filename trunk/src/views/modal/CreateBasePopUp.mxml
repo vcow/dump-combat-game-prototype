@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Интерфейс для создания новой базы -->
+
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:ui="views.ui.*"
+			   title="@Resource(key='new.base.popup.title', bundle='common')"
+			   creationComplete="creationCompleteHandler(event)">
+	
+	<s:layout>
+		<s:VerticalLayout paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="7" gap="5" horizontalAlign="center"/>
+	</s:layout>
+	
+	<s:VGroup gap="3" horizontalAlign="center">
+		<s:Label text="@Resource(key='new.base.popup.place', bundle='common')"/>
+		
+		<s:List id="ruinsListView" width="100%" dataProvider="{ruinsList}" horizontalScrollPolicy="off"
+				labelField="ruinName" requireSelection="true" height="90"
+				change="ruinsListView_changeHandler(event)"/>
+	</s:VGroup>
+	
+	<s:VGroup gap="3" horizontalAlign="center">
+		<s:Label text="@Resource(key='new.base.popup.price', bundle='common')"/>
+		
+		<ui:PriceView id="priceView" width="100%"/>
+	</s:VGroup>
+	
+	<s:HGroup width="100%">
+		<s:Button label="@Resource(key='new.base.popup.create', bundle='common')" width="50%"
+				  click="{_createBase = true; dispatchEvent(new CloseEvent(CloseEvent.CLOSE));}"/>
+		
+		<s:Button label="@Resource(key='new.base.popup.cancel', bundle='common')" width="50%"
+				  click="{dispatchEvent(new CloseEvent(CloseEvent.CLOSE));}"/>
+	</s:HGroup>
+	
+	<ui:SimpleResourcesView/>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			import vo.RuinVO;
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+			[Bindable]
+			public var ruinsList:ArrayCollection;
+			
+			private var _createBase:Boolean = false;
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+			public function get createBase():Boolean
+			{
+				return _createBase;
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				var ruin:RuinVO = ruinsListView.selectedItem as RuinVO;
+				priceView.price = ruin ? ruin.price : null;
+			}
+			
+			protected function ruinsListView_changeHandler(event:IndexChangeEvent):void
+			{
+				var ruin:RuinVO = ruinsListView.selectedItem as RuinVO;
+				priceView.price = ruin ? ruin.price : null;
+			}
+		]]>
+	</fx:Script>
+</s:TitleWindow>

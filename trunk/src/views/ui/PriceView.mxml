@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Компонент, отображающий цену в ресурсах -->
+
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   cornerRadius="4" minHeight="0">
+	<s:layout>
+		<s:VerticalLayout paddingLeft="7" paddingRight="7" paddingTop="7" paddingBottom="7"/>
+	</s:layout>
+	
+	<s:DataGroup id="dataGroup" itemRenderer="views.ui.PriceViewItemRenderer" width="100%">
+		<s:layout>
+			<s:VerticalLayout gap="0"/>
+		</s:layout>
+	</s:DataGroup>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			import vo.PriceVO;
+			import vo.ResourceVO;
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+			/**
+			 * Датапровайдер в виде Price Value Object
+			 */
+			public function set price(value:PriceVO):void
+			{
+				var priceList:Array = [];
+				if (value)
+				{
+					for each (var resourceVO:ResourceVO in value.children)
+						priceList.push(resourceVO);
+					priceList.sortOn("resourceId", Array.NUMERIC);
+				}
+				
+				dataGroup.dataProvider = new ArrayCollection(priceList);
+			}
+			
+		]]>
+	</fx:Script>
+</s:BorderContainer>
