@@ -26,6 +26,10 @@
 	<fx:Declarations>
 	</fx:Declarations>
 	
+	<fx:Metadata>
+		[Event(name="createBase", type="events.BasesListEvent")]
+	</fx:Metadata>
+	
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
@@ -34,6 +38,10 @@
 			import mx.managers.PopUpManager;
 			
 			import spark.events.IndexChangeEvent;
+			
+			import dictionary.Const;
+			
+			import events.BasesListEvent;
 			
 			import facade.ProtoFacade;
 			
@@ -88,12 +96,13 @@
 				PopUpManager.removePopUp(createBasePopUp);
 				createBasePopUp.removeEventListener(CloseEvent.CLOSE, createBasePopUp_closeHandler);
 				
-				if (createBasePopUp.createBase)
+				if (event.detail == Const.OK)
 				{
 					var ruinVO:RuinVO = createBasePopUp.ruinsListView.selectedItem as RuinVO;
 					if (ruinVO)
 					{
-						// TODO: Создать базу на основе выбранных руин
+						// Создать базу на основе выбранных руин
+						dispatchEvent(new BasesListEvent(BasesListEvent.CREATE_BASE, ruinVO));
 					}
 				}
 			}

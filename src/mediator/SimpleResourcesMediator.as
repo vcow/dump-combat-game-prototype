@@ -1,9 +1,12 @@
 package mediator
 {
+	import dictionary.Const;
+	import dictionary.Resource;
+	
+	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
 	import proxy.ResourcesListProxy;
-	import dictionary.Resource;
 	
 	import views.ui.SimpleResourcesView;
 	
@@ -88,6 +91,26 @@ package mediator
 			releaseViewComponent();
 			super.setViewComponent(viewComponent);
 			applyViewComponent();
+		}
+		
+		override public function listNotificationInterests():Array
+		{
+			return [ Const.NEW_BASE_CREATED ];
+		}
+		
+		override public function handleNotification(notification:INotification):void
+		{
+			switch (notification.getName())
+			{
+				case Const.NEW_BASE_CREATED:
+					// После постройки новой базы, вероятно, изменилось количество ресурсов
+					if (simpleResourcesView)
+					{
+						simpleResourcesView.cashView.count = resourcesListProxy.getResource(Resource.CASH);
+						simpleResourcesView.foodView.count = resourcesListProxy.getResource(Resource.FOOD);
+					}
+					break;
+			}
 		}
 	}
 }

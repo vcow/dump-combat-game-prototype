@@ -1,6 +1,11 @@
 package facade
 {
+	import command.CreateNewBaseCommand;
+	import command.NewBaseCreatedCommand;
+	import command.RenameBaseCommand;
 	import command.StartUpCommand;
+	
+	import dictionary.Const;
 	
 	import org.puremvc.as3.patterns.facade.Facade;
 	
@@ -45,6 +50,9 @@ package facade
 			super.initializeController();
 			
 			registerCommand(STARTUP, StartUpCommand);
+			registerCommand(Const.CREATE_NEW_BASE, CreateNewBaseCommand);
+			registerCommand(Const.NEW_BASE_CREATED, NewBaseCreatedCommand);
+			registerCommand(Const.RENAME_BASE, RenameBaseCommand);
 		}
 	}
 }

@@ -2,6 +2,11 @@ package mediator
 {
 	import mx.collections.ArrayCollection;
 	
+	import dictionary.Const;
+	
+	import events.BasesListEvent;
+	
+	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
 	import proxy.BasesListProxy;
@@ -84,6 +89,8 @@ package mediator
 				return;
 			
 			// TODO: Удалить все обработчики событий, если таковые были установлены
+			
+			basesView.removeEventListener(BasesListEvent.CREATE_BASE, createBaseHandler);
 		}
 		
 		/**
@@ -99,7 +106,20 @@ package mediator
 			basesView.basesList = basesDataProvider;
 			basesView.buildNewBaseAvailable = basesListProxy.getRuinsList().length > 0;
 			
+			basesView.addEventListener(BasesListEvent.CREATE_BASE, createBaseHandler, false, 0, true);
+			
 			// /TODO
+		}
+		
+		/**
+		 * Обработчик запроса на создание новой базы
+		 * @param event событие
+		 */
+		private function createBaseHandler(event:BasesListEvent):void
+		{
+			var ruinVO:RuinVO = event.valueObject as RuinVO;
+			if (ruinVO)
+				sendNotification(Const.CREATE_NEW_BASE, ruinVO);
 		}
 		
 		//----------------------------------
@@ -111,6 +131,26 @@ package mediator
 			releaseViewComponent();
 			super.setViewComponent(viewComponent);
 			applyViewComponent();
+		}
+		
+		override public function listNotificationInterests():Array
+		{
+			return [ Const.NEW_BASE_CREATED ];
+		}
+		
+		override public function handleNotification(notification:INotification):void
+		{
+			switch (notification.getName())
+			{
+				case Const.NEW_BASE_CREATED:
+					// После постройки базы изменился список баз и возможно исчезла возможность строить новые базы
+					if (basesView)
+					{
+						basesView.basesList = basesDataProvider;
+						basesView.buildNewBaseAvailable = basesListProxy.getRuinsList().length > 0;
+					}
+					break;
+			}
 		}
 	}
 }

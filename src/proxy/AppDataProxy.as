@@ -23,7 +23,8 @@ package proxy
 		//--------------------------------------------------------------------------
 		
 		public static const NAME:String = "appDataProxy";
-		public static const FILE_NAME:String = "data/app_data.xml"
+		
+		protected static const FILE_NAME:String = "data/app_data.xml"
 		
 		//--------------------------------------------------------------------------
 		// 
