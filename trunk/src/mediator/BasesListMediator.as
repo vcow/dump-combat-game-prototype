@@ -4,6 +4,7 @@ package mediator
 	
 	import dictionary.Const;
 	
+	import events.BaseEvent;
 	import events.BasesListEvent;
 	
 	import org.puremvc.as3.interfaces.INotification;
@@ -91,6 +92,9 @@ package mediator
 			// TODO: Удалить все обработчики событий, если таковые были установлены
 			
 			basesView.removeEventListener(BasesListEvent.CREATE_BASE, createBaseHandler);
+			basesView.removeEventListener(BaseEvent.RENAME, renameBaseHandler);
+			
+			// /TODO
 		}
 		
 		/**
@@ -107,6 +111,7 @@ package mediator
 			basesView.buildNewBaseAvailable = basesListProxy.getRuinsList().length > 0;
 			
 			basesView.addEventListener(BasesListEvent.CREATE_BASE, createBaseHandler, false, 0, true);
+			basesView.addEventListener(BaseEvent.RENAME, renameBaseHandler, false, 0, true);
 			
 			// /TODO
 		}
@@ -120,6 +125,15 @@ package mediator
 			var ruinVO:RuinVO = event.valueObject as RuinVO;
 			if (ruinVO)
 				sendNotification(Const.CREATE_NEW_BASE, ruinVO);
+		}
+		
+		/**
+		 * Обработчик запроса на переименование базы
+		 * @param event событие
+		 */
+		private function renameBaseHandler(event:BaseEvent):void
+		{
+			sendNotification(Const.RENAME_BASE, event.data, event.baseId);
 		}
 		
 		//----------------------------------
@@ -148,6 +162,8 @@ package mediator
 					{
 						basesView.basesList = basesDataProvider;
 						basesView.buildNewBaseAvailable = basesListProxy.getRuinsList().length > 0;
+						
+						basesView.renameBase(notification.getBody() as BaseVO);
 					}
 					break;
 			}

@@ -20,5 +20,6 @@ package dictionary
 		public static const CREATE_NEW_BASE:String = "createNewBase";						//< Запрос на создание новой базы
 		public static const NEW_BASE_CREATED:String = "newBaseCreated";						//< Была создана новая база
 		public static const RENAME_BASE:String = "renameBase";								//< Запрос на переименование базы
+		public static const BASE_RENAMED:String = "baseRenamed";							//< База была переименована
 	}
 }

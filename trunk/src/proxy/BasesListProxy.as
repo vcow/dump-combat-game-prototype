@@ -87,6 +87,34 @@ package proxy
 		}
 		
 		/**
+		 * Получить базу, вражескую базу или руины
+		 * @param baseId идентификатор запрашиваемого объекта
+		 * @return база, вражеская база или руины, соответстсвующие идентификатору
+		 */
+		public function getBaseById(baseId:String):IVO
+		{
+			for each (var baseVO:BaseVO in getBasesList())
+			{
+				if (baseVO.baseId == baseId)
+					return baseVO;
+			}
+			
+			for each (var targetVO:TargetVO in getTargetsList())
+			{
+				if (targetVO.targetId == baseId)
+					return targetVO;
+			}
+			
+			for each (var ruinVO:RuinVO in getRuinsList())
+			{
+				if (ruinVO.ruinId == baseId)
+					return ruinVO;
+			}
+			
+			return null;
+		}
+		
+		/**
 		 * Вспомогательная функция, обновляет данные о базах в ApplicationVO
 		 * @param save сохранить обновленные данные
 		 */

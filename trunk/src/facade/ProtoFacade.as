@@ -1,5 +1,6 @@
 package facade
 {
+	import command.BaseRenamedCommand;
 	import command.CreateNewBaseCommand;
 	import command.NewBaseCreatedCommand;
 	import command.RenameBaseCommand;
@@ -52,7 +53,7 @@ package facade
 			registerCommand(STARTUP, StartUpCommand);
 			registerCommand(Const.CREATE_NEW_BASE, CreateNewBaseCommand);
 			registerCommand(Const.NEW_BASE_CREATED, NewBaseCreatedCommand);
-			registerCommand(Const.RENAME_BASE, RenameBaseCommand);
+			registerCommand(Const.BASE_RENAMED, BaseRenamedCommand);
 		}
 	}
 }
