@@ -5,6 +5,7 @@ package proxy
 	
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
+	import vo.PriceVO;
 	import vo.ResourceVO;
 	import vo.ResourcesListVO;
 	
@@ -35,6 +36,44 @@ package proxy
 		public function get resourcesListVO():ResourcesListVO
 		{
 			return getData() as ResourcesListVO;
+		}
+		
+		/**
+		 * Узнать, хватает ли ресурсов на оплату
+		 * @param priceVO цена
+		 * @return true, если ресурсов хватает
+		 */
+		public function isEnoughResources(priceVO:PriceVO):Boolean
+		{
+			for each (var resourceVO:ResourceVO in priceVO.children)
+			{
+				if (resourceVO.resourceCount > getResource(resourceVO.resourceId))
+					return false;
+			}
+			return true;
+		}
+		
+		/**
+		 * Заплатить указанную цену
+		 * @param priceVO цена
+		 * @return true, если платеж выполнен успешно, false, если какой-то из ресурсов ушел в минус
+		 */
+		public function pay(priceVO:PriceVO):Boolean
+		{
+			var res:Boolean = true;
+			for each (var resourceVO:ResourceVO in priceVO.children)
+			{
+				for each (var value:ResourceVO in resourcesListVO.children)
+				{
+					if (value.resourceId == resourceVO.resourceId)
+					{
+						value.resourceCount -= resourceVO.resourceCount;
+						res &&= value.resourceCount >= 0;
+						break;
+					}
+				}
+			}
+			return res;
 		}
 		
 		/**

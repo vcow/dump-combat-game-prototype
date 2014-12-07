@@ -132,7 +132,7 @@ package vo
 			var res:XML = getSelfXMLObject();
 			
 			for each (var value:IVO in _children)
-				res.appendChild(value.serialize);
+				res.appendChild(value.serialize());
 			
 			return res;
 		}

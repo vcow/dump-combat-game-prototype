@@ -10,7 +10,7 @@ package dictionary
 	 * 
 	 */
 	
-	public class DefaultsDict
+	public final class DefaultsDict
 	{
 		//--------------------------------------------------------------------------
 		// 

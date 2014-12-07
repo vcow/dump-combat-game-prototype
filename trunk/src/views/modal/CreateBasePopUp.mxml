@@ -28,10 +28,11 @@
 	
 	<s:HGroup width="100%">
 		<s:Button label="@Resource(key='new.base.popup.create', bundle='common')" width="50%"
-				  click="{_createBase = true; dispatchEvent(new CloseEvent(CloseEvent.CLOSE));}"/>
+				  click="{dispatchEvent(new CloseEvent(CloseEvent.CLOSE, false, false, Const.OK));}"
+				  enabled="{ruinsListView.selectedItem != null}"/>
 		
 		<s:Button label="@Resource(key='new.base.popup.cancel', bundle='common')" width="50%"
-				  click="{dispatchEvent(new CloseEvent(CloseEvent.CLOSE));}"/>
+				  click="{dispatchEvent(new CloseEvent(CloseEvent.CLOSE, false, false, Const.CANCEL));}"/>
 	</s:HGroup>
 	
 	<ui:SimpleResourcesView/>
@@ -47,6 +48,8 @@
 			
 			import spark.events.IndexChangeEvent;
 			
+			import dictionary.Const;
+			
 			import vo.RuinVO;
 			
 			//--------------------------------------------------------------------------
@@ -56,16 +59,9 @@
 			[Bindable]
 			public var ruinsList:ArrayCollection;
 			
-			private var _createBase:Boolean = false;
-			
 			//--------------------------------------------------------------------------
 			// 
 			//--------------------------------------------------------------------------
-			
-			public function get createBase():Boolean
-			{
-				return _createBase;
-			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
