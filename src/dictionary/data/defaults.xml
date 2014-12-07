@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaults>
+	<!-- Ресурсы игрока по умолчанию -->
+	<resourcesList>
+		<resource id="1" count="10"/>
+		<resource id="2" count="500"/>
+	</resourcesList>
+	
+	<!-- Базы игрока по умолчанию -->
+	<basesList>
+		<ruin id="38AA7031-A150-4BF2-A87F-0695C5EAF3B7" name="{start.ruin.title}">
+			<price>
+				<resource id="2" count="110"/>
+			</price>
+		</ruin>
+	</basesList>
+</defaults>

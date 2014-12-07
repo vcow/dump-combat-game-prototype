@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- UI создания новых баз и доступа к уже существующим -->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		title="@Resource(key='bases.title', bundle='common')"
+		creationComplete="creationCompleteHandler(event)">
+	<s:layout>
+		<s:VerticalLayout gap="0"/>
+	</s:layout>
+	
+	<s:navigationContent>
+		<s:Button label="&lt;" click="{navigator.popView();}"/>
+	</s:navigationContent>
+	
+	<s:actionContent>
+		<s:Button label="+" enabled="{buildNewBaseAvailable}"
+				  click="buildNewBase_clickHandler(event)"/>
+	</s:actionContent>
+	
+	<s:List id="basesListView" verticalScrollPolicy="on" horizontalScrollPolicy="off"
+			width="100%" height="100%" change="basesListView_changeHandler(event)"
+			dataProvider="{basesList}" labelField="baseName"/>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			import spark.events.IndexChangeEvent;
+			
+			import facade.ProtoFacade;
+			
+			import mediator.BasesListMediator;
+			
+			import views.modal.CreateBasePopUp;
+			
+			import vo.RuinVO;
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+			[Bindable]
+			public var buildNewBaseAvailable:Boolean = false;
+			
+			[Bindable]
+			public var basesList:ArrayCollection = new ArrayCollection();
+			
+			protected var _basesListMediator:BasesListMediator;
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				_basesListMediator = ProtoFacade.getInstance().retrieveMediator(BasesListMediator.NAME) as BasesListMediator;
+				
+				if (!_basesListMediator)
+					throw Error("Bases List Mediator must be specified.");
+				
+				_basesListMediator.setViewComponent(this);
+			}
+			
+			protected function basesListView_changeHandler(event:IndexChangeEvent):void
+			{
+				
+			}
+			
+			protected function buildNewBase_clickHandler(event:MouseEvent):void
+			{
+				var createBasePopUp:CreateBasePopUp = CreateBasePopUp(PopUpManager.createPopUp(this, CreateBasePopUp, true));
+				createBasePopUp.addEventListener(CloseEvent.CLOSE, createBasePopUp_closeHandler);
+				createBasePopUp.ruinsList = _basesListMediator.ruinsDataProvider;
+				PopUpManager.centerPopUp(createBasePopUp);
+			}
+			
+			private function createBasePopUp_closeHandler(event:CloseEvent):void
+			{
+				var createBasePopUp:CreateBasePopUp = CreateBasePopUp(event.target);
+				PopUpManager.removePopUp(createBasePopUp);
+				createBasePopUp.removeEventListener(CloseEvent.CLOSE, createBasePopUp_closeHandler);
+				
+				if (createBasePopUp.createBase)
+				{
+					var ruinVO:RuinVO = createBasePopUp.ruinsListView.selectedItem as RuinVO;
+					if (ruinVO)
+					{
+						// TODO: Создать базу на основе выбранных руин
+					}
+				}
+			}
+		]]>
+	</fx:Script>
+</s:View>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Прототип игрового приложения "Бой за свалку" -->
+
+<s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+							xmlns:s="library://ns.adobe.com/flex/spark"
+							firstView="views.protoMapView"
+							applicationDPI="160"
+							preinitialize="{_facade.startup(this);}">
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		
+		s|ActionBar {
+			titleAlign:center;
+		}
+	</fx:Style>
+	
+	<fx:Script>
+		<![CDATA[
+			import facade.ProtoFacade;
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+			private var _facade:ProtoFacade = ProtoFacade.getInstance();
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+		]]>
+	</fx:Script>
+</s:ViewNavigatorApplication>
