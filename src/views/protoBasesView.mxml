@@ -28,11 +28,13 @@
 	
 	<fx:Metadata>
 		[Event(name="createBase", type="events.BasesListEvent")]
+		[Event(name="rename", type="events.BaseEvent")]
 	</fx:Metadata>
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
 			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
 			import mx.managers.PopUpManager;
@@ -41,6 +43,7 @@
 			
 			import dictionary.Const;
 			
+			import events.BaseEvent;
 			import events.BasesListEvent;
 			
 			import facade.ProtoFacade;
@@ -48,7 +51,9 @@
 			import mediator.BasesListMediator;
 			
 			import views.modal.CreateBasePopUp;
+			import views.modal.RenameBasePopUp;
 			
+			import vo.BaseVO;
 			import vo.RuinVO;
 			
 			//--------------------------------------------------------------------------
@@ -67,6 +72,23 @@
 			// 
 			//--------------------------------------------------------------------------
 			
+			/**
+			 * Открыть интерфейс для переименования базы
+			 * @param baseVO база, которую следует переименовать
+			 */
+			public function renameBase(baseVO:BaseVO):void
+			{
+				if (baseVO)
+				{
+					var renameBasePopUp:RenameBasePopUp = RenameBasePopUp(PopUpManager.createPopUp(
+						DisplayObject(FlexGlobals.topLevelApplication), RenameBasePopUp, true));
+					renameBasePopUp.addEventListener(CloseEvent.CLOSE, renameBasePopUp_closeHandler);
+					renameBasePopUp.baseName = baseVO.baseName;
+					renameBasePopUp.baseId = baseVO.baseId;
+					PopUpManager.centerPopUp(renameBasePopUp);
+				}
+			}
+			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				_basesListMediator = ProtoFacade.getInstance().retrieveMediator(BasesListMediator.NAME) as BasesListMediator;
@@ -84,7 +106,8 @@
 			
 			protected function buildNewBase_clickHandler(event:MouseEvent):void
 			{
-				var createBasePopUp:CreateBasePopUp = CreateBasePopUp(PopUpManager.createPopUp(this, CreateBasePopUp, true));
+				var createBasePopUp:CreateBasePopUp = CreateBasePopUp(PopUpManager.createPopUp(
+					DisplayObject(FlexGlobals.topLevelApplication), CreateBasePopUp, true));
 				createBasePopUp.addEventListener(CloseEvent.CLOSE, createBasePopUp_closeHandler);
 				createBasePopUp.ruinsList = _basesListMediator.ruinsDataProvider;
 				PopUpManager.centerPopUp(createBasePopUp);
@@ -104,6 +127,19 @@
 						// Создать базу на основе выбранных руин
 						dispatchEvent(new BasesListEvent(BasesListEvent.CREATE_BASE, ruinVO));
 					}
+				}
+			}
+			
+			private function renameBasePopUp_closeHandler(event:CloseEvent):void
+			{
+				var renameBasePopUp:RenameBasePopUp = RenameBasePopUp(event.target);
+				PopUpManager.removePopUp(renameBasePopUp);
+				renameBasePopUp.removeEventListener(CloseEvent.CLOSE, renameBasePopUp_closeHandler);
+				
+				if (event.detail == Const.OK)
+				{
+					// Переименовать базу
+					dispatchEvent(new BaseEvent(BaseEvent.RENAME, renameBasePopUp.baseId, renameBasePopUp.baseNameInput.text));
 				}
 			}
 		]]>

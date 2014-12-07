@@ -5,16 +5,16 @@ package command
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Была создана новая база
+	 * База была переименована
 	 * 
 	 */
-	public class NewBaseCreatedCommand extends MacroCommand
+	public class BaseRenamedCommand extends MacroCommand
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function NewBaseCreatedCommand()
+		public function BaseRenamedCommand()
 		{
 			super();
 		}
