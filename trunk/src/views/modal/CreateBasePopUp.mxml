@@ -2,40 +2,52 @@
 
 <!-- Интерфейс для создания новой базы -->
 
-<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark"
-			   xmlns:ui="views.ui.*"
-			   title="@Resource(key='new.base.popup.title', bundle='common')"
-			   creationComplete="creationCompleteHandler(event)">
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+						   xmlns:s="library://ns.adobe.com/flex/spark"
+						   xmlns:ui="views.ui.*"
+						   creationComplete="creationCompleteHandler(event)">
 	
-	<s:layout>
-		<s:VerticalLayout paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="7" gap="5" horizontalAlign="center"/>
-	</s:layout>
-	
-	<s:VGroup gap="3" horizontalAlign="center">
-		<s:Label text="@Resource(key='new.base.popup.place', bundle='common')"/>
+	<s:BorderContainer>
+		<s:layout>
+			<s:VerticalLayout paddingLeft="1" paddingRight="1" paddingTop="1" paddingBottom="1" gap="10"/>
+		</s:layout>
 		
-		<s:List id="ruinsListView" width="100%" dataProvider="{ruinsList}" horizontalScrollPolicy="off"
-				labelField="ruinName" requireSelection="true" height="90"
-				change="ruinsListView_changeHandler(event)"/>
-	</s:VGroup>
-	
-	<s:VGroup gap="3" horizontalAlign="center">
-		<s:Label text="@Resource(key='new.base.popup.price', bundle='common')"/>
+		<s:BorderContainer width="100%" minHeight="0" backgroundColor="gray" borderVisible="false">
+			<s:layout>
+				<s:VerticalLayout paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="5" horizontalAlign="center"/>
+			</s:layout>
+			
+			<s:Label text="@Resource(key='new.base.popup.title', bundle='common')" color="white"/>
+		</s:BorderContainer>
+
+		<s:VGroup paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="5" gap="10" horizontalAlign="center">
+			
+			<s:VGroup gap="3" horizontalAlign="center">
+				<s:Label text="@Resource(key='new.base.popup.place', bundle='common')"/>
+				
+				<s:List id="ruinsListView" width="100%" horizontalScrollPolicy="off"
+						labelField="ruinName" requireSelection="true" height="90"
+						change="ruinsListView_changeHandler(event)"/>
+			</s:VGroup>
+			
+			<s:VGroup gap="3" horizontalAlign="center">
+				<s:Label text="@Resource(key='new.base.popup.price', bundle='common')"/>
+				
+				<ui:PriceView price="{price}" width="100%"/>
+			</s:VGroup>
+			
+			<s:HGroup width="100%">
+				<s:Button label="@Resource(key='new.base.popup.create', bundle='common')" width="50%"
+						  click="{close(false, Const.OK);}"
+						  enabled="{ruinsListView.selectedItem != null}"/>
+				
+				<s:Button label="@Resource(key='new.base.popup.cancel', bundle='common')" width="50%"
+						  click="{close(false, Const.CANCEL);}"/>
+			</s:HGroup>
+		</s:VGroup>
 		
-		<ui:PriceView id="priceView" width="100%"/>
-	</s:VGroup>
-	
-	<s:HGroup width="100%">
-		<s:Button label="@Resource(key='new.base.popup.create', bundle='common')" width="50%"
-				  click="{dispatchEvent(new CloseEvent(CloseEvent.CLOSE, false, false, Const.OK));}"
-				  enabled="{ruinsListView.selectedItem != null}"/>
-		
-		<s:Button label="@Resource(key='new.base.popup.cancel', bundle='common')" width="50%"
-				  click="{dispatchEvent(new CloseEvent(CloseEvent.CLOSE, false, false, Const.CANCEL));}"/>
-	</s:HGroup>
-	
-	<ui:SimpleResourcesView/>
+		<ui:SimpleResourcesView/>
+	</s:BorderContainer>
 	
 	<fx:Declarations>
 	</fx:Declarations>
@@ -43,37 +55,51 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
-			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
 			
 			import spark.events.IndexChangeEvent;
 			
 			import dictionary.Const;
 			
+			import vo.PriceVO;
 			import vo.RuinVO;
 			
 			//--------------------------------------------------------------------------
 			// 
 			//--------------------------------------------------------------------------
 			
+			private var _ruinsList:ArrayCollection;
+			
 			[Bindable]
-			public var ruinsList:ArrayCollection;
+			private var price:PriceVO;
 			
 			//--------------------------------------------------------------------------
 			// 
 			//--------------------------------------------------------------------------
 			
+			public function set ruinsList(value:ArrayCollection):void
+			{
+				if (value == _ruinsList)
+					return;
+				
+				_ruinsList = value;
+				if (initialized)
+					creationCompleteHandler(null);
+			}
+			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
-				var ruin:RuinVO = ruinsListView.selectedItem as RuinVO;
-				priceView.price = ruin ? ruin.price : null;
+				ruinsListView.dataProvider = _ruinsList;
+				ruinsListView.selectedIndex = _ruinsList.length > 0 ? 0 : -1;
+				ruinsListView_changeHandler(null);
 			}
 			
 			protected function ruinsListView_changeHandler(event:IndexChangeEvent):void
 			{
 				var ruin:RuinVO = ruinsListView.selectedItem as RuinVO;
-				priceView.price = ruin ? ruin.price : null;
+				price = ruin ? ruin.price : null;
 			}
+			
 		]]>
 	</fx:Script>
-</s:TitleWindow>
+</s:SkinnablePopUpContainer>
