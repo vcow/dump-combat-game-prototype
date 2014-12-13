@@ -4,6 +4,7 @@
 
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:modal="views.modal.*"
 		title="@Resource(key='bases.title', bundle='common')"
 		creationComplete="creationCompleteHandler(event)">
 	<s:layout>
@@ -24,6 +25,8 @@
 			dataProvider="{basesList}" labelField="baseName"/>
 	
 	<fx:Declarations>
+		<modal:CreateBasePopUp id="createBasePopUp" close="createBasePopUp_closeHandler(event)"/>
+		<modal:RenameBasePopUp id="renameBasePopUp" close="renamePopUp_closeHandler(event)"/>
 	</fx:Declarations>
 	
 	<fx:Metadata>
@@ -35,11 +38,11 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.core.FlexGlobals;
-			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
 			import mx.managers.PopUpManager;
 			
 			import spark.events.IndexChangeEvent;
+			import spark.events.PopUpEvent;
 			
 			import dictionary.Const;
 			
@@ -80,9 +83,7 @@
 			{
 				if (baseVO)
 				{
-					var renameBasePopUp:RenameBasePopUp = RenameBasePopUp(PopUpManager.createPopUp(
-						DisplayObject(FlexGlobals.topLevelApplication), RenameBasePopUp, true));
-					renameBasePopUp.addEventListener(CloseEvent.CLOSE, renameBasePopUp_closeHandler);
+					renameBasePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
 					renameBasePopUp.baseName = baseVO.baseName;
 					renameBasePopUp.baseId = baseVO.baseId;
 					PopUpManager.centerPopUp(renameBasePopUp);
@@ -106,20 +107,14 @@
 			
 			protected function buildNewBase_clickHandler(event:MouseEvent):void
 			{
-				var createBasePopUp:CreateBasePopUp = CreateBasePopUp(PopUpManager.createPopUp(
-					DisplayObject(FlexGlobals.topLevelApplication), CreateBasePopUp, true));
-				createBasePopUp.addEventListener(CloseEvent.CLOSE, createBasePopUp_closeHandler);
+				createBasePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
 				createBasePopUp.ruinsList = _basesListMediator.ruinsDataProvider;
 				PopUpManager.centerPopUp(createBasePopUp);
 			}
 			
-			private function createBasePopUp_closeHandler(event:CloseEvent):void
+			private function createBasePopUp_closeHandler(event:PopUpEvent):void
 			{
-				var createBasePopUp:CreateBasePopUp = CreateBasePopUp(event.target);
-				PopUpManager.removePopUp(createBasePopUp);
-				createBasePopUp.removeEventListener(CloseEvent.CLOSE, createBasePopUp_closeHandler);
-				
-				if (event.detail == Const.OK)
+				if (event.data == Const.OK)
 				{
 					var ruinVO:RuinVO = createBasePopUp.ruinsListView.selectedItem as RuinVO;
 					if (ruinVO)
@@ -130,18 +125,12 @@
 				}
 			}
 			
-			private function renameBasePopUp_closeHandler(event:CloseEvent):void
+			protected function renamePopUp_closeHandler(event:PopUpEvent):void
 			{
-				var renameBasePopUp:RenameBasePopUp = RenameBasePopUp(event.target);
-				PopUpManager.removePopUp(renameBasePopUp);
-				renameBasePopUp.removeEventListener(CloseEvent.CLOSE, renameBasePopUp_closeHandler);
-				
-				if (event.detail == Const.OK)
-				{
-					// Переименовать базу
+				if (event.data == Const.OK)
 					dispatchEvent(new BaseEvent(BaseEvent.RENAME, renameBasePopUp.baseId, renameBasePopUp.baseNameInput.text));
-				}
 			}
+			
 		]]>
 	</fx:Script>
 </s:View>
