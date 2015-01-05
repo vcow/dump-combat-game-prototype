@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Окно алерта -->
+
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						   xmlns:s="library://ns.adobe.com/flex/spark"
+						   creationComplete="creationCompleteHandler(event)">
+	
+	<s:BorderContainer>
+		<s:layout>
+			<s:VerticalLayout paddingLeft="15" paddingRight="15" paddingTop="15" paddingBottom="15" gap="15" horizontalAlign="center"/>
+		</s:layout>
+		
+		<s:TextArea id="textArea" width="100%" skinClass="spark.skins.mobile.TextAreaSkin"
+					fontSize="12" editable="false" selectable="false" paddingLeft="0" paddingRight="0"
+					paddingTop="0" paddingBottom="0" borderVisible="false"/>
+		
+		<s:Button label="@Resource(key='alert.ok', bundle='common')" click="{close(false, Const.OK);}"/>
+	</s:BorderContainer>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import spark.components.supportClasses.StyleableTextField;
+			
+			import dictionary.Const;
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+			public var _text:String;
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+			public function set text(value:String):void
+			{
+				if (value == _text)
+					return;
+				
+				_text = value;
+				
+				if (initialized)
+					creationCompleteHandler(null);
+			}
+			
+			public function get text():String
+			{
+				return _text;
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				StyleableTextField(textArea.textDisplay).htmlText = _text;
+			}
+			
+		]]>
+	</fx:Script>
+</s:SkinnablePopUpContainer>

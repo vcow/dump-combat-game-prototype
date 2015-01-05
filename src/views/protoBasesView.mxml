@@ -16,8 +16,7 @@
 	</s:navigationContent>
 	
 	<s:actionContent>
-		<s:Button label="+" enabled="{buildNewBaseAvailable}"
-				  click="buildNewBase_clickHandler(event)"/>
+		<s:Button label="+" click="buildNewBase_clickHandler(event)"/>
 	</s:actionContent>
 	
 	<s:List id="basesListView" verticalScrollPolicy="on" horizontalScrollPolicy="off"
@@ -27,11 +26,14 @@
 	<fx:Declarations>
 		<modal:CreateBasePopUp id="createBasePopUp" close="createBasePopUp_closeHandler(event)"/>
 		<modal:RenameBasePopUp id="renameBasePopUp" close="renamePopUp_closeHandler(event)"/>
+		<modal:AlertPopUp id="alertPopUp"/>
 	</fx:Declarations>
 	
 	<fx:Metadata>
 		[Event(name="createBase", type="events.BasesListEvent")]
 		[Event(name="rename", type="events.BaseEvent")]
+		
+		[ResourceBundle("common")]
 	</fx:Metadata>
 	
 	<fx:Script>
@@ -64,10 +66,9 @@
 			//--------------------------------------------------------------------------
 			
 			[Bindable]
-			public var buildNewBaseAvailable:Boolean = false;
-			
-			[Bindable]
 			public var basesList:ArrayCollection = new ArrayCollection();
+			
+			public var buildNewBaseAvailable:Boolean = false;
 			
 			protected var _basesListMediator:BasesListMediator;
 			
@@ -83,9 +84,9 @@
 			{
 				if (baseVO)
 				{
-					renameBasePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
 					renameBasePopUp.baseName = baseVO.baseName;
 					renameBasePopUp.baseId = baseVO.baseId;
+					renameBasePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
 					PopUpManager.centerPopUp(renameBasePopUp);
 				}
 			}
@@ -107,9 +108,18 @@
 			
 			protected function buildNewBase_clickHandler(event:MouseEvent):void
 			{
-				createBasePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
-				createBasePopUp.ruinsList = _basesListMediator.ruinsDataProvider;
-				PopUpManager.centerPopUp(createBasePopUp);
+				if (buildNewBaseAvailable)
+				{
+					createBasePopUp.ruinsList = _basesListMediator.ruinsDataProvider;
+					createBasePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+					PopUpManager.centerPopUp(createBasePopUp);
+				}
+				else
+				{
+					alertPopUp.text = resourceManager.getString("common", "alert.noruins");
+					alertPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+					PopUpManager.centerPopUp(alertPopUp);
+				}
 			}
 			
 			private function createBasePopUp_closeHandler(event:PopUpEvent):void
