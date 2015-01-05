@@ -16,10 +16,17 @@
 		s|ActionBar {
 			titleAlign:center;
 		}
+		
+		s|TextArea {
+			skinClass:ClassReference("spark.skins.mobile.TextAreaSkin");
+			contentBackgroundAlpha:0;
+		}
 	</fx:Style>
 	
 	<fx:Script>
 		<![CDATA[
+			import spark.skins.mobile.TextAreaSkin;
+			
 			import facade.ProtoFacade;
 			
 			//--------------------------------------------------------------------------
