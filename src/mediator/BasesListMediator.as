@@ -149,7 +149,7 @@ package mediator
 		
 		override public function listNotificationInterests():Array
 		{
-			return [ Const.NEW_BASE_CREATED ];
+			return [ Const.NEW_BASE_CREATED, Const.BASE_RENAMED ];
 		}
 		
 		override public function handleNotification(notification:INotification):void
@@ -165,6 +165,11 @@ package mediator
 						
 						basesView.renameBase(notification.getBody() as BaseVO);
 					}
+					break;
+				case Const.BASE_RENAMED:
+					// После переименования базы изменился список баз
+					if (basesView)
+						basesView.basesList = basesDataProvider;
 					break;
 			}
 		}
