@@ -2,8 +2,6 @@ package vo
 {
 	import mx.resources.ResourceManager;
 	
-	[ResourceBundle("default")]
-	
 	/**
 	 * 
 	 * @author jvirkovskiy
@@ -56,13 +54,13 @@ package vo
 		 * @param rawData исходное значение 
 		 * @return строковое значение
 		 */
-		public static function parseString(rawData:*, bundle:String=null):String
+		public static function parseString(rawData:*, bundle:String):String
 		{
 			var tag:String = rawData.toString();
 			if (tag.search(/^\{.+\}$/g) != -1)
 			{
 				tag = tag.replace(/^\{(.+)\}$/g, "$1");
-				var res:String = ResourceManager.getInstance().getString(bundle ? bundle : "default", tag);
+				var res:String = ResourceManager.getInstance().getString(bundle, tag);
 				return res ? res : tag;
 			}
 			return tag;
@@ -158,6 +156,8 @@ package vo
 					case ResourceVO.NAME: value = new ResourceVO(); break;
 					case RuinVO.NAME: value = new RuinVO(); break;
 					case TargetVO.NAME: value = new TargetVO(); break;
+					case ModulesVO.NAME: value = new ModulesVO(); break;
+					case ModuleVO.NAME: value = new ModuleVO(); break;
 					
 					// /TODO
 					

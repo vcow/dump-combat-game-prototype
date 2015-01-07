@@ -1,5 +1,7 @@
 package command
 {
+	import dictionary.Base;
+	import dictionary.BasesDict;
 	import dictionary.Const;
 	
 	import org.puremvc.as3.interfaces.INotification;
@@ -38,7 +40,10 @@ package command
 		{
 			var basesListProxy:BasesListProxy = this.facade.retrieveProxy(BasesListProxy.NAME) as BasesListProxy;
 			var resourcesListProxy:ResourcesListProxy = this.facade.retrieveProxy(ResourcesListProxy.NAME) as ResourcesListProxy;
-			if (basesListProxy && resourcesListProxy)
+			
+			var base:Base = BasesDict.getInstance().getBase(ruinVO.ruinId);
+			
+			if (basesListProxy && resourcesListProxy && base)
 			{
 				var numChildren:int = basesListProxy.basesListVO.children.length;
 				for (var i:int = 0; i < numChildren; i++)
@@ -50,12 +55,11 @@ package command
 						break;
 					}
 				}
-				
-				resourcesListProxy.pay(ruinVO.price);
+				resourcesListProxy.pay(base.repairPrice);
 				
 				var baseVO:BaseVO = new BaseVO();
 				baseVO.baseId = ruinVO.ruinId;
-				baseVO.baseName = ruinVO.ruinName;
+				baseVO.baseName = base.name;
 				
 				basesListProxy.basesListVO.children.push(baseVO);
 				sendNotification(Const.NEW_BASE_CREATED, baseVO);
@@ -71,14 +75,18 @@ package command
 			var resourcesListProxy:ResourcesListProxy = this.facade.retrieveProxy(ResourcesListProxy.NAME) as ResourcesListProxy;
 			var ruinVO:RuinVO = notification.getBody() as RuinVO;
 			
-			if (resourcesListProxy && ruinVO)
+			var base:Base = ruinVO ? BasesDict.getInstance().getBase(ruinVO.ruinId) : null;
+			
+			if (resourcesListProxy && ruinVO && base)
 			{
-				if (resourcesListProxy.isEnoughResources(ruinVO.price))
+				if (resourcesListProxy.isEnoughResources(base.repairPrice))
+				{
 					createBase(ruinVO);
-			}
-			else
-			{
-				// Не хватает ресурсов, запустить сценарий покупки ресурсов
+				}
+				else
+				{
+					// Не хватает ресурсов, запустить сценарий покупки ресурсов
+				}
 			}
 		}
 	}

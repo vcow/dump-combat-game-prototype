@@ -8,12 +8,9 @@
 	
 	<!-- Базы игрока по умолчанию -->
 	<basesList>
-		<ruin id="38AA7031-A150-4BF2-A87F-0695C5EAF3B7" name="{start.ruin.title}">
-			<price>
-				<resource id="2" count="110"/>
-			</price>
-			<modules count="25">
-				<housing filled="0"/>
+		<ruin id="38AA7031-A150-4BF2-A87F-0695C5EAF3B7">
+			<modules maxCount="25">
+				<module id="1" filled="0.0"/>
 			</modules>
 		</ruin>
 	</basesList>

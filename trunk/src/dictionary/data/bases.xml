@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <bases>
-	<base id="38AA7031-A150-4BF2-A87F-0695C5EAF3B7" name="{start.ruin.title}">
-		<modules count="25">
-			<housing filled="0"/>
+	<!-- Шаблон стартовой базы, с которой игрок начинает -->
+	<base id="38AA7031-A150-4BF2-A87F-0695C5EAF3B7" name="{start.title}" level="1">
+		<modules maxCount="25">
+			<module id="1" filled="0.0"/>
 		</modules>
 		<personnel>
 		</personnel>
@@ -12,9 +13,6 @@
 			<price>
 				<resource id="2" count="110"/>
 			</price>
-			<modules count="25">
-				<housing/>
-			</modules>
 		</ruin>
 	</base>
 </bases>

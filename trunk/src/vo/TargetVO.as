@@ -1,6 +1,8 @@
 package vo
 {
 	import dictionary.Const;
+	
+	[ResourceBundle("bases")]
 
 	/**
 	 * 
@@ -58,7 +60,7 @@ package vo
 			// TODO: десериализовать специфичные поля
 			
 			targetId = data.hasOwnProperty("@id") ? data.@id.toString() : VO.createUID();
-			targetName = data.hasOwnProperty("@name") ? parseString(data.@name) : Const.NO_TEXT;
+			targetName = data.hasOwnProperty("@name") ? parseString(data.@name, "bases") : Const.NO_TEXT;
 			
 			// /TODO
 			

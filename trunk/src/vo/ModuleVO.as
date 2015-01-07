@@ -3,44 +3,32 @@ package vo
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object руин под новую базу
+	 * Value Object модуля
 	 * 
 	 */
 	
-	public class RuinVO extends VO
+	public class ModuleVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "ruin";
+		public static const NAME:String = "module";
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public var ruinId:String;				//< Уникальный идентификатор руин
+		public var moduleId:uint;				//< Идентификатор модуля
+		public var moduleFilled:Number;			//< Заполнение модуля
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function RuinVO()
+		public function ModuleVO()
 		{
 			super(NAME);
-		}
-		
-		/**
-		 * Модули, сохранившиеся на этих руинах
-		 */		
-		public function get Modules():ModulesVO
-		{
-			for each (var value:IVO in children)
-			{
-				if (value.name == ModulesVO.NAME)
-					return value as ModulesVO;
-			}
-			return null;
 		}
 		
 		//----------------------------------
@@ -53,7 +41,8 @@ package vo
 			
 			// TODO: Сериализовать специфичные поля
 			
-			res.@id = ruinId;
+			res.@id = moduleId;
+			res.@filled = moduleFilled;
 			
 			// /TODO
 			
@@ -66,7 +55,8 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-			ruinId = data.hasOwnProperty("@id") ? data.@id.toString() : VO.createUID();
+			moduleId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
+			moduleFilled = data.hasOwnProperty("@filled") ? Number(data.@filled) : 0.0;
 			
 			// /TODO
 			

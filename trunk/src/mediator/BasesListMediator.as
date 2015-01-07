@@ -57,9 +57,9 @@ package mediator
 		{
 			var ruins:Array = [];
 			for each (var ruinVO:RuinVO in basesListProxy.getRuinsList())
-			ruins.push(ruinVO);
+				ruins.push(ruinVO);
 			
-			ruins.sortOn("ruinName");
+			ruins.sortOn("ruinId");
 			return new ArrayCollection(ruins);
 		}
 		

@@ -3,44 +3,31 @@ package vo
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object руин под новую базу
+	 * Value Object списка модулей базы
 	 * 
 	 */
 	
-	public class RuinVO extends VO
+	public class ModulesVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "ruin";
+		public static const NAME:String = "modules";
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public var ruinId:String;				//< Уникальный идентификатор руин
+		public var modulesMaxCount:int;			//< Предельное количество модулей
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function RuinVO()
+		public function ModulesVO()
 		{
 			super(NAME);
-		}
-		
-		/**
-		 * Модули, сохранившиеся на этих руинах
-		 */		
-		public function get Modules():ModulesVO
-		{
-			for each (var value:IVO in children)
-			{
-				if (value.name == ModulesVO.NAME)
-					return value as ModulesVO;
-			}
-			return null;
 		}
 		
 		//----------------------------------
@@ -53,7 +40,7 @@ package vo
 			
 			// TODO: Сериализовать специфичные поля
 			
-			res.@id = ruinId;
+			res.@cont = modulesMaxCount;
 			
 			// /TODO
 			
@@ -66,7 +53,7 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-			ruinId = data.hasOwnProperty("@id") ? data.@id.toString() : VO.createUID();
+			modulesMaxCount = data.hasOwnProperty("@maxCount") ? int(data.@maxCount) : 0;
 			
 			// /TODO
 			
