@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modules>
+	<module id="1" name="{housing.title}" description="{housing.description}" space="25" chance="0.3">
+		<price>
+			<resource id="2" count="100"/>
+		</price>
+	</module>
+	<module id="2" name="{store.title}" description="{store.description}" space="50" chance="0.2">
+		<price>
+			<resource id="2" count="150"/>
+		</price>
+	</module>
+</modules>

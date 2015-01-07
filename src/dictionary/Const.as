@@ -10,6 +10,8 @@ package dictionary
 	public final class Const
 	{
 		public static const NO_TEXT:String = "???";			//< Не определенный текст
+		public static const NO_GUID:String =				//< Не определенный GUID
+			"00000000-0000-0000-0000-000000000000";
 		
 		public static const CANCEL:int = 0;					//< Код кнопки Cancel для алертов
 		public static const OK:int = 1;						//< Код кнопки Ok для алертов

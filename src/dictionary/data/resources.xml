@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<resource id="1" name="{cash.title}" descriiption="cash.description" price="1.0"/>
-	<resource id="2" name="{food.title}" descriiption="food.description" price="0.001"/>
+	<resource id="1" name="{cash.title}" descriiption="{cash.description}" price="1.0"/>
+	<resource id="2" name="{food.title}" descriiption="{food.description}" price="0.001"/>
 </resources>
