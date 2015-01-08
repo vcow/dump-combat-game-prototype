@@ -1,6 +1,5 @@
 package command
 {
-	import vo.BaseTemplVO;
 	import dictionary.BasesDict;
 	import dictionary.Const;
 	
@@ -10,9 +9,13 @@ package command
 	import proxy.BasesListProxy;
 	import proxy.ResourcesListProxy;
 	
+	import vo.BaseTemplVO;
 	import vo.BaseVO;
 	import vo.IVO;
+	import vo.ModulesVO;
+	import vo.PersonnelVO;
 	import vo.RuinVO;
+	import vo.StoreVO;
 	
 	/**
 	 * 
@@ -34,35 +37,42 @@ package command
 		
 		/**
 		 * Создать базу
-		 * @param ruinVO руины, на которых создается база
+		 * @param ruin руины, на которых создается база
 		 */
-		private function createBase(ruinVO:RuinVO):void
+		private function createBase(ruin:RuinVO):void
 		{
 			var basesListProxy:BasesListProxy = this.facade.retrieveProxy(BasesListProxy.NAME) as BasesListProxy;
 			var resourcesListProxy:ResourcesListProxy = this.facade.retrieveProxy(ResourcesListProxy.NAME) as ResourcesListProxy;
 			
-			var base:BaseTemplVO = BasesDict.getInstance().getBase(ruinVO.ruinId);
+			var baseTempl:BaseTemplVO = BasesDict.getInstance().getBase(ruin.ruinId);
 			
-			if (basesListProxy && resourcesListProxy && base && base.baseRuin)
+			if (basesListProxy && resourcesListProxy && baseTempl && baseTempl.baseRuin)
 			{
 				var numChildren:int = basesListProxy.basesListVO.children.length;
 				for (var i:int = 0; i < numChildren; i++)
 				{
 					var value:IVO = basesListProxy.basesListVO.children[i];
-					if (value is RuinVO && RuinVO(value).ruinId == ruinVO.ruinId)
+					if (value is RuinVO && RuinVO(value).ruinId == ruin.ruinId)
 					{
 						basesListProxy.basesListVO.children.splice(i, 1);
 						break;
 					}
 				}
-				resourcesListProxy.pay(base.baseRuin.ruinRepairPrice);
+				resourcesListProxy.pay(baseTempl.baseRuin.ruinRepairPrice);
 				
-				var baseVO:BaseVO = new BaseVO();
-				baseVO.baseId = ruinVO.ruinId;
-				baseVO.baseName = base.baseName;
+				var base:BaseVO = new BaseVO();
+				base.baseId = ruin.ruinId;
+				base.baseName = baseTempl.baseName;
 				
-				basesListProxy.basesListVO.children.push(baseVO);
-				sendNotification(Const.NEW_BASE_CREATED, baseVO);
+				var modules:ModulesVO = ruin.ruinModules;
+				base.children.push(modules ? modules : new ModulesVO());
+				
+				base.children.push(new StoreVO());
+				
+				base.children.push(new PersonnelVO());
+				
+				basesListProxy.basesListVO.children.push(base);
+				sendNotification(Const.NEW_BASE_CREATED, base);
 			}
 		}
 		
@@ -73,15 +83,15 @@ package command
 		override public function execute(notification:INotification):void
 		{
 			var resourcesListProxy:ResourcesListProxy = this.facade.retrieveProxy(ResourcesListProxy.NAME) as ResourcesListProxy;
-			var ruinVO:RuinVO = notification.getBody() as RuinVO;
+			var ruin:RuinVO = notification.getBody() as RuinVO;
 			
-			var base:BaseTemplVO = ruinVO ? BasesDict.getInstance().getBase(ruinVO.ruinId) : null;
+			var baseTempl:BaseTemplVO = ruin ? BasesDict.getInstance().getBase(ruin.ruinId) : null;
 			
-			if (resourcesListProxy && ruinVO && base && base.baseRuin)
+			if (resourcesListProxy && ruin && baseTempl && baseTempl.baseRuin)
 			{
-				if (resourcesListProxy.isEnoughResources(base.baseRuin.ruinRepairPrice))
+				if (resourcesListProxy.isEnoughResources(baseTempl.baseRuin.ruinRepairPrice))
 				{
-					createBase(ruinVO);
+					createBase(ruin);
 				}
 				else
 				{

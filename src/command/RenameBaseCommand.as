@@ -27,12 +27,12 @@ package command
 		override public function execute(notification:INotification):void
 		{
 			var basesListProxy:BasesListProxy = this.facade.retrieveProxy(BasesListProxy.NAME) as BasesListProxy;
-			var baseVO:BaseVO = basesListProxy ? basesListProxy.getBaseById(notification.getType()) as BaseVO : null;
+			var base:BaseVO = basesListProxy ? basesListProxy.getBaseById(notification.getType()) as BaseVO : null;
 			var newName:String = notification.getBody().toString();
-			if (baseVO && baseVO.baseName != newName)
+			if (base && base.baseName != newName)
 			{
-				baseVO.baseName = newName;
-				sendNotification(Const.BASE_RENAMED, baseVO);
+				base.baseName = newName;
+				sendNotification(Const.BASE_RENAMED, base);
 			}
 		}
 	}

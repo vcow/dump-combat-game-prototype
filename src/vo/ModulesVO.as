@@ -40,7 +40,7 @@ package vo
 			
 			// TODO: Сериализовать специфичные поля
 			
-			res.@cont = modulesMaxCount;
+			res.@maxCount = modulesMaxCount;
 			
 			// /TODO
 			
