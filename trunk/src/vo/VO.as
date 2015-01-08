@@ -170,6 +170,8 @@ package vo
 					case ModuleVO.NAME: value = new ModuleVO(); break;
 					case RuinTemplVO.NAME: value = new RuinTemplVO(); break;
 					case RuinDefVO.NAME: value = new RuinDefVO(); break;
+					case StoreVO.NAME: value = new StoreVO(); break;
+					case PersonnelVO.NAME: value = new PersonnelVO(); break;
 					
 					// /TODO
 					
