@@ -25,10 +25,10 @@ package dictionary
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static function getInstance():ResourcesDict
+		public static function getInstance():ModulesDict
 		{
 			if (!_instance)
-				_instance = new ResourcesDict();
+				_instance = new ModulesDict();
 			return _instance;
 		}
 		

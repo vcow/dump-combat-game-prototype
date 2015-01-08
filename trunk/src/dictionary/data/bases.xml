@@ -3,7 +3,7 @@
 	<!-- Шаблон стартовой базы, с которой игрок начинает -->
 	<baseTempl id="38AA7031-A150-4BF2-A87F-0695C5EAF3B7" name="{start.title}" level="1">
 		<modules maxCount="25">
-			<module id="1" filled="0.0"/>
+			<module id="1" filled="0" chance="1.0"/>
 		</modules>
 		<ruinTempl name="{start.ruin.title}">
 			<price>

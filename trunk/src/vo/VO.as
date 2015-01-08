@@ -39,6 +39,16 @@ package vo
 		}
 		
 		/**
+		 * Клонировать объект
+		 * @return копия объекта
+		 */
+		public function clone():VO
+		{
+			throw Error("Must be override in child object.");
+			return null;
+		}
+		
+		/**
 		 * Возвращает XML-объект, представляющий этот Value Object,
 		 * должен быть переопределен в производном классе для добавления полей
 		 * @return XML-объект
@@ -159,6 +169,7 @@ package vo
 					case ModulesVO.NAME: value = new ModulesVO(); break;
 					case ModuleVO.NAME: value = new ModuleVO(); break;
 					case RuinTemplVO.NAME: value = new RuinTemplVO(); break;
+					case RuinDefVO.NAME: value = new RuinDefVO(); break;
 					
 					// /TODO
 					

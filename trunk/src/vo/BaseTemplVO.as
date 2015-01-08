@@ -47,6 +47,19 @@ package vo
 			return null;
 		}
 		
+		/**
+		 * Данные по модулям базы
+		 */
+		public function get baseModules():ModulesVO
+		{
+			for each (var value:IVO in children)
+			{
+				if (value.name == ModulesVO.NAME)
+					return value as ModulesVO;
+			}
+			return null;
+		}
+		
 		//----------------------------------
 		//  VO
 		//----------------------------------

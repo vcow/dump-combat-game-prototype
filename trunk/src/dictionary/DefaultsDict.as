@@ -1,5 +1,6 @@
 package dictionary
 {
+	import vo.BasesDefVO;
 	import vo.BasesVO;
 	import vo.ResourcesVO;
 	
@@ -68,10 +69,17 @@ package dictionary
 				_resourcesList.deserialize(lst[0]);
 			
 			// базы по умолчанию
-			_basesList = new BasesVO();
-			lst = src.child(BasesVO.NAME);
+			lst = src.child(BasesDefVO.NAME);
 			if (lst.length() > 0)
-				_basesList.deserialize(lst[0]);
+			{
+				var basesDef:BasesDefVO = new BasesDefVO();
+				basesDef.deserialize(lst[0]);
+				_basesList = basesDef.getDefaultBases();
+			}
+			else
+			{
+				_basesList = new BasesVO();
+			}
 		}
 	}
 }

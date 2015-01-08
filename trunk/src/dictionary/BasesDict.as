@@ -1,6 +1,10 @@
 package dictionary
 {
 	import vo.BaseTemplVO;
+	import vo.ModuleDescVO;
+	import vo.ModuleVO;
+	import vo.ModulesVO;
+	import vo.RuinVO;
 	
 	/**
 	 * 
@@ -47,6 +51,43 @@ package dictionary
 					return base;
 			}
 			return null;
+		}
+		
+		/**
+		 * Сгенерировать руины базы на основании шаблона
+		 * @param baseId идентификатор базы, для которой генерятся руины
+		 * @return сгенерированный Value Object руин базы
+		 */
+		public function getRuinForBase(baseId:String):RuinVO
+		{
+			var ruin:RuinVO = new RuinVO();
+			var base:BaseTemplVO = getBase(baseId);
+			if (base)
+			{
+				ruin.ruinId = base.baseId;
+				var ruinModules:ModulesVO = new ModulesVO();		// Сохранившиеся модули
+				ruin.children.push(ruinModules);
+				
+				var modules:ModulesVO = base.baseModules;
+				if (modules)
+				{
+					ruinModules.modulesMaxCount = modules.modulesMaxCount;
+					
+					for each (var module:ModuleVO in modules.children)
+					{
+						var chance:Number = module.moduleChance;	// Вероятность сохранения модуля в руинах после захвата базы
+						if (isNaN(chance))
+						{
+							var moduleDesc:ModuleDescVO = ModulesDict.getInstance().getModule(module.moduleId);
+							chance = moduleDesc ? moduleDesc.moduleChance : 0.0;
+						}
+						
+						if (Math.random() <= chance)
+							ruinModules.children.push(module.clone());
+					}
+				}
+			}
+			return ruin;
 		}
 		
 		/**

@@ -7,11 +7,7 @@
 	</resources>
 	
 	<!-- Базы игрока по умолчанию -->
-	<bases>
-		<ruin id="38AA7031-A150-4BF2-A87F-0695C5EAF3B7">
-			<modules maxCount="25">
-				<module id="1" filled="0.0"/>
-			</modules>
-		</ruin>
-	</bases>
+	<basesDef>
+		<ruinDef id="38AA7031-A150-4BF2-A87F-0695C5EAF3B7"/>
+	</basesDef>
 </defaults>

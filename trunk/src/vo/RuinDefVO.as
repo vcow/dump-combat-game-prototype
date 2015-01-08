@@ -1,34 +1,33 @@
 package vo
 {
+	import dictionary.Const;
+
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object модуля
+	 * Value Object развалин из списка баз по умолчанию BasesDefVO
 	 * 
 	 */
 	
-	public class ModuleVO extends VO
+	public class RuinDefVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "module";
+		public static const NAME:String = "ruinDef";
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public var moduleId:uint;				//< Идентификатор модуля
-		public var moduleFilled:int;			//< Заполнение модуля
-		public var moduleChance:Number;			//< Вероятность сохранения модуля после захвата базы
-												//< (если не NaN, переопределяет значение из словаря модулей ModuleDescVO)
+		public var baseId:String;					//< Идентификатор базы, которой принадлежат руины
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function ModuleVO()
+		public function RuinDefVO()
 		{
 			super(NAME);
 		}
@@ -37,22 +36,13 @@ package vo
 		//  VO
 		//----------------------------------
 		
-		override public function clone():VO
-		{
-			var res:ModuleVO = new ModuleVO();
-			res.moduleId = moduleId;
-			
-			return res;
-		}
-		
 		override protected function getSelfXMLObject():XML
 		{
 			var res:XML = super.getSelfXMLObject();
 			
 			// TODO: Сериализовать специфичные поля
 			
-			res.@id = moduleId;
-			res.@filled = moduleFilled;
+			res.@id = baseId;
 			
 			// /TODO
 			
@@ -65,9 +55,7 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-			moduleId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
-			moduleFilled = data.hasOwnProperty("@filled") ? int(data.@filled) : 0;
-			moduleChance = data.hasOwnProperty("@chance") ? Number(data.@chance) : NaN;
+			baseId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
 			
 			// /TODO
 			

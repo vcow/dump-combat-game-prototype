@@ -33,7 +33,7 @@ package vo
 		/**
 		 * Модули, сохранившиеся на этих руинах
 		 */		
-		public function get Modules():ModulesVO
+		public function get ruinModules():ModulesVO
 		{
 			for each (var value:IVO in children)
 			{
