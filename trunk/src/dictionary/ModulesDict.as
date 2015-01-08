@@ -1,9 +1,6 @@
 package dictionary
 {
-	import vo.PriceVO;
-	import vo.VO;
-	
-	[ResourceBundle("modules")]
+	import vo.ModuleDescVO;
 	
 	/**
 	 * 
@@ -22,7 +19,7 @@ package dictionary
 		private static const source:Class;
 		
 		private static var _instance:ModulesDict;
-		private static var _modules:Vector.<Module>;
+		private static var _modules:Vector.<ModuleDescVO>;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -40,33 +37,25 @@ package dictionary
 		 * @param moduleId идентификатор модуля
 		 * @return информация по модулю
 		 */
-		public function getModule(moduleId:uint):Module
+		public function getModule(moduleId:uint):ModuleDescVO
 		{
 			if (!_modules)
 			{
-				_modules = new Vector.<Module>();
+				_modules = new Vector.<ModuleDescVO>();
 				
 				var src:XML = XML(new source());
-				for each (var item:XML in src.module)
+				var items:XMLList = src.child(ModuleDescVO.NAME);
+				for each (var item:XML in items)
 				{
-					var module:Module = new Module();
-					module.id = item.hasOwnProperty("@id") ? uint(item.@id) : 0;
-					module.name = item.hasOwnProperty("@name") ? VO.parseString(item.@name, "modules") : Const.NO_TEXT;
-					module.description = item.hasOwnProperty("@description") ? VO.parseString(item.@description, "modules") : Const.NO_TEXT;
-					module.space = item.hasOwnProperty("@space") ? Number(item.@space) : 0.0;
-					module.chance = item.hasOwnProperty("@chance") ? Number(item.@chance) : 0.0;
-					
-					var prc:XMLList = item.child(PriceVO.NAME);
-					if (prc.length() > 0)
-						module.price.deserialize(prc[0]);
-					
+					var module:ModuleDescVO = new ModuleDescVO();
+					module.deserialize(item);
 					_modules.push(module);
 				}
 			}
 			
 			for each (module in _modules)
 			{
-				if (module.id == moduleId)
+				if (module.moduleId == moduleId)
 					return module;
 			}
 			return null;
