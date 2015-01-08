@@ -1,7 +1,7 @@
 package mediator
 {
 	import dictionary.Const;
-	import dictionary.Resource;
+	import vo.ResourceDescVO;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
@@ -76,8 +76,8 @@ package mediator
 			
 			// TODO: Проинициализировать поля компонента актуальными значениями, устновить оброботчики событий, если нужно
 			
-			simpleResourcesView.cashView.count = resourcesListProxy.getResource(Resource.CASH);
-			simpleResourcesView.foodView.count = resourcesListProxy.getResource(Resource.FOOD);
+			simpleResourcesView.cashView.count = resourcesListProxy.getResource(ResourceDescVO.CASH);
+			simpleResourcesView.foodView.count = resourcesListProxy.getResource(ResourceDescVO.FOOD);
 			
 			// /TODO
 		}
@@ -106,8 +106,8 @@ package mediator
 					// После постройки новой базы, вероятно, изменилось количество ресурсов
 					if (simpleResourcesView)
 					{
-						simpleResourcesView.cashView.count = resourcesListProxy.getResource(Resource.CASH);
-						simpleResourcesView.foodView.count = resourcesListProxy.getResource(Resource.FOOD);
+						simpleResourcesView.cashView.count = resourcesListProxy.getResource(ResourceDescVO.CASH);
+						simpleResourcesView.foodView.count = resourcesListProxy.getResource(ResourceDescVO.FOOD);
 					}
 					break;
 			}

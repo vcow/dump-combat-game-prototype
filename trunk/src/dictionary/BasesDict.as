@@ -1,11 +1,6 @@
 package dictionary
 {
-	import vo.ModulesVO;
-	import vo.PriceVO;
-	import vo.RuinVO;
-	import vo.VO;
-	
-	[ResourceBundle("bases")]
+	import vo.BaseTemplVO;
 	
 	/**
 	 * 
@@ -24,7 +19,7 @@ package dictionary
 		private static const source:Class;
 		
 		private static var _instance:BasesDict;
-		private static var _bases:Vector.<Base>;
+		private static var _bases:Vector.<BaseTemplVO>;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -42,13 +37,13 @@ package dictionary
 		 * @param baseId идентификатор базы
 		 * @return информация по базе
 		 */
-		public function getBase(baseId:String):Base
+		public function getBase(baseId:String):BaseTemplVO
 		{
 			init();
 			
-			for each (var base:Base in _bases)
+			for each (var base:BaseTemplVO in _bases)
 			{
-				if (base.id == baseId)
+				if (base.baseId == baseId)
 					return base;
 			}
 			return null;
@@ -61,31 +56,14 @@ package dictionary
 		{
 			if (!_bases)
 			{
-				_bases = new Vector.<Base>();
+				_bases = new Vector.<BaseTemplVO>();
 				
 				var src:XML = XML(new source());
-				for each (var item:XML in src.base)
+				var items:XMLList = src.child(BaseTemplVO.NAME);
+				for each (var item:XML in items)
 				{
-					var base:Base = new Base();
-					base.id = item.hasOwnProperty("@id") ? item.@id.toString() : Const.NO_GUID;
-					base.name = item.hasOwnProperty("@name") ? VO.parseString(item.@name, "bases") : Const.NO_TEXT;
-					base.level = item.hasOwnProperty("@level") ? int(item.@level) : 0;
-					
-					var mdl:XMLList = item.child(ModulesVO.NAME);
-					if (mdl.length() > 0)
-						base.modules.deserialize(mdl[0]);
-					
-					var rns:XMLList = item.child(RuinVO.NAME);
-					if (rns.length() > 0)
-					{
-						var ruinSrc:XML = rns[0];
-						base.ruinName = ruinSrc.hasOwnProperty("@name") ? VO.parseString(ruinSrc.@name, "bases") : Const.NO_TEXT;
-						
-						var prc:XMLList = ruinSrc.child(PriceVO.NAME);
-						if (prc.length() > 0)
-							base.repairPrice.deserialize(prc[0]);
-					}
-					
+					var base:BaseTemplVO = new BaseTemplVO();
+					base.deserialize(item);
 					_bases.push(base);
 				}
 			}

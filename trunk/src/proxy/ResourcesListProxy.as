@@ -1,13 +1,13 @@
 package proxy
 {
 	import dictionary.DefaultsDict;
-	import dictionary.Resource;
+	import vo.ResourceDescVO;
 	
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
 	import vo.PriceVO;
 	import vo.ResourceVO;
-	import vo.ResourcesListVO;
+	import vo.ResourcesVO;
 	
 	/**
 	 * 
@@ -33,9 +33,9 @@ package proxy
 			super(NAME, data);
 		}
 		
-		public function get resourcesListVO():ResourcesListVO
+		public function get resourcesListVO():ResourcesVO
 		{
-			return getData() as ResourcesListVO;
+			return getData() as ResourcesVO;
 		}
 		
 		/**
@@ -142,7 +142,7 @@ package proxy
 			if (!data)
 			{
 				var appDataProxy:AppDataProxy = this.facade.retrieveProxy(AppDataProxy.NAME) as AppDataProxy;
-				var value:ResourcesListVO = appDataProxy ? appDataProxy.getChildByName(ResourcesListVO.NAME) as ResourcesListVO : null;
+				var value:ResourcesVO = appDataProxy ? appDataProxy.getChildByName(ResourcesVO.NAME) as ResourcesVO : null;
 				
 				if (!value)
 					value = DefaultsDict.getInstance().resourcesList;

@@ -150,14 +150,15 @@ package vo
 					// TODO: Сюда добавить другие VO для десериализации
 					
 					case BaseVO.NAME: value = new BaseVO(); break;
-					case BasesListVO.NAME: value = new BasesListVO(); break;
+					case BasesVO.NAME: value = new BasesVO(); break;
 					case PriceVO.NAME: value = new PriceVO(); break;
-					case ResourcesListVO.NAME: value = new ResourcesListVO(); break;
+					case ResourcesVO.NAME: value = new ResourcesVO(); break;
 					case ResourceVO.NAME: value = new ResourceVO(); break;
 					case RuinVO.NAME: value = new RuinVO(); break;
 					case TargetVO.NAME: value = new TargetVO(); break;
 					case ModulesVO.NAME: value = new ModulesVO(); break;
 					case ModuleVO.NAME: value = new ModuleVO(); break;
+					case RuinTemplVO.NAME: value = new RuinTemplVO(); break;
 					
 					// /TODO
 					

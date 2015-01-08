@@ -1,6 +1,6 @@
 package command
 {
-	import dictionary.Base;
+	import vo.BaseTemplVO;
 	import dictionary.BasesDict;
 	import dictionary.Const;
 	
@@ -41,9 +41,9 @@ package command
 			var basesListProxy:BasesListProxy = this.facade.retrieveProxy(BasesListProxy.NAME) as BasesListProxy;
 			var resourcesListProxy:ResourcesListProxy = this.facade.retrieveProxy(ResourcesListProxy.NAME) as ResourcesListProxy;
 			
-			var base:Base = BasesDict.getInstance().getBase(ruinVO.ruinId);
+			var base:BaseTemplVO = BasesDict.getInstance().getBase(ruinVO.ruinId);
 			
-			if (basesListProxy && resourcesListProxy && base)
+			if (basesListProxy && resourcesListProxy && base && base.baseRuin)
 			{
 				var numChildren:int = basesListProxy.basesListVO.children.length;
 				for (var i:int = 0; i < numChildren; i++)
@@ -55,11 +55,11 @@ package command
 						break;
 					}
 				}
-				resourcesListProxy.pay(base.repairPrice);
+				resourcesListProxy.pay(base.baseRuin.ruinRepairPrice);
 				
 				var baseVO:BaseVO = new BaseVO();
 				baseVO.baseId = ruinVO.ruinId;
-				baseVO.baseName = base.name;
+				baseVO.baseName = base.baseName;
 				
 				basesListProxy.basesListVO.children.push(baseVO);
 				sendNotification(Const.NEW_BASE_CREATED, baseVO);
@@ -75,11 +75,11 @@ package command
 			var resourcesListProxy:ResourcesListProxy = this.facade.retrieveProxy(ResourcesListProxy.NAME) as ResourcesListProxy;
 			var ruinVO:RuinVO = notification.getBody() as RuinVO;
 			
-			var base:Base = ruinVO ? BasesDict.getInstance().getBase(ruinVO.ruinId) : null;
+			var base:BaseTemplVO = ruinVO ? BasesDict.getInstance().getBase(ruinVO.ruinId) : null;
 			
-			if (resourcesListProxy && ruinVO && base)
+			if (resourcesListProxy && ruinVO && base && base.baseRuin)
 			{
-				if (resourcesListProxy.isEnoughResources(base.repairPrice))
+				if (resourcesListProxy.isEnoughResources(base.baseRuin.ruinRepairPrice))
 				{
 					createBase(ruinVO);
 				}

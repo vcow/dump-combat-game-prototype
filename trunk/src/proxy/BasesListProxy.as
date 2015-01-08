@@ -6,7 +6,7 @@ package proxy
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
 	import vo.BaseVO;
-	import vo.BasesListVO;
+	import vo.BasesVO;
 	import vo.IVO;
 	import vo.RuinVO;
 	import vo.TargetVO;
@@ -30,14 +30,14 @@ package proxy
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function BasesListProxy(data:BasesListVO=null)
+		public function BasesListProxy(data:BasesVO=null)
 		{
 			super(NAME, data);
 		}
 		
-		public function get basesListVO():BasesListVO
+		public function get basesListVO():BasesVO
 		{
-			return getData() as BasesListVO;
+			return getData() as BasesVO;
 		}
 		
 		/**
@@ -137,7 +137,7 @@ package proxy
 			if (!data)
 			{
 				var appDataProxy:AppDataProxy = this.facade.retrieveProxy(AppDataProxy.NAME) as AppDataProxy;
-				var value:BasesListVO = appDataProxy ? appDataProxy.getChildByName(BasesListVO.NAME) as BasesListVO : null;
+				var value:BasesVO = appDataProxy ? appDataProxy.getChildByName(BasesVO.NAME) as BasesVO : null;
 				
 				if (!value)
 					value = DefaultsDict.getInstance().basesList;
