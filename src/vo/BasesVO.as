@@ -3,23 +3,23 @@ package vo
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object списка ресурсов
+	 * Value Object списка баз
 	 * 
 	 */
 	
-	public class ResourcesListVO extends VO
+	public class BasesVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "resourcesList";
+		public static const NAME:String = "bases";
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function ResourcesListVO()
+		public function BasesVO()
 		{
 			super(NAME);
 		}

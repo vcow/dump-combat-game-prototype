@@ -62,7 +62,7 @@
 			
 			import spark.events.IndexChangeEvent;
 			
-			import dictionary.Base;
+			import vo.BaseTemplVO;
 			import dictionary.BasesDict;
 			import dictionary.Const;
 			
@@ -102,15 +102,15 @@
 			protected function ruinsListView_changeHandler(event:IndexChangeEvent):void
 			{
 				var ruin:RuinVO = ruinsListView.selectedItem as RuinVO;
-				var base:Base = ruin ? BasesDict.getInstance().getBase(ruin.ruinId) : null;
-				price = base ? base.repairPrice : null;
+				var base:BaseTemplVO = ruin ? BasesDict.getInstance().getBase(ruin.ruinId) : null;
+				price = base && base.baseRuin ? base.baseRuin.ruinRepairPrice : null;
 			}
 			
 			private function ruinsListLabelFunction(item:Object):String
 			{
 				var ruin:RuinVO = item as RuinVO;
-				var base:Base = ruin ? BasesDict.getInstance().getBase(ruin.ruinId) : null;
-				return base ? base.ruinName : Const.NO_TEXT;
+				var base:BaseTemplVO = ruin ? BasesDict.getInstance().getBase(ruin.ruinId) : null;
+				return base && base.baseRuin ? base.baseRuin.ruinName : Const.NO_TEXT;
 			}
 		]]>
 	</fx:Script>

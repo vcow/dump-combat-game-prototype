@@ -1,8 +1,6 @@
 package dictionary
 {
-	import vo.VO;
-	
-	[ResourceBundle("resources")]
+	import vo.ResourceDescVO;
 	
 	/**
 	 * 
@@ -21,7 +19,7 @@ package dictionary
 		private static const source:Class;
 		
 		private static var _instance:ResourcesDict;
-		private static var _resources:Vector.<Resource>;
+		private static var _resources:Vector.<ResourceDescVO>;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -39,28 +37,25 @@ package dictionary
 		 * @param resourceId идентификатор ресурса
 		 * @return информация по ресурсу
 		 */
-		public function getResource(resourceId:uint):Resource
+		public function getResource(resourceId:uint):ResourceDescVO
 		{
 			if (!_resources)
 			{
-				_resources = new Vector.<Resource>();
+				_resources = new Vector.<ResourceDescVO>();
 				
 				var src:XML = XML(new source());
-				for each (var item:XML in src.resource)
+				var items:XMLList = src.child(ResourceDescVO.NAME);
+				for each (var item:XML in items)
 				{
-					var resource:Resource = new Resource();
-					resource.id = item.hasOwnProperty("@id") ? uint(item.@id) : 0;
-					resource.name = item.hasOwnProperty("@name") ? VO.parseString(item.@name, "resources") : Const.NO_TEXT;
-					resource.description = item.hasOwnProperty("@description") ? VO.parseString(item.@description, "resources") : Const.NO_TEXT;
-					resource.price = item.hasOwnProperty("@price") ? Number(item.@price) : 0.0;
-					
+					var resource:ResourceDescVO = new ResourceDescVO();
+					resource.deserialize(item);
 					_resources.push(resource);
 				}
 			}
 			
 			for each (resource in _resources)
 			{
-				if (resource.id == resourceId)
+				if (resource.resourceId == resourceId)
 					return resource;
 			}
 			return null;

@@ -1,7 +1,7 @@
 package dictionary
 {
-	import vo.BasesListVO;
-	import vo.ResourcesListVO;
+	import vo.BasesVO;
+	import vo.ResourcesVO;
 	
 	/**
 	 * 
@@ -20,8 +20,8 @@ package dictionary
 		private static const source:Class;
 		
 		private static var _instance:DefaultsDict;
-		private static var _resourcesList:ResourcesListVO;
-		private static var _basesList:BasesListVO;
+		private static var _resourcesList:ResourcesVO;
+		private static var _basesList:BasesVO;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -37,7 +37,7 @@ package dictionary
 		/**
 		 * Ресурсы игрока по умолчанию
 		 */
-		public function get resourcesList():ResourcesListVO
+		public function get resourcesList():ResourcesVO
 		{
 			if (!_resourcesList)
 				parseSource();
@@ -47,7 +47,7 @@ package dictionary
 		/**
 		 * Базы игрока по умолчанию
 		 */
-		public function get basesList():BasesListVO
+		public function get basesList():BasesVO
 		{
 			if (!_basesList)
 				parseSource();
@@ -62,14 +62,14 @@ package dictionary
 			var src:XML = XML(new source());
 			
 			// ресурсы по умолчанию
-			_resourcesList = new ResourcesListVO();
-			var lst:XMLList = src.child(ResourcesListVO.NAME);
+			_resourcesList = new ResourcesVO();
+			var lst:XMLList = src.child(ResourcesVO.NAME);
 			if (lst.length() > 0)
 				_resourcesList.deserialize(lst[0]);
 			
 			// базы по умолчанию
-			_basesList = new BasesListVO();
-			lst = src.child(BasesListVO.NAME);
+			_basesList = new BasesVO();
+			lst = src.child(BasesVO.NAME);
 			if (lst.length() > 0)
 				_basesList.deserialize(lst[0]);
 		}
