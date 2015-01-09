@@ -162,7 +162,6 @@ package vo
 					case BaseVO.NAME: value = new BaseVO(); break;
 					case BasesVO.NAME: value = new BasesVO(); break;
 					case PriceVO.NAME: value = new PriceVO(); break;
-					case ResourcesVO.NAME: value = new ResourcesVO(); break;
 					case ResourceVO.NAME: value = new ResourceVO(); break;
 					case RuinVO.NAME: value = new RuinVO(); break;
 					case TargetVO.NAME: value = new TargetVO(); break;

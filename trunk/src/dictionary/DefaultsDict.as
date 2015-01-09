@@ -2,7 +2,7 @@ package dictionary
 {
 	import vo.BasesDefVO;
 	import vo.BasesVO;
-	import vo.ResourcesVO;
+	import vo.StoreVO;
 	
 	/**
 	 * 
@@ -21,7 +21,7 @@ package dictionary
 		private static const source:Class;
 		
 		private static var _instance:DefaultsDict;
-		private static var _resourcesList:ResourcesVO;
+		private static var _resourcesList:StoreVO;
 		private static var _basesList:BasesVO;
 		
 		//--------------------------------------------------------------------------
@@ -38,7 +38,7 @@ package dictionary
 		/**
 		 * Ресурсы игрока по умолчанию
 		 */
-		public function get resourcesList():ResourcesVO
+		public function get resourcesList():StoreVO
 		{
 			if (!_resourcesList)
 				parseSource();
@@ -63,8 +63,8 @@ package dictionary
 			var src:XML = XML(new source());
 			
 			// ресурсы по умолчанию
-			_resourcesList = new ResourcesVO();
-			var lst:XMLList = src.child(ResourcesVO.NAME);
+			_resourcesList = new StoreVO();
+			var lst:XMLList = src.child(StoreVO.NAME);
 			if (lst.length() > 0)
 				_resourcesList.deserialize(lst[0]);
 			

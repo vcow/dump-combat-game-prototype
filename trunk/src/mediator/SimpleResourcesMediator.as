@@ -45,12 +45,7 @@ package mediator
 		protected function get resourcesListProxy():ResourcesListProxy
 		{
 			if (!_resourcesListProxy)
-			{
-				_resourcesListProxy = this.facade.retrieveProxy(ResourcesListProxy.NAME) as ResourcesListProxy;
-				
-				if (!_resourcesListProxy)
-					throw Error("Resources List Proxy must be specified.");
-			}
+				_resourcesListProxy = ResourcesListProxy(this.facade.retrieveProxy(ResourcesListProxy.NAME));
 			
 			return _resourcesListProxy;
 		}

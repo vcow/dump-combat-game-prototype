@@ -38,12 +38,36 @@ package vo
 			super(NAME);
 		}
 		
+		/**
+		 * Стоимость постройки модуля
+		 */
 		public function get modulePrice():PriceVO
 		{
 			for each (var value:IVO in children)
 			{
 				if (value.name == PriceVO.NAME)
-					return value as PriceVO;
+				{
+					var price:PriceVO = value as PriceVO;
+					if (price && price.priceDetails == PriceVO.PRICE)
+						return price;
+				}
+			}
+			return null;
+		}
+		
+		/**
+		 * Стоимость эксплуатации модуля
+		 */
+		public function get moduleFee():PriceVO
+		{
+			for each (var value:IVO in children)
+			{
+				if (value.name == PriceVO.NAME)
+				{
+					var price:PriceVO = value as PriceVO;
+					if (price && price.priceDetails == PriceVO.FEE)
+						return price;
+				}
 			}
 			return null;
 		}

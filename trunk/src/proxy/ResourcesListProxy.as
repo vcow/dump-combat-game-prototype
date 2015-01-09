@@ -1,13 +1,13 @@
 package proxy
 {
 	import dictionary.DefaultsDict;
-	import vo.ResourceDescVO;
 	
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
+	import vo.BaseVO;
 	import vo.PriceVO;
 	import vo.ResourceVO;
-	import vo.ResourcesVO;
+	import vo.StoreVO;
 	
 	/**
 	 * 
@@ -28,14 +28,9 @@ package proxy
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function ResourcesListProxy(data:Object=null)
+		public function ResourcesListProxy()
 		{
-			super(NAME, data);
-		}
-		
-		public function get resourcesListVO():ResourcesVO
-		{
-			return getData() as ResourcesVO;
+			super(NAME);
 		}
 		
 		/**
@@ -43,13 +38,29 @@ package proxy
 		 * @param priceVO цена
 		 * @return true, если ресурсов хватает
 		 */
-		public function isEnoughResources(priceVO:PriceVO):Boolean
+		public function isEnoughResources(price:PriceVO):Boolean
 		{
-			for each (var resourceVO:ResourceVO in priceVO.children)
+			var store:StoreVO = getAllResources() || getAllResources(true);
+			
+			for each (var requiredRes:ResourceVO in price.children)
 			{
-				if (resourceVO.resourceCount > getResource(resourceVO.resourceId))
+				var resourceNotFound:Boolean = true;
+				for each (var availableRes:ResourceVO in store.children)
+				{
+					if (availableRes.resourceId == requiredRes.resourceId)
+					{
+						if (availableRes.resourceCount < requiredRes.resourceCount)
+							return false;
+						
+						resourceNotFound = false;
+						break;
+					}
+				}
+				
+				if (resourceNotFound)
 					return false;
 			}
+			
 			return true;
 		}
 		
@@ -58,22 +69,59 @@ package proxy
 		 * @param priceVO цена
 		 * @return true, если платеж выполнен успешно, false, если какой-то из ресурсов ушел в минус
 		 */
-		public function pay(priceVO:PriceVO):Boolean
+		public function pay(price:PriceVO):Boolean
 		{
-			var res:Boolean = true;
-			for each (var resourceVO:ResourceVO in priceVO.children)
+			var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
+			var bases:Vector.<BaseVO> = basesListProxy.getBasesList();
+			
+			if (bases.length == 0 || !isEnoughResources(price))
+				return false;	// Платеж производится только из складов при наличии достаточного количества ресурсов
+			
+			for each (var requiredRes:ResourceVO in price.children)
 			{
-				for each (var value:ResourceVO in resourcesListVO.children)
+				var paid:Boolean = false;
+				var count:int = requiredRes.resourceCount;
+				
+				if (count == 0)
+					continue;
+				
+				for each (var base:BaseVO in bases)
 				{
-					if (value.resourceId == resourceVO.resourceId)
+					var store:StoreVO = base.baseStore;
+					for each (var availableRes:ResourceVO in store.children)
 					{
-						value.resourceCount -= resourceVO.resourceCount;
-						res &&= value.resourceCount >= 0;
-						break;
+						if (availableRes.resourceId == requiredRes.resourceId)
+						{
+							var rest:int = availableRes.resourceCount - count;
+							if (rest < 0)
+							{
+								// На этой базе ресурс исчерпан, требуется еще
+								count = -rest;
+								availableRes.resourceCount = 0;
+							}
+							else
+							{
+								// По этому ресурсу расчитались
+								count = 0;
+								availableRes.resourceCount = rest;
+								paid = true;
+							}
+							break;
+						}
 					}
+					
+					if (paid)
+						break;
 				}
+				
+				if (!paid)
+					throw Error("Not enough resources.");
 			}
-			return res;
+			
+			var appDataProxy:AppDataProxy = AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME));
+			appDataProxy.saveData();
+			
+			return true;
 		}
 		
 		/**
@@ -83,7 +131,8 @@ package proxy
 		 */
 		public function getResource(resourceId:uint):int
 		{
-			for each (var value:ResourceVO in resourcesListVO.children)
+			var store:StoreVO = getAllResources() || getAllResources(true);
+			for each (var value:ResourceVO in store.children)
 			{
 				if (value.resourceId == resourceId)
 					return value.resourceCount;
@@ -95,63 +144,45 @@ package proxy
 		 * Задать новое количество указанного ресурса
 		 * @param resourceId идентификатор ресурса
 		 * @param resourceCount новое количество ресурса
+		 * @return количество ресурса, размещенное на складах (будет меньше, если складов не хватает)
 		 */
-		public function setResource(resourceId:uint, resourceCount:int):void
+		public function setResource(resourceId:uint, resourceCount:int):int
 		{
-			for each (var value:ResourceVO in resourcesListVO.children)
-			{
-				if (value.resourceId == resourceId)
-				{
-					if (value.resourceCount != resourceCount)
-					{
-						value.resourceCount = resourceCount;
-						updateApplicationVO();
-						return;
-					}
-				}
-			}
-			
-			value = new ResourceVO();
-			value.resourceId = resourceId;
-			value.resourceCount = resourceCount;
-			
-			resourcesListVO.children.push(value);
-			updateApplicationVO();
+			return 0;
 		}
 		
 		/**
-		 * Вспомогательная функция, обновляет данные о ресурсах в ApplicationVO
-		 * @param save сохранить обновленные данные
+		 * Получить список всех доступных ресурсов
+		 * @param getDefaults возвратить список ресурсов по умолчанию 
+		 * @return список всех доступных ресурсов
 		 */
-		private function updateApplicationVO(save:Boolean=true):void
+		private function getAllResources(getDefaults:Boolean=false):StoreVO
 		{
-			var appDataProxy:AppDataProxy = this.facade.retrieveProxy(AppDataProxy.NAME) as AppDataProxy;
+			var store:StoreVO;
 			
-			if (!appDataProxy)
-				throw Error("Application Data Proxy must be specified.");
+			if (getDefaults)
+			{
+				store = new StoreVO();
+				store.append(DefaultsDict.getInstance().resourcesList);
+			}
+			else
+			{
+				var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
+				var bases:Vector.<BaseVO> = basesListProxy.getBasesList();
+				if (bases.length > 0)
+				{
+					store = new StoreVO();
+					for each (var base:BaseVO in bases)
+						store.append(base.baseStore);
+				}
+			}
 			
-			appDataProxy.updateChild(resourcesListVO, save);
+			return store;
 		}
 		
 		//----------------------------------
 		//  Proxy
 		//----------------------------------
 		
-		override public function getData():Object
-		{
-			if (!data)
-			{
-				var appDataProxy:AppDataProxy = this.facade.retrieveProxy(AppDataProxy.NAME) as AppDataProxy;
-				var value:ResourcesVO = appDataProxy ? appDataProxy.getChildByName(ResourcesVO.NAME) as ResourcesVO : null;
-				
-				if (!value)
-					value = DefaultsDict.getInstance().resourcesList;
-				
-				setData(value);
-				updateApplicationVO(false);
-			}
-			
-			return data;
-		}
 	}
 }

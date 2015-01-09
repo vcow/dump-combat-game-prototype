@@ -93,11 +93,7 @@
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
-				_basesListMediator = ProtoFacade.getInstance().retrieveMediator(BasesListMediator.NAME) as BasesListMediator;
-				
-				if (!_basesListMediator)
-					throw Error("Bases List Mediator must be specified.");
-				
+				_basesListMediator = BasesListMediator(ProtoFacade.getInstance().retrieveMediator(BasesListMediator.NAME));
 				_basesListMediator.setViewComponent(this);
 			}
 			
