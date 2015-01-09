@@ -42,11 +42,7 @@
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
-				_simpleResourcesMediator = ProtoFacade.getInstance().retrieveMediator(SimpleResourcesMediator.NAME) as SimpleResourcesMediator;
-				
-				if (!_simpleResourcesMediator)
-					throw Error("Simple Resources Mediator must be specified.");
-				
+				_simpleResourcesMediator = SimpleResourcesMediator(ProtoFacade.getInstance().retrieveMediator(SimpleResourcesMediator.NAME));
 				_simpleResourcesMediator.setViewComponent(this);
 			}
 			

@@ -28,9 +28,8 @@ package command
 		
 		override public function execute(notification:INotification):void
 		{
-			var appDataProxy:AppDataProxy = this.facade.retrieveProxy(AppDataProxy.NAME) as AppDataProxy;
-			if (appDataProxy)
-				appDataProxy.saveData();
+			var appDataProxy:AppDataProxy = AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME));
+			appDataProxy.saveData();
 		}
 	}
 }

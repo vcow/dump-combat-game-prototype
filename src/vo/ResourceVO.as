@@ -35,6 +35,14 @@ package vo
 		//  VO
 		//----------------------------------
 		
+		override public function clone():VO
+		{
+			var resource:ResourceVO = new ResourceVO();
+			resource.resourceId = resourceId;
+			resource.resourceCount = resourceCount;
+			return resource;
+		}
+		
 		override protected function getSelfXMLObject():XML
 		{
 			var res:XML = super.getSelfXMLObject();

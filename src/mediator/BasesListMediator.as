@@ -71,12 +71,7 @@ package mediator
 		protected function get basesListProxy():BasesListProxy
 		{
 			if (!_basesListProxy)
-			{
-				_basesListProxy = this.facade.retrieveProxy(BasesListProxy.NAME) as BasesListProxy;
-				
-				if (!_basesListProxy)
-					throw Error("Bases List Proxy must be specified.");
-			}
+				_basesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
 			
 			return _basesListProxy;
 		}

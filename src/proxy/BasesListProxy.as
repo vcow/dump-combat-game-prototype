@@ -120,11 +120,7 @@ package proxy
 		 */
 		private function updateApplicationVO(save:Boolean=true):void
 		{
-			var appDataProxy:AppDataProxy = this.facade.retrieveProxy(AppDataProxy.NAME) as AppDataProxy;
-			
-			if (!appDataProxy)
-				throw Error("Application Data Proxy must be specified.");
-			
+			var appDataProxy:AppDataProxy = AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME));
 			appDataProxy.updateChild(basesListVO, save);
 		}
 		
@@ -136,8 +132,8 @@ package proxy
 		{
 			if (!data)
 			{
-				var appDataProxy:AppDataProxy = this.facade.retrieveProxy(AppDataProxy.NAME) as AppDataProxy;
-				var value:BasesVO = appDataProxy ? appDataProxy.getChildByName(BasesVO.NAME) as BasesVO : null;
+				var appDataProxy:AppDataProxy = AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME));
+				var value:BasesVO = appDataProxy.getChildByName(BasesVO.NAME) as BasesVO;
 				
 				if (!value)
 					value = DefaultsDict.getInstance().basesList;

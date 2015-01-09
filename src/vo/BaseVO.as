@@ -35,6 +35,19 @@ package vo
 			super(NAME);
 		}
 		
+		/**
+		 * Склад базы
+		 */
+		public function get baseStore():StoreVO
+		{
+			for each (var value:IVO in children)
+			{
+				if (value.name == StoreVO.NAME)
+					return value as StoreVO;
+			}
+			return null;
+		}
+		
 		//----------------------------------
 		//  VO
 		//----------------------------------
@@ -68,3 +81,4 @@ package vo
 		}
 	}
 }
+	

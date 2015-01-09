@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <modulesDict>
 	<moduleDesc id="1" name="{housing.title}" description="{housing.description}" space="25" chance="0.3">
-		<price>
+		<price details="price">
 			<resource id="2" count="100"/>
+		</price>
+		<price details="fee">
+			<resource id="2" count="1"/>
 		</price>
 	</moduleDesc>
 	<moduleDesc id="2" name="{store.title}" description="{store.description}" space="500" chance="0.2">
-		<price>
+		<price details="price">
 			<resource id="2" count="150"/>
+		</price>
+		<price details="fee">
+			<resource id="2" count="1"/>
 		</price>
 	</moduleDesc>
 </modulesDict>

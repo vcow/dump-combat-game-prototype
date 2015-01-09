@@ -29,6 +29,7 @@ package vo
 		public var resourceId:uint;				//< Идентификатор ресурса
 		public var resourceName:String;			//< Название ресурса
 		public var resourceDescription:String;	//< Описание ресурса
+		public var resourceSize:int;			//< Размер ресурса в складских единицах
 		public var resourcePrice:Number;		//< Цена ресурса в деньгах
 		
 		//--------------------------------------------------------------------------
@@ -53,6 +54,7 @@ package vo
 			res.@id = resourceId;
 			res.@name = resourceName;
 			res.@description = resourceDescription;
+			res.@size = resourceSize;
 			res.@price = resourcePrice;
 			
 			// /TODO
@@ -69,6 +71,7 @@ package vo
 			resourceId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
 			resourceName = data.hasOwnProperty("@name") ? VO.parseString(data.@name, "resources") : Const.NO_TEXT;
 			resourceDescription = data.hasOwnProperty("@description") ? VO.parseString(data.@description, "resources") : Const.NO_TEXT;
+			resourceSize = data.hasOwnProperty("@size") ? int(data.@size) : 0;
 			resourcePrice = data.hasOwnProperty("@price") ? Number(data.@price) : 0.0;
 			
 			// /TODO

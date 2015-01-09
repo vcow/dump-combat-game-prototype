@@ -2,6 +2,7 @@ package command
 {
 	import dictionary.BasesDict;
 	import dictionary.Const;
+	import dictionary.DefaultsDict;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
@@ -14,6 +15,8 @@ package command
 	import vo.IVO;
 	import vo.ModulesVO;
 	import vo.PersonnelVO;
+	import vo.PriceVO;
+	import vo.ResourceVO;
 	import vo.RuinVO;
 	import vo.StoreVO;
 	
@@ -41,38 +44,69 @@ package command
 		 */
 		private function createBase(ruin:RuinVO):void
 		{
-			var basesListProxy:BasesListProxy = this.facade.retrieveProxy(BasesListProxy.NAME) as BasesListProxy;
-			var resourcesListProxy:ResourcesListProxy = this.facade.retrieveProxy(ResourcesListProxy.NAME) as ResourcesListProxy;
+			var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
+			var resourcesListProxy:ResourcesListProxy = ResourcesListProxy(this.facade.retrieveProxy(ResourcesListProxy.NAME));
 			
 			var baseTempl:BaseTemplVO = BasesDict.getInstance().getBase(ruin.ruinId);
 			
-			if (basesListProxy && resourcesListProxy && baseTempl && baseTempl.baseRuin)
+			if (baseTempl && baseTempl.baseRuin)
 			{
 				var numChildren:int = basesListProxy.basesListVO.children.length;
+				var ruinIndex:int = -1;
 				for (var i:int = 0; i < numChildren; i++)
 				{
 					var value:IVO = basesListProxy.basesListVO.children[i];
 					if (value is RuinVO && RuinVO(value).ruinId == ruin.ruinId)
 					{
-						basesListProxy.basesListVO.children.splice(i, 1);
+						ruinIndex = i;
 						break;
 					}
 				}
-				resourcesListProxy.pay(baseTempl.baseRuin.ruinRepairPrice);
 				
-				var base:BaseVO = new BaseVO();
-				base.baseId = ruin.ruinId;
-				base.baseName = baseTempl.baseName;
+				if (ruinIndex < 0)
+					throw Error("Can't find ruin.");
 				
-				var modules:ModulesVO = ruin.ruinModules;
-				base.children.push(modules ? modules : new ModulesVO());
+				var isFirstBase:Boolean = numChildren == 1;
+				var repairPrice:PriceVO = baseTempl.baseRuin.ruinRepairPrice;
 				
-				base.children.push(new StoreVO());
-				
-				base.children.push(new PersonnelVO());
-				
-				basesListProxy.basesListVO.children.push(base);
-				sendNotification(Const.NEW_BASE_CREATED, base);
+				if (resourcesListProxy.pay(repairPrice) ||
+					isFirstBase && resourcesListProxy.isEnoughResources(repairPrice))
+				{
+					basesListProxy.basesListVO.children.splice(ruinIndex, 1);
+					
+					var base:BaseVO = new BaseVO();
+					base.baseId = ruin.ruinId;
+					base.baseName = baseTempl.baseName;
+					
+					var modules:ModulesVO = ruin.ruinModules;
+					base.children.push(modules ? modules : new ModulesVO());
+					
+					base.children.push(new StoreVO());
+					
+					base.children.push(new PersonnelVO());
+					
+					basesListProxy.basesListVO.children.push(base);
+					
+					if (isFirstBase)
+					{
+						// Если это первая база игрока, кладем на склад ресурсы по
+						// умолчанию, за вычетом стоимости базы
+						var store:StoreVO = DefaultsDict.getInstance().resourcesList;
+						for each (var requiredRes:ResourceVO in repairPrice.children)
+						{
+							for each (var availableRes:ResourceVO in store.children)
+							{
+								if (availableRes.resourceId == requiredRes.resourceId)
+								{
+									resourcesListProxy.setResource(availableRes.resourceId, availableRes.resourceCount - requiredRes.resourceCount);
+									break;
+								}
+							}
+						}
+					}
+					
+					sendNotification(Const.NEW_BASE_CREATED, base);
+				}
 			}
 		}
 		
@@ -82,12 +116,12 @@ package command
 		
 		override public function execute(notification:INotification):void
 		{
-			var resourcesListProxy:ResourcesListProxy = this.facade.retrieveProxy(ResourcesListProxy.NAME) as ResourcesListProxy;
+			var resourcesListProxy:ResourcesListProxy = ResourcesListProxy(this.facade.retrieveProxy(ResourcesListProxy.NAME));
 			var ruin:RuinVO = notification.getBody() as RuinVO;
 			
 			var baseTempl:BaseTemplVO = ruin ? BasesDict.getInstance().getBase(ruin.ruinId) : null;
 			
-			if (resourcesListProxy && ruin && baseTempl && baseTempl.baseRuin)
+			if (ruin && baseTempl && baseTempl.baseRuin)
 			{
 				if (resourcesListProxy.isEnoughResources(baseTempl.baseRuin.ruinRepairPrice))
 				{

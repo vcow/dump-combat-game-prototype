@@ -15,6 +15,15 @@ package vo
 		
 		public static const NAME:String = "price";
 		
+		public static const PRICE:String = "price";
+		public static const FEE:String = "fee";
+		
+		//--------------------------------------------------------------------------
+		// 
+		//--------------------------------------------------------------------------
+		
+		public var priceDetails:String;			//< Назначение цены
+		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
@@ -28,5 +37,30 @@ package vo
 		//  VO
 		//----------------------------------
 		
+		override protected function getSelfXMLObject():XML
+		{
+			var res:XML = super.getSelfXMLObject();
+			
+			// TODO: Сериализовать специфичные поля
+			
+			res.@details = priceDetails;
+			
+			// /TODO
+			
+			return res;
+		}
+		
+		override public function deserialize(data:XML):Boolean
+		{
+			super.deserialize(data);
+			
+			// TODO: десериализовать специфичные поля
+			
+			priceDetails = data.hasOwnProperty("@details") ? data.@details.toString() : PRICE;
+			
+			// /TODO
+			
+			return true;
+		}
 	}
 }
