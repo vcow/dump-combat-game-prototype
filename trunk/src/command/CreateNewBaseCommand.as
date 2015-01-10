@@ -92,16 +92,21 @@ package command
 						// Если это первая база игрока, кладем на склад ресурсы по
 						// умолчанию, за вычетом стоимости базы
 						var store:StoreVO = DefaultsDict.getInstance().resourcesList;
-						for each (var requiredRes:ResourceVO in repairPrice.children)
+						for each (var availableRes:ResourceVO in store.children)
 						{
-							for each (var availableRes:ResourceVO in store.children)
+							var resourceAdded:Boolean = false;
+							for each (var requiredRes:ResourceVO in repairPrice.children)
 							{
 								if (availableRes.resourceId == requiredRes.resourceId)
 								{
-									resourcesListProxy.setResource(availableRes.resourceId, availableRes.resourceCount - requiredRes.resourceCount);
+									resourcesListProxy.addResource(availableRes.resourceId, availableRes.resourceCount - requiredRes.resourceCount);
+									resourceAdded = true;
 									break;
 								}
 							}
+							
+							if (!resourceAdded)
+								resourcesListProxy.addResource(availableRes.resourceId, availableRes.resourceCount);
 						}
 					}
 					
