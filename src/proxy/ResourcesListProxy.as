@@ -1,11 +1,16 @@
 package proxy
 {
 	import dictionary.DefaultsDict;
+	import dictionary.ModulesDict;
+	import dictionary.ResourcesDict;
 	
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
 	import vo.BaseVO;
+	import vo.ModuleDescVO;
+	import vo.ModuleVO;
 	import vo.PriceVO;
+	import vo.ResourceDescVO;
 	import vo.ResourceVO;
 	import vo.StoreVO;
 	
@@ -146,9 +151,116 @@ package proxy
 		 * @param resourceCount новое количество ресурса
 		 * @return количество ресурса, размещенное на складах (будет меньше, если складов не хватает)
 		 */
-		public function setResource(resourceId:uint, resourceCount:int):int
+		public function addResource(resourceId:uint, resourceCount:int):int
 		{
-			return 0;
+			var moduleDesc:ModuleDescVO = ModulesDict.getInstance().getModule(ModuleDescVO.STORE);
+			var resourceDesc:ResourceDescVO = ResourcesDict.getInstance().getResource(resourceId);
+			
+			if (!moduleDesc || !resourceDesc || resourceCount <= 0)
+				return 0;
+			
+			var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
+			var bases:Vector.<BaseVO> = basesListProxy.getBasesList();
+			var rest:int = resourceCount;
+			
+			for each (var base:BaseVO in bases)
+			{
+				if (resourceDesc.resourceSize == 0)
+				{
+					// Ресурс с бесконечной вместимостью (например, деньги)
+					// пихаем в первую попавшуюся базу
+					addResourceToBase(base, resourceId, resourceCount);
+					rest = 0;
+					break;
+				}
+				else
+				{
+					// Прошерстить все складские модули в поисках нужного пространства
+					var freeSpace:int = 0;
+					var storeModules:Vector.<ModuleVO> = base.getModules(ModuleDescVO.STORE);
+					for each (var module:ModuleVO in storeModules)
+						freeSpace += moduleDesc.moduleSpace - module.moduleFilled;
+					
+					// сколко единиц ресурса поместится в найденное свободное пространство
+					freeSpace = freeSpace / resourceDesc.resourceSize;
+					
+					if (freeSpace == 0)
+						continue;	// Для этого ресурса места нет
+					
+					var filled:int;	// Место, которое будет занято ресурсом на складах
+					if (rest > freeSpace)
+					{
+						filled = freeSpace * resourceDesc.resourceSize;
+						rest -= freeSpace;
+					}
+					else
+					{
+						filled = rest * resourceDesc.resourceSize;
+						rest = 0;
+					}
+					
+					// Раскидать загрузку по складским модулям
+					for each (module in storeModules)
+					{
+						freeSpace = moduleDesc.moduleSpace - module.moduleFilled;
+						if (filled > freeSpace)
+						{
+							module.moduleFilled = moduleDesc.moduleSpace;
+							filled -= freeSpace;
+						}
+						else
+						{
+							module.moduleFilled += filled;
+							filled = 0;
+						}
+						
+						if (filled == 0)
+							break;
+					}
+					
+					addResourceToBase(base, resourceId, resourceCount - rest);
+				}
+				
+				if (rest == 0)
+					break;
+			}
+			
+			var appDataProxy:AppDataProxy = AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME));
+			appDataProxy.saveData();
+			
+			return resourceCount - rest;
+		}
+		
+		/**
+		 * Вспомогательная функция, добавляет ресурс в список ресурсов, использовать
+		 * только из addResource, чтобы не нарушать расчет заполнения модулей
+		 * @param base база, в которую добавляется ресурс
+		 * @param resourceId идентификатор добавляемого ресурса
+		 * @param count количество добавляемого ресурса
+		 */
+		private function addResourceToBase(base:BaseVO, resourceId:uint, count:int):void
+		{
+			// Добавить ресурс
+			var resourceAdded:Boolean = false;
+			var store:StoreVO = base.baseStore;
+			for each (var resource:ResourceVO in store.children)
+			{
+				if (resource.resourceId == resourceId)
+				{
+					resource.resourceCount += count;
+					resourceAdded = true;
+					break;
+				}
+			}
+			
+			if (!resourceAdded)
+			{
+				resource = new ResourceVO();
+				resource.resourceId = resourceId;
+				resource.resourceCount = count;
+				
+				store.children.push(resource);
+			}
 		}
 		
 		/**

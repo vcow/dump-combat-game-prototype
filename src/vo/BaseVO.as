@@ -36,6 +36,29 @@ package vo
 		}
 		
 		/**
+		 * Получить список модулей базы указанного типа
+		 * @param moduleId идентификатор типа модуля
+		 * @return список модулей базы
+		 */
+		public function getModules(moduleId:uint):Vector.<ModuleVO>
+		{
+			var modules:Vector.<ModuleVO> = new Vector.<ModuleVO>();
+			for each (var item:IVO in children)
+			{
+				if (item.name == ModulesVO.NAME)
+				{
+					for each (var module:ModuleVO in item.children)
+					{
+						if (module.moduleId == moduleId)
+							modules.push(module);
+					}
+					break;
+				}
+			}
+			return modules;
+		}
+		
+		/**
 		 * Склад базы
 		 */
 		public function get baseStore():StoreVO

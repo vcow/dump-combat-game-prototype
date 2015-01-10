@@ -19,6 +19,9 @@ package vo
 		
 		public static const NAME:String = "moduleDesc";
 		
+		public static const HOUSING:uint = 1;		//< Жилой модуль
+		public static const STORE:uint = 2;			//< Складской модуль
+		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
