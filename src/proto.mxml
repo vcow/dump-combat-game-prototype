@@ -19,7 +19,7 @@
 		
 		s|TextArea {
 			skinClass:ClassReference("spark.skins.mobile.TextAreaSkin");
-			contentBackgroundAlpha:1;
+			contentBackgroundAlpha:0;
 		}
 	</fx:Style>
 	
