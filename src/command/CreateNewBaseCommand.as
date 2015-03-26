@@ -1,5 +1,7 @@
 package command
 {
+	import decorator.ResourcesDecor;
+	
 	import dictionary.BasesDict;
 	import dictionary.Const;
 	import dictionary.DefaultsDict;
@@ -7,8 +9,8 @@ package command
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 	
+	import proxy.AppDataProxy;
 	import proxy.BasesListProxy;
-	import proxy.ResourcesListProxy;
 	
 	import vo.BaseTemplVO;
 	import vo.BaseVO;
@@ -45,7 +47,7 @@ package command
 		private function createBase(ruin:RuinVO):void
 		{
 			var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
-			var resourcesListProxy:ResourcesListProxy = ResourcesListProxy(this.facade.retrieveProxy(ResourcesListProxy.NAME));
+			var resourcesDecor:ResourcesDecor = new ResourcesDecor(basesListProxy, AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME)));
 			
 			var baseTempl:BaseTemplVO = BasesDict.getInstance().getBase(ruin.ruinId);
 			
@@ -69,8 +71,8 @@ package command
 				var isFirstBase:Boolean = numChildren == 1;
 				var repairPrice:PriceVO = baseTempl.baseRuin.ruinRepairPrice;
 				
-				if (resourcesListProxy.pay(repairPrice) ||
-					isFirstBase && resourcesListProxy.isEnoughResources(repairPrice))
+				if (resourcesDecor.pay(repairPrice) ||
+					isFirstBase && resourcesDecor.isEnoughResources(repairPrice))
 				{
 					basesListProxy.basesListVO.children.splice(ruinIndex, 1);
 					
@@ -99,14 +101,14 @@ package command
 							{
 								if (availableRes.resourceId == requiredRes.resourceId)
 								{
-									resourcesListProxy.addResource(availableRes.resourceId, availableRes.resourceCount - requiredRes.resourceCount);
+									resourcesDecor.addResource(availableRes.resourceId, availableRes.resourceCount - requiredRes.resourceCount);
 									resourceAdded = true;
 									break;
 								}
 							}
 							
 							if (!resourceAdded)
-								resourcesListProxy.addResource(availableRes.resourceId, availableRes.resourceCount);
+								resourcesDecor.addResource(availableRes.resourceId, availableRes.resourceCount);
 						}
 					}
 					
@@ -121,14 +123,15 @@ package command
 		
 		override public function execute(notification:INotification):void
 		{
-			var resourcesListProxy:ResourcesListProxy = ResourcesListProxy(this.facade.retrieveProxy(ResourcesListProxy.NAME));
+			var resourcesDecor:ResourcesDecor = new ResourcesDecor(BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)),
+				AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME)));
 			var ruin:RuinVO = notification.getBody() as RuinVO;
 			
 			var baseTempl:BaseTemplVO = ruin ? BasesDict.getInstance().getBase(ruin.ruinId) : null;
 			
 			if (ruin && baseTempl && baseTempl.baseRuin)
 			{
-				if (resourcesListProxy.isEnoughResources(baseTempl.baseRuin.ruinRepairPrice))
+				if (resourcesDecor.isEnoughResources(baseTempl.baseRuin.ruinRepairPrice))
 				{
 					createBase(ruin);
 				}

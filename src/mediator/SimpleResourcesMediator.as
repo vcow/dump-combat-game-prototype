@@ -1,14 +1,18 @@
 package mediator
 {
+	import decorator.ResourcesDecor;
+	
 	import dictionary.Const;
-	import vo.ResourceDescVO;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
-	import proxy.ResourcesListProxy;
+	import proxy.AppDataProxy;
+	import proxy.BasesListProxy;
 	
 	import views.ui.SimpleResourcesView;
+	
+	import vo.ResourceDescVO;
 	
 	/**
 	 * 
@@ -26,7 +30,7 @@ package mediator
 		
 		public static const NAME:String = "simpleResourcesMediator";
 		
-		private var _resourcesListProxy:ResourcesListProxy;
+		private var _resourcesDecor:ResourcesDecor;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -42,12 +46,13 @@ package mediator
 			return viewComponent as SimpleResourcesView;
 		}
 		
-		protected function get resourcesListProxy():ResourcesListProxy
+		protected function get resourcesDecor():ResourcesDecor
 		{
-			if (!_resourcesListProxy)
-				_resourcesListProxy = ResourcesListProxy(this.facade.retrieveProxy(ResourcesListProxy.NAME));
+			if (!_resourcesDecor)
+				_resourcesDecor = new ResourcesDecor(BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)),
+					AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME)));
 			
-			return _resourcesListProxy;
+			return _resourcesDecor;
 		}
 		
 		/**
@@ -71,8 +76,8 @@ package mediator
 			
 			// TODO: Проинициализировать поля компонента актуальными значениями, устновить оброботчики событий, если нужно
 			
-			simpleResourcesView.cashView.count = resourcesListProxy.getResource(ResourceDescVO.CASH);
-			simpleResourcesView.foodView.count = resourcesListProxy.getResource(ResourceDescVO.FOOD);
+			simpleResourcesView.cashView.count = resourcesDecor.getResource(ResourceDescVO.CASH);
+			simpleResourcesView.foodView.count = resourcesDecor.getResource(ResourceDescVO.FOOD);
 			
 			// /TODO
 		}
@@ -101,8 +106,8 @@ package mediator
 					// После постройки новой базы, вероятно, изменилось количество ресурсов
 					if (simpleResourcesView)
 					{
-						simpleResourcesView.cashView.count = resourcesListProxy.getResource(ResourceDescVO.CASH);
-						simpleResourcesView.foodView.count = resourcesListProxy.getResource(ResourceDescVO.FOOD);
+						simpleResourcesView.cashView.count = resourcesDecor.getResource(ResourceDescVO.CASH);
+						simpleResourcesView.foodView.count = resourcesDecor.getResource(ResourceDescVO.FOOD);
 					}
 					break;
 			}

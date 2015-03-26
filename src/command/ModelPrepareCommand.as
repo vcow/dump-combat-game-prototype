@@ -5,7 +5,6 @@ package command
 	
 	import proxy.AppDataProxy;
 	import proxy.BasesListProxy;
-	import proxy.ResourcesListProxy;
 	
 	/**
 	 * 
@@ -32,7 +31,6 @@ package command
 		override public function execute(notification:INotification):void
 		{
 			this.facade.registerProxy(new BasesListProxy());
-			this.facade.registerProxy(new ResourcesListProxy());
 			this.facade.registerProxy(new AppDataProxy());
 		}
 	}
