@@ -1,6 +1,6 @@
 package command
 {
-	import decorator.ResourcesDecor;
+	import helpers.ResourcesHelper;
 	
 	import dictionary.BasesDict;
 	import dictionary.Const;
@@ -47,7 +47,7 @@ package command
 		private function createBase(ruin:RuinVO):void
 		{
 			var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
-			var resourcesDecor:ResourcesDecor = new ResourcesDecor(basesListProxy, AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME)));
+			var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy, AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME)));
 			
 			var baseTempl:BaseTemplVO = BasesDict.getInstance().getBase(ruin.ruinId);
 			
@@ -123,7 +123,7 @@ package command
 		
 		override public function execute(notification:INotification):void
 		{
-			var resourcesDecor:ResourcesDecor = new ResourcesDecor(BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)),
+			var resourcesDecor:ResourcesHelper = new ResourcesHelper(BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)),
 				AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME)));
 			var ruin:RuinVO = notification.getBody() as RuinVO;
 			

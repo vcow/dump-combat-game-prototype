@@ -1,6 +1,6 @@
 package mediator
 {
-	import decorator.ResourcesDecor;
+	import helpers.ResourcesHelper;
 	
 	import dictionary.Const;
 	
@@ -30,7 +30,7 @@ package mediator
 		
 		public static const NAME:String = "simpleResourcesMediator";
 		
-		private var _resourcesDecor:ResourcesDecor;
+		private var _resourcesDecor:ResourcesHelper;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -46,10 +46,10 @@ package mediator
 			return viewComponent as SimpleResourcesView;
 		}
 		
-		protected function get resourcesDecor():ResourcesDecor
+		protected function get resourcesDecor():ResourcesHelper
 		{
 			if (!_resourcesDecor)
-				_resourcesDecor = new ResourcesDecor(BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)),
+				_resourcesDecor = new ResourcesHelper(BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)),
 					AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME)));
 			
 			return _resourcesDecor;

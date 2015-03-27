@@ -20,7 +20,6 @@ package vo
 		//--------------------------------------------------------------------------
 		
 		public var moduleId:uint;				//< Идентификатор модуля
-		public var moduleFilled:int;			//< Заполнение модуля
 		public var moduleChance:Number;			//< Вероятность сохранения модуля после захвата базы
 												//< (если не NaN, переопределяет значение из словаря модулей ModuleDescVO)
 		
@@ -52,7 +51,6 @@ package vo
 			// TODO: Сериализовать специфичные поля
 			
 			res.@id = moduleId;
-			res.@filled = moduleFilled;
 			
 			// /TODO
 			
@@ -66,7 +64,6 @@ package vo
 			// TODO: десериализовать специфичные поля
 			
 			moduleId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
-			moduleFilled = data.hasOwnProperty("@filled") ? int(data.@filled) : 0;
 			moduleChance = data.hasOwnProperty("@chance") ? Number(data.@chance) : NaN;
 			
 			// /TODO

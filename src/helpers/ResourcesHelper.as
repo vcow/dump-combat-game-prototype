@@ -1,4 +1,4 @@
-package decorator
+package helpers
 {
 	import dictionary.DefaultsDict;
 	import dictionary.ModulesDict;
@@ -9,7 +9,6 @@ package decorator
 	
 	import vo.BaseVO;
 	import vo.ModuleDescVO;
-	import vo.ModuleVO;
 	import vo.PriceVO;
 	import vo.ResourceDescVO;
 	import vo.ResourceVO;
@@ -22,7 +21,7 @@ package decorator
 	 * 
 	 */
 	
-	public class ResourcesDecor
+	public class ResourcesHelper
 	{
 		//--------------------------------------------------------------------------
 		// 
@@ -35,7 +34,7 @@ package decorator
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function ResourcesDecor(basesListProxy:BasesListProxy, appDataProxy:AppDataProxy)
+		public function ResourcesHelper(basesListProxy:BasesListProxy, appDataProxy:AppDataProxy)
 		{
 			_basesListProxy = basesListProxy;
 			_appDataProxy = appDataProxy;
@@ -175,14 +174,10 @@ package decorator
 				}
 				else
 				{
-					// Прошерстить все складские модули в поисках нужного пространства
-					var freeSpace:int = 0;
-					var storeModules:Vector.<ModuleVO> = base.getModules(ModuleDescVO.STORE);
-					for each (var module:ModuleVO in storeModules)
-						freeSpace += moduleDesc.moduleSpace - module.moduleFilled;
+					var modulesHelper:ModulesHelper = new ModulesHelper(_basesListProxy, _appDataProxy);
 					
 					// сколко единиц ресурса поместится в найденное свободное пространство
-					freeSpace = freeSpace / resourceDesc.resourceSize;
+					var freeSpace:int = modulesHelper.getSpace(ModuleDescVO.STORE, base) / resourceDesc.resourceSize;
 					
 					if (freeSpace == 0)
 						continue;	// Для этого ресурса места нет
@@ -197,25 +192,6 @@ package decorator
 					{
 						filled = rest * resourceDesc.resourceSize;
 						rest = 0;
-					}
-					
-					// Раскидать загрузку по складским модулям
-					for each (module in storeModules)
-					{
-						freeSpace = moduleDesc.moduleSpace - module.moduleFilled;
-						if (filled > freeSpace)
-						{
-							module.moduleFilled = moduleDesc.moduleSpace;
-							filled -= freeSpace;
-						}
-						else
-						{
-							module.moduleFilled += filled;
-							filled = 0;
-						}
-						
-						if (filled == 0)
-							break;
 					}
 					
 					addResourceToBase(base, resourceId, resourceCount - rest);
@@ -289,10 +265,5 @@ package decorator
 			
 			return store;
 		}
-		
-		//----------------------------------
-		//  Proxy
-		//----------------------------------
-		
 	}
 }
