@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- UI вербовки новых персонажей и доступ к уже завербованным -->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:modal="views.modal.*"
+		title="@Resource(key='personnel.title', bundle='common')">
+	<s:layout>
+		<s:VerticalLayout gap="0"/>
+	</s:layout>
+	
+	<s:navigationContent>
+		<s:Button label="&lt;" click="{navigator.popView();}"/>
+	</s:navigationContent>
+	
+	<s:actionContent>
+		<s:Button label="+" click="hireAnEmploye_clickHandler(event)"/>
+	</s:actionContent>
+	
+	<s:List id="employeCategoriesView" verticalScrollPolicy="on" horizontalScrollPolicy="off"
+			width="100%" height="100%" change="employeCategoriesView_changeHandler(event)"
+			labelFunction="labelFunction">
+		<s:dataProvider>
+			<s:ArrayCollection>
+				<fx:Object label="personnel.cat.laborers" id="laborers"/>
+				<fx:Object label="personnel.cat.soldiers" id="soldiers"/>
+				<fx:Object label="personnel.cat.scientists" id="scientists"/>
+				<fx:Object label="personnel.cat.engineers" id="engineers"/>
+			</s:ArrayCollection>
+		</s:dataProvider>
+	</s:List>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Metadata>
+		[ResourceBundle("common")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import spark.events.IndexChangeEvent;
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+			private function labelFunction(item:Object):String
+			{
+				return item.label ? resourceManager.getString("common", item.label.toString()) : "???";
+			}
+			
+			protected function hireAnEmploye_clickHandler(event:MouseEvent):void
+			{
+			}
+			
+			protected function employeCategoriesView_changeHandler(event:IndexChangeEvent):void
+			{
+				switch (employeCategoriesView.selectedItem.id)
+				{
+					case "laborers":
+						break;
+					case "soldiers":
+						break;
+					case "scientists":
+						break;
+					case "engineers":
+						break;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+</s:View>
