@@ -23,10 +23,10 @@
 			labelFunction="labelFunction">
 		<s:dataProvider>
 			<s:ArrayCollection>
-				<fx:Object label="personnel.cat.laborers" id="laborers"/>
-				<fx:Object label="personnel.cat.soldiers" id="soldiers"/>
-				<fx:Object label="personnel.cat.scientists" id="scientists"/>
-				<fx:Object label="personnel.cat.engineers" id="engineers"/>
+				<fx:Object label="personnel.cat.laborers" id="laborer"/>
+				<fx:Object label="personnel.cat.soldiers" id="soldier"/>
+				<fx:Object label="personnel.cat.scientists" id="scientist"/>
+				<fx:Object label="personnel.cat.engineers" id="engineer"/>
 			</s:ArrayCollection>
 		</s:dataProvider>
 	</s:List>
