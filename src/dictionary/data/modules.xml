@@ -4,7 +4,7 @@
 		<price details="price">
 			<resource id="2" count="100"/>
 		</price>
-		<price details="fee">
+		<price details="fee" interval="1m">
 			<resource id="2" count="1"/>
 		</price>
 	</moduleDesc>
@@ -12,7 +12,7 @@
 		<price details="price">
 			<resource id="2" count="150"/>
 		</price>
-		<price details="fee">
+		<price details="fee" interval="1m">
 			<resource id="2" count="1"/>
 		</price>
 	</moduleDesc>

@@ -7,10 +7,8 @@ package helpers
 	import proxy.BasesListProxy;
 	
 	import vo.BaseVO;
-	import vo.BasesVO;
 	import vo.ModuleDescVO;
 	import vo.ModuleVO;
-	import vo.ResourceDescVO;
 	import vo.ResourceVO;
 	import vo.StoreVO;
 

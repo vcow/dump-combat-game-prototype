@@ -1,37 +1,41 @@
 package vo
 {
-    import helpers.TimeHelper;
-
+	import dictionary.Const;
+	
+	[ResourceBundle("common")]
+	
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object списка ресурсов
+	 * Value Object библиотечных данных о способности персонажа
 	 * 
 	 */
 	
-	public class PriceVO extends VO
+	public class SkillDescVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "price";
+		public static const NAME:String = "skillDesc";
 		
-		public static const PRICE:String = "price";
-		public static const FEE:String = "fee";
-		
-		//--------------------------------------------------------------------------
-		// 
-		//--------------------------------------------------------------------------
-		
-		public var priceDetails:String;			//< Назначение цены
-        public var priceInterval:Number;        //< Интервал времени, через который снимается или начисляется платеж
+		public static const STRENGTH:uint = 1;
+		public static const STAMINA:uint = 2;
+		public static const AGILITY:uint = 3;
+		public static const INTELLECT:uint = 4;
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function PriceVO()
+		public var skillId:uint;				//< Идентификатор способности
+		public var skillName:String;			//< Название способности
+		
+		//--------------------------------------------------------------------------
+		// 
+		//--------------------------------------------------------------------------
+		
+		public function SkillDescVO()
 		{
 			super(NAME);
 		}
@@ -46,9 +50,8 @@ package vo
 			
 			// TODO: Сериализовать специфичные поля
 			
-			res.@details = priceDetails;
-            if (priceInterval)
-                res.@interval = new TimeHelper().timeToStr(priceInterval);
+			res.@id = skillId;
+			res.@name = skillName;
 			
 			// /TODO
 			
@@ -61,8 +64,8 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-			priceDetails = data.hasOwnProperty("@details") ? data.@details.toString() : PRICE;
-            priceInterval = data.hasOwnProperty("@interval") ? new TimeHelper().strToTime(data.@interval.toString()) : 0;
+			skillId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
+			skillName = data.hasOwnProperty("@name") ? VO.parseString(data.@name, "common") : Const.NO_TEXT;
 			
 			// /TODO
 			

@@ -15,7 +15,7 @@
 	</s:navigationContent>
 	
 	<s:actionContent>
-		<s:Button label="+" click="hireAnEmploye_clickHandler(event)"/>
+		<s:Button label="+" click="hireEmploye_clickHandler(event)"/>
 	</s:actionContent>
 	
 	<s:List id="employeCategoriesView" verticalScrollPolicy="on" horizontalScrollPolicy="off"
@@ -32,6 +32,7 @@
 	</s:List>
 	
 	<fx:Declarations>
+        <modal:HireEmployePopUp id="hireEmployePopUp" close="hireEmployePopUp_closeHandler(event)"/>
 	</fx:Declarations>
 	
 	<fx:Metadata>
@@ -40,7 +41,11 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import spark.events.IndexChangeEvent;
+            import mx.core.FlexGlobals;
+            import mx.managers.PopUpManager;
+            
+            import spark.events.IndexChangeEvent;
+            import spark.events.PopUpEvent;
 			
 			//--------------------------------------------------------------------------
 			// 
@@ -55,8 +60,10 @@
 				return item.label ? resourceManager.getString("common", item.label.toString()) : "???";
 			}
 			
-			protected function hireAnEmploye_clickHandler(event:MouseEvent):void
+			protected function hireEmploye_clickHandler(event:MouseEvent):void
 			{
+                hireEmployePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                PopUpManager.centerPopUp(hireEmployePopUp);
 			}
 			
 			protected function employeCategoriesView_changeHandler(event:IndexChangeEvent):void
@@ -74,6 +81,11 @@
 				}
 			}
 			
-		]]>
+            private function hireEmployePopUp_closeHandler(event:PopUpEvent):void
+            {
+                
+            }
+            
+        ]]>
 	</fx:Script>
 </s:View>

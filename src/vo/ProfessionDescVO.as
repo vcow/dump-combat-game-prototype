@@ -1,37 +1,41 @@
 package vo
 {
-    import helpers.TimeHelper;
-
+	import dictionary.Const;
+	
+	[ResourceBundle("common")]
+	
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object списка ресурсов
+	 * Value Object библиотечных данных о профессии
 	 * 
 	 */
 	
-	public class PriceVO extends VO
+	public class ProfessionDescVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "price";
+		public static const NAME:String = "professionDesc";
 		
-		public static const PRICE:String = "price";
-		public static const FEE:String = "fee";
-		
-		//--------------------------------------------------------------------------
-		// 
-		//--------------------------------------------------------------------------
-		
-		public var priceDetails:String;			//< Назначение цены
-        public var priceInterval:Number;        //< Интервал времени, через который снимается или начисляется платеж
+		public static const LABORER:uint = 1;
+		public static const SOLGIER:uint = 2;
+		public static const SCIENTIST:uint = 3;
+		public static const ENGENEER:uint = 4;
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function PriceVO()
+		public var professionId:uint;				//< Идентификатор профессии
+		public var professionName:String;			//< Название профессии
+		
+		//--------------------------------------------------------------------------
+		// 
+		//--------------------------------------------------------------------------
+		
+		public function ProfessionDescVO()
 		{
 			super(NAME);
 		}
@@ -46,9 +50,8 @@ package vo
 			
 			// TODO: Сериализовать специфичные поля
 			
-			res.@details = priceDetails;
-            if (priceInterval)
-                res.@interval = new TimeHelper().timeToStr(priceInterval);
+			res.@id = professionId;
+			res.@name = professionName;
 			
 			// /TODO
 			
@@ -61,8 +64,8 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-			priceDetails = data.hasOwnProperty("@details") ? data.@details.toString() : PRICE;
-            priceInterval = data.hasOwnProperty("@interval") ? new TimeHelper().strToTime(data.@interval.toString()) : 0;
+			professionId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
+			professionName = data.hasOwnProperty("@name") ? VO.parseString(data.@name, "common") : Const.NO_TEXT;
 			
 			// /TODO
 			
