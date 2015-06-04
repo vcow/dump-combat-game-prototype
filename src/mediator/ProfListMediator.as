@@ -26,6 +26,7 @@ package mediator
         public static const NAME:String = "professionsMediator";
         
         private var _basesListProxy:BasesListProxy;
+        private var _appDataProxy:AppDataProxy;
         
         //--------------------------------------------------------------------------
         // 
@@ -43,8 +44,12 @@ package mediator
         public function get basesDataProvider():ArrayCollection
         {
             var bases:Array = [];
+            var modulesHelper:ModulesHelper = new ModulesHelper(basesListProxy, appDataProxy);
             for each (var baseVO:BaseVO in basesListProxy.getBasesList())
-                bases.push(baseVO);
+            {
+                if (modulesHelper.getSpace(ModuleDescVO.HOUSING, baseVO) > 0)
+                    bases.push(baseVO);
+            }
             
             bases.sortOn("baseName");
             return new ArrayCollection(bases);
@@ -63,6 +68,14 @@ package mediator
             return _basesListProxy;
         }
         
+        protected function get appDataProxy():AppDataProxy
+        {
+            if (!_appDataProxy)
+                _appDataProxy = AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME));
+            
+            return _appDataProxy;
+        }
+        
         /**
          * Инициализировать текущий визуальный компонент
          */
@@ -73,8 +86,7 @@ package mediator
             
             // TODO: Проинициализировать поля компонента актуальными значениями, устновить оброботчики событий, если нужно
             
-            var freeSpace:int = (new ModulesHelper(basesListProxy,
-                AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME)))).getSpace(ModuleDescVO.HOUSING);
+            var freeSpace:int = (new ModulesHelper(basesListProxy, appDataProxy)).getSpace(ModuleDescVO.HOUSING);
             professionsView.hireNewEmployeeAvailable = freeSpace > 0;
             
             var profs:Array = [];
