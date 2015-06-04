@@ -5,7 +5,8 @@
 <s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
 						   xmlns:s="library://ns.adobe.com/flex/spark"
 						   xmlns:ui="views.ui.*"
-						   creationComplete="creationCompleteHandler(event)">
+                           xmlns:dropDownList="com.flextras.mobile.dropDownList.*"
+                           creationComplete="creationCompleteHandler(event)">
 	
 	<s:BorderContainer>
 		<s:layout>
@@ -30,6 +31,9 @@
             
             <s:Button label=">"/>
         </s:HGroup>
+        
+        <dropDownList:DropDownList id="profSelector" width="100%" dataProvider="{professionsList}"
+                                   labelField="professionName"/>
         
 		<!--s:VGroup width="100%" gap="10" horizontalAlign="center" paddingBottom="5" paddingLeft="5"
 				  paddingRight="5" paddingTop="5">
@@ -63,64 +67,92 @@
 	
 	<fx:Declarations>
 	</fx:Declarations>
+    
+    <fx:Metadata>
+        [ResourceBundle("common")]
+    </fx:Metadata>
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayCollection;
-			import mx.events.FlexEvent;
-			
-			import spark.events.IndexChangeEvent;
-			
-			import vo.BaseTemplVO;
-			import dictionary.BasesDict;
-			import dictionary.Const;
-			
-			import vo.PriceVO;
-			import vo.RuinVO;
-			
+            import mx.collections.ArrayCollection;
+            import mx.events.FlexEvent;
+            
+            import vo.PriceVO;
+            import vo.ProfessionDescVO;
+            
 			//--------------------------------------------------------------------------
 			// 
 			//--------------------------------------------------------------------------
 			
-			private var _ruinsList:ArrayCollection;
+            private var _defaultProfession:int;
+            private var _professionsList:ArrayCollection;
+            
+            [Bindable (event="professionsListChanged")]
+            public function get professionsList():ArrayCollection
+            {
+                return _professionsList;
+            }
+            
+            public function set professionsList(value:ArrayCollection):void
+            {
+                if (value == _professionsList)
+                    return;
+                
+                _professionsList = value;
+                dispatchEvent(new Event("professionsListChanged"));
+                
+                if (initialized)
+                    setDefaultProfession();
+            }
 			
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
 			[Bindable]
 			private var price:PriceVO;
-			
+            
+            [Bindable]
+            private var currentProfIndex:int;
+            
 			//--------------------------------------------------------------------------
 			// 
 			//--------------------------------------------------------------------------
 			
-			public function set ruinsList(value:ArrayCollection):void
-			{
-				if (value == _ruinsList)
-					return;
-				
-				_ruinsList = value;
-				if (initialized)
-					creationCompleteHandler(null);
-			}
-			
-			protected function creationCompleteHandler(event:FlexEvent):void
-			{
-//				ruinsListView.dataProvider = _ruinsList;
-//				ruinsListView.selectedIndex = _ruinsList.length > 0 ? 0 : -1;
-				ruinsListView_changeHandler(null);
-			}
-			
-			protected function ruinsListView_changeHandler(event:IndexChangeEvent):void
-			{
-//				var ruin:RuinVO = ruinsListView.selectedItem as RuinVO;
-//				var base:BaseTemplVO = ruin ? BasesDict.getInstance().getBase(ruin.ruinId) : null;
-//				price = base && base.baseRuin ? base.baseRuin.ruinRepairPrice : null;
-			}
-			
-			private function ruinsListLabelFunction(item:Object):String
-			{
-				var ruin:RuinVO = item as RuinVO;
-				var base:BaseTemplVO = ruin ? BasesDict.getInstance().getBase(ruin.ruinId) : null;
-				return base && base.baseRuin ? base.baseRuin.ruinName : Const.NO_TEXT;
-			}
-		]]>
+            public function set defaultProfession(value:uint):void
+            {
+                if (value == _defaultProfession)
+                    return;
+                
+                _defaultProfession = value;
+                
+                if (initialized)
+                    setDefaultProfession();
+            }
+            
+            private function setDefaultProfession():void
+            {
+                var index:int = -1;
+                if (professionsList)
+                {
+                    for (var i:int = 0; i < professionsList.length; i++)
+                    {
+                        var prof:ProfessionDescVO = ProfessionDescVO(professionsList[i]);
+                        if (prof.professionId == _defaultProfession)
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+                }
+                profSelector.selectedIndex = index;
+            }
+            
+            protected function creationCompleteHandler(event:FlexEvent):void
+            {
+                setDefaultProfession();
+            }
+            
+        ]]>
 	</fx:Script>
 </s:SkinnablePopUpContainer>

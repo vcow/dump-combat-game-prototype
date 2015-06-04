@@ -17,7 +17,7 @@
 		<s:dataProvider>
 			<s:ArrayCollection>
 				<fx:Object label="bases.title" view="{views.protoBasesView}"/>
-				<fx:Object label="personnel.title" view="{views.protoPersonnelView}"/>
+				<fx:Object label="personnel.title" view="{views.protoProfessionsView}"/>
 			</s:ArrayCollection>
 		</s:dataProvider>
 	</s:List>

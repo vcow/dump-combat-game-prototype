@@ -71,6 +71,15 @@ package dictionary
             return null;
         }
         
+        /**
+         * Получить список всех профессий
+         */
+        public function get professions():Vector.<ProfessionDescVO>
+        {
+            init();
+            return _professions;
+        }
+        
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
@@ -100,7 +109,7 @@ package dictionary
                 for each (var skillDesc:XML in skills)
                 {
                     items = skillDesc.child(SkillDescVO.NAME);
-                    for each (var item:XML in items)
+                    for each (item in items)
                     {
                         var skill:SkillDescVO = new SkillDescVO();
                         skill.deserialize(item);

@@ -2,6 +2,7 @@ package command
 {
 	import mediator.ApplicationMediator;
 	import mediator.BasesListMediator;
+	import mediator.ProfListMediator;
 	import mediator.SimpleResourcesMediator;
 	
 	import org.puremvc.as3.interfaces.INotification;
@@ -35,6 +36,7 @@ package command
 			this.facade.registerMediator(new ApplicationMediator(app));
 			this.facade.registerMediator(new BasesListMediator());
 			this.facade.registerMediator(new SimpleResourcesMediator());
+            this.facade.registerMediator(new ProfListMediator());
 		}
 	}
 }

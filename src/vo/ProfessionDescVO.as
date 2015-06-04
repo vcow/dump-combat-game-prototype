@@ -30,6 +30,7 @@ package vo
 		
 		public var professionId:uint;				//< Идентификатор профессии
 		public var professionName:String;			//< Название профессии
+        public var professionCategory:String;       //< Название категории работников
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -52,6 +53,7 @@ package vo
 			
 			res.@id = professionId;
 			res.@name = professionName;
+            res.@category = professionCategory;
 			
 			// /TODO
 			
@@ -66,6 +68,7 @@ package vo
 			
 			professionId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
 			professionName = data.hasOwnProperty("@name") ? VO.parseString(data.@name, "common") : Const.NO_TEXT;
+            professionCategory = data.hasOwnProperty("@category") ? VO.parseString(data.@category, "common") : Const.NO_TEXT;
 			
 			// /TODO
 			
