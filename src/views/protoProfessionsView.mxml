@@ -57,7 +57,7 @@
             
             public var hireNewEmployeeAvailable:Boolean = false;
             
-            protected var _personnelListMediator:ProfListMediator;
+            protected var _profListMediator:ProfListMediator;
             
 			//--------------------------------------------------------------------------
 			// 
@@ -65,8 +65,8 @@
             
             protected function creationCompleteHandler(event:FlexEvent):void
             {
-                _personnelListMediator = ProfListMediator(ProtoFacade.getInstance().retrieveMediator(ProfListMediator.NAME));
-                _personnelListMediator.setViewComponent(this);
+                _profListMediator = ProfListMediator(ProtoFacade.getInstance().retrieveMediator(ProfListMediator.NAME));
+                _profListMediator.setViewComponent(this);
             }
 			
 			protected function hireEmploye_clickHandler(event:MouseEvent):void
@@ -74,6 +74,7 @@
                 if (hireNewEmployeeAvailable)
                 {
                     hireEmployePopUp.professionsList = professionsList;
+                    hireEmployePopUp.basesList = _profListMediator.basesDataProvider;
                     hireEmployePopUp.defaultProfession = ProfessionDescVO.LABORER;
                     hireEmployePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
                     PopUpManager.centerPopUp(hireEmployePopUp);

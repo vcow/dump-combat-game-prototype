@@ -25,7 +25,6 @@ package vo
 		//--------------------------------------------------------------------------
 		
 		public var priceDetails:String;			//< Назначение цены
-        public var priceInterval:Number;        //< Интервал времени, через который снимается или начисляется платеж
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -47,8 +46,6 @@ package vo
 			// TODO: Сериализовать специфичные поля
 			
 			res.@details = priceDetails;
-            if (priceInterval)
-                res.@interval = new TimeHelper().timeToStr(priceInterval);
 			
 			// /TODO
 			
@@ -62,7 +59,11 @@ package vo
 			// TODO: десериализовать специфичные поля
 			
 			priceDetails = data.hasOwnProperty("@details") ? data.@details.toString() : PRICE;
-            priceInterval = data.hasOwnProperty("@interval") ? new TimeHelper().strToTime(data.@interval.toString()) : 0;
+            
+            if (data.hasOwnProperty("@event"))
+            {
+                // TODO: Дописать обработку евента
+            }
 			
 			// /TODO
 			

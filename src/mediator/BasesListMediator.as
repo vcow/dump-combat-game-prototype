@@ -44,7 +44,7 @@ package mediator
 		{
 			var bases:Array = [];
 			for each (var baseVO:BaseVO in basesListProxy.getBasesList())
-			bases.push(baseVO);
+			    bases.push(baseVO);
 			
 			bases.sortOn("baseName");
 			return new ArrayCollection(bases);

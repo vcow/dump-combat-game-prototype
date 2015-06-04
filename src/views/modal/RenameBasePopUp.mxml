@@ -21,7 +21,8 @@
 		<s:VGroup gap="7" paddingLeft="5" paddingRight="5" paddingTop="0" paddingBottom="5">
 			
 			<s:TextInput id="baseNameInput" text="{baseName}" width="250" maxChars="25" focusAlpha="0"
-						 change="{renameEnabled = baseNameInput.text.length > 0 &amp;&amp; baseNameInput.text != baseName;}"/>
+						 change="{renameEnabled = StringUtil.trim(baseNameInput.text).length > 0 &amp;&amp; baseNameInput.text != baseName;}"
+                         restrict="@Resource(key='restrict.name', bundle='common')"/>
 			
 			<s:HGroup width="100%">
 				<s:Button label="@Resource(key='new.base.popup.rename', bundle='common')" width="50%"
@@ -39,7 +40,9 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import dictionary.Const;
+            import mx.utils.StringUtil;
+            
+            import dictionary.Const;
 			
 			//--------------------------------------------------------------------------
 			// 

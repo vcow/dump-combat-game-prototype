@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resourcesDict>
+	<!-- Деньги -->
 	<resourceDesc id="1" name="{cash.title}" descriiption="{cash.description}" size="0" price="1.0"/>
+	<!-- Еда -->
 	<resourceDesc id="2" name="{food.title}" descriiption="{food.description}" size="1" price="0.001"/>
 </resourcesDict>

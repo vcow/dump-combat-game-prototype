@@ -38,28 +38,29 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.collections.ArrayCollection;
-			import mx.core.FlexGlobals;
-			import mx.events.FlexEvent;
-			import mx.managers.PopUpManager;
-			
-			import spark.events.IndexChangeEvent;
-			import spark.events.PopUpEvent;
-			
-			import dictionary.Const;
-			
-			import events.BaseEvent;
-			import events.BasesListEvent;
-			
-			import facade.ProtoFacade;
-			
-			import mediator.BasesListMediator;
-			
-			import views.modal.CreateBasePopUp;
-			import views.modal.RenameBasePopUp;
-			
-			import vo.BaseVO;
-			import vo.RuinVO;
+            import mx.collections.ArrayCollection;
+            import mx.core.FlexGlobals;
+            import mx.events.FlexEvent;
+            import mx.managers.PopUpManager;
+            import mx.utils.StringUtil;
+            
+            import spark.events.IndexChangeEvent;
+            import spark.events.PopUpEvent;
+            
+            import dictionary.Const;
+            
+            import events.BaseEvent;
+            import events.BasesListEvent;
+            
+            import facade.ProtoFacade;
+            
+            import mediator.BasesListMediator;
+            
+            import views.modal.CreateBasePopUp;
+            import views.modal.RenameBasePopUp;
+            
+            import vo.BaseVO;
+            import vo.RuinVO;
 			
 			//--------------------------------------------------------------------------
 			// 
@@ -134,7 +135,8 @@
 			protected function renamePopUp_closeHandler(event:PopUpEvent):void
 			{
 				if (event.data == Const.OK)
-					dispatchEvent(new BaseEvent(BaseEvent.RENAME, renameBasePopUp.baseId, renameBasePopUp.baseNameInput.text));
+					dispatchEvent(new BaseEvent(BaseEvent.RENAME, renameBasePopUp.baseId,
+                        StringUtil.trim(renameBasePopUp.baseNameInput.text)));
 			}
 			
 		]]>

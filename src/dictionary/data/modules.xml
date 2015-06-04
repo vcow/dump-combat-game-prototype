@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <modulesDict>
+	<!-- Жилой модуль -->
 	<moduleDesc id="1" name="{housing.title}" description="{housing.description}" space="25" chance="0.3">
 		<price details="price">
 			<resource id="2" count="100"/>
 		</price>
-		<price details="fee" interval="1m">
+		<price details="fee" event="60">
 			<resource id="2" count="1"/>
 		</price>
 	</moduleDesc>
+	<!-- Складской модуль -->
 	<moduleDesc id="2" name="{store.title}" description="{store.description}" space="500" chance="0.2">
 		<price details="price">
 			<resource id="2" count="150"/>
 		</price>
-		<price details="fee" interval="1m">
+		<price details="fee" event="60">
 			<resource id="2" count="1"/>
 		</price>
 	</moduleDesc>

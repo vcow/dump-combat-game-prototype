@@ -14,22 +14,22 @@
 		<skillDesc name="{skill.agility}" id="3"/>
 		<skillDesc name="{skill.intellect}" id="4"/>
 	</skills>
-	<!-- Влияние профессии на скилы в единицу времени -->
+	<!-- Влияние профессии на скилы -->
 	<dependencies>
-		<dependence profession="1" interval="1m30s">
+		<dependence profession="1" event="1000">
 			<progress skill="1" value="0.3"/>
 			<progress skill="2" value="0.1"/>
 		</dependence>
-		<dependence profession="2" interval="1m30s">
+		<dependence profession="2" event="1100">
 			<progress skill="1" value="0.2"/>
 			<progress skill="2" value="0.2"/>
 			<progress skill="3" value="0.1"/>
 		</dependence>
-		<dependence profession="3" interval="1m30s">
+		<dependence profession="3" event="1200">
 			<progress skill="3" value="0.1"/>
 			<progress skill="4" value="0.4"/>
 		</dependence>
-		<dependence profession="4" interval="1m30s">
+		<dependence profession="4" event="1300">
 			<progress skill="3" value="0.2"/>
 			<progress skill="4" value="0.1"/>
 		</dependence>

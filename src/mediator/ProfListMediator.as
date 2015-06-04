@@ -4,10 +4,17 @@ package mediator
     
     import dictionary.CharacteristicsDict;
     
+    import helpers.ModulesHelper;
+    
     import org.puremvc.as3.patterns.mediator.Mediator;
+    
+    import proxy.AppDataProxy;
+    import proxy.BasesListProxy;
     
     import views.protoProfessionsView;
     
+    import vo.BaseVO;
+    import vo.ModuleDescVO;
     import vo.ProfessionDescVO;
     
     public class ProfListMediator extends Mediator
@@ -18,6 +25,7 @@ package mediator
         
         public static const NAME:String = "professionsMediator";
         
+        private var _basesListProxy:BasesListProxy;
         
         //--------------------------------------------------------------------------
         // 
@@ -29,9 +37,30 @@ package mediator
             applyViewComponent();
         }
         
+        /**
+         * Источник данных для списка баз
+         */
+        public function get basesDataProvider():ArrayCollection
+        {
+            var bases:Array = [];
+            for each (var baseVO:BaseVO in basesListProxy.getBasesList())
+                bases.push(baseVO);
+            
+            bases.sortOn("baseName");
+            return new ArrayCollection(bases);
+        }
+        
         protected function get professionsView():protoProfessionsView
         {
             return viewComponent as protoProfessionsView;
+        }
+        
+        protected function get basesListProxy():BasesListProxy
+        {
+            if (!_basesListProxy)
+                _basesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
+            
+            return _basesListProxy;
         }
         
         /**
@@ -44,7 +73,9 @@ package mediator
             
             // TODO: Проинициализировать поля компонента актуальными значениями, устновить оброботчики событий, если нужно
             
-            professionsView.hireNewEmployeeAvailable = true;
+            var freeSpace:int = (new ModulesHelper(basesListProxy,
+                AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME)))).getSpace(ModuleDescVO.HOUSING);
+            professionsView.hireNewEmployeeAvailable = freeSpace > 0;
             
             var profs:Array = [];
             for each (var profession:ProfessionDescVO in CharacteristicsDict.getInstance().professions)
