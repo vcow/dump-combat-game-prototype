@@ -40,6 +40,19 @@ package vo
 		{
 			super(NAME);
 		}
+        
+        /**
+         * Стоимость найма сотрудника на эту профессию
+         */
+        public function get professionHiringCost():PriceVO
+        {
+            for each (var item:IVO in children)
+            {
+                if (item.name == PriceVO.NAME)
+                    return item as PriceVO;
+            }
+            return null;
+        }
 		
 		//----------------------------------
 		//  VO

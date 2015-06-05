@@ -21,7 +21,11 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public var personId:String;			//< Уникальный идентификатор персонажа
+		public var personId:String;             //< Уникальный идентификатор персонажа
+        public var personName:String;           //< Имя персонажа
+        public var personGender:String;         //< Пол персонажа (m/f)
+        public var personImage:String;          //< Изображение персонажа
+        public var personProfessionId:int = -1; //< Идентификатор профессии персонажа
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -42,7 +46,15 @@ package vo
 			
 			// TODO: Сериализовать специфичные поля
 			
-			res.@id = personId;
+			res.@id = personId || Const.NO_GUID;
+            res.@name = personName;
+            res.@gender = personGender;
+            
+            if (personImage)
+                res.@image = personImage;
+            
+            if (personProfessionId >= 0)
+                res.@profession = personProfessionId;
 			
 			// /TODO
 			
@@ -56,6 +68,10 @@ package vo
 			// TODO: десериализовать специфичные поля
 			
 			personId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
+            personName = data.hasOwnProperty("@name") ? data.@name.toString() : "";
+            personGender = data.hasOwnProperty("@gender") ? data.@gender.toString() : "m";
+            personImage = data.hasOwnProperty("@image") ? data.@image.toString() : null;
+            personProfessionId = data.hasOwnProperty("@profession") ? int(data.@profession) : -1;
 			
 			// /TODO
 			

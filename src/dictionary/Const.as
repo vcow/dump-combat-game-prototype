@@ -23,5 +23,9 @@ package dictionary
 		public static const NEW_BASE_CREATED:String = "newBaseCreated";						//< Была создана новая база
 		public static const RENAME_BASE:String = "renameBase";								//< Запрос на переименование базы
 		public static const BASE_RENAMED:String = "baseRenamed";							//< База была переименована
+        public static const CREATE_NEW_PERSON:String = "createNewPerson";                   //< Запрос на создание нового персонажа
+        public static const NEW_PERSON_CREATED:String = "newPersonCreated";                 //< Был создан новый персонаж
+        public static const HIRE_EMPLOYEE:String = "hireEmployee";                          //< Запрос на найм сотрудника
+        public static const EMPLOYEE_IS_HIRED:String = "employeeIsHired";                   //< Сотрудник нанят
 	}
 }

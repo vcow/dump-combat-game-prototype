@@ -59,7 +59,7 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-			targetId = data.hasOwnProperty("@id") ? data.@id.toString() : VO.createUID();
+			targetId = data.hasOwnProperty("@id") ? data.@id.toString() : VO.createGUID();
 			targetName = data.hasOwnProperty("@name") ? parseString(data.@name, "bases") : Const.NO_TEXT;
 			
 			// /TODO

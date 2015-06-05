@@ -3,44 +3,25 @@ package vo
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object руин под новую базу
+	 * Value Object списка игровых персонажей
 	 * 
 	 */
 	
-	public class RuinVO extends VO
+	public class PersonsVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "ruin";
+		public static const NAME:String = "persons";
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public var ruinId:String;				//< Уникальный идентификатор руин
-		
-		//--------------------------------------------------------------------------
-		// 
-		//--------------------------------------------------------------------------
-		
-		public function RuinVO()
+		public function PersonsVO()
 		{
 			super(NAME);
-		}
-		
-		/**
-		 * Модули, сохранившиеся на этих руинах
-		 */		
-		public function get ruinModules():ModulesVO
-		{
-			for each (var value:IVO in children)
-			{
-				if (value.name == ModulesVO.NAME)
-					return value as ModulesVO;
-			}
-			return null;
 		}
 		
 		//----------------------------------
@@ -53,8 +34,6 @@ package vo
 			
 			// TODO: Сериализовать специфичные поля
 			
-			res.@id = ruinId;
-			
 			// /TODO
 			
 			return res;
@@ -66,11 +45,10 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-			ruinId = data.hasOwnProperty("@id") ? data.@id.toString() : VO.createGUID();
-			
 			// /TODO
 			
 			return true;
 		}
 	}
 }
+	

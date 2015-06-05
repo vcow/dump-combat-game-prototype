@@ -30,6 +30,7 @@
 	
 	<fx:Metadata>
 		[ResourceBundle("common")]
+        [Event(name="hire", type="events.EmployeeListEvent")]
 	</fx:Metadata>
 	
 	<fx:Script>
@@ -38,9 +39,14 @@
             import mx.core.FlexGlobals;
             import mx.events.FlexEvent;
             import mx.managers.PopUpManager;
+            import mx.utils.StringUtil;
             
             import spark.events.IndexChangeEvent;
             import spark.events.PopUpEvent;
+            
+            import dictionary.Const;
+            
+            import events.EmployeeListEvent;
             
             import facade.ProtoFacade;
             
@@ -74,7 +80,7 @@
                 if (hireNewEmployeeAvailable)
                 {
                     hireEmployePopUp.professionsList = professionsList;
-                    hireEmployePopUp.basesList = _profListMediator.basesDataProvider;
+//                    hireEmployePopUp.basesList = _profListMediator.basesDataProvider;
                     hireEmployePopUp.defaultProfession = ProfessionDescVO.LABORER;
                     hireEmployePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
                     PopUpManager.centerPopUp(hireEmployePopUp);
@@ -104,7 +110,13 @@
 			
             private function hireEmployePopUp_closeHandler(event:PopUpEvent):void
             {
-                
+                if (event.data == Const.OK)
+                {
+                    var name:String = StringUtil.trim(hireEmployePopUp.employeeNameInput.text);
+                    var prof:int = hireEmployePopUp.profSelector.selectedItem ? hireEmployePopUp.profSelector.selectedItem.professionId : -1;
+                    
+                    dispatchEvent(new EmployeeListEvent(EmployeeListEvent.HIRE, null, name, null, "m", prof));
+                }
             }
         ]]>
 	</fx:Script>

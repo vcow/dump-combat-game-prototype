@@ -2,10 +2,26 @@
 <characteristics>
 	<!-- Профессии -->
 	<professions>
-		<professionDesc name="{prof.laborer}" category="{personnel.cat.laborers}" id="1"/>
-		<professionDesc name="{prof.solgier}" category="{personnel.cat.soldiers}" id="2"/>
-		<professionDesc name="{prof.scientist}" category="{personnel.cat.scientists}" id="3"/>
-		<professionDesc name="{prof.engineer}" category="{personnel.cat.engineers}" id="4"/>
+		<professionDesc name="{prof.laborer}" category="{personnel.cat.laborers}" id="1">
+			<price>
+				<resource id="2" count="5"/>
+			</price>
+		</professionDesc>
+		<professionDesc name="{prof.solgier}" category="{personnel.cat.soldiers}" id="2">
+			<price>
+				<resource id="2" count="10"/>
+			</price>
+		</professionDesc>
+		<professionDesc name="{prof.scientist}" category="{personnel.cat.scientists}" id="3">
+			<price>
+				<resource id="2" count="10"/>
+			</price>
+		</professionDesc>
+		<professionDesc name="{prof.engineer}" category="{personnel.cat.engineers}" id="4">
+			<price>
+				<resource id="2" count="10"/>
+			</price>
+		</professionDesc>
 	</professions>
 	<!-- Скилы персонажа -->
 	<skills>

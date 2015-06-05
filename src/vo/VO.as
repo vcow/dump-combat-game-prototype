@@ -80,7 +80,7 @@ package vo
 		 * Сгенерировать уникальный id
 		 * @return уникальный id, похожий на GUID
 		 */
-		public static function createUID():String
+		public static function createGUID():String
 		{
 			var uid:Array = new Array(36);
 			var index:int = 0;
@@ -171,6 +171,7 @@ package vo
 					case RuinDefVO.NAME: value = new RuinDefVO(); break;
 					case StoreVO.NAME: value = new StoreVO(); break;
 					case PersonnelVO.NAME: value = new PersonnelVO(); break;
+                    case PersonVO.NAME: value = new PersonVO(); break;
 					
 					// /TODO
 					

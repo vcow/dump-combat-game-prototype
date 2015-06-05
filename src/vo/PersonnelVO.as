@@ -30,9 +30,9 @@ package vo
 		 * @param base база, для которой запрашиваются работники, если null, то возвращаются работники для всех баз
 		 * @return список работников
 		 */
-		public function getPersonnel(profession:String=null, base:BaseVO=null):Vector.<CharacterVO>
+		public function getPersonnel(profession:String=null, base:BaseVO=null):Vector.<EmployeeVO>
 		{
-			var personnel:Vector.<CharacterVO> = new Vector.<CharacterVO>();
+			var personnel:Vector.<EmployeeVO> = new Vector.<EmployeeVO>();
 			return personnel;
 		}
 		

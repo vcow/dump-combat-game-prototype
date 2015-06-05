@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Интерфейс для приписки к базе -->
+
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:dropDownList="com.flextras.mobile.dropDownList.*">
+	
+	<s:BorderContainer>
+		<s:layout>
+			<s:VerticalLayout paddingLeft="1" paddingRight="1" paddingTop="1" paddingBottom="1" gap="10"/>
+		</s:layout>
+		
+		<s:BorderContainer width="100%" minHeight="0" backgroundColor="gray" borderVisible="false">
+			<s:layout>
+				<s:VerticalLayout paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="5" horizontalAlign="center"/>
+			</s:layout>
+			
+			<s:Label text="@Resource(key='attributed.popup.title', bundle='common')" color="white"/>
+		</s:BorderContainer>
+		
+		<s:VGroup gap="7" paddingLeft="5" paddingRight="5" paddingTop="0" paddingBottom="5">
+            <dropDownList:DropDownList id="baseSelector" width="100%" dataProvider="{basesList}"
+                                       labelFunction="professionName" labelField="baseName"/>
+			
+			<s:HGroup width="100%">
+				<s:Button label="@Resource(key='new.base.popup.rename', bundle='common')" width="50%"
+						  click="{close(false, Const.OK);}"
+						  enabled="{baseSelector.selectedItem != null}"/>
+				
+				<s:Button label="@Resource(key='new.base.popup.cancel', bundle='common')" width="50%"
+						  click="{close(false, Const.CANCEL);}"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:BorderContainer>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+            import mx.collections.ArrayCollection;
+            
+            import dictionary.Const;
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+            
+            [Bindable]
+            public var basesList:ArrayCollection;
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+		]]>
+	</fx:Script>
+</s:SkinnablePopUpContainer>

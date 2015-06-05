@@ -2,7 +2,11 @@ package facade
 {
 	import command.BaseRenamedCommand;
 	import command.CreateNewBaseCommand;
+	import command.CreateNewPersonCommand;
+	import command.EmployeeIsHiredCommand;
+	import command.HireEmployeeCommand;
 	import command.NewBaseCreatedCommand;
+	import command.NewPersonCreatedCommand;
 	import command.RenameBaseCommand;
 	import command.StartUpCommand;
 	
@@ -55,6 +59,10 @@ package facade
 			registerCommand(Const.NEW_BASE_CREATED, NewBaseCreatedCommand);
 			registerCommand(Const.RENAME_BASE, RenameBaseCommand);
 			registerCommand(Const.BASE_RENAMED, BaseRenamedCommand);
+            registerCommand(Const.CREATE_NEW_PERSON, CreateNewPersonCommand);
+            registerCommand(Const.NEW_PERSON_CREATED, NewPersonCreatedCommand);
+            registerCommand(Const.HIRE_EMPLOYEE, HireEmployeeCommand);
+            registerCommand(Const.EMPLOYEE_IS_HIRED, EmployeeIsHiredCommand);
 		}
 	}
 }

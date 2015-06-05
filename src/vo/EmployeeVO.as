@@ -9,7 +9,7 @@ package vo
 	 * 
 	 */
 	
-	public class CharacterVO extends VO
+	public class EmployeeVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
@@ -17,23 +17,17 @@ package vo
 		
 		public static const NAME:String = "character";
 		
-		public static const LABORER:String = "laborer";
-		public static const SOLDIER:String = "soldier";
-		public static const SCIENTIST:String = "scientist";
-		public static const ENGENEER:String = "engineer";
+		//--------------------------------------------------------------------------
+		// 
+		//--------------------------------------------------------------------------
+		
+		public var employeePersonId:String;			//< Уникальный идентификатор персонажа
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public var characrterPersonId:String;			//< Уникальный идентификатор персонажа
-		public var characterProfession:String;			//< Профессия работника
-		
-		//--------------------------------------------------------------------------
-		// 
-		//--------------------------------------------------------------------------
-		
-		public function CharacterVO()
+		public function EmployeeVO()
 		{
 			super(NAME);
 		}
@@ -48,8 +42,7 @@ package vo
 			
 			// TODO: Сериализовать специфичные поля
 			
-			res.@id = characrterPersonId;
-			res.@profession = characterProfession;
+			res.@id = employeePersonId;
 			
 			// /TODO
 			
@@ -62,8 +55,7 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-			characrterPersonId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
-			characterProfession = data.hasOwnProperty("@profession") ? data.@profession.toString() : LABORER;
+			employeePersonId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
 			
 			// /TODO
 			
