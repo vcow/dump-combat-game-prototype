@@ -69,7 +69,7 @@ package vo
 			
 			personId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
             personName = data.hasOwnProperty("@name") ? data.@name.toString() : "";
-            personGender = data.hasOwnProperty("@gender") ? data.@gender.toString() : "m";
+            personGender = data.hasOwnProperty("@gender") ? data.@gender.toString() : Const.MALE;
             personImage = data.hasOwnProperty("@image") ? data.@image.toString() : null;
             personProfessionId = data.hasOwnProperty("@profession") ? int(data.@profession) : -1;
 			

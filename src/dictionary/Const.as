@@ -17,6 +17,10 @@ package dictionary
 		public static const OK:int = 1;						//< Код кнопки Ok для алертов
 		public static const YES:int = 2;					//< Код кнопки Yes для алертов
 		public static const NO:int = 3;						//< Код кнопки No для алертов
+        
+        // Gender
+        public static const MALE:String = "m";
+        public static const FEMALE:String = "f";
 		
 		// Notifications
 		public static const CREATE_NEW_BASE:String = "createNewBase";						//< Запрос на создание новой базы
@@ -25,7 +29,7 @@ package dictionary
 		public static const BASE_RENAMED:String = "baseRenamed";							//< База была переименована
         public static const CREATE_NEW_PERSON:String = "createNewPerson";                   //< Запрос на создание нового персонажа
         public static const NEW_PERSON_CREATED:String = "newPersonCreated";                 //< Был создан новый персонаж
-        public static const HIRE_EMPLOYEE:String = "hireEmployee";                          //< Запрос на найм сотрудника
-        public static const EMPLOYEE_IS_HIRED:String = "employeeIsHired";                   //< Сотрудник нанят
+        public static const PLACE_EMPLOYEE:String = "placeEmployee";                        //< Запрос на приписку сотрудника к базе
+        public static const EMPLOYEE_IS_PLACED:String = "employeeIsPlaced";                 //< Сотрудник приписан к базе
 	}
 }

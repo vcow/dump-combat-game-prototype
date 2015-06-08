@@ -26,11 +26,10 @@ package vo
 		
 		/**
 		 * Получить список работников
-		 * @param profession профессия работников, если null, возвращаются все работники для указанной базы
-		 * @param base база, для которой запрашиваются работники, если null, то возвращаются работники для всех баз
+		 * @param professionId идентификатор профессии работников, если -1, возвращаются все работники для указанной базы
 		 * @return список работников
 		 */
-		public function getPersonnel(profession:String=null, base:BaseVO=null):Vector.<EmployeeVO>
+		public function getPersonnel(professionId:int=-1):Vector.<EmployeeVO>
 		{
 			var personnel:Vector.<EmployeeVO> = new Vector.<EmployeeVO>();
 			return personnel;

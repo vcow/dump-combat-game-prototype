@@ -15,7 +15,7 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "character";
+		public static const NAME:String = "employee";
 		
 		//--------------------------------------------------------------------------
 		// 

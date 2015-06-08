@@ -174,7 +174,7 @@ package helpers
 				}
 				else
 				{
-					var modulesHelper:ModulesHelper = new ModulesHelper(_basesListProxy, _appDataProxy);
+					var modulesHelper:ModulesHelper = new ModulesHelper(_basesListProxy);
 					
 					// сколко единиц ресурса поместится в найденное свободное пространство
 					var freeSpace:int = modulesHelper.getSpace(ModuleDescVO.STORE, base) / resourceDesc.resourceSize;

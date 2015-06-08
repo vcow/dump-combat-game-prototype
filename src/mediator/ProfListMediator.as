@@ -8,6 +8,7 @@ package mediator
     import events.EmployeeListEvent;
     
     import helpers.ModulesHelper;
+    import helpers.PersonnelHelper;
     import helpers.ResourcesHelper;
     
     import org.puremvc.as3.interfaces.INotification;
@@ -15,10 +16,12 @@ package mediator
     
     import proxy.AppDataProxy;
     import proxy.BasesListProxy;
+    import proxy.PersonsProxy;
     
     import views.protoProfessionsView;
     
     import vo.BaseVO;
+    import vo.EmployeeVO;
     import vo.ModuleDescVO;
     import vo.PersonVO;
     import vo.PriceVO;
@@ -33,7 +36,10 @@ package mediator
         public static const NAME:String = "professionsMediator";
         
         private var _basesListProxy:BasesListProxy;
+        private var _personsProxy:PersonsProxy;
         private var _appDataProxy:AppDataProxy;
+        
+        private var _interests:Array = [ Const.NEW_PERSON_CREATED ];
         
         //--------------------------------------------------------------------------
         // 
@@ -51,7 +57,7 @@ package mediator
         public function get basesDataProvider():ArrayCollection
         {
             var bases:Array = [];
-            var modulesHelper:ModulesHelper = new ModulesHelper(basesListProxy, appDataProxy);
+            var modulesHelper:ModulesHelper = new ModulesHelper(basesListProxy);
             for each (var baseVO:BaseVO in basesListProxy.getBasesList())
             {
                 if (modulesHelper.getSpace(ModuleDescVO.HOUSING, baseVO) > 0)
@@ -63,11 +69,22 @@ package mediator
         }
         
         /**
+         * Получить идентификатор базы приписки для указанного сотрудника
+         * @param personId идентификатор персонажа сотрудника
+         * @return идентификатор базы приписки
+         */
+        public function getEmployeePlace(personId:String):String
+        {
+            var base:BaseVO = new PersonnelHelper(basesListProxy, personsProxy).getEmployeePlace(personId);
+            return base ? base.baseId : null;
+        }
+        
+        /**
          * Первая попавшаяся база, где есть место для размещения нового сотрудника
          */
         public function get base():BaseVO
         {
-            var modulesHelper:ModulesHelper = new ModulesHelper(basesListProxy, appDataProxy);
+            var modulesHelper:ModulesHelper = new ModulesHelper(basesListProxy);
             for each (var baseVO:BaseVO in basesListProxy.getBasesList())
             {
                 if (modulesHelper.getSpace(ModuleDescVO.HOUSING, baseVO) > 0)
@@ -98,6 +115,14 @@ package mediator
             return _appDataProxy;
         }
         
+        protected function get personsProxy():PersonsProxy
+        {
+            if (!_personsProxy)
+                _personsProxy = PersonsProxy(this.facade.retrieveProxy(PersonsProxy.NAME));
+            
+            return _personsProxy;
+        }
+        
         /**
          * Инициализировать текущий визуальный компонент
          */
@@ -108,7 +133,7 @@ package mediator
             
             // TODO: Проинициализировать поля компонента актуальными значениями, устновить оброботчики событий, если нужно
             
-            var freeSpace:int = (new ModulesHelper(basesListProxy, appDataProxy)).getSpace(ModuleDescVO.HOUSING);
+            var freeSpace:int = (new ModulesHelper(basesListProxy)).getSpace(ModuleDescVO.HOUSING);
             professionsView.hireNewEmployeeAvailable = freeSpace > 0;
             
             var profs:Array = [];
@@ -116,7 +141,8 @@ package mediator
                 profs.push(profession);
             professionsView.professionsList = new ArrayCollection(profs);
             
-            professionsView.addEventListener(EmployeeListEvent.HIRE, hireEmployeeHandler, false, 0, true);
+            professionsView.addEventListener(EmployeeListEvent.CREATE_PERSON, createPersonHandler, false, 0, true);
+            professionsView.addEventListener(EmployeeListEvent.PLACE_EMPLOYEE, placeEmployeeHandler, false, 0, true);
             
             // /TODO
         }
@@ -131,16 +157,17 @@ package mediator
             
             // TODO: Удалить все обработчики событий, если таковые были установлены
             
-            professionsView.removeEventListener(EmployeeListEvent.HIRE, hireEmployeeHandler);
+            professionsView.removeEventListener(EmployeeListEvent.CREATE_PERSON, createPersonHandler);
+            professionsView.removeEventListener(EmployeeListEvent.PLACE_EMPLOYEE, placeEmployeeHandler);
             
             // /TODO
         }
         
         /**
-         * Запрос на найм нового сотрудника
+         * Запрос на создание нового сотрудника
          * @param event событие
          */
-        private function hireEmployeeHandler(event:EmployeeListEvent):void
+        private function createPersonHandler(event:EmployeeListEvent):void
         {
             var profession:ProfessionDescVO = CharacteristicsDict.getInstance().getProfession(event.professionId);
             
@@ -166,6 +193,17 @@ package mediator
             }
         }
         
+        /**
+         * Запрос на перемещение сотрудника на другую базу
+         * @param event событие
+         */
+        private function placeEmployeeHandler(event:EmployeeListEvent):void
+        {
+            var person:PersonVO = personsProxy.getPersonById(event.employeeId);
+            if (person)
+                sendNotification(Const.PLACE_EMPLOYEE, person, event.baseId);
+        }
+        
         //----------------------------------
         //  Mediator
         //----------------------------------
@@ -179,7 +217,7 @@ package mediator
         
         override public function listNotificationInterests():Array
         {
-            return [ Const.NEW_PERSON_CREATED, Const.EMPLOYEE_IS_HIRED ];
+            return _interests;
         }
         
         override public function handleNotification(notification:INotification):void
@@ -188,9 +226,22 @@ package mediator
             {
                 case Const.NEW_PERSON_CREATED:
                     // Создан новый пероснаж, приписать его к первой попавшейся базе
+                    var person:PersonVO = notification.getBody() as PersonVO;
+                    var base:BaseVO = base;
+                    if (person && base /*&& basesDataProvider.length > 1*/)
+                    {
+                        _interests = [ Const.NEW_PERSON_CREATED, Const.EMPLOYEE_IS_PLACED ];
+                        sendNotification(Const.PLACE_EMPLOYEE, person, base.baseId);
+                    }
                     break;
-                case Const.EMPLOYEE_IS_HIRED:
-                    // Нанят новый сотрудник
+                case Const.EMPLOYEE_IS_PLACED:
+                    // Сотрудник приписан к базе
+                    _interests = [ Const.NEW_PERSON_CREATED ];
+                    
+                    var freeSpace:int = (new ModulesHelper(basesListProxy)).getSpace(ModuleDescVO.HOUSING);
+                    professionsView.hireNewEmployeeAvailable = freeSpace > 0;
+                    
+                    professionsView.moveEmployee(notification.getBody() as EmployeeVO);
                     break;
             }
         }

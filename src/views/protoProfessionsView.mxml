@@ -25,12 +25,14 @@
 	
 	<fx:Declarations>
         <modal:HireEmployePopUp id="hireEmployePopUp" close="hireEmployePopUp_closeHandler(event)"/>
+        <modal:PlaceEmployeePopUp id="placeEmployeePopUp" close="placeEmployeePopUp_closeHandler(event)"/>
         <modal:AlertPopUp id="alertPopUp"/>
 	</fx:Declarations>
 	
 	<fx:Metadata>
 		[ResourceBundle("common")]
-        [Event(name="hire", type="events.EmployeeListEvent")]
+        [Event(name="createPerson", type="events.EmployeeListEvent")]
+        [Event(name="placeEmployee", type="events.EmployeeListEvent")]
 	</fx:Metadata>
 	
 	<fx:Script>
@@ -52,6 +54,7 @@
             
             import mediator.ProfListMediator;
             
+            import vo.EmployeeVO;
             import vo.ProfessionDescVO;
 			
 			//--------------------------------------------------------------------------
@@ -69,6 +72,15 @@
 			// 
 			//--------------------------------------------------------------------------
             
+            public function moveEmployee(employee:EmployeeVO):void
+            {
+                placeEmployeePopUp.selectedBase = _profListMediator.getEmployeePlace(employee.employeePersonId);
+                placeEmployeePopUp.basesList = _profListMediator.basesDataProvider;
+                placeEmployeePopUp.employeeId = employee.employeePersonId;
+                placeEmployeePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                PopUpManager.centerPopUp(placeEmployeePopUp);
+            }
+            
             protected function creationCompleteHandler(event:FlexEvent):void
             {
                 _profListMediator = ProfListMediator(ProtoFacade.getInstance().retrieveMediator(ProfListMediator.NAME));
@@ -80,7 +92,6 @@
                 if (hireNewEmployeeAvailable)
                 {
                     hireEmployePopUp.professionsList = professionsList;
-//                    hireEmployePopUp.basesList = _profListMediator.basesDataProvider;
                     hireEmployePopUp.defaultProfession = ProfessionDescVO.LABORER;
                     hireEmployePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
                     PopUpManager.centerPopUp(hireEmployePopUp);
@@ -113,10 +124,19 @@
                 if (event.data == Const.OK)
                 {
                     var name:String = StringUtil.trim(hireEmployePopUp.employeeNameInput.text);
-                    var prof:int = hireEmployePopUp.profSelector.selectedItem ? hireEmployePopUp.profSelector.selectedItem.professionId : -1;
+                    var prof:uint = hireEmployePopUp.profSelector.selectedItem ?
+                        hireEmployePopUp.profSelector.selectedItem.professionId : ProfessionDescVO.LABORER;
                     
-                    dispatchEvent(new EmployeeListEvent(EmployeeListEvent.HIRE, null, name, null, "m", prof));
+                    dispatchEvent(new EmployeeListEvent(EmployeeListEvent.CREATE_PERSON, Const.NO_GUID, name, null, Const.MALE, prof));
                 }
+            }
+            
+            private function placeEmployeePopUp_closeHandler(event:PopUpEvent):void
+            {
+                var employeeId:String = placeEmployeePopUp.employeeId ? placeEmployeePopUp.employeeId : Const.NO_GUID;
+                var baseId:String = placeEmployeePopUp.baseSelector.selectedItem ? placeEmployeePopUp.baseSelector.selectedItem.baseId : Const.NO_GUID;
+                
+                dispatchEvent(new EmployeeListEvent(EmployeeListEvent.PLACE_EMPLOYEE, employeeId, null, null, Const.MALE, ProfessionDescVO.LABORER, baseId));
             }
         ]]>
 	</fx:Script>

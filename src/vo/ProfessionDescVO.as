@@ -79,7 +79,7 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-			professionId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
+			professionId = data.hasOwnProperty("@id") ? uint(data.@id) : LABORER;
 			professionName = data.hasOwnProperty("@name") ? VO.parseString(data.@name, "common") : Const.NO_TEXT;
             professionCategory = data.hasOwnProperty("@category") ? VO.parseString(data.@category, "common") : Const.NO_TEXT;
 			

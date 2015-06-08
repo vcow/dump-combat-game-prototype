@@ -70,6 +70,19 @@ package vo
 			}
 			return null;
 		}
+        
+        /**
+         * Персонал базы
+         */
+        public function get personnel():PersonnelVO
+        {
+            for each (var value:IVO in children)
+            {
+                if (value.name == PersonnelVO.NAME)
+                    return value as PersonnelVO;
+            }
+            return null;
+        }
 		
 		//----------------------------------
 		//  VO

@@ -2,6 +2,10 @@ package events
 {
     import flash.events.Event;
     
+    import dictionary.Const;
+    
+    import vo.ProfessionDescVO;
+    
     /**
      * 
      * @author y.vircowskiy
@@ -15,7 +19,8 @@ package events
         // 
         //--------------------------------------------------------------------------
         
-        public static const HIRE:String = "hire";
+        public static const CREATE_PERSON:String = "createPerson";
+        public static const PLACE_EMPLOYEE:String = "placeEmployee";
         
         //--------------------------------------------------------------------------
         // 
@@ -25,7 +30,7 @@ package events
         public var employeeImage:String;
         public var employeeId:String;
         public var employeeGender:String;
-        public var professionId:int;
+        public var professionId:uint;
         public var baseId:String;
         
         //--------------------------------------------------------------------------
@@ -33,7 +38,7 @@ package events
         //--------------------------------------------------------------------------
         
         public function EmployeeListEvent(type:String, employeeId:String, employeeName:String=null, employeeImage:String=null,
-                                          employeeGender:String="m", professionId:int=-1, baseId:String=null,
+                                          employeeGender:String=Const.MALE, professionId:uint=ProfessionDescVO.LABORER, baseId:String=Const.NO_GUID,
                                           bubbles:Boolean=false, cancelable:Boolean=false)
         {
             super(type, bubbles, cancelable);

@@ -26,16 +26,14 @@ package helpers
 		//--------------------------------------------------------------------------
 		
 		private var _basesListProxy:BasesListProxy;
-		private var _appDataProxy:AppDataProxy;
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function ModulesHelper(basesListProxy:BasesListProxy, appDataProxy:AppDataProxy)
+		public function ModulesHelper(basesListProxy:BasesListProxy)
 		{
 			_basesListProxy = basesListProxy;
-			_appDataProxy = appDataProxy;
 		}
 		
 		/**
