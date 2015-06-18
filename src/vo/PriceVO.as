@@ -1,7 +1,5 @@
 package vo
 {
-    import helpers.TimeHelper;
-
 	/**
 	 * 
 	 * @author jvirkovskiy

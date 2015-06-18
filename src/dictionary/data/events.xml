@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <events>
 	<!-- Секундный тик -->
-	<event id="1" interval="1s"/>
+	<event id="sec" interval="1s"/>
 	<!-- Минутный тик -->
-	<event id="60" interval="1m"/>
+	<event id="min" interval="1m"/>
 	<!-- Сбор ресурсов -->
-	<event id="1000"/>
+	<event id="resourceGathering"/>
 	<!-- Боевое действие -->
-	<event id="1100"/>
+	<event id="battle"/>
 	<!-- Завершено исследование -->
-	<event id="1200"/>
+	<event id="reseachCompleted"/>
 	<!-- Завершено производство -->
-	<event id="1300"/>
+	<event id="productionCompleted"/>
+	<!-- Зарплата всем работникам -->
+	<event id="payDay"/>
 </events>

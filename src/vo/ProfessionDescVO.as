@@ -48,7 +48,20 @@ package vo
         {
             for each (var item:IVO in children)
             {
-                if (item.name == PriceVO.NAME)
+                if (item.name == PriceVO.NAME && item is PriceVO && PriceVO(item).priceDetails == PriceVO.PRICE)
+                    return item as PriceVO;
+            }
+            return null;
+        }
+        
+        /**
+         * Зарплата сотрудника этой профессии
+         */
+        public function get professionSalary():PriceVO
+        {
+            for each (var item:IVO in children)
+            {
+                if (item.name == PriceVO.NAME && item is PriceVO && PriceVO(item).priceDetails == PriceVO.FEE)
                     return item as PriceVO;
             }
             return null;

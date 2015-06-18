@@ -172,6 +172,7 @@ package vo
 					case StoreVO.NAME: value = new StoreVO(); break;
 					case PersonnelVO.NAME: value = new PersonnelVO(); break;
                     case PersonVO.NAME: value = new PersonVO(); break;
+                    case EmployeeVO.NAME: value = new EmployeeVO(); break;
 					
 					// /TODO
 					

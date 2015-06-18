@@ -3,23 +3,35 @@
 	<!-- Профессии -->
 	<professions>
 		<professionDesc name="{prof.laborer}" category="{personnel.cat.laborers}" id="1">
-			<price>
+			<price details="price">
 				<resource id="2" count="5"/>
+			</price>
+			<price details="fee" event="sec">
+				<resource id="2" count="-1"/>
 			</price>
 		</professionDesc>
 		<professionDesc name="{prof.solgier}" category="{personnel.cat.soldiers}" id="2">
-			<price>
+			<price details="price">
 				<resource id="2" count="10"/>
+			</price>
+			<price details="fee" event="payDay">
+				<resource id="2" count="1"/>
 			</price>
 		</professionDesc>
 		<professionDesc name="{prof.scientist}" category="{personnel.cat.scientists}" id="3">
-			<price>
+			<price details="price">
 				<resource id="2" count="10"/>
+			</price>
+			<price details="fee" event="payDay">
+				<resource id="2" count="1"/>
 			</price>
 		</professionDesc>
 		<professionDesc name="{prof.engineer}" category="{personnel.cat.engineers}" id="4">
-			<price>
+			<price details="price">
 				<resource id="2" count="10"/>
+			</price>
+			<price details="fee" event="payDay">
+				<resource id="2" count="1"/>
 			</price>
 		</professionDesc>
 	</professions>
@@ -32,20 +44,20 @@
 	</skills>
 	<!-- Влияние профессии на скилы -->
 	<dependencies>
-		<dependence profession="1" event="1000">
+		<dependence profession="1" event="resourceGathering">
 			<progress skill="1" value="0.3"/>
 			<progress skill="2" value="0.1"/>
 		</dependence>
-		<dependence profession="2" event="1100">
+		<dependence profession="2" event="battle">
 			<progress skill="1" value="0.2"/>
 			<progress skill="2" value="0.2"/>
 			<progress skill="3" value="0.1"/>
 		</dependence>
-		<dependence profession="3" event="1200">
+		<dependence profession="3" event="reseachCompleted">
 			<progress skill="3" value="0.1"/>
 			<progress skill="4" value="0.4"/>
 		</dependence>
-		<dependence profession="4" event="1300">
+		<dependence profession="4" event="productionCompleted">
 			<progress skill="3" value="0.2"/>
 			<progress skill="4" value="0.1"/>
 		</dependence>

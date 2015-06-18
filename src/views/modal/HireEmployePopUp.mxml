@@ -42,7 +42,13 @@
                 <s:Label text="@Resource(key='hire.popup.prof', bundle='common')"/>
                 
                 <dropDownList:DropDownList id="profSelector" width="100%" dataProvider="{professionsList}"
-                                           labelField="professionName"/>
+                                           labelField="professionName" change="{updatePrice();}"/>
+            </s:VGroup>
+            
+            <s:VGroup gap="3" horizontalAlign="center">
+                <s:Label text="@Resource(key='hire.popup.price', bundle='common')"/>
+                
+                <ui:PriceView width="100%" price="{price}"/>
             </s:VGroup>
             
             <s:HGroup width="100%">
@@ -79,7 +85,7 @@
 			// 
 			//--------------------------------------------------------------------------
             
-            // TODO: сделать поддержку списка кандидатов, добавить цену найма!
+            // TODO: сделать поддержку списка кандидатов
 			
             private var _defaultProfession:int;
             private var _professionsList:ArrayCollection;
@@ -149,6 +155,14 @@
                     }
                 }
                 profSelector.selectedIndex = index;
+                
+                updatePrice();
+            }
+            
+            private function updatePrice():void
+            {
+                if (profSelector.selectedItem)
+                    price = ProfessionDescVO(profSelector.selectedItem).professionHiringCost;
             }
             
             protected function creationCompleteHandler(event:FlexEvent):void
