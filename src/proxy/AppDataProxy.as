@@ -4,6 +4,8 @@ package proxy
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	
+	import dictionary.Const;
+	
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
 	import vo.ApplicationVO;
@@ -16,7 +18,7 @@ package proxy
 	 * 
 	 */
 	
-	public class AppDataProxy extends Proxy
+	public class AppDataProxy extends Proxy implements IVariableDataProxy
 	{
 		//--------------------------------------------------------------------------
 		// 
@@ -35,50 +37,9 @@ package proxy
 			super(NAME, new ApplicationVO());
 		}
 		
-		/**
-		 * Записать текущее состояние приложения в файл
-		 */
-		public function saveData():void
-		{
-			var file:File = File.applicationStorageDirectory;
-			file = file.resolvePath(FILE_NAME);
-			
-			var data:String = '<?xml version="1.0" encoding="utf-8"?>\n';
-			data += applicationVO.serialize().toXMLString();
-			data.replace(/\n/g, File.lineEnding);
-			
-			var stream:FileStream = new FileStream();
-			stream.open(file, FileMode.WRITE);
-			stream.writeUTFBytes(data);
-			stream.close();
-		}
-		
 		public function get applicationVO():ApplicationVO
 		{
 			return data as ApplicationVO;
-		}
-		
-		/**
-		 * Обновить информацию в дочернем Value Object
-		 * @param child новый дочерний VO
-		 * @param save сохранить состояние приложения после обновления
-		 */
-		public function updateChild(child:IVO, save:Boolean=true):void
-		{
-			for (var i:int = 0; i < applicationVO.children.length; i++)
-			{
-				var value:IVO = applicationVO.children[i];
-				if (value.name == child.name)
-				{
-					applicationVO.children.splice(i, 1);
-					break;
-				}
-			}
-			
-			applicationVO.children.push(child);
-			
-			if (save)
-				saveData();
 		}
 		
 		/**
@@ -96,6 +57,57 @@ package proxy
 			return null;
 		}
 		
+        //----------------------------------
+        //  IVariableDataProxy
+        //----------------------------------
+        
+        /**
+         * Записать текущее состояние приложения в файл
+         * @param immediately флаг, указывающий сохранить данные немедленно
+         */
+        public function saveData(immediately:Boolean=false):void
+        {
+            if (immediately)
+            {
+                var file:File = File.applicationStorageDirectory;
+                file = file.resolvePath(FILE_NAME);
+                
+                var data:String = '<?xml version="1.0" encoding="utf-8"?>\n';
+                data += applicationVO.serialize().toXMLString();
+                data.replace(/\n/g, File.lineEnding);
+                
+                var stream:FileStream = new FileStream();
+                stream.open(file, FileMode.WRITE);
+                stream.writeUTFBytes(data);
+                stream.close();
+            }
+            else
+            {
+                sendNotification(Const.SAVE_DATA, this);
+            }
+        }
+        
+        /**
+         * Обновить информацию в дочернем Value Object
+         * @param child новый дочерний VO
+         */
+        public function updateChild(child:IVO):void
+        {
+            for (var i:int = 0; i < applicationVO.children.length; i++)
+            {
+                var value:IVO = applicationVO.children[i];
+                if (value.name == child.name)
+                {
+                    applicationVO.children.splice(i, 1);
+                    break;
+                }
+            }
+            
+            applicationVO.children.push(child);
+            
+            saveData();
+        }
+        
 		//----------------------------------
 		//  Mediator
 		//----------------------------------

@@ -24,6 +24,13 @@ package dictionary
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
+        
+        public function ResourcesDict()
+        {
+            if (_instance != null)
+                throw Error("ResourcesDict is singleton, use getInstance() to get it.");
+            _instance = this;
+        }
 		
 		public static function getInstance():ResourcesDict
 		{

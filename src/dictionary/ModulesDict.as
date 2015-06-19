@@ -24,6 +24,13 @@ package dictionary
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
+        
+        public function ModulesDict()
+        {
+            if (_instance != null)
+                throw Error("ModulesDict is singleton, use getInstance() to get it.");
+            _instance = this;
+        }
 		
 		public static function getInstance():ModulesDict
 		{

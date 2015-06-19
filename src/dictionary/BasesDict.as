@@ -29,6 +29,13 @@ package dictionary
 		// 
 		//--------------------------------------------------------------------------
 		
+        public function BasesDict()
+        {
+            if (_instance != null)
+                throw Error("BasesDict is singleton, use getInstance() to get it.");
+            _instance = this;
+        }
+        
 		public static function getInstance():BasesDict
 		{
 			if (!_instance)

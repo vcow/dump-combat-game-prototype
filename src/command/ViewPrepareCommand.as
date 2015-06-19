@@ -2,6 +2,7 @@ package command
 {
 	import mediator.ApplicationMediator;
 	import mediator.BasesListMediator;
+	import mediator.EventsMediator;
 	import mediator.ProfListMediator;
 	import mediator.SimpleResourcesMediator;
 	
@@ -34,6 +35,7 @@ package command
 		{
 			var app:proto = notification.getBody() as proto;
 			this.facade.registerMediator(new ApplicationMediator(app));
+            this.facade.registerMediator(new EventsMediator());
 			this.facade.registerMediator(new BasesListMediator());
 			this.facade.registerMediator(new SimpleResourcesMediator());
             this.facade.registerMediator(new ProfListMediator());

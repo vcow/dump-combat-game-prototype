@@ -4,9 +4,10 @@ package facade
 	import command.CreateNewBaseCommand;
 	import command.CreateNewPersonCommand;
 	import command.EmployeeIsPlacedCommand;
-	import command.PlaceEmployeeCommand;
+	import command.GameEventCommand;
 	import command.NewBaseCreatedCommand;
 	import command.NewPersonCreatedCommand;
+	import command.PlaceEmployeeCommand;
 	import command.RenameBaseCommand;
 	import command.StartUpCommand;
 	
@@ -63,6 +64,7 @@ package facade
             registerCommand(Const.NEW_PERSON_CREATED, NewPersonCreatedCommand);
             registerCommand(Const.PLACE_EMPLOYEE, PlaceEmployeeCommand);
             registerCommand(Const.EMPLOYEE_IS_PLACED, EmployeeIsPlacedCommand);
+            registerCommand(Const.GAME_EVENT, GameEventCommand);
 		}
 	}
 }

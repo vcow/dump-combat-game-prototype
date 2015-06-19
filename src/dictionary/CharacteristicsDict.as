@@ -29,6 +29,13 @@ package dictionary
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
+        
+        public function CharacteristicsDict()
+        {
+            if (_instance != null)
+                throw Error("CharacteristicsDict is singleton, use getInstance() to get it.");
+            _instance = this;
+        }
 		
 		public static function getInstance():CharacteristicsDict
 		{

@@ -114,16 +114,6 @@ package proxy
 			return null;
 		}
 		
-		/**
-		 * Вспомогательная функция, обновляет данные о базах в ApplicationVO
-		 * @param save сохранить обновленные данные
-		 */
-		private function updateApplicationVO(save:Boolean=true):void
-		{
-			var appDataProxy:AppDataProxy = AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME));
-			appDataProxy.updateChild(basesListVO, save);
-		}
-		
 		//----------------------------------
 		//  Proxy
 		//----------------------------------
@@ -139,7 +129,8 @@ package proxy
 					value = DefaultsDict.getInstance().basesList;
 				
 				setData(value);
-				updateApplicationVO(false);
+                
+                appDataProxy.updateChild(basesListVO);
 			}
 			
 			return data;

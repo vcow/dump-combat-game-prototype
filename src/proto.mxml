@@ -6,7 +6,8 @@
 							xmlns:s="library://ns.adobe.com/flex/spark"
 							firstView="views.protoMapView"
 							applicationDPI="160"
-							preinitialize="{_facade.startup(this);}">
+							preinitialize="{_facade.startup(this);}"
+                            enterFrame="{EventsManager.getInstance().tick();}">
 	<fx:Declarations>
 	</fx:Declarations>
 	
@@ -25,9 +26,11 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import spark.skins.mobile.TextAreaSkin;
-			
-			import facade.ProtoFacade;
+            import spark.skins.mobile.TextAreaSkin;
+            
+            import facade.ProtoFacade;
+            
+            import managers.EventsManager;
 			
 			//--------------------------------------------------------------------------
 			// 

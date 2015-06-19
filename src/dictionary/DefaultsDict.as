@@ -27,6 +27,13 @@ package dictionary
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
+        
+        public function DefaultsDict()
+        {
+            if (_instance != null)
+                throw Error("DefaultsDict is singleton, use getInstance() to get it.");
+            _instance = this;
+        }
 		
 		public static function getInstance():DefaultsDict
 		{

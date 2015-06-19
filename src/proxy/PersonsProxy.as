@@ -4,8 +4,11 @@ package proxy
     import flash.filesystem.FileMode;
     import flash.filesystem.FileStream;
     
+    import dictionary.Const;
+    
     import org.puremvc.as3.patterns.proxy.Proxy;
     
+    import vo.IVO;
     import vo.PersonVO;
     import vo.PersonsVO;
     
@@ -16,7 +19,7 @@ package proxy
      * 
      */
     
-    public class PersonsProxy extends Proxy
+    public class PersonsProxy extends Proxy implements IVariableDataProxy
     {
         //--------------------------------------------------------------------------
         // 
@@ -24,7 +27,7 @@ package proxy
         
         public static const NAME:String = "personsProxy";
         
-        protected static const FILE_NAME:String = "data/pers_data.xml"
+        protected static const FILE_NAME:String = "data/pers_data.xml";
         
         //--------------------------------------------------------------------------
         // 
@@ -35,50 +38,9 @@ package proxy
             super(NAME, new PersonsVO());
         }
         
-        /**
-         * Записать текущее состояние персонажей в файл
-         */
-        public function saveData():void
-        {
-            var file:File = File.applicationStorageDirectory;
-            file = file.resolvePath(FILE_NAME);
-            
-            var data:String = '<?xml version="1.0" encoding="utf-8"?>\n';
-            data += personsVO.serialize().toXMLString();
-            data.replace(/\n/g, File.lineEnding);
-            
-            var stream:FileStream = new FileStream();
-            stream.open(file, FileMode.WRITE);
-            stream.writeUTFBytes(data);
-            stream.close();
-        }
-        
         public function get personsVO():PersonsVO
         {
             return data as PersonsVO;
-        }
-        
-        /**
-         * Обновить информацию в дочернем Value Object
-         * @param child VO обновляемого персонажа
-         * @param save сохранить состояние приложения после обновления
-         */
-        public function updatePerson(child:PersonVO, save:Boolean=true):void
-        {
-            for (var i:int = 0; i < personsVO.children.length; i++)
-            {
-                var value:PersonVO = PersonVO(personsVO.children[i]);
-                if (value.personId == child.personId)
-                {
-                    personsVO.children.splice(i, 1);
-                    break;
-                }
-            }
-            
-            personsVO.children.push(child);
-            
-            if (save)
-                saveData();
         }
         
         /**
@@ -94,6 +56,61 @@ package proxy
                     return value;
             }
             return null;
+        }
+        
+        //----------------------------------
+        //  IVariableDataProxy
+        //----------------------------------
+        
+        /**
+         * Записать текущее состояние персонажей в файл
+         * @param immediately флаг, указывающий сохранить данные немедленно
+         */
+        public function saveData(immediately:Boolean=false):void
+        {
+            if (immediately)
+            {
+                var file:File = File.applicationStorageDirectory;
+                file = file.resolvePath(FILE_NAME);
+                
+                var data:String = '<?xml version="1.0" encoding="utf-8"?>\n';
+                data += personsVO.serialize().toXMLString();
+                data.replace(/\n/g, File.lineEnding);
+                
+                var stream:FileStream = new FileStream();
+                stream.open(file, FileMode.WRITE);
+                stream.writeUTFBytes(data);
+                stream.close();
+            }
+            else
+            {
+                sendNotification(Const.SAVE_DATA, this);
+            }
+        }
+        
+        /**
+         * Обновить информацию в дочернем Value Object
+         * @param child VO обновляемого персонажа
+         */
+        public function updateChild(child:IVO):void
+        {
+            var person:PersonVO = child as PersonVO;
+            if (person)
+            {
+                for (var i:int = 0; i < personsVO.children.length; i++)
+                {
+                    var value:PersonVO = PersonVO(personsVO.children[i]);
+                    if (value.personId == person.personId)
+                    {
+                        personsVO.children.splice(i, 1);
+                        break;
+                    }
+                }
+                
+                personsVO.children.push(person);
+                
+                saveData();
+            }
         }
         
         //----------------------------------

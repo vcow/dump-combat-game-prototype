@@ -28,7 +28,7 @@ package command
             if (person)
             {
                 var personsProxy:PersonsProxy = PersonsProxy(this.facade.retrieveProxy(PersonsProxy.NAME));
-                personsProxy.updatePerson(person);
+                personsProxy.updateChild(person);
             }
         }
     }
