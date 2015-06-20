@@ -72,11 +72,11 @@
 			// 
 			//--------------------------------------------------------------------------
             
-            public function moveEmployee(employee:EmployeeVO):void
+            public function moveEmployee(employeePersonId:String):void
             {
-                placeEmployeePopUp.selectedBase = _profListMediator.getEmployeePlace(employee.employeePersonId);
+                placeEmployeePopUp.selectedBase = _profListMediator.getEmployeePlace(employeePersonId);
                 placeEmployeePopUp.basesList = _profListMediator.basesDataProvider;
-                placeEmployeePopUp.employeeId = employee.employeePersonId;
+                placeEmployeePopUp.employeeId = employeePersonId;
                 placeEmployeePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
                 PopUpManager.centerPopUp(placeEmployeePopUp);
             }

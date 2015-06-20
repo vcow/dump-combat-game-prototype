@@ -25,11 +25,11 @@
                                        labelField="baseName"/>
 			
 			<s:HGroup width="100%">
-				<s:Button label="@Resource(key='new.base.popup.rename', bundle='common')" width="50%"
-						  enabled="{baseSelector.selectedItem != null &amp;&amp; baseSelector.selectedItem.baseId != selectedBaseId}"
+				<s:Button label="@Resource(key='place.popup.move', bundle='common')" width="50%" minWidth="120"
+						  enabled="{isOtherBaseSelected(baseSelector.selectedItem as BaseVO)}"
 						  click="{close(false, Const.OK);}"/>
 				
-				<s:Button label="@Resource(key='new.base.popup.cancel', bundle='common')" width="50%"
+				<s:Button label="@Resource(key='new.base.popup.cancel', bundle='common')" width="50%" minWidth="120"
 						  click="{close(false, Const.CANCEL);}"/>
 			</s:HGroup>
 		</s:VGroup>
@@ -55,12 +55,11 @@
             
             public var employeeId:String;
             
+            private var _selectedBaseId:String;
+			
             //--------------------------------------------------------------------------
             // 
             //--------------------------------------------------------------------------
-            
-            [Bindable]
-            private var selectedBaseId:String;
             
             [Bindable (event="basesListChanged")]
             public function get basesList():ArrayCollection
@@ -86,7 +85,7 @@
             
             public function set selectedBase(value:String):void
             {
-                selectedBaseId = value;
+                _selectedBaseId = value;
                 
                 if (initialized)
                     updateSelectedBase();
@@ -99,12 +98,12 @@
             
             private function updateSelectedBase():void
             {
-                if (_basesList && selectedBaseId)
+                if (_basesList && _selectedBaseId)
                 {
                     for (var i:int = 0; i < _basesList.length; i++)
                     {
                         var base:BaseVO = BaseVO(_basesList[i]);
-                        if (base.baseId == selectedBaseId)
+                        if (base.baseId == _selectedBaseId)
                         {
                             baseSelector.selectedIndex = i;
                             break;
@@ -112,6 +111,11 @@
                     }
                 }
             }
+			
+			private function isOtherBaseSelected(base:BaseVO):Boolean
+			{
+				return base != null && base.baseId != _selectedBaseId;
+			}
         ]]>
 	</fx:Script>
 </s:SkinnablePopUpContainer>

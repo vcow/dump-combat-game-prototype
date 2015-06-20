@@ -39,8 +39,6 @@ package mediator
         private var _personsProxy:PersonsProxy;
         private var _appDataProxy:AppDataProxy;
         
-        private var _interests:Array = [ Const.NEW_PERSON_CREATED ];
-        
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
@@ -217,7 +215,7 @@ package mediator
         
         override public function listNotificationInterests():Array
         {
-            return _interests;
+            return [ Const.NEW_PERSON_CREATED ];
         }
         
         override public function handleNotification(notification:INotification):void
@@ -227,21 +225,17 @@ package mediator
                 case Const.NEW_PERSON_CREATED:
                     // Создан новый пероснаж, приписать его к первой попавшейся базе
                     var person:PersonVO = notification.getBody() as PersonVO;
-                    var base:BaseVO = base;
-                    if (person && base /*&& basesDataProvider.length > 1*/)
-                    {
-                        _interests = [ Const.NEW_PERSON_CREATED, Const.EMPLOYEE_IS_PLACED ];
+                    var base:BaseVO = this.base;
+                    if (person && base)
+					{
                         sendNotification(Const.PLACE_EMPLOYEE, person, base.baseId);
-                    }
-                    break;
-                case Const.EMPLOYEE_IS_PLACED:
-                    // Сотрудник приписан к базе
-                    _interests = [ Const.NEW_PERSON_CREATED ];
-                    
-                    var freeSpace:int = (new ModulesHelper(basesListProxy)).getSpace(ModuleDescVO.HOUSING);
-                    professionsView.hireNewEmployeeAvailable = freeSpace > 0;
-                    
-                    professionsView.moveEmployee(notification.getBody() as EmployeeVO);
+						
+						var freeSpace:int = (new ModulesHelper(basesListProxy)).getSpace(ModuleDescVO.HOUSING);
+						professionsView.hireNewEmployeeAvailable = freeSpace > 0;
+						
+						if (basesDataProvider.length > 1)
+							professionsView.moveEmployee(person.personId);
+					}
                     break;
             }
         }

@@ -1,5 +1,7 @@
 package mediator
 {
+    import flash.utils.Dictionary;
+    
     import dictionary.Const;
     
     import events.EventsManagerEvent;
@@ -26,7 +28,7 @@ package mediator
         
         public static const NAME:String = "eventsMediator";
         
-        private var _saveLater:Vector.<IVariableDataProxy> = new Vector.<IVariableDataProxy>();
+        private var _saveLater:Dictionary;
         
         //--------------------------------------------------------------------------
         // 
@@ -89,10 +91,14 @@ package mediator
         {
             eventsManager.removeEventListener(EventsManagerEvent.TICK, eventsManager_tickHandler);
             
-            for each (var variableDataProxy:IVariableDataProxy in _saveLater)
-                variableDataProxy.saveData(true);
+            for (var key:Object in _saveLater)
+			{
+				var variableDataProxy:IVariableDataProxy = key as IVariableDataProxy;
+				if (variableDataProxy)
+					variableDataProxy.saveData(true);
+			}
             
-            _saveLater.splice(0, _saveLater.length);
+            _saveLater = null;
         }
         
         //----------------------------------
@@ -120,10 +126,13 @@ package mediator
                     if (variableDataProxy)
                     {
                         // Какая-то прокся попросила сохранить свои данные с задержкой
-                        if (_saveLater.length == 0)
+                        if (!_saveLater)
+						{
+							_saveLater = new Dictionary(true);
                             eventsManager.addEventListener(EventsManagerEvent.TICK, eventsManager_tickHandler);
+						}
                         
-                        _saveLater.push(variableDataProxy);
+                        _saveLater[variableDataProxy] = true;
                     }
                     break;
             }
