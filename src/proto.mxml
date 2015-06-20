@@ -22,6 +22,10 @@
 			skinClass:ClassReference("spark.skins.mobile.TextAreaSkin");
 			contentBackgroundAlpha:0;
 		}
+		
+		.tabBarStyle s|RadioButton {
+			skinClass:ClassReference("spark.skins.spark.ToggleButtonSkin");
+		}
 	</fx:Style>
 	
 	<fx:Script>

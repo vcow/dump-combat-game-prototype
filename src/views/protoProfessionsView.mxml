@@ -19,14 +19,28 @@
 		<s:Button label="+" click="hireEmploye_clickHandler(event)"/>
 	</s:actionContent>
 	
+	<s:VGroup styleName="tabBarStyle" width="100%" gap="-1">
+		<s:HGroup width="100%" gap="-1" height="30">
+			<s:RadioButton label="@Resource(key='personnel.cat.all', bundle='common')" width="100%" height="100%" groupName="categoryRadioGroup" selected="true" value="0"/>
+			<s:RadioButton label="@Resource(key='personnel.cat.laborers', bundle='common')" width="100%" height="100%" groupName="categoryRadioGroup" value="{ProfessionDescVO.LABORER}"/>
+			<s:RadioButton label="@Resource(key='personnel.cat.soldiers', bundle='common')" width="100%" height="100%" groupName="categoryRadioGroup" value="{ProfessionDescVO.SOLGIER}"/>
+		</s:HGroup>
+		<s:HGroup width="100%" gap="-1" height="30">
+			<s:RadioButton label="@Resource(key='personnel.cat.scientists', bundle='common')" width="100%" height="100%" groupName="categoryRadioGroup" value="{ProfessionDescVO.SCIENTIST}"/>
+			<s:RadioButton label="@Resource(key='personnel.cat.engineers', bundle='common')" width="100%" height="100%" groupName="categoryRadioGroup" value="{ProfessionDescVO.ENGENEER}"/>
+		</s:HGroup>
+	</s:VGroup>
+	
 	<s:List id="employeCategoriesView" verticalScrollPolicy="on" horizontalScrollPolicy="off"
 			width="100%" height="100%" change="employeCategoriesView_changeHandler(event)"
-            dataProvider="{professionsList}" labelField="professionCategory"/>
+            dataProvider="{_employeeList}"/>
 	
 	<fx:Declarations>
         <modal:HireEmployePopUp id="hireEmployePopUp" close="hireEmployePopUp_closeHandler(event)"/>
         <modal:PlaceEmployeePopUp id="placeEmployeePopUp" close="placeEmployeePopUp_closeHandler(event)"/>
         <modal:AlertPopUp id="alertPopUp"/>
+		
+		<s:RadioButtonGroup id="categoryRadioGroup" change="categoryRadioGroup_changeHandler(event)"/>
 	</fx:Declarations>
 	
 	<fx:Metadata>
@@ -54,18 +68,21 @@
             
             import mediator.ProfListMediator;
             
-            import vo.EmployeeVO;
             import vo.ProfessionDescVO;
 			
 			//--------------------------------------------------------------------------
 			// 
 			//--------------------------------------------------------------------------
 			
-            [Bindable]
-            public var professionsList:ArrayCollection;
-            
             public var hireNewEmployeeAvailable:Boolean = false;
             
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+			[Bindable]
+			private var _employeeList:ArrayCollection;
+			
             protected var _profListMediator:ProfListMediator;
             
 			//--------------------------------------------------------------------------
@@ -80,19 +97,24 @@
                 placeEmployeePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
                 PopUpManager.centerPopUp(placeEmployeePopUp);
             }
+			
+			public function updateList():void
+			{
+				_employeeList = _profListMediator.getEmployeeData(int(categoryRadioGroup.selectedValue));
+			}
             
             protected function creationCompleteHandler(event:FlexEvent):void
             {
                 _profListMediator = ProfListMediator(ProtoFacade.getInstance().retrieveMediator(ProfListMediator.NAME));
                 _profListMediator.setViewComponent(this);
+				
+				_employeeList = _profListMediator.getEmployeeData(0);
             }
 			
 			protected function hireEmploye_clickHandler(event:MouseEvent):void
 			{
                 if (hireNewEmployeeAvailable)
                 {
-                    hireEmployePopUp.professionsList = professionsList;
-                    hireEmployePopUp.defaultProfession = ProfessionDescVO.LABORER;
                     hireEmployePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
                     PopUpManager.centerPopUp(hireEmployePopUp);
                 }
@@ -138,6 +160,12 @@
                 
                 dispatchEvent(new EmployeeListEvent(EmployeeListEvent.PLACE_EMPLOYEE, employeeId, null, null, Const.MALE, ProfessionDescVO.LABORER, baseId));
             }
-        ]]>
+			
+			protected function categoryRadioGroup_changeHandler(event:Event):void
+			{
+				updateList();
+			}
+			
+		]]>
 	</fx:Script>
 </s:View>

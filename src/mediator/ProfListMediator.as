@@ -21,7 +21,6 @@ package mediator
     import views.protoProfessionsView;
     
     import vo.BaseVO;
-    import vo.EmployeeVO;
     import vo.ModuleDescVO;
     import vo.PersonVO;
     import vo.PriceVO;
@@ -67,17 +66,6 @@ package mediator
         }
         
         /**
-         * Получить идентификатор базы приписки для указанного сотрудника
-         * @param personId идентификатор персонажа сотрудника
-         * @return идентификатор базы приписки
-         */
-        public function getEmployeePlace(personId:String):String
-        {
-            var base:BaseVO = new PersonnelHelper(basesListProxy, personsProxy).getEmployeePlace(personId);
-            return base ? base.baseId : null;
-        }
-        
-        /**
          * Первая попавшаяся база, где есть место для размещения нового сотрудника
          */
         public function get base():BaseVO
@@ -91,7 +79,47 @@ package mediator
             
             return null;
         }
+		
+		/**
+		 * Вернуть данные по сотрудникам указанной профессии
+		 * @param professionId идентификатор професии, если 0, возвращаются все сотрудники
+		 * @return данные по сотрудникам
+		 */
+		public function getEmployeeData(professionId:int=0):ArrayCollection
+		{
+			var personnelDecor:PersonnelHelper = new PersonnelHelper(basesListProxy, personsProxy);
+			var employeeData:Array = [];
+			
+			for each (var person:PersonVO in personsProxy.personsVO.children)
+			{
+				if (professionId == 0 || person.personProfessionId == professionId)
+				{
+					var item:Object = { label: person.personName, personId: person.personId };
+					employeeData.push(item); 
+					
+					var base:BaseVO = personnelDecor..getEmployeePlace(person.personId);
+					if (base)
+					{
+						item.base = base.baseName;
+						item.baseId = base.baseId;
+					}
+				}
+			}
+			employeeData.sortOn("label");
+			return employeeData.length > 0 ? new ArrayCollection(employeeData) : null;
+		}
         
+		/**
+		 * Получить идентификатор базы приписки для указанного сотрудника
+		 * @param personId идентификатор персонажа сотрудника
+		 * @return идентификатор базы приписки
+		 */
+		public function getEmployeePlace(personId:String):String
+		{
+			var base:BaseVO = new PersonnelHelper(basesListProxy, personsProxy).getEmployeePlace(personId);
+			return base ? base.baseId : null;
+		}
+		
         protected function get professionsView():protoProfessionsView
         {
             return viewComponent as protoProfessionsView;
@@ -137,7 +165,9 @@ package mediator
             var profs:Array = [];
             for each (var profession:ProfessionDescVO in CharacteristicsDict.getInstance().professions)
                 profs.push(profession);
-            professionsView.professionsList = new ArrayCollection(profs);
+			
+            professionsView.hireEmployePopUp.professionsList = new ArrayCollection(profs);
+			professionsView.hireEmployePopUp.defaultProfession = ProfessionDescVO.LABORER;
             
             professionsView.addEventListener(EmployeeListEvent.CREATE_PERSON, createPersonHandler, false, 0, true);
             professionsView.addEventListener(EmployeeListEvent.PLACE_EMPLOYEE, placeEmployeeHandler, false, 0, true);
@@ -215,7 +245,7 @@ package mediator
         
         override public function listNotificationInterests():Array
         {
-            return [ Const.NEW_PERSON_CREATED ];
+            return [ Const.NEW_PERSON_CREATED, Const.EMPLOYEE_IS_PLACED ];
         }
         
         override public function handleNotification(notification:INotification):void
@@ -236,7 +266,14 @@ package mediator
 						if (basesDataProvider.length > 1)
 							professionsView.moveEmployee(person.personId);
 					}
+					else
+					{
+						professionsView.updateList();
+					}
                     break;
+				case Const.EMPLOYEE_IS_PLACED:
+					professionsView.updateList();
+					break;
             }
         }
     }
