@@ -124,8 +124,6 @@ package helpers
 					throw Error("Not enough resources.");
 			}
 			
-			_appDataProxy.saveData();
-			
 			return true;
 		}
 		
@@ -200,8 +198,6 @@ package helpers
 				if (rest == 0)
 					break;
 			}
-			
-			_appDataProxy.saveData();
 			
 			return resourceCount - rest;
 		}

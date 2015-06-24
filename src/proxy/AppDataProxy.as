@@ -4,8 +4,6 @@ package proxy
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	
-	import dictionary.Const;
-	
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
 	import vo.ApplicationVO;
@@ -18,7 +16,7 @@ package proxy
 	 * 
 	 */
 	
-	public class AppDataProxy extends Proxy implements IVariableDataProxy
+	public class AppDataProxy extends Proxy
 	{
 		//--------------------------------------------------------------------------
 		// 
@@ -26,7 +24,7 @@ package proxy
 		
 		public static const NAME:String = "appDataProxy";
 		
-		protected static const FILE_NAME:String = "data/app_data.xml"
+		protected static const FILE_NAME:String = "data/app_data.xml";
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -57,34 +55,22 @@ package proxy
 			return null;
 		}
 		
-        //----------------------------------
-        //  IVariableDataProxy
-        //----------------------------------
-        
         /**
          * Записать текущее состояние приложения в файл
-         * @param immediately флаг, указывающий сохранить данные немедленно
          */
-        public function saveData(immediately:Boolean=false):void
+        public function saveData():void
         {
-            if (immediately)
-            {
-                var file:File = File.applicationStorageDirectory;
-                file = file.resolvePath(FILE_NAME);
-                
-                var data:String = '<?xml version="1.0" encoding="utf-8"?>\n';
-                data += applicationVO.serialize().toXMLString();
-                data.replace(/\n/g, File.lineEnding);
-                
-                var stream:FileStream = new FileStream();
-                stream.open(file, FileMode.WRITE);
-                stream.writeUTFBytes(data);
-                stream.close();
-            }
-            else
-            {
-                sendNotification(Const.SAVE_DATA, this);
-            }
+            var file:File = File.applicationStorageDirectory;
+            file = file.resolvePath(FILE_NAME);
+            
+            var data:String = '<?xml version="1.0" encoding="utf-8"?>\n';
+            data += applicationVO.serialize().toXMLString();
+            data.replace(/\n/g, File.lineEnding);
+            
+            var stream:FileStream = new FileStream();
+            stream.open(file, FileMode.WRITE);
+            stream.writeUTFBytes(data);
+            stream.close();
         }
         
         /**
@@ -104,12 +90,10 @@ package proxy
             }
             
             applicationVO.children.push(child);
-            
-            saveData();
         }
         
 		//----------------------------------
-		//  Mediator
+		//  Proxy
 		//----------------------------------
 		
 		override public function onRegister():void

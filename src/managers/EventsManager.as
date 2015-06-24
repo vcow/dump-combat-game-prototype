@@ -4,6 +4,7 @@ package managers
     import flash.utils.Dictionary;
     
     import dictionary.EventsDict;
+    import dictionary.data.Stuff;
     
     import events.EventsManagerEvent;
     
@@ -64,6 +65,7 @@ package managers
                 {
                     var eventDesc:EventDescVO = EventsDict.getInstance().getEvent(key);
                     _activatedEvents[key] = now + eventDesc.eventInterval;
+                    lastTimes[key] = now;
                     
                     dispatchEvent(new EventsManagerEvent(EventsManagerEvent.EVENT, key));
                 }
@@ -86,9 +88,31 @@ package managers
                     throw Error("An attempt to activate the undefined event (" + eventId + ").");
                 
                 if (eventDesc.eventInterval)
-                    _activatedEvents[eventDesc.eventId] = (new Date()).time + eventDesc.eventInterval;
+                {
+                    // Событие имеет диапазон и должно автоматически генерироваться по внутриигровому тику
+                    // Проверить наличие срабатываний в прошлом, расчитать остаток времени с момента
+                    // возобновления игры до следующего срабатывания интервального события
+                    var now:Number = (new Date()).time;
+                    var lastTime:Number = lastTimes[eventDesc.eventId];
+                    if (isNaN(lastTime))
+                    {
+                        lastTimes[eventDesc.eventId] = lastTime = now;
+                        _activatedEvents[eventDesc.eventId] = now + eventDesc.eventInterval;
+                    }
+                    else
+                    {
+                        var exitTime:Number = Stuff.getInstance().exitTime;
+                        if (isNaN(exitTime) || exitTime  < lastTime)
+                            _activatedEvents[eventDesc.eventId] = now + eventDesc.eventInterval;
+                        else
+                            _activatedEvents[eventDesc.eventId] = now + eventDesc.eventInterval - (exitTime - lastTime);
+                    }
+                }
                 else
+                {
+                    // Событие не имеет диапазона, генерируется игровой логикой
                     _activatedEvents[eventDesc.eventId] = 0;
+                }
                 
                 dispatchEvent(new EventsManagerEvent(EventsManagerEvent.EVENT_ACTIVATED, eventDesc.eventId));
             }
@@ -117,6 +141,17 @@ package managers
         public function isEventActive(eventId:String):Boolean
         {
             return _activatedEvents[eventId] != null;
+        }
+        
+        /**
+         * Список временных меток последних срабатываний для интервальных событий
+         */
+        protected function get lastTimes():Object
+        {
+            var times:Object = Stuff.getInstance().eventLastTimes;
+            if (!times)
+                Stuff.getInstance().eventLastTimes = times = {};
+            return times;
         }
     }
 }

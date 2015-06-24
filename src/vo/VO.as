@@ -174,10 +174,11 @@ package vo
                     case PersonVO.NAME: value = new PersonVO(); break;
                     case EmployeeVO.NAME: value = new EmployeeVO(); break;
                     case EventDescVO.NAME: value = new EventDescVO(); break;
+                    case PersonsVO.NAME: value = new PersonsVO(); break;
 					
 					// /TODO
 					
-					default: throw Error("Undefined item");
+					default: throw Error("Undefined item (" + child.localName().toString() + ").");
 				}
 				
 				value.deserialize(child);

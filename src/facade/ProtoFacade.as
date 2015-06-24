@@ -1,11 +1,8 @@
 package facade
 {
-	import command.BaseRenamedCommand;
 	import command.CreateNewBaseCommand;
 	import command.CreateNewPersonCommand;
-	import command.EmployeeIsPlacedCommand;
 	import command.GameEventCommand;
-	import command.NewBaseCreatedCommand;
 	import command.NewPersonCreatedCommand;
 	import command.PlaceEmployeeCommand;
 	import command.RenameBaseCommand;
@@ -57,13 +54,10 @@ package facade
 			
 			registerCommand(STARTUP, StartUpCommand);
 			registerCommand(Const.CREATE_NEW_BASE, CreateNewBaseCommand);
-			registerCommand(Const.NEW_BASE_CREATED, NewBaseCreatedCommand);
 			registerCommand(Const.RENAME_BASE, RenameBaseCommand);
-			registerCommand(Const.BASE_RENAMED, BaseRenamedCommand);
             registerCommand(Const.CREATE_NEW_PERSON, CreateNewPersonCommand);
             registerCommand(Const.NEW_PERSON_CREATED, NewPersonCreatedCommand);
             registerCommand(Const.PLACE_EMPLOYEE, PlaceEmployeeCommand);
-            registerCommand(Const.EMPLOYEE_IS_PLACED, EmployeeIsPlacedCommand);
             registerCommand(Const.GAME_EVENT, GameEventCommand);
 		}
 	}

@@ -7,7 +7,8 @@
 							firstView="views.protoMapView"
 							applicationDPI="160"
 							preinitialize="{_facade.startup(this);}"
-                            enterFrame="{EventsManager.getInstance().tick();}">
+                            enterFrame="{EventsManager.getInstance().tick();}"
+                            creationComplete="creationCompleteHandler(event)">
 	<fx:Declarations>
 	</fx:Declarations>
 	
@@ -30,11 +31,17 @@
 	
 	<fx:Script>
 		<![CDATA[
+            import mx.events.FlexEvent;
+            
             import spark.skins.mobile.TextAreaSkin;
+            
+            import dictionary.data.Stuff;
             
             import facade.ProtoFacade;
             
             import managers.EventsManager;
+            
+            import proxy.AppDataProxy;
 			
 			//--------------------------------------------------------------------------
 			// 
@@ -45,6 +52,18 @@
 			//--------------------------------------------------------------------------
 			// 
 			//--------------------------------------------------------------------------
-		]]>
+            
+            protected function creationCompleteHandler(event:FlexEvent):void
+            {
+                NativeApplication.nativeApplication.addEventListener(Event.EXITING, app_deactivateHandler);
+                NativeApplication.nativeApplication.addEventListener(Event.USER_IDLE, app_deactivateHandler);
+            }
+            
+            private function app_deactivateHandler(event:Event):void
+            {
+                Stuff.getInstance().saveData();
+                AppDataProxy(_facade.retrieveProxy(AppDataProxy.NAME)).saveData();
+            }
+        ]]>
 	</fx:Script>
 </s:ViewNavigatorApplication>

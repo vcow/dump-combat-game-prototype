@@ -1,11 +1,5 @@
 package proxy
 {
-    import flash.filesystem.File;
-    import flash.filesystem.FileMode;
-    import flash.filesystem.FileStream;
-    
-    import dictionary.Const;
-    
     import org.puremvc.as3.patterns.proxy.Proxy;
     
     import vo.IVO;
@@ -19,7 +13,7 @@ package proxy
      * 
      */
     
-    public class PersonsProxy extends Proxy implements IVariableDataProxy
+    public class PersonsProxy extends Proxy
     {
         //--------------------------------------------------------------------------
         // 
@@ -27,20 +21,18 @@ package proxy
         
         public static const NAME:String = "personsProxy";
         
-        protected static const FILE_NAME:String = "data/pers_data.xml";
-        
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public function PersonsProxy()
+        public function PersonsProxy(data:PersonsVO=null)
         {
-            super(NAME, new PersonsVO());
+            super(NAME, data);
         }
         
         public function get personsVO():PersonsVO
         {
-            return data as PersonsVO;
+            return getData() as PersonsVO;
         }
         
         /**
@@ -58,41 +50,11 @@ package proxy
             return null;
         }
         
-        //----------------------------------
-        //  IVariableDataProxy
-        //----------------------------------
-        
-        /**
-         * Записать текущее состояние персонажей в файл
-         * @param immediately флаг, указывающий сохранить данные немедленно
-         */
-        public function saveData(immediately:Boolean=false):void
-        {
-            if (immediately)
-            {
-                var file:File = File.applicationStorageDirectory;
-                file = file.resolvePath(FILE_NAME);
-                
-                var data:String = '<?xml version="1.0" encoding="utf-8"?>\n';
-                data += personsVO.serialize().toXMLString();
-                data.replace(/\n/g, File.lineEnding);
-                
-                var stream:FileStream = new FileStream();
-                stream.open(file, FileMode.WRITE);
-                stream.writeUTFBytes(data);
-                stream.close();
-            }
-            else
-            {
-                sendNotification(Const.SAVE_DATA, this);
-            }
-        }
-        
         /**
          * Обновить информацию в дочернем Value Object
          * @param child VO обновляемого персонажа
          */
-        public function updateChild(child:IVO):void
+        public function updatePerson(child:IVO):void
         {
             var person:PersonVO = child as PersonVO;
             if (person)
@@ -108,29 +70,29 @@ package proxy
                 }
                 
                 personsVO.children.push(person);
-                
-                saveData();
             }
         }
         
         //----------------------------------
-        //  Mediator
+        //  Proxy
         //----------------------------------
         
-        override public function onRegister():void
+        override public function getData():Object
         {
-            var file:File = File.applicationStorageDirectory;
-            file = file.resolvePath(FILE_NAME);
-            
-            if (file.exists)
+            if (!data)
             {
-                var stream:FileStream = new FileStream();
-                stream.open(file, FileMode.READ);
-                var data:XML = XML(stream.readUTFBytes(stream.bytesAvailable));
-                stream.close();
+                var appDataProxy:AppDataProxy = AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME));
+                var value:PersonsVO = appDataProxy.getChildByName(PersonsVO.NAME) as PersonsVO;
                 
-                personsVO.deserialize(data);
+                if (!value)
+                    value = new PersonsVO();
+                
+                setData(value);
+                
+                appDataProxy.updateChild(personsVO);
             }
+            
+            return data;
         }
     }
 }

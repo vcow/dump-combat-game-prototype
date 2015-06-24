@@ -92,7 +92,7 @@
 
         <!-- Whether the app will begin auto-orienting on launch. Optional. Mobile only. Default false -->
 
-        <!-- <autoOrients></autoOrients> -->
+        <autoOrients>false</autoOrients>
 
         <!-- Whether the app launches in full screen. Optional. Mobile only. Default false -->
 

@@ -74,7 +74,6 @@ package helpers
                     if (person.personId == personId)
                     {
                         _personsProxy.personsVO.children.splice(i, 1);
-                        _personsProxy.saveData();
                         break;
                     }
                 }

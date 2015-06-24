@@ -23,7 +23,6 @@ package dictionary
         public static const FEMALE:String = "f";
 		
 		// Notifications
-        public static const SAVE_DATA:String = "saveData";                                  //< Запрос на отложенное сохранение данных
         public static const GAME_EVENT:String = "gameEvent";                                //< Произошло внутриигровое событие
 		public static const CREATE_NEW_BASE:String = "createNewBase";						//< Запрос на создание новой базы
 		public static const NEW_BASE_CREATED:String = "newBaseCreated";						//< Была создана новая база
