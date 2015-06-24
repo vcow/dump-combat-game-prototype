@@ -35,8 +35,6 @@
             
             import spark.skins.mobile.TextAreaSkin;
             
-            import dictionary.data.Stuff;
-            
             import facade.ProtoFacade;
             
             import managers.EventsManager;
@@ -61,7 +59,6 @@
             
             private function app_deactivateHandler(event:Event):void
             {
-                Stuff.getInstance().saveData();
                 AppDataProxy(_facade.retrieveProxy(AppDataProxy.NAME)).saveData();
             }
         ]]>

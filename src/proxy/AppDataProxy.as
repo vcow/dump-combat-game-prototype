@@ -25,7 +25,7 @@ package proxy
 		public static const NAME:String = "appDataProxy";
 		
 		protected static const FILE_NAME:String = "data/app_data.xml";
-		
+        
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
@@ -39,6 +39,14 @@ package proxy
 		{
 			return data as ApplicationVO;
 		}
+        
+        /**
+         * Сериализуемый объект для хранения текущих внутриигровых состояний
+         */
+        public function get stuff():Object
+        {
+            return applicationVO.stuff;
+        }
 		
 		/**
 		 * Получить дочерний Value Object по его имени

@@ -4,9 +4,12 @@ package managers
     import flash.utils.Dictionary;
     
     import dictionary.EventsDict;
-    import dictionary.data.Stuff;
     
     import events.EventsManagerEvent;
+    
+    import facade.ProtoFacade;
+    
+    import proxy.AppDataProxy;
     
     import vo.EventDescVO;
     
@@ -30,6 +33,8 @@ package managers
         
         private static var _instance:EventsManager;
         private static var _activatedEvents:Dictionary = new Dictionary();
+        
+        private var _appDataProxy:AppDataProxy;
         
         //--------------------------------------------------------------------------
         // 
@@ -101,7 +106,7 @@ package managers
                     }
                     else
                     {
-                        var exitTime:Number = Stuff.getInstance().exitTime;
+                        var exitTime:Number = appDataProxy.stuff.exitTime;
                         if (isNaN(exitTime) || exitTime  < lastTime)
                             _activatedEvents[eventDesc.eventId] = now + eventDesc.eventInterval;
                         else
@@ -143,14 +148,21 @@ package managers
             return _activatedEvents[eventId] != null;
         }
         
+        protected function get appDataProxy():AppDataProxy
+        {
+            if (!_appDataProxy)
+                _appDataProxy = ProtoFacade.getInstance().retrieveProxy(AppDataProxy.NAME) as AppDataProxy;
+            return _appDataProxy;
+        }
+        
         /**
          * Список временных меток последних срабатываний для интервальных событий
          */
         protected function get lastTimes():Object
         {
-            var times:Object = Stuff.getInstance().eventLastTimes;
+            var times:Object = appDataProxy.stuff.eventLastTimes;
             if (!times)
-                Stuff.getInstance().eventLastTimes = times = {};
+                appDataProxy.stuff.eventLastTimes = times = {};
             return times;
         }
     }

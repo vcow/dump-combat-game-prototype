@@ -175,6 +175,7 @@ package vo
                     case EmployeeVO.NAME: value = new EmployeeVO(); break;
                     case EventDescVO.NAME: value = new EventDescVO(); break;
                     case PersonsVO.NAME: value = new PersonsVO(); break;
+                    case StuffVO.NAME: value = new StuffVO(); break;
 					
 					// /TODO
 					
