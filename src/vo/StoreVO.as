@@ -1,5 +1,7 @@
 package vo
 {
+	import managers.EventOut;
+
 	/**
 	 * 
 	 * @author jvirkovskiy
@@ -57,7 +59,7 @@ package vo
 		//  VO
 		//----------------------------------
 		
-        override public function event(eventId:String, out:Object=null):void
+        override public function event(eventId:String, out:EventOut=null):void
         {
             // Отсекаем ивенты для дочерних элементов за ненадобностью
         }

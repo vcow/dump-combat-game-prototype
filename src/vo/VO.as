@@ -4,6 +4,8 @@ package vo
 	
 	import facade.ProtoFacade;
 	
+	import managers.EventOut;
+	
 	/**
 	 * 
 	 * @author jvirkovskiy
@@ -55,7 +57,7 @@ package vo
          * @param eventId идентификатор внутриигрового события
          * @param out объект, в котором могут быть возвращены дополнительные параметры из дочерних элементов
          */
-        public function event(eventId:String, out:Object=null):void
+        public function event(eventId:String, out:EventOut=null):void
         {
             for each (var value:VO in _children)
                 value.event(eventId, out);

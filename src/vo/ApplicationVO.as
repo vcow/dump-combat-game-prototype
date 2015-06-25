@@ -43,11 +43,23 @@ package vo
                     }
                 }
                 
+				var now:Number = (new Date()).time;
                 if (!item)
                 {
                     item = new StuffVO();
                     children.push(item);
+				}
+				
+				if (item.data.hasOwnProperty("timestamp"))
+				{
+					item.data.exitTime = item.data.timestamp;					//< Время завершения предыдущей сессии
                 }
+				else
+				{
+					item.data.beginingOfTime = now;								//< Время начала игры
+					item.data.timestamp = now;									//< Текущая временная метка
+				}
+				item.data.restoreTime = now;									//< Время возобновления игры
                 
                 _stuff = item.data;
             }

@@ -4,6 +4,8 @@ package vo
     import dictionary.ModulesDict;
     
     import helpers.ResourcesHelper;
+    
+    import managers.EventOut;
 
 	/**
 	 * 
@@ -60,7 +62,7 @@ package vo
 		//  VO
 		//----------------------------------
 		
-        override public function event(eventId:String, out:Object=null):void
+        override public function event(eventId:String, out:EventOut=null):void
         {
             if (eventId == _feeEventId)
             {
@@ -70,7 +72,12 @@ package vo
                 {
                     // Произведен платежь за эксплуатацию модуля
                     if (out)
-                        out[Const.RESOURCES_CHANGED] = null;
+					{
+						var data:Array = out.commonOut[Const.RESOURCES_CHANGED] as Array;
+						
+                        if (!data)
+							out.commonOut[Const.RESOURCES_CHANGED] = [];
+					}
                 }
                 else
                 {
