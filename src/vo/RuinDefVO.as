@@ -27,9 +27,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function RuinDefVO(parent:IVO=null)
+		public function RuinDefVO()
 		{
-			super(NAME, parent);
+			super(NAME);
 		}
 		
 		//----------------------------------

@@ -42,9 +42,8 @@ package proxy
          */
         public function getPersonById(personId:String):PersonVO
         {
-            for (var i:int = 0; i < personsVO.numChildren; i++)
+            for each (var value:PersonVO in personsVO.children)
             {
-                var value:PersonVO = PersonVO(personsVO.getChildAt(i));
                 if (value.personId == personId)
                     return value;
             }
@@ -60,17 +59,17 @@ package proxy
             var person:PersonVO = child as PersonVO;
             if (person)
             {
-                for (var i:int = 0; i < personsVO.numChildren; i++)
+                for (var i:int = 0; i < personsVO.children.length; i++)
                 {
-                    var value:PersonVO = PersonVO(personsVO.getChildAt(i));
+                    var value:PersonVO = PersonVO(personsVO.children[i]);
                     if (value.personId == person.personId)
                     {
-                        personsVO.removeChildAt(i);
+                        personsVO.children.splice(i, 1);
                         break;
                     }
                 }
                 
-                personsVO.addChild(person);
+                personsVO.children.push(person);
             }
         }
         

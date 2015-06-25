@@ -30,9 +30,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function BaseVO(parent:IVO=null)
+		public function BaseVO()
 		{
-			super(NAME, parent);
+			super(NAME);
 		}
 		
 		/**
@@ -43,14 +43,12 @@ package vo
 		public function getModules(moduleId:uint):Vector.<ModuleVO>
 		{
 			var modules:Vector.<ModuleVO> = new Vector.<ModuleVO>();
-			for (var i:int = 0; i < numChildren; i++)
-            {
-                var item:IVO = getChildAt(i);
+			for each (var item:IVO in children)
+			{
 				if (item.name == ModulesVO.NAME)
 				{
-					for (var j:int = 0; j < item.numChildren; j++)
+					for each (var module:ModuleVO in item.children)
 					{
-                        var module:ModuleVO = ModuleVO(item.getChildAt(j));
 						if (module.moduleId == moduleId)
 							modules.push(module);
 					}
@@ -65,9 +63,8 @@ package vo
 		 */
 		public function get baseStore():StoreVO
 		{
-			for (var i:int = 0; i < numChildren; i++)
+			for each (var value:IVO in children)
 			{
-                var value:IVO = getChildAt(i);
 				if (value.name == StoreVO.NAME)
 					return value as StoreVO;
 			}
@@ -79,9 +76,8 @@ package vo
          */
         public function get personnel():PersonnelVO
         {
-            for (var i:int = 0; i < numChildren; i++)
+            for each (var value:IVO in children)
             {
-                var value:IVO = getChildAt(i);
                 if (value.name == PersonnelVO.NAME)
                     return value as PersonnelVO;
             }

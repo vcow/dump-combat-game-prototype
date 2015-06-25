@@ -5,7 +5,9 @@ package command
     import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.command.SimpleCommand;
     
-    import vo.EventDescVO;
+    import proxy.BasesListProxy;
+    
+    import vo.BaseVO;
     
     /**
      * 
@@ -34,17 +36,9 @@ package command
             if (!EventsManager.getInstance().isEventActive(notification.getType()))
                 throw Error("Inactive game event (" + notification.getType() + ").");
             
-            switch (notification.getType())
-            {
-                case EventDescVO.SEC:
-                case EventDescVO.MIN:
-                case EventDescVO.ARTIFACT_FOUND:
-                case EventDescVO.BATTLE_COMPLETED:
-                case EventDescVO.RESEARCH_COMPLETED:
-                case EventDescVO.PRODUCTION_COMPLETED:
-                case EventDescVO.PAY_DAY:
-                    break;
-            }
+            var bases:Vector.<BaseVO> = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)).getBasesList();
+            for each (var base:BaseVO in bases)
+                base.event(notification.getType());
         }
     }
 }

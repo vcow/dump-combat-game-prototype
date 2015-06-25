@@ -7,6 +7,7 @@ package command
     import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.command.SimpleCommand;
     
+    import proxy.AppDataProxy;
     import proxy.BasesListProxy;
     import proxy.PersonsProxy;
     
@@ -49,7 +50,7 @@ package command
                 if (!personnel)
                 {
                     personnel = new PersonnelVO();
-                    base.addChild(personnel);
+                    base.children.push(personnel);
                 }
                 
                 var personsProxy:PersonsProxy = PersonsProxy(this.facade.retrieveProxy(PersonsProxy.NAME));

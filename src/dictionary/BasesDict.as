@@ -73,16 +73,15 @@ package dictionary
 			{
 				ruin.ruinId = base.baseId;
 				var ruinModules:ModulesVO = new ModulesVO();		// Сохранившиеся модули
-				ruin.addChild(ruinModules);
+				ruin.children.push(ruinModules);
 				
 				var modules:ModulesVO = base.baseModules;
 				if (modules)
 				{
 					ruinModules.modulesMaxCount = modules.modulesMaxCount;
 					
-					for (var i:int = 0; i < modules.numChildren; i++)
+					for each (var module:ModuleVO in modules.children)
 					{
-                        var module:ModuleVO = ModuleVO(modules.getChildAt(i));
 						var chance:Number = module.moduleChance;	// Вероятность сохранения модуля в руинах после захвата базы
 						if (isNaN(chance))
 						{
@@ -91,7 +90,7 @@ package dictionary
 						}
 						
 						if (Math.random() <= chance)
-							ruinModules.addChild(module.clone());
+							ruinModules.children.push(module.clone());
 					}
 				}
 			}

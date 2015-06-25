@@ -29,9 +29,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function RuinTemplVO(parent:IVO=null)
+		public function RuinTemplVO()
 		{
-			super(NAME, parent);
+			super(NAME);
 		}
 		
 		/**
@@ -39,9 +39,8 @@ package vo
 		 */
 		public function get ruinRepairPrice():PriceVO
 		{
-            for (var i:int = 0; i < numChildren; i++)
-            {
-                var value:IVO = getChildAt(i);
+			for each (var value:IVO in children)
+			{
 				if (value.name == PriceVO.NAME)
 					return value as PriceVO;
 			}

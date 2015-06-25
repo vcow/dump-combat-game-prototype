@@ -47,9 +47,8 @@ package proxy
 		public function getBasesList():Vector.<BaseVO>
 		{
 			var res:Vector.<BaseVO> = new Vector.<BaseVO>();
-			for (var i:int = 0; i < basesListVO.numChildren; i++)
+			for each (var value:IVO in basesListVO.children)
 			{
-                var value:IVO = basesListVO.getChildAt(i);
 				if (value.name == BaseVO.NAME)
 					res.push(BaseVO(value));
 			}
@@ -63,9 +62,8 @@ package proxy
 		public function getTargetsList():Vector.<TargetVO>
 		{
 			var res:Vector.<TargetVO> = new Vector.<TargetVO>();
-            for (var i:int = 0; i < basesListVO.numChildren; i++)
-            {
-                var value:IVO = basesListVO.getChildAt(i);
+			for each (var value:IVO in basesListVO.children)
+			{
 				if (value.name == TargetVO.NAME)
 					res.push(TargetVO(value));
 			}
@@ -80,9 +78,8 @@ package proxy
 		public function getRuinsList():Vector.<RuinVO>
 		{
 			var res:Vector.<RuinVO> = new Vector.<RuinVO>();
-            for (var i:int = 0; i < basesListVO.numChildren; i++)
-            {
-                var value:IVO = basesListVO.getChildAt(i);
+			for each (var value:IVO in basesListVO.children)
+			{
 				if (value.name == RuinVO.NAME)
 					res.push(RuinVO(value));
 			}

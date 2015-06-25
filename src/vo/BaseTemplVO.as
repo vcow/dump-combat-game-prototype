@@ -29,9 +29,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function BaseTemplVO(parent:IVO=null)
+		public function BaseTemplVO()
 		{
-			super(NAME, parent);
+			super(NAME);
 		}
 		
 		/**
@@ -39,9 +39,8 @@ package vo
 		 */
 		public function get baseRuin():RuinTemplVO
 		{
-			for (var i:int = 0; i < numChildren; i++)
+			for each (var value:IVO in children)
 			{
-                var value:IVO = getChildAt(i);
 				if (value.name == RuinTemplVO.NAME)
 					return value as RuinTemplVO;
 			}
@@ -53,9 +52,8 @@ package vo
 		 */
 		public function get baseModules():ModulesVO
 		{
-            for (var i:int = 0; i < numChildren; i++)
-            {
-                var value:IVO = getChildAt(i);
+			for each (var value:IVO in children)
+			{
 				if (value.name == ModulesVO.NAME)
 					return value as ModulesVO;
 			}

@@ -30,9 +30,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function TargetVO(parent:IVO=null)
+		public function TargetVO()
 		{
-			super(NAME, parent);
+			super(NAME);
 		}
 		
 		//----------------------------------

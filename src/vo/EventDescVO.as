@@ -36,9 +36,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function EventDescVO(parent:IVO=null)
+		public function EventDescVO()
 		{
-			super(NAME, parent);
+			super(NAME);
 		}
 		
 		//----------------------------------

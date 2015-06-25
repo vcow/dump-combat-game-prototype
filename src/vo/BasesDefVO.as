@@ -21,9 +21,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function BasesDefVO(parent:IVO=null)
+		public function BasesDefVO()
 		{
-			super(NAME, parent);
+			super(NAME);
 		}
 		
 		/**
@@ -33,17 +33,16 @@ package vo
 		public function getDefaultBases():BasesVO
 		{
 			var bases:BasesVO = new BasesVO();
-			for (var i:int = 0; i < numChildren; i++)
-            {
-                var value:IVO = getChildAt(i);
+			for each (var value:IVO in children)
+			{
 				if (value.name == RuinDefVO.NAME)
 				{
 					var ruinDef:RuinDefVO = value as RuinDefVO;
 					var ruin:RuinVO = ruinDef ? BasesDict.getInstance().getRuinForBase(ruinDef.baseId) : null;
 					if (ruin)
-						bases.addChild(ruin);
+						bases.children.push(ruin);
 				}
-            }
+			}
 			return bases;
 		}
 		

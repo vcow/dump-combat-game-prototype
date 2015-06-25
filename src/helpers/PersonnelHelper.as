@@ -51,12 +51,12 @@ package helpers
                 if (!personnel)
                     continue;
                 
-                for (var i:int = 0; i < personnel.numChildren; i++)
+                for (var i:int = 0; i < personnel.children.length; i++)
                 {
-                    var employee:EmployeeVO = EmployeeVO(personnel.getChildAt(i));
+                    var employee:EmployeeVO = EmployeeVO(personnel.children[i]);
                     if (employee.employeePersonId == personId)
                     {
-                        personnel.removeChildAt(i);
+                        personnel.children.splice(i, 1);
                         baseId = base.baseId;
                         break;
                     }
@@ -68,12 +68,12 @@ package helpers
             
             if (replacePerson)
             {
-                for (i = 0; i < _personsProxy.personsVO.numChildren; i++)
+                for (i = 0; i < _personsProxy.personsVO.children.length; i++)
                 {
-                    var person:PersonVO = PersonVO(_personsProxy.personsVO.getChildAt(i));
+                    var person:PersonVO = PersonVO(_personsProxy.personsVO.children[i]);
                     if (person.personId == personId)
                     {
-                        _personsProxy.personsVO.removeChildAt(i);
+                        _personsProxy.personsVO.children.splice(i, 1);
                         break;
                     }
                 }
@@ -99,12 +99,11 @@ package helpers
                 if (!personnel)
                 {
                     personnel = new PersonnelVO();
-                    base.addChild(personnel);
+                    base.children.push(personnel);
                 }
                 
-                for (var i:int = 0; i < personnel.numChildren; i++)
+                for each (var employee:EmployeeVO in personnel.children)
                 {
-                    var employee:EmployeeVO = EmployeeVO(personnel.getChildAt(i));
                     if (employee.employeePersonId == person.personId)
                         return employee;        // Сотрудник уже приписан к этой базе
                 }
@@ -115,7 +114,7 @@ package helpers
                 employee = new EmployeeVO();
                 employee.employeePersonId = person.personId;
                 
-                personnel.addChild(employee);
+                personnel.children.push(employee);
                 return employee;
             }
             
@@ -135,9 +134,8 @@ package helpers
                 if (!personnel)
                     continue;
                 
-                for (var i:int = 0; i < personnel.numChildren; i++)
+                for each (var employee:EmployeeVO in personnel.children)
                 {
-                    var employee:EmployeeVO = EmployeeVO(personnel.getChildAt(i));
                     if (employee.employeePersonId == personId)
                         return base;
                 }

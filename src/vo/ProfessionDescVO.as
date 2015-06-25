@@ -36,9 +36,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function ProfessionDescVO(parent:IVO=null)
+		public function ProfessionDescVO()
 		{
-			super(NAME, parent);
+			super(NAME);
 		}
         
         /**
@@ -46,9 +46,8 @@ package vo
          */
         public function get professionHiringCost():PriceVO
         {
-            for (var i:int = 0; i < numChildren; i++)
+            for each (var item:IVO in children)
             {
-                var item:IVO = getChildAt(i);
                 if (item.name == PriceVO.NAME && item is PriceVO && PriceVO(item).priceDetails == PriceVO.PRICE)
                     return item as PriceVO;
             }
@@ -60,9 +59,8 @@ package vo
          */
         public function get professionSalary():PriceVO
         {
-            for (var i:int = 0; i < numChildren; i++)
+            for each (var item:IVO in children)
             {
-                var item:IVO = getChildAt(i);
                 if (item.name == PriceVO.NAME && item is PriceVO && PriceVO(item).priceDetails == PriceVO.FEE)
                     return item as PriceVO;
             }

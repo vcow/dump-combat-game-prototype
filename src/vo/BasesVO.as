@@ -19,9 +19,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function BasesVO(parent:IVO=null)
+		public function BasesVO()
 		{
-			super(NAME, parent);
+			super(NAME);
 		}
 		
 		//----------------------------------

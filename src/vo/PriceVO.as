@@ -28,9 +28,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function PriceVO(parent:IVO=null)
+		public function PriceVO()
 		{
-			super(NAME, parent);
+			super(NAME);
 		}
 		
 		//----------------------------------

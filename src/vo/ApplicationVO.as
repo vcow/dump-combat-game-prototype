@@ -21,9 +21,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function ApplicationVO(parent:IVO=null)
+		public function ApplicationVO()
 		{
-			super(NAME, parent);
+			super(NAME);
 		}
         
         /**
@@ -34,9 +34,8 @@ package vo
             if (!_stuff)
             {
                 var item:StuffVO;
-                for (var i:int = 0; i < numChildren; i++)
+                for each (var value:IVO in children)
                 {
-                    var value:IVO = getChildAt(i);
                     if (value.name == StuffVO.NAME)
                     {
                         item = value as StuffVO;
@@ -47,7 +46,7 @@ package vo
                 if (!item)
                 {
                     item = new StuffVO();
-                    addChild(item);
+                    children.push(item);
                 }
                 
                 _stuff = item.data;
