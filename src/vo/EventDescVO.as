@@ -67,7 +67,7 @@ package vo
 			// TODO: десериализовать специфичные поля
 			
             eventId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
-            eventInterval = data.hasOwnProperty("@interval") ? parseFloat(data.@interval.toString()) : NaN;
+            eventInterval = data.hasOwnProperty("@interval") ? (new TimeHelper).strToTime(data.@interval.toString()) : NaN;
 			
 			// /TODO
 			

@@ -1,8 +1,11 @@
 package helpers
 {
+	import dictionary.Const;
 	import dictionary.DefaultsDict;
 	import dictionary.ModulesDict;
 	import dictionary.ResourcesDict;
+	
+	import facade.ProtoFacade;
 	
 	import proxy.AppDataProxy;
 	import proxy.BasesListProxy;
@@ -34,10 +37,10 @@ package helpers
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function ResourcesHelper(basesListProxy:BasesListProxy, appDataProxy:AppDataProxy)
+		public function ResourcesHelper(basesListProxy:BasesListProxy=null, appDataProxy:AppDataProxy=null)
 		{
-			_basesListProxy = basesListProxy;
-			_appDataProxy = appDataProxy;
+			_basesListProxy = basesListProxy || BasesListProxy(ProtoFacade.getInstance().retrieveProxy(BasesListProxy.NAME));
+			_appDataProxy = appDataProxy || AppDataProxy(ProtoFacade.getInstance().retrieveProxy(AppDataProxy.NAME));
 		}
 		
 		/**
@@ -74,9 +77,10 @@ package helpers
 		/**
 		 * Заплатить указанную цену
 		 * @param priceVO цена
+         * @param sendNotification флаг, указывающий отправлять соответствующую нотификацию
 		 * @return true, если платеж выполнен успешно, false, если какой-то из ресурсов ушел в минус
 		 */
-		public function pay(price:PriceVO):Boolean
+		public function pay(price:PriceVO, sendNotification:Boolean=true):Boolean
 		{
 			var bases:Vector.<BaseVO> = _basesListProxy.getBasesList();
 			
@@ -124,6 +128,9 @@ package helpers
 					throw Error("Not enough resources.");
 			}
 			
+            if (sendNotification)
+                ProtoFacade.getInstance().sendNotification(Const.RESOURCES_CHANGED);
+            
 			return true;
 		}
 		

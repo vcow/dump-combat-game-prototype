@@ -7,9 +7,6 @@ package mediator
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
-	import proxy.AppDataProxy;
-	import proxy.BasesListProxy;
-	
 	import views.ui.SimpleResourcesView;
 	
 	import vo.ResourceDescVO;
@@ -49,8 +46,7 @@ package mediator
 		protected function get resourcesDecor():ResourcesHelper
 		{
 			if (!_resourcesDecor)
-				_resourcesDecor = new ResourcesHelper(BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)),
-					AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME)));
+				_resourcesDecor = new ResourcesHelper();
 			
 			return _resourcesDecor;
 		}
@@ -95,15 +91,15 @@ package mediator
 		
 		override public function listNotificationInterests():Array
 		{
-			return [ Const.NEW_BASE_CREATED ];
+			return [ Const.RESOURCES_CHANGED ];
 		}
 		
 		override public function handleNotification(notification:INotification):void
 		{
 			switch (notification.getName())
 			{
-				case Const.NEW_BASE_CREATED:
-					// После постройки новой базы, вероятно, изменилось количество ресурсов
+				case Const.RESOURCES_CHANGED:
+					// Изменилось количество ресурсов
 					if (simpleResourcesView)
 					{
 						simpleResourcesView.cashView.count = resourcesDecor.getResource(ResourceDescVO.CASH);

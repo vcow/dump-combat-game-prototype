@@ -57,7 +57,7 @@ package vo
 		//  VO
 		//----------------------------------
 		
-        override public function event(eventId:String):void
+        override public function event(eventId:String, out:Object=null):void
         {
             // Отсекаем ивенты для дочерних элементов за ненадобностью
         }

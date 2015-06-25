@@ -9,7 +9,6 @@ package command
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 	
-	import proxy.AppDataProxy;
 	import proxy.BasesListProxy;
 	
 	import vo.BaseTemplVO;
@@ -47,7 +46,7 @@ package command
 		private function createBase(ruin:RuinVO):void
 		{
 			var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
-			var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy, AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME)));
+			var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy);
 			
 			var baseTempl:BaseTemplVO = BasesDict.getInstance().getBase(ruin.ruinId);
 			
@@ -74,6 +73,7 @@ package command
 				if (resourcesDecor.pay(repairPrice) ||
 					isFirstBase && resourcesDecor.isEnoughResources(repairPrice))
 				{
+                    sendNotification(Const.RESOURCES_CHANGED);
 					basesListProxy.basesListVO.children.splice(ruinIndex, 1);
 					
 					var base:BaseVO = new BaseVO();
@@ -123,15 +123,13 @@ package command
 		
 		override public function execute(notification:INotification):void
 		{
-			var resourcesDecor:ResourcesHelper = new ResourcesHelper(BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)),
-				AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME)));
 			var ruin:RuinVO = notification.getBody() as RuinVO;
 			
 			var baseTempl:BaseTemplVO = ruin ? BasesDict.getInstance().getBase(ruin.ruinId) : null;
 			
 			if (ruin && baseTempl && baseTempl.baseRuin)
 			{
-				if (resourcesDecor.isEnoughResources(baseTempl.baseRuin.ruinRepairPrice))
+				if ((new ResourcesHelper()).isEnoughResources(baseTempl.baseRuin.ruinRepairPrice))
 				{
 					createBase(ruin);
 				}

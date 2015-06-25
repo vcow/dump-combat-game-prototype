@@ -53,11 +53,12 @@ package vo
         /**
          * Разослать внутриигровое событие всем дочерним объектам
          * @param eventId идентификатор внутриигрового события
+         * @param out объект, в котором могут быть возвращены дополнительные параметры из дочерних элементов
          */
-        public function event(eventId:String):void
+        public function event(eventId:String, out:Object=null):void
         {
             for each (var value:VO in _children)
-                value.event(eventId);
+                value.event(eventId, out);
         }
         
         /**

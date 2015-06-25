@@ -23,6 +23,7 @@ package vo
 		//--------------------------------------------------------------------------
 		
 		public var priceDetails:String;			//< Назначение цены
+        public var priceEventId:String;         //< Идентификатор события
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -44,6 +45,8 @@ package vo
 			// TODO: Сериализовать специфичные поля
 			
 			res.@details = priceDetails;
+            if (priceEventId)
+                res.@event = priceEventId;
 			
 			// /TODO
 			
@@ -57,11 +60,7 @@ package vo
 			// TODO: десериализовать специфичные поля
 			
 			priceDetails = data.hasOwnProperty("@details") ? data.@details.toString() : PRICE;
-            
-            if (data.hasOwnProperty("@event"))
-            {
-                // TODO: Дописать обработку евента
-            }
+            priceEventId = data.hasOwnProperty("@event") ? data.@event.toString() : "";
 			
 			// /TODO
 			

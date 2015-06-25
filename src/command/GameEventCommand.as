@@ -38,7 +38,12 @@ package command
             
             var bases:Vector.<BaseVO> = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)).getBasesList();
             for each (var base:BaseVO in bases)
-                base.event(notification.getType());
+            {
+                var out:Object = {};
+                base.event(notification.getType(), out);
+                
+                for (var key:String in out)
+            }
         }
     }
 }
