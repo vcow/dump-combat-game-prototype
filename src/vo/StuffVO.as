@@ -26,9 +26,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function StuffVO()
+		public function StuffVO(parent:IVO=null)
 		{
-			super(NAME);
+			super(NAME, parent);
 		}
 		
 		//----------------------------------

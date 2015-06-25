@@ -36,9 +36,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function ResourceDescVO()
+		public function ResourceDescVO(parent:IVO=null)
 		{
-			super(NAME);
+			super(NAME, parent);
 		}
 		
 		//----------------------------------

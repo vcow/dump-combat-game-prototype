@@ -27,9 +27,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function EmployeeVO()
+		public function EmployeeVO(parent:IVO=null)
 		{
-			super(NAME);
+			super(NAME, parent);
 		}
 		
 		//----------------------------------

@@ -35,9 +35,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function SkillDescVO()
+		public function SkillDescVO(parent:IVO=null)
 		{
-			super(NAME);
+			super(NAME, parent);
 		}
 		
 		//----------------------------------

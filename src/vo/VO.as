@@ -18,7 +18,8 @@ package vo
 		private static const ALPHA_CHAR_CODES:Array = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70];
 		
 		private var _name:String;
-		protected var _children:Vector.<IVO> = new Vector.<IVO>();
+        private var _parent:IVO;
+		private var _children:Vector.<IVO> = new Vector.<IVO>();
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -28,7 +29,7 @@ package vo
 		 * Конструктор
 		 * @param name уникальное имя Value Object, используется для сериализации
 		 */
-		public function VO(name:String)
+		public function VO(name:String, parent:IVO)
 		{
 			name = name.split(/\W*/).join("_");
 			
@@ -36,6 +37,7 @@ package vo
 				throw Error("Wrong Value Object name.");
 			
 			_name = name;
+            _parent = parent;
 		}
 		
 		/**
@@ -47,6 +49,17 @@ package vo
 			throw Error("Must be override in child object.");
 			return null;
 		}
+        
+        /**
+         * Задает новый родительский объект
+         */
+        final public function setParent(value:IVO):void
+        {
+            if (value == _parent)
+                return;
+            
+            _parent = value;
+        }
 		
 		/**
 		 * Возвращает XML-объект, представляющий этот Value Object,
@@ -57,7 +70,7 @@ package vo
 		{
 			return <{_name}/>;
 		}
-		
+        
 		/**
 		 * Парсинг строкового значения, полученного из описания, это может быть
 		 * как обычная строка, так и ключ ресурса в формате {key}
@@ -130,10 +143,80 @@ package vo
 			return _name;
 		}
 		
-		public function get children():Vector.<IVO>
-		{
-			return _children;
-		}
+        public function get parent():IVO
+        {
+            return _parent;
+        }
+        
+        public function addChild(vo:IVO):IVO
+        {
+            var item:VO = vo as VO;
+            if (item && getChildIndex(item) < 0)
+            {
+                item.setParent(this);
+                _children.push(item);
+            }
+            return item;
+        }
+        
+        public function removeChild(vo:IVO):IVO
+        {
+            for (var i:int = 0; i < _children.length; i++)
+            {
+                var item:VO = VO(_children[i]);
+                if (item == vo)
+                {
+                    _children.splice(i, 1);
+                    item.setParent(null);
+                    return item;
+                }
+            }
+            return null;
+        }
+        
+        public function removeChildAt(index:int):IVO
+        {
+            if (index >=0 && index < _children.length)
+            {
+                var item:VO = VO(_children[index]);
+                _children.splice(index, 1);
+                item.setParent(null);
+                return item;
+            }
+            return null;
+        }
+        
+        public function removeAllChildren():int
+        {
+            var length:int = _children.length;
+            for (var i:int = 0; i < length; i++)
+                VO(_children[i]).setParent(null);
+            
+            _children.splice(0, _children.length);
+            return length;
+        }
+        
+        public function get numChildren():int
+        {
+            return _children.length;
+        }
+        
+        public function getChildAt(index:int):IVO
+        {
+            if (index >=0 && index < _children.length)
+                return _children[index];
+            return null;
+        }
+        
+        public function getChildIndex(vo:IVO):int
+        {
+            for (var i:int = 0; i < _children.length; i++)
+            {
+                if (_children[i] == vo)
+                    return i;
+            }
+            return -1;
+        }
 		
 		public function serialize():XML
 		{
@@ -159,23 +242,23 @@ package vo
 				{
 					// TODO: Сюда добавить другие VO для десериализации
 					
-					case BaseVO.NAME: value = new BaseVO(); break;
-					case BasesVO.NAME: value = new BasesVO(); break;
-					case PriceVO.NAME: value = new PriceVO(); break;
-					case ResourceVO.NAME: value = new ResourceVO(); break;
-					case RuinVO.NAME: value = new RuinVO(); break;
-					case TargetVO.NAME: value = new TargetVO(); break;
-					case ModulesVO.NAME: value = new ModulesVO(); break;
-					case ModuleVO.NAME: value = new ModuleVO(); break;
-					case RuinTemplVO.NAME: value = new RuinTemplVO(); break;
-					case RuinDefVO.NAME: value = new RuinDefVO(); break;
-					case StoreVO.NAME: value = new StoreVO(); break;
-					case PersonnelVO.NAME: value = new PersonnelVO(); break;
-                    case PersonVO.NAME: value = new PersonVO(); break;
-                    case EmployeeVO.NAME: value = new EmployeeVO(); break;
-                    case EventDescVO.NAME: value = new EventDescVO(); break;
-                    case PersonsVO.NAME: value = new PersonsVO(); break;
-                    case StuffVO.NAME: value = new StuffVO(); break;
+					case BaseVO.NAME: value = new BaseVO(this); break;
+					case BasesVO.NAME: value = new BasesVO(this); break;
+					case PriceVO.NAME: value = new PriceVO(this); break;
+					case ResourceVO.NAME: value = new ResourceVO(this); break;
+					case RuinVO.NAME: value = new RuinVO(this); break;
+					case TargetVO.NAME: value = new TargetVO(this); break;
+					case ModulesVO.NAME: value = new ModulesVO(this); break;
+					case ModuleVO.NAME: value = new ModuleVO(this); break;
+					case RuinTemplVO.NAME: value = new RuinTemplVO(this); break;
+					case RuinDefVO.NAME: value = new RuinDefVO(this); break;
+					case StoreVO.NAME: value = new StoreVO(this); break;
+					case PersonnelVO.NAME: value = new PersonnelVO(this); break;
+                    case PersonVO.NAME: value = new PersonVO(this); break;
+                    case EmployeeVO.NAME: value = new EmployeeVO(this); break;
+                    case EventDescVO.NAME: value = new EventDescVO(this); break;
+                    case PersonsVO.NAME: value = new PersonsVO(this); break;
+                    case StuffVO.NAME: value = new StuffVO(this); break;
 					
 					// /TODO
 					

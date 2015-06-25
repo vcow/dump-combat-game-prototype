@@ -23,11 +23,13 @@ package vo
 		{
 			var newResources:Vector.<ResourceVO> = new Vector.<ResourceVO>();
 			
-			for each (var src:ResourceVO in store.children)
+			for (var i:int = 0; i < store.numChildren; i++)
 			{
+                var src:ResourceVO = ResourceVO(store.getChildAt(i));
 				var resourceNotFound:Boolean = true;
-				for each (var dest:ResourceVO in children)
+				for (var j:int = 0; j < numChildren; j++)
 				{
+                    var dest:ResourceVO = ResourceVO(getChildAt(j));
 					if (dest.resourceId == src.resourceId)
 					{
 						dest.resourceCount += src.resourceCount;
@@ -41,16 +43,16 @@ package vo
 			}
 			
 			for each (dest in newResources)
-				children.push(dest);
+				addChild(dest);
 		}
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function StoreVO()
+		public function StoreVO(parent:IVO=null)
 		{
-			super(NAME);
+			super(NAME, parent);
 		}
 		
 		//----------------------------------

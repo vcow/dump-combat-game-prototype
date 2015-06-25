@@ -3,7 +3,6 @@ package helpers
 	import dictionary.ModulesDict;
 	import dictionary.ResourcesDict;
 	
-	import proxy.AppDataProxy;
 	import proxy.BasesListProxy;
 	
 	import vo.BaseVO;
@@ -66,8 +65,11 @@ package helpers
 				var store:StoreVO = base.baseStore;
 				if (store)
 				{
-					for each (var resource:ResourceVO in store.children)
-						space -= resource.resourceCount * ResourcesDict.getInstance().getResource(resource.resourceId).resourceSize;
+					for(var i:int = 0; i < store.numChildren; i++)
+                    {
+                        var resource:ResourceVO = ResourceVO(store.getChildAt(i));
+                        space -= resource.resourceCount * ResourcesDict.getInstance().getResource(resource.resourceId).resourceSize;
+                    }
 				}
 				
 				res += space;

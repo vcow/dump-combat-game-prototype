@@ -37,8 +37,11 @@
 				var priceList:Array = [];
 				if (value)
 				{
-					for each (var resourceVO:ResourceVO in value.children)
+					for (var i:int = 0; i < value.numChildren; i++)
+                    {
+                        var resourceVO:ResourceVO = ResourceVO(value.getChildAt(i));
 						priceList.push(resourceVO);
+                    }
 					priceList.sortOn("resourceId", Array.NUMERIC);
 				}
 				

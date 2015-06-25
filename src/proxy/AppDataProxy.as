@@ -55,8 +55,9 @@ package proxy
 		 */
 		public function getChildByName(name:String):IVO
 		{
-			for each (var value:IVO in applicationVO.children)
+			for (var i:int = 0; i < applicationVO.numChildren; i++)
 			{
+                var value:IVO = applicationVO.getChildAt(i);
 				if (value.name == name)
 					return value;
 			}
@@ -87,17 +88,17 @@ package proxy
          */
         public function updateChild(child:IVO):void
         {
-            for (var i:int = 0; i < applicationVO.children.length; i++)
+            for (var i:int = 0; i < applicationVO.numChildren; i++)
             {
-                var value:IVO = applicationVO.children[i];
+                var value:IVO = applicationVO.getChildAt(i);
                 if (value.name == child.name)
                 {
-                    applicationVO.children.splice(i, 1);
+                    applicationVO.removeChildAt(i);
                     break;
                 }
             }
             
-            applicationVO.children.push(child);
+            applicationVO.addChild(child);
         }
         
 		//----------------------------------

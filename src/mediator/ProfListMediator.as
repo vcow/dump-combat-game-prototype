@@ -90,8 +90,9 @@ package mediator
 			var personnelDecor:PersonnelHelper = new PersonnelHelper(basesListProxy, personsProxy);
 			var employeeData:Array = [];
 			
-			for each (var person:PersonVO in personsProxy.personsVO.children)
+			for (var i:int = 0; i < personsProxy.personsVO.numChildren; i++)
 			{
+                var person:PersonVO = PersonVO(personsProxy.personsVO.getChildAt(i));
 				if (professionId == 0 || person.personProfessionId == professionId)
 				{
 					var item:Object = { label: person.personName, personId: person.personId };

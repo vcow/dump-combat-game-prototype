@@ -1,10 +1,10 @@
 package command
 {
-	import helpers.ResourcesHelper;
-	
 	import dictionary.BasesDict;
 	import dictionary.Const;
 	import dictionary.DefaultsDict;
+	
+	import helpers.ResourcesHelper;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
@@ -53,11 +53,10 @@ package command
 			
 			if (baseTempl && baseTempl.baseRuin)
 			{
-				var numChildren:int = basesListProxy.basesListVO.children.length;
 				var ruinIndex:int = -1;
-				for (var i:int = 0; i < numChildren; i++)
+				for (var i:int = 0; i < basesListProxy.basesListVO.numChildren; i++)
 				{
-					var value:IVO = basesListProxy.basesListVO.children[i];
+					var value:IVO = basesListProxy.basesListVO.getChildAt(i);
 					if (value is RuinVO && RuinVO(value).ruinId == ruin.ruinId)
 					{
 						ruinIndex = i;
@@ -68,37 +67,39 @@ package command
 				if (ruinIndex < 0)
 					throw Error("Can't find ruin.");
 				
-				var isFirstBase:Boolean = numChildren == 1;
+				var isFirstBase:Boolean = basesListProxy.basesListVO.numChildren == 1;
 				var repairPrice:PriceVO = baseTempl.baseRuin.ruinRepairPrice;
 				
 				if (resourcesDecor.pay(repairPrice) ||
 					isFirstBase && resourcesDecor.isEnoughResources(repairPrice))
 				{
-					basesListProxy.basesListVO.children.splice(ruinIndex, 1);
+					basesListProxy.basesListVO.removeChildAt(ruinIndex);
 					
 					var base:BaseVO = new BaseVO();
 					base.baseId = ruin.ruinId;
 					base.baseName = baseTempl.baseName;
 					
 					var modules:ModulesVO = ruin.ruinModules;
-					base.children.push(modules ? modules : new ModulesVO());
+					base.addChild(modules ? modules : new ModulesVO());
 					
-					base.children.push(new StoreVO());
+					base.addChild(new StoreVO());
 					
-					base.children.push(new PersonnelVO());
+					base.addChild(new PersonnelVO());
 					
-					basesListProxy.basesListVO.children.push(base);
+					basesListProxy.basesListVO.addChild(base);
 					
 					if (isFirstBase)
 					{
 						// Если это первая база игрока, кладем на склад ресурсы по
 						// умолчанию, за вычетом стоимости базы
 						var store:StoreVO = DefaultsDict.getInstance().resourcesList;
-						for each (var availableRes:ResourceVO in store.children)
+						for (i = 0; i < store.numChildren; i++)
 						{
+                            var availableRes:ResourceVO = ResourceVO(store.getChildAt(i));
 							var resourceAdded:Boolean = false;
-							for each (var requiredRes:ResourceVO in repairPrice.children)
+							for (var j:int = 0; j < repairPrice.numChildren; j++)
 							{
+                                var requiredRes:ResourceVO = ResourceVO(repairPrice.getChildAt(j));
 								if (availableRes.resourceId == requiredRes.resourceId)
 								{
 									resourcesDecor.addResource(availableRes.resourceId, availableRes.resourceCount - requiredRes.resourceCount);

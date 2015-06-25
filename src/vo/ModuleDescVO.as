@@ -36,9 +36,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function ModuleDescVO()
+		public function ModuleDescVO(parent:IVO=null)
 		{
-			super(NAME);
+			super(NAME, parent);
 		}
 		
 		/**
@@ -46,8 +46,9 @@ package vo
 		 */
 		public function get modulePrice():PriceVO
 		{
-			for each (var value:IVO in children)
-			{
+            for (var i:int = 0; i < numChildren; i++)
+            {
+                var value:IVO = getChildAt(i);
 				if (value.name == PriceVO.NAME)
 				{
 					var price:PriceVO = value as PriceVO;
@@ -63,8 +64,9 @@ package vo
 		 */
 		public function get moduleFee():PriceVO
 		{
-			for each (var value:IVO in children)
-			{
+            for (var i:int = 0; i < numChildren; i++)
+            {
+                var value:IVO = getChildAt(i);
 				if (value.name == PriceVO.NAME)
 				{
 					var price:PriceVO = value as PriceVO;

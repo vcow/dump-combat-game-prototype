@@ -49,11 +49,13 @@ package helpers
 		{
 			var store:StoreVO = getAllResources() || getAllResources(true);
 			
-			for each (var requiredRes:ResourceVO in price.children)
+			for (var i:int = 0; i < price.numChildren; i++)
 			{
+                var requiredRes:ResourceVO = ResourceVO(price.getChildAt(i));
 				var resourceNotFound:Boolean = true;
-				for each (var availableRes:ResourceVO in store.children)
+				for (var j:int = 0; j < store.numChildren; j++)
 				{
+                    var availableRes:ResourceVO = ResourceVO(store.getChildAt(j));
 					if (availableRes.resourceId == requiredRes.resourceId)
 					{
 						if (availableRes.resourceCount < requiredRes.resourceCount)
@@ -83,8 +85,9 @@ package helpers
 			if (bases.length == 0 || !isEnoughResources(price))
 				return false;	// Платеж производится только из складов при наличии достаточного количества ресурсов
 			
-			for each (var requiredRes:ResourceVO in price.children)
+			for (var i:int = 0; i < price.numChildren; i++)
 			{
+                var requiredRes:ResourceVO = ResourceVO(price.getChildAt(i));
 				var paid:Boolean = false;
 				var count:int = requiredRes.resourceCount;
 				
@@ -94,8 +97,9 @@ package helpers
 				for each (var base:BaseVO in bases)
 				{
 					var store:StoreVO = base.baseStore;
-					for each (var availableRes:ResourceVO in store.children)
+					for (var j:int = 0; j < store.numChildren; j++)
 					{
+                        var availableRes:ResourceVO = ResourceVO(store.getChildAt(j));
 						if (availableRes.resourceId == requiredRes.resourceId)
 						{
 							var rest:int = availableRes.resourceCount - count;
@@ -135,8 +139,9 @@ package helpers
 		public function getResource(resourceId:uint):int
 		{
 			var store:StoreVO = getAllResources() || getAllResources(true);
-			for each (var value:ResourceVO in store.children)
+			for (var i:int = 0; i < store.numChildren; i++)
 			{
+                var value:ResourceVO = ResourceVO(store.getChildAt(i));
 				if (value.resourceId == resourceId)
 					return value.resourceCount;
 			}
@@ -214,8 +219,9 @@ package helpers
 			// Добавить ресурс
 			var resourceAdded:Boolean = false;
 			var store:StoreVO = base.baseStore;
-			for each (var resource:ResourceVO in store.children)
+			for (var i:int = 0; i < store.numChildren; i++)
 			{
+                var resource:ResourceVO = ResourceVO(store.getChildAt(i));
 				if (resource.resourceId == resourceId)
 				{
 					resource.resourceCount += count;
@@ -230,7 +236,7 @@ package helpers
 				resource.resourceId = resourceId;
 				resource.resourceCount = count;
 				
-				store.children.push(resource);
+				store.addChild(resource);
 			}
 		}
 		

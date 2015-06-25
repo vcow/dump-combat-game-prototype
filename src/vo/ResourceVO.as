@@ -26,9 +26,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function ResourceVO()
+		public function ResourceVO(parent:IVO=null)
 		{
-			super(NAME);
+			super(NAME, parent);
 		}
 		
 		//----------------------------------

@@ -25,9 +25,9 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function RuinVO()
+		public function RuinVO(parent:IVO=null)
 		{
-			super(NAME);
+			super(NAME, parent);
 		}
 		
 		/**
@@ -35,8 +35,9 @@ package vo
 		 */		
 		public function get ruinModules():ModulesVO
 		{
-			for each (var value:IVO in children)
+			for (var i:int = 0; i < numChildren; i++)
 			{
+                var value:IVO = getChildAt(i);
 				if (value.name == ModulesVO.NAME)
 					return value as ModulesVO;
 			}
