@@ -50,6 +50,9 @@ package helpers
 		 */
 		public function isEnoughResources(price:PriceVO):Boolean
 		{
+            if (!price || price.children.length == 0)
+                return true;
+            
 			var store:StoreVO = getAllResources() || getAllResources(true);
 			
 			for each (var requiredRes:ResourceVO in price.children)
@@ -73,65 +76,97 @@ package helpers
 			
 			return true;
 		}
+        
+        /**
+         * Узнать, хватает ли места, если добавляются указанные ресурсы
+         * @param price добавляемые ресурсы
+         * @return true, если места хватает
+         */
+        public function isEnouchSpace(price:PriceVO):Boolean
+        {
+            if (!price || price.children.length == 0)
+                return true;
+            
+            var moduleDesc:ModuleDescVO = ModulesDict.getInstance().getModule(ModuleDescVO.STORE);
+            if (!moduleDesc)
+                return false;
+            
+            var modulesHelper:ModulesHelper = new ModulesHelper(_basesListProxy);
+            for each (var requiredRes:ResourceVO in price.children)
+            {
+                var resourceDesc:ResourceDescVO = ResourcesDict.getInstance().getResource(requiredRes.resourceId);
+                
+                if (!resourceDesc || resourceDesc.resourceSize == 0 || requiredRes.resourceCount <= 0)
+                    continue;
+                
+                var bases:Vector.<BaseVO> = _basesListProxy.getBasesList();
+                var rest:int = requiredRes.resourceCount;
+                
+                for each (var base:BaseVO in bases)
+                {
+                    // сколко единиц ресурса поместится в найденное свободное пространство
+                    var freeSpace:int = modulesHelper.getSpace(ModuleDescVO.STORE, base) / resourceDesc.resourceSize;
+                    
+                    if (freeSpace == 0)
+                        continue;	// Для этого ресурса места нет
+                    
+                    var filled:int;	// Место, которое будет занято ресурсом на складах
+                    if (rest > freeSpace)
+                    {
+                        filled = freeSpace * resourceDesc.resourceSize;
+                        rest -= freeSpace;
+                    }
+                    else
+                    {
+                        filled = rest * resourceDesc.resourceSize;
+                        rest = 0;
+                    }
+                    
+                    if (rest == 0)
+                        break;
+                }
+                
+                if (rest > 0)
+                    return false;
+            }
+            
+            return true;
+        }
 		
 		/**
 		 * Заплатить указанную цену
 		 * @param priceVO цена
-         * @param sendNotification флаг, указывающий отправлять соответствующую нотификацию
 		 * @return true, если платеж выполнен успешно, false, если какой-то из ресурсов ушел в минус
 		 */
-		public function pay(price:PriceVO, sendNotification:Boolean=true):Boolean
+		public function pay(price:PriceVO):Boolean
 		{
-			var bases:Vector.<BaseVO> = _basesListProxy.getBasesList();
-			
-			if (bases.length == 0 || !isEnoughResources(price))
-				return false;	// Платеж производится только из складов при наличии достаточного количества ресурсов
-			
-			for each (var requiredRes:ResourceVO in price.children)
-			{
-				var paid:Boolean = false;
-				var count:int = requiredRes.resourceCount;
-				
-				if (count == 0)
-					continue;
-				
-				for each (var base:BaseVO in bases)
-				{
-					var store:StoreVO = base.baseStore;
-					for each (var availableRes:ResourceVO in store.children)
-					{
-						if (availableRes.resourceId == requiredRes.resourceId)
-						{
-							var rest:int = availableRes.resourceCount - count;
-							if (rest < 0)
-							{
-								// На этой базе ресурс исчерпан, требуется еще
-								count = -rest;
-								availableRes.resourceCount = 0;
-							}
-							else
-							{
-								// По этому ресурсу расчитались
-								count = 0;
-								availableRes.resourceCount = rest;
-								paid = true;
-							}
-							break;
-						}
-					}
-					
-					if (paid)
-						break;
-				}
-				
-				if (!paid)
-					throw Error("Not enough resources.");
-			}
-			
-            if (sendNotification)
-                ProtoFacade.getInstance().sendNotification(Const.RESOURCES_CHANGED);
+            if (!price)
+                return true;
             
-			return true;
+            var credit:PriceVO = new PriceVO();
+            var debit:PriceVO = new PriceVO();
+            
+            for each (var resource:ResourceVO in price)
+            {
+                var res:ResourceVO = ResourceVO(resource.clone());
+                if (resource.resourceCount > 0)
+                {
+                    credit.children.push(res);
+                }
+                else if (resource.resourceCount < 0)
+                {
+                    res.resourceCount *= -1;
+                    debit.children.push(res);
+                }
+            }
+            
+            if (isEnoughResources(credit) && isEnouchSpace(debit))
+            {
+                ProtoFacade.getInstance().sendNotification(Const.CHANGE_RESOURCES, price, Const.CREDIT);
+                return true;
+            }
+            
+            return false;
 		}
 		
 		/**
@@ -149,12 +184,60 @@ package helpers
 			}
 			return 0;
 		}
+        
+        /**
+         * Удалить ресурсы
+         * @param resourceId идентификатор ресурса
+         * @param resourceCount удаляемое количество ресурса
+         * @return остаток, который не удалось удалить (будет больше нуля, если ресурсов на складах не хватило)
+         */
+        public function removeResource(resourceId:uint, resourceCount:int):int
+        {
+            if (resourceCount <= 0)
+                return 0;
+            
+            var bases:Vector.<BaseVO> = _basesListProxy.getBasesList();
+            
+            if (bases.length == 0)
+                return resourceCount;
+            
+            var count:int = resourceCount;
+            
+            for each (var base:BaseVO in bases)
+            {
+                var store:StoreVO = base.baseStore;
+                for each (var availableRes:ResourceVO in store.children)
+                {
+                    if (availableRes.resourceId == resourceId)
+                    {
+                        var rest:int = availableRes.resourceCount - count;
+                        if (rest < 0)
+                        {
+                            // На этой базе ресурс исчерпан, требуется еще
+                            count = -rest;
+                            availableRes.resourceCount = 0;
+                        }
+                        else
+                        {
+                            count = 0;
+                            availableRes.resourceCount = rest;
+                        }
+                        break;
+                    }
+                }
+                
+                if (count == 0)
+                    break;
+            }
+            
+            return count;
+        }
 		
 		/**
-		 * Задать новое количество указанного ресурса
+		 * Добавить ресурсы
 		 * @param resourceId идентификатор ресурса
-		 * @param resourceCount новое количество ресурса
-		 * @return количество ресурса, размещенное на складах (будет меньше, если складов не хватает)
+		 * @param resourceCount добавляемое количество ресурса
+		 * @return количество ресурса, размещенное на складах (будет меньше добавляемого количества, если складов не хватает)
 		 */
 		public function addResource(resourceId:uint, resourceCount:int):int
 		{
@@ -167,6 +250,7 @@ package helpers
 			var bases:Vector.<BaseVO> = _basesListProxy.getBasesList();
 			var rest:int = resourceCount;
 			
+			var modulesHelper:ModulesHelper = new ModulesHelper(_basesListProxy);
 			for each (var base:BaseVO in bases)
 			{
 				if (resourceDesc.resourceSize == 0)
@@ -179,8 +263,6 @@ package helpers
 				}
 				else
 				{
-					var modulesHelper:ModulesHelper = new ModulesHelper(_basesListProxy);
-					
 					// сколко единиц ресурса поместится в найденное свободное пространство
 					var freeSpace:int = modulesHelper.getSpace(ModuleDescVO.STORE, base) / resourceDesc.resourceSize;
 					

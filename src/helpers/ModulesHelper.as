@@ -3,7 +3,6 @@ package helpers
 	import dictionary.ModulesDict;
 	import dictionary.ResourcesDict;
 	
-	import proxy.AppDataProxy;
 	import proxy.BasesListProxy;
 	
 	import vo.BaseVO;

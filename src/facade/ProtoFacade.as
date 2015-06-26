@@ -1,5 +1,6 @@
 package facade
 {
+	import command.ChangeResourcesCommand;
 	import command.CreateNewBaseCommand;
 	import command.CreateNewPersonCommand;
 	import command.GameEventCommand;
@@ -59,6 +60,7 @@ package facade
             registerCommand(Const.NEW_PERSON_CREATED, NewPersonCreatedCommand);
             registerCommand(Const.PLACE_EMPLOYEE, PlaceEmployeeCommand);
             registerCommand(Const.GAME_EVENT, GameEventCommand);
+            registerCommand(Const.CHANGE_RESOURCES, ChangeResourcesCommand);
 		}
 	}
 }

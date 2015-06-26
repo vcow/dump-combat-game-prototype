@@ -63,14 +63,16 @@ package managers
                 dispatchEvent(new EventsManagerEvent(EventsManagerEvent.TICK));
             
             var now:Number = (new Date()).time;
+            appDataProxy.stuff.timestamp = now;
+            
             for (var key:String in _activatedEvents)
             {
-                var timestamp:Number = _activatedEvents[key];
-                if (timestamp && now >= timestamp)
+                var eventTimestamp:Number = _activatedEvents[key];
+                if (eventTimestamp && now >= eventTimestamp)
                 {
                     var eventDesc:EventDescVO = EventsDict.getInstance().getEvent(key);
                     _activatedEvents[key] = now + eventDesc.eventInterval;
-                    lastTimes[key] = now;
+                    eventLastTimes[key] = now;
                     
                     dispatchEvent(new EventsManagerEvent(EventsManagerEvent.EVENT, key));
                 }
@@ -98,19 +100,19 @@ package managers
                     // Проверить наличие срабатываний в прошлом, расчитать остаток времени с момента
                     // возобновления игры до следующего срабатывания интервального события
                     var now:Number = (new Date()).time;
-                    var lastTime:Number = lastTimes[eventDesc.eventId];
-                    if (isNaN(lastTime))
+                    var eventLastTime:Number = eventLastTimes[eventDesc.eventId];
+                    if (isNaN(eventLastTime))
                     {
-                        lastTimes[eventDesc.eventId] = lastTime = now;
+                        eventLastTimes[eventDesc.eventId] = eventLastTime = now;
                         _activatedEvents[eventDesc.eventId] = now + eventDesc.eventInterval;
                     }
                     else
                     {
                         var exitTime:Number = appDataProxy.stuff.exitTime;
-                        if (isNaN(exitTime) || exitTime  < lastTime)
+                        if (isNaN(exitTime) || exitTime  < eventLastTime)
                             _activatedEvents[eventDesc.eventId] = now + eventDesc.eventInterval;
                         else
-                            _activatedEvents[eventDesc.eventId] = now + eventDesc.eventInterval - (exitTime - lastTime);
+                            _activatedEvents[eventDesc.eventId] = now + eventDesc.eventInterval - (exitTime - eventLastTime);
                     }
                 }
                 else
@@ -158,7 +160,7 @@ package managers
         /**
          * Список временных меток последних срабатываний для интервальных событий
          */
-        protected function get lastTimes():Object
+        protected function get eventLastTimes():Object
         {
             var times:Object = appDataProxy.stuff.eventLastTimes;
             if (!times)

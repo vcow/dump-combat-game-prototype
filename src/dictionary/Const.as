@@ -18,6 +18,10 @@ package dictionary
 		public static const YES:int = 2;					//< Код кнопки Yes для алертов
 		public static const NO:int = 3;						//< Код кнопки No для алертов
         
+        // Change resources
+        public static const DEBIT:String = "debit";
+        public static const CREDIT:String = "credit";
+        
         // Gender
         public static const MALE:String = "m";
         public static const FEMALE:String = "f";
@@ -32,6 +36,7 @@ package dictionary
         public static const NEW_PERSON_CREATED:String = "newPersonCreated";                 //< Был создан новый персонаж
         public static const PLACE_EMPLOYEE:String = "placeEmployee";                        //< Запрос на приписку сотрудника к базе
         public static const EMPLOYEE_IS_PLACED:String = "employeeIsPlaced";                 //< Сотрудник приписан к базе
+        public static const CHANGE_RESOURCES:String = "changeResources";                    //< Изменить количество ресурсов
         public static const RESOURCES_CHANGED:String = "resourcesChanged";                  //< Изменилось количество ресурсов
 	}
 }
