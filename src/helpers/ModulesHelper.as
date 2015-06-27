@@ -1,7 +1,8 @@
 package helpers
 {
 	import dictionary.ModulesDict;
-	import dictionary.ResourcesDict;
+	
+	import facade.ProtoFacade;
 	
 	import proxy.BasesListProxy;
 	
@@ -30,7 +31,7 @@ package helpers
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function ModulesHelper(basesListProxy:BasesListProxy)
+		public function ModulesHelper(basesListProxy:BasesListProxy=null)
 		{
 			_basesListProxy = basesListProxy;
 		}
@@ -53,7 +54,7 @@ package helpers
 			}
 			else
 			{
-				bases = _basesListProxy.getBasesList();
+				bases = basesListProxy.getBasesList();
 			}
 			
 			var moduleDesc:ModuleDescVO = ModulesDict.getInstance().getModule(ModuleDescVO.STORE);
@@ -66,13 +67,20 @@ package helpers
 				if (store)
 				{
 					for each (var resource:ResourceVO in store.children)
-						space -= resource.resourceCount * ResourcesDict.getInstance().getResource(resource.resourceId).resourceSize;
+						space -= resource.resourceCount * resource.resourceDesc.resourceSize;
 				}
 				
 				res += space;
 			}
 			
 			return res;
+		}
+		
+		private function get basesListProxy():BasesListProxy
+		{
+			if (!_basesListProxy)
+				_basesListProxy = BasesListProxy(ProtoFacade.getInstance().retrieveProxy(BasesListProxy.NAME));
+			return _basesListProxy;
 		}
 	}
 }

@@ -17,9 +17,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import vo.ResourceDescVO;
-			import dictionary.ResourcesDict;
-			
 			import vo.ResourceVO;
 			
 			//--------------------------------------------------------------------------
@@ -45,8 +42,7 @@
 				{
 					_count = resourceVO.resourceCount;
 					
-					var resource:ResourceDescVO = ResourcesDict.getInstance().getResource(resourceVO.resourceId);
-					_name = (resource ? resource.resourceName : "???") + ":";
+					_name = (resourceVO.resourceDesc ? resourceVO.resourceDesc.resourceName : "???") + ":";
 				}
 			}
 		]]>

@@ -39,8 +39,8 @@ package helpers
 		
 		public function ResourcesHelper(basesListProxy:BasesListProxy=null, appDataProxy:AppDataProxy=null)
 		{
-			_basesListProxy = basesListProxy || BasesListProxy(ProtoFacade.getInstance().retrieveProxy(BasesListProxy.NAME));
-			_appDataProxy = appDataProxy || AppDataProxy(ProtoFacade.getInstance().retrieveProxy(AppDataProxy.NAME));
+			_basesListProxy = basesListProxy;
+			_appDataProxy = appDataProxy;
 		}
 		
 		/**
@@ -76,7 +76,86 @@ package helpers
 			
 			return true;
 		}
-        
+		
+		/**
+		 * Инвертировать цену
+		 * @param sourcePrice исходная цена
+		 * @return цена, где все значения представлены с противоположным знаком
+		 */
+		public function invertPrice(sourcePrice:PriceVO):PriceVO
+		{
+			var invert:PriceVO = new PriceVO();
+			for each (var resource:ResourceVO in sourcePrice.children)
+			{
+				var ires:ResourceVO = ResourceVO(resource.clone());
+				ires.resourceCount *= -1;
+				invert.children.push(ires);
+			}
+			return invert;
+		}
+		
+		/**
+		 * Разделить цену на дебет и кредит (положительные и отрицательные значения)
+		 * @param sourcePrice исходная цена
+		 * @param invertCredit инвертировать кредит (чтобы получить положительные значения)
+		 * @return массив из двух цен 0 - дебет, 1 - кредит
+		 */
+		public function separatePrice(sourcePrice:PriceVO, invertCredit:Boolean=false):Vector.<PriceVO>
+		{
+			var dc:Vector.<PriceVO> = new <PriceVO>[ new PriceVO(), new PriceVO() ];
+			for each (var resource:ResourceVO in sourcePrice.children)
+			{
+				var cres:ResourceVO = ResourceVO(resource.clone());
+				if (resource.resourceCount > 0)
+				{
+					dc[0].children.push(cres);
+				}
+				else if (resource.resourceCount < 0)
+				{
+					if (invertCredit)
+						cres.resourceCount *= -1;
+					dc[1].children.push(cres);
+				}
+			}
+			return dc;
+		}
+		
+		/**
+		 * Объединить несколько цен в одну
+		 * @param args набор объединяемых цен
+		 * @return суммарная цена
+		 */
+		public function joinPrice(...args):PriceVO
+		{
+			if (args.length == 1)
+				return args[0];
+			
+			var price:PriceVO = new PriceVO();
+			for each (var src:PriceVO in args)
+			{
+				if (!src)
+					continue;
+				
+				var resourceAlreadyExists:Boolean = false;
+				for each (var srcRes:ResourceVO in src.children)
+				{
+					for each (var priceRes:ResourceVO in price.children)
+					{
+						if (srcRes.resourceId == priceRes.resourceId)
+						{
+							priceRes.resourceCount += srcRes.resourceCount;
+							resourceAlreadyExists = true;
+							break;
+						}
+					}
+					
+					if (!resourceAlreadyExists)
+						price.children.push(srcRes.clone());
+				}
+			}
+			return price;
+		}
+		
         /**
          * Узнать, хватает ли места, если добавляются указанные ресурсы
          * @param price добавляемые ресурсы
@@ -91,21 +170,19 @@ package helpers
             if (!moduleDesc)
                 return false;
             
-            var modulesHelper:ModulesHelper = new ModulesHelper(_basesListProxy);
+            var modulesHelper:ModulesHelper = new ModulesHelper(basesListProxy);
             for each (var requiredRes:ResourceVO in price.children)
             {
-                var resourceDesc:ResourceDescVO = ResourcesDict.getInstance().getResource(requiredRes.resourceId);
-                
-                if (!resourceDesc || resourceDesc.resourceSize == 0 || requiredRes.resourceCount <= 0)
+                if (requiredRes.resourceDesc.resourceSize == 0 || requiredRes.resourceCount <= 0)
                     continue;
                 
-                var bases:Vector.<BaseVO> = _basesListProxy.getBasesList();
+                var bases:Vector.<BaseVO> = basesListProxy.getBasesList();
                 var rest:int = requiredRes.resourceCount;
                 
                 for each (var base:BaseVO in bases)
                 {
                     // сколко единиц ресурса поместится в найденное свободное пространство
-                    var freeSpace:int = modulesHelper.getSpace(ModuleDescVO.STORE, base) / resourceDesc.resourceSize;
+                    var freeSpace:int = modulesHelper.getSpace(ModuleDescVO.STORE, base) / requiredRes.resourceDesc.resourceSize;
                     
                     if (freeSpace == 0)
                         continue;	// Для этого ресурса места нет
@@ -113,12 +190,12 @@ package helpers
                     var filled:int;	// Место, которое будет занято ресурсом на складах
                     if (rest > freeSpace)
                     {
-                        filled = freeSpace * resourceDesc.resourceSize;
+                        filled = freeSpace * requiredRes.resourceDesc.resourceSize;
                         rest -= freeSpace;
                     }
                     else
                     {
-                        filled = rest * resourceDesc.resourceSize;
+                        filled = rest * requiredRes.resourceDesc.resourceSize;
                         rest = 0;
                     }
                     
@@ -143,26 +220,10 @@ package helpers
             if (!price)
                 return true;
             
-            var credit:PriceVO = new PriceVO();
-            var debit:PriceVO = new PriceVO();
-            
-            for each (var resource:ResourceVO in price)
+            var dc:Vector.<PriceVO> = separatePrice(price, true);
+            if (isEnoughResources(dc[0]) && isEnouchSpace(dc[1]))
             {
-                var res:ResourceVO = ResourceVO(resource.clone());
-                if (resource.resourceCount > 0)
-                {
-                    credit.children.push(res);
-                }
-                else if (resource.resourceCount < 0)
-                {
-                    res.resourceCount *= -1;
-                    debit.children.push(res);
-                }
-            }
-            
-            if (isEnoughResources(credit) && isEnouchSpace(debit))
-            {
-                ProtoFacade.getInstance().sendNotification(Const.CHANGE_RESOURCES, price, Const.CREDIT);
+                ProtoFacade.getInstance().sendNotification(Const.CHANGE_RESOURCES, invertPrice(price));
                 return true;
             }
             
@@ -196,7 +257,7 @@ package helpers
             if (resourceCount <= 0)
                 return 0;
             
-            var bases:Vector.<BaseVO> = _basesListProxy.getBasesList();
+            var bases:Vector.<BaseVO> = basesListProxy.getBasesList();
             
             if (bases.length == 0)
                 return resourceCount;
@@ -247,10 +308,10 @@ package helpers
 			if (!moduleDesc || !resourceDesc || resourceCount <= 0)
 				return 0;
 			
-			var bases:Vector.<BaseVO> = _basesListProxy.getBasesList();
+			var bases:Vector.<BaseVO> = basesListProxy.getBasesList();
 			var rest:int = resourceCount;
 			
-			var modulesHelper:ModulesHelper = new ModulesHelper(_basesListProxy);
+			var modulesHelper:ModulesHelper = new ModulesHelper(basesListProxy);
 			for each (var base:BaseVO in bases)
 			{
 				if (resourceDesc.resourceSize == 0)
@@ -289,6 +350,20 @@ package helpers
 			}
 			
 			return resourceCount - rest;
+		}
+		
+		private function get basesListProxy():BasesListProxy
+		{
+			if (!_basesListProxy)
+				_basesListProxy = BasesListProxy(ProtoFacade.getInstance().retrieveProxy(BasesListProxy.NAME));
+			return  _basesListProxy;
+		}
+		
+		private function get appDataProxy():AppDataProxy
+		{
+			if (!_appDataProxy)
+				_appDataProxy = AppDataProxy(ProtoFacade.getInstance().retrieveProxy(AppDataProxy.NAME));
+			return _appDataProxy;
 		}
 		
 		/**
@@ -339,7 +414,7 @@ package helpers
 			}
 			else
 			{
-				var bases:Vector.<BaseVO> = _basesListProxy.getBasesList();
+				var bases:Vector.<BaseVO> = basesListProxy.getBasesList();
 				if (bases.length > 0)
 				{
 					store = new StoreVO();

@@ -30,6 +30,8 @@ package vo
 												//< (если не NaN, переопределяет значение из словаря модулей ModuleDescVO)
 		
 		private var _moduleId:uint;				//< Идентификатор модуля
+		
+		private var _moduleDesc:ModuleDescVO;
         private var _feeEventId:String;
         
 		//--------------------------------------------------------------------------
@@ -48,8 +50,8 @@ package vo
             
             _moduleId = value;
             
-            var moduleDesc:ModuleDescVO = ModulesDict.getInstance().getModule(_moduleId);
-            var fee:PriceVO = moduleDesc ? moduleDesc.moduleFee : null;
+			_moduleDesc = ModulesDict.getInstance().getModule(_moduleId);
+            var fee:PriceVO = _moduleDesc ? _moduleDesc.moduleFee : null;
             _feeEventId = fee ? fee.priceEventId : "";
         }
         
@@ -57,6 +59,11 @@ package vo
         {
             return _moduleId;
         }
+		
+		public function get moduleDesc():ModuleDescVO
+		{
+			return _moduleDesc;
+		}
 		
 		//----------------------------------
 		//  VO
@@ -67,23 +74,26 @@ package vo
             if (eventId == _feeEventId)
             {
                 // Событие, по которому взымается плата за эксплуатацию модуля
-                var moduleDesc:ModuleDescVO = ModulesDict.getInstance().getModule(_moduleId);
-                if ((new ResourcesHelper()).pay(moduleDesc.moduleFee, false))
-                {
-                    // Произведен платежь за эксплуатацию модуля
-                    if (out)
+                if (out)
+				{
+					var data:Array = out.commonOut[Const.CHANGE_RESOURCES] as Array;
+					var resourcesDecor:ResourcesHelper = new ResourcesHelper();
+					
+					var commonFee:PriceVO;
+                    if (data)
+						commonFee = resourcesDecor.joinPrice(resourcesDecor.joinPrice.apply(this, data), resourcesDecor.invertPrice(moduleDesc.moduleFee));
+					else
+						commonFee = resourcesDecor.invertPrice(moduleDesc.moduleFee);
+					
+					if (resourcesDecor.isEnoughResources(resourcesDecor.separatePrice(commonFee, true)[1]))
 					{
-						var data:Array = out.commonOut[Const.RESOURCES_CHANGED] as Array;
-						
-                        if (!data)
-							out.commonOut[Const.RESOURCES_CHANGED] = [];
+						out.commonOut[Const.CHANGE_RESOURCES] = [ commonFee ];
 					}
-                }
-                else
-                {
-                    // Отключить модуль за неуплату
-                    
-                }
+	                else
+	                {
+	                    // Отключить модуль за неуплату
+	                }
+				}
             }
             else
             {

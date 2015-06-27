@@ -1,5 +1,7 @@
 package vo
 {
+	import dictionary.ResourcesDict;
+
 	/**
 	 * 
 	 * @author jvirkovskiy
@@ -19,8 +21,11 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		public var resourceId:uint;				//< Идентификатор ресурса
 		public var resourceCount:int;			//< Количество ресурсов
+		
+		private var _resourceId:uint;			//< Идентификатор ресурса
+		
+		private var _resourceDesc:ResourceDescVO;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -29,6 +34,25 @@ package vo
 		public function ResourceVO()
 		{
 			super(NAME);
+		}
+		
+		public function set resourceId(value:uint):void
+		{
+			if (value == _resourceId)
+				return;
+			
+			_resourceId = value;
+			_resourceDesc = ResourcesDict.getInstance().getResource(resourceId);
+		}
+		
+		public function get resourceId():uint
+		{
+			return _resourceId;
+		}
+		
+		public function get resourceDesc():ResourceDescVO
+		{
+			return _resourceDesc;
 		}
 		
 		//----------------------------------

@@ -52,8 +52,7 @@ package command
                     base.children.push(personnel);
                 }
                 
-                var personsProxy:PersonsProxy = PersonsProxy(this.facade.retrieveProxy(PersonsProxy.NAME));
-                var personnelHelper:PersonnelHelper = new PersonnelHelper(baseListProxy, personsProxy);
+                var personnelHelper:PersonnelHelper = new PersonnelHelper(baseListProxy);
                 
                 personnelHelper.fireEmployee(person.personId, false);
                 var employee:EmployeeVO = personnelHelper.hireEmployee(person.personId, base.baseId);

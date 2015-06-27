@@ -1,5 +1,7 @@
 package helpers
 {
+    import facade.ProtoFacade;
+    
     import proxy.BasesListProxy;
     import proxy.PersonsProxy;
     
@@ -29,7 +31,7 @@ package helpers
         // 
         //--------------------------------------------------------------------------
         
-        public function PersonnelHelper(basesListProxy:BasesListProxy, personsProxy:PersonsProxy)
+        public function PersonnelHelper(basesListProxy:BasesListProxy=null, personsProxy:PersonsProxy=null)
         {
             _basesListProxy = basesListProxy;
             _personsProxy = personsProxy;
@@ -45,7 +47,7 @@ package helpers
         {
             var baseId:String;
             
-            for each (var base:BaseVO in _basesListProxy.getBasesList())
+            for each (var base:BaseVO in basesListProxy.getBasesList())
             {
                 var personnel:PersonnelVO = base.personnel;
                 if (!personnel)
@@ -68,12 +70,12 @@ package helpers
             
             if (replacePerson)
             {
-                for (i = 0; i < _personsProxy.personsVO.children.length; i++)
+                for (i = 0; i < personsProxy.personsVO.children.length; i++)
                 {
-                    var person:PersonVO = PersonVO(_personsProxy.personsVO.children[i]);
+                    var person:PersonVO = PersonVO(personsProxy.personsVO.children[i]);
                     if (person.personId == personId)
                     {
-                        _personsProxy.personsVO.children.splice(i, 1);
+                        personsProxy.personsVO.children.splice(i, 1);
                         break;
                     }
                 }
@@ -90,8 +92,8 @@ package helpers
          */
         public function hireEmployee(personId:String, baseId:String):EmployeeVO
         {
-            var base:BaseVO = _basesListProxy.getBaseById(baseId) as BaseVO;
-            var person:PersonVO = _personsProxy.getPersonById(personId);
+            var base:BaseVO = basesListProxy.getBaseById(baseId) as BaseVO;
+            var person:PersonVO = personsProxy.getPersonById(personId);
             
             if (base && person)
             {
@@ -108,7 +110,7 @@ package helpers
                         return employee;        // Сотрудник уже приписан к этой базе
                 }
                 
-                if ((new ModulesHelper(_basesListProxy)).getSpace(ModuleDescVO.HOUSING, base) <= 0)
+                if ((new ModulesHelper(basesListProxy)).getSpace(ModuleDescVO.HOUSING, base) <= 0)
                     return null;                // Нет места на этой базе
                 
                 employee = new EmployeeVO();
@@ -128,7 +130,7 @@ package helpers
          */
         public function getEmployeePlace(personId:String):BaseVO
         {
-            for each (var base:BaseVO in _basesListProxy.getBasesList())
+            for each (var base:BaseVO in basesListProxy.getBasesList())
             {
                 var personnel:PersonnelVO = base.personnel;
                 if (!personnel)
@@ -142,5 +144,19 @@ package helpers
             }
             return null;
         }
+		
+		private function get basesListProxy():BasesListProxy
+		{
+			if (!_basesListProxy)
+				_basesListProxy = BasesListProxy(ProtoFacade.getInstance().retrieveProxy(BasesListProxy.NAME));
+			return _basesListProxy;
+		}
+		
+		private function get personsProxy():PersonsProxy
+		{
+			if (!_personsProxy)
+				_personsProxy = PersonsProxy(ProtoFacade.getInstance().retrieveProxy(PersonsProxy.NAME));
+			return _personsProxy;
+		}
     }
 }

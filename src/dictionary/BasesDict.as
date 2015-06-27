@@ -1,7 +1,6 @@
 package dictionary
 {
 	import vo.BaseTemplVO;
-	import vo.ModuleDescVO;
 	import vo.ModuleVO;
 	import vo.ModulesVO;
 	import vo.RuinVO;
@@ -84,10 +83,7 @@ package dictionary
 					{
 						var chance:Number = module.moduleChance;	// Вероятность сохранения модуля в руинах после захвата базы
 						if (isNaN(chance))
-						{
-							var moduleDesc:ModuleDescVO = ModulesDict.getInstance().getModule(module.moduleId);
-							chance = moduleDesc ? moduleDesc.moduleChance : 0.0;
-						}
+							chance = module.moduleDesc.moduleChance;
 						
 						if (Math.random() <= chance)
 							ruinModules.children.push(module.clone());

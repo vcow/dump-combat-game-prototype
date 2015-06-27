@@ -18,10 +18,6 @@ package dictionary
 		public static const YES:int = 2;					//< Код кнопки Yes для алертов
 		public static const NO:int = 3;						//< Код кнопки No для алертов
         
-        // Change resources
-        public static const DEBIT:String = "debit";
-        public static const CREDIT:String = "credit";
-        
         // Gender
         public static const MALE:String = "m";
         public static const FEMALE:String = "f";

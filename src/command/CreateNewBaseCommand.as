@@ -70,10 +70,8 @@ package command
 				var isFirstBase:Boolean = numChildren == 1;
 				var repairPrice:PriceVO = baseTempl.baseRuin.ruinRepairPrice;
 				
-				if (resourcesDecor.pay(repairPrice) ||
-					isFirstBase && resourcesDecor.isEnoughResources(repairPrice))
+				if (isFirstBase && resourcesDecor.isEnoughResources(repairPrice) || resourcesDecor.pay(repairPrice))
 				{
-                    sendNotification(Const.RESOURCES_CHANGED);
 					basesListProxy.basesListVO.children.splice(ruinIndex, 1);
 					
 					var base:BaseVO = new BaseVO();
@@ -110,6 +108,8 @@ package command
 							if (!resourceAdded)
 								resourcesDecor.addResource(availableRes.resourceId, availableRes.resourceCount);
 						}
+						
+						sendNotification(Const.RESOURCES_CHANGED);
 					}
 					
 					sendNotification(Const.NEW_BASE_CREATED, base);
