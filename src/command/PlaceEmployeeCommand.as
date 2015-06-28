@@ -45,7 +45,7 @@ package command
             var base:BaseVO = baseListProxy.getBaseById(notification.getType()) as BaseVO;
             if (person && base)
             {
-                var personnel:PersonnelVO = base.personnel;
+                var personnel:PersonnelVO = base.basePersonnel;
                 if (!personnel)
                 {
                     personnel = new PersonnelVO();

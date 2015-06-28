@@ -49,7 +49,7 @@ package helpers
             
             for each (var base:BaseVO in basesListProxy.getBasesList())
             {
-                var personnel:PersonnelVO = base.personnel;
+                var personnel:PersonnelVO = base.basePersonnel;
                 if (!personnel)
                     continue;
                 
@@ -97,7 +97,7 @@ package helpers
             
             if (base && person)
             {
-                var personnel:PersonnelVO = base.personnel;
+                var personnel:PersonnelVO = base.basePersonnel;
                 if (!personnel)
                 {
                     personnel = new PersonnelVO();
@@ -132,7 +132,7 @@ package helpers
         {
             for each (var base:BaseVO in basesListProxy.getBasesList())
             {
-                var personnel:PersonnelVO = base.personnel;
+                var personnel:PersonnelVO = base.basePersonnel;
                 if (!personnel)
                     continue;
                 
@@ -144,6 +144,33 @@ package helpers
             }
             return null;
         }
+		
+		/**
+		 * Получить сотрудников указанной профессии из указанной базы
+		 * @param professionId идентификатор профессии, 0 - если запрашиваются все сотрудники указанной базы
+		 * @param baseId идентификатор базы, для которой запрашиваются сотрудники, null - если запрашиваются для всех баз
+		 * @return список сотрудников указанной професии из указанной базы
+		 */
+		public function getEmployees(professionId:uint=0, baseId:String=null):Vector.<PersonVO>
+		{
+			var employees:Vector.<PersonVO> = new Vector.<PersonVO>();
+			for each (var base:BaseVO in basesListProxy.getBasesList())
+			{
+				if (baseId && base.baseId != baseId)
+					continue;
+				
+				var personnel:PersonnelVO = base.basePersonnel;
+				if (!personnel)
+					continue;
+				
+				for each (var employee:EmployeeVO in personnel.children)
+				{
+					if (professionId == 0 || employee.employeeProfessionId == professionId)
+						employees.push(personsProxy.getPersonById(employee.employeePersonId));
+				}
+			}
+			return employees;
+		}
 		
 		private function get basesListProxy():BasesListProxy
 		{

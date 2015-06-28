@@ -123,6 +123,13 @@ package managers
                 
                 dispatchEvent(new EventsManagerEvent(EventsManagerEvent.EVENT_ACTIVATED, eventDesc.eventId));
             }
+			
+			if (!eventLastTimes[eventId])
+			{
+				// Если событие до сих пор ни разу не использовалось, считаем
+				// моментом первого использования момент активации
+				eventLastTimes[eventId] = (new Date()).time;
+			}
         }
         
         /**

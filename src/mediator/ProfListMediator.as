@@ -1,5 +1,7 @@
 package mediator
 {
+    import flash.utils.Dictionary;
+    
     import mx.collections.ArrayCollection;
     
     import dictionary.CharacteristicsDict;
@@ -21,6 +23,7 @@ package mediator
     import views.protoProfessionsView;
     
     import vo.BaseVO;
+    import vo.EmployeeVO;
     import vo.ModuleDescVO;
     import vo.PersonVO;
     import vo.PriceVO;
@@ -37,6 +40,8 @@ package mediator
         private var _basesListProxy:BasesListProxy;
         private var _personsProxy:PersonsProxy;
         private var _appDataProxy:AppDataProxy;
+		
+		private var _personProfessions:Dictionary = new Dictionary(true);
         
         //--------------------------------------------------------------------------
         // 
@@ -90,19 +95,16 @@ package mediator
 			var personnelDecor:PersonnelHelper = new PersonnelHelper(basesListProxy, personsProxy);
 			var employeeData:Array = [];
 			
-			for each (var person:PersonVO in personsProxy.personsVO.children)
+			for each (var person:PersonVO in personnelDecor.getEmployees(professionId))
 			{
-				if (professionId == 0 || person.personProfessionId == professionId)
+				var item:Object = { label: person.personName, personId: person.personId };
+				employeeData.push(item); 
+				
+				var base:BaseVO = personnelDecor.getEmployeePlace(person.personId);
+				if (base)
 				{
-					var item:Object = { label: person.personName, personId: person.personId };
-					employeeData.push(item); 
-					
-					var base:BaseVO = personnelDecor..getEmployeePlace(person.personId);
-					if (base)
-					{
-						item.base = base.baseName;
-						item.baseId = base.baseId;
-					}
+					item.base = base.baseName;
+					item.baseId = base.baseId;
 				}
 			}
 			employeeData.sortOn("label");
@@ -215,9 +217,10 @@ package mediator
                 person.personName = event.employeeName;
                 person.personImage = event.employeeImage;
                 person.personGender = event.employeeGender;
-                person.personProfessionId = profession.professionId;
+				
+				_personProfessions[person] = profession.professionId;
                 
-                sendNotification(Const.CREATE_NEW_PERSON, person);
+                sendNotification(Const.CREATE_NEW_PERSON, person, profession.professionId.toString());
             }
         }
         
@@ -265,6 +268,20 @@ package mediator
 						
 						if (basesDataProvider.length > 1)
 							professionsView.moveEmployee(person.personId);
+						
+						if (_personProfessions[person] != null)
+						{
+							for each (var employee:EmployeeVO in base.basePersonnel)
+							{
+								if (employee.employeePersonId == person.personId)
+								{
+									employee.employeeProfessionId = _personProfessions[person];
+									break;
+								}
+							}
+							
+							delete _personProfessions[person];
+						}
 					}
 					else
 					{

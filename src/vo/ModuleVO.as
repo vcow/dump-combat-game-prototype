@@ -51,7 +51,7 @@ package vo
             _moduleId = value;
             
 			_moduleDesc = ModulesDict.getInstance().getModule(_moduleId);
-            var fee:PriceVO = _moduleDesc ? _moduleDesc.moduleFee : null;
+            var fee:PriceVO = _moduleDesc.moduleFee;
             _feeEventId = fee ? fee.priceEventId : "";
         }
         

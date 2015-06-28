@@ -74,7 +74,7 @@ package vo
         /**
          * Персонал базы
          */
-        public function get personnel():PersonnelVO
+        public function get basePersonnel():PersonnelVO
         {
             for each (var value:IVO in children)
             {

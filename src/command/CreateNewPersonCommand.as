@@ -37,16 +37,13 @@ package command
         override public function execute(notification:INotification):void
         {
             var person:PersonVO = notification.getBody() as PersonVO;
+			var profession:ProfessionDescVO = notification.getType() ? CharacteristicsDict.getInstance().getProfession(uint(parseInt(notification.getType()))) : null;
             if (person)
             {
-                var profession:ProfessionDescVO = CharacteristicsDict.getInstance().getProfession(person.personProfessionId);
-                if (profession)
+                if (!profession || !profession.professionHiringCost || (new ResourcesHelper()).pay(profession.professionHiringCost))
                 {
-                    if (!profession.professionHiringCost || (new ResourcesHelper()).pay(profession.professionHiringCost))
-                    {
-                        person.personId = VO.createGUID();
-                        sendNotification(Const.NEW_PERSON_CREATED, person);
-                    }
+                    person.personId = VO.createGUID();
+                    sendNotification(Const.NEW_PERSON_CREATED, person);
                 }
             }
         }
