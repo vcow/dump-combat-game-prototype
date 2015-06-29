@@ -88,9 +88,10 @@ package helpers
          * Нанять сотрудника на базу
          * @param personId идентификатор персонажа сотрудника
          * @param baseId идентификатор базы
+         * @param professionId идентификатор профессии, на которую нанимается сотрудник
          * @return новый сотрудник, или null, если найм невозможен
          */
-        public function hireEmployee(personId:String, baseId:String):EmployeeVO
+        public function hireEmployee(personId:String, baseId:String, professionId:uint):EmployeeVO
         {
             var base:BaseVO = basesListProxy.getBaseById(baseId) as BaseVO;
             var person:PersonVO = personsProxy.getPersonById(personId);
@@ -115,6 +116,7 @@ package helpers
                 
                 employee = new EmployeeVO();
                 employee.employeePersonId = person.personId;
+                employee.employeeProfessionId = professionId;
                 
                 personnel.children.push(employee);
                 return employee;

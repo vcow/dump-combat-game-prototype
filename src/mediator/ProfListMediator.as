@@ -1,8 +1,8 @@
 package mediator
 {
-    import flash.utils.Dictionary;
-    
     import mx.collections.ArrayCollection;
+    
+    import command.data.HirePersonCmdData;
     
     import dictionary.CharacteristicsDict;
     import dictionary.Const;
@@ -23,7 +23,6 @@ package mediator
     import views.protoProfessionsView;
     
     import vo.BaseVO;
-    import vo.EmployeeVO;
     import vo.ModuleDescVO;
     import vo.PersonVO;
     import vo.PriceVO;
@@ -41,8 +40,6 @@ package mediator
         private var _personsProxy:PersonsProxy;
         private var _appDataProxy:AppDataProxy;
 		
-		private var _personProfessions:Dictionary = new Dictionary(true);
-        
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
@@ -218,9 +215,7 @@ package mediator
                 person.personImage = event.employeeImage;
                 person.personGender = event.employeeGender;
 				
-				_personProfessions[person] = profession.professionId;
-                
-                sendNotification(Const.CREATE_NEW_PERSON, person, profession.professionId.toString());
+                sendNotification(Const.CREATE_NEW_PERSON, new HirePersonCmdData(person, base.baseId, profession.professionId));
             }
         }
         
@@ -232,7 +227,7 @@ package mediator
         {
             var person:PersonVO = personsProxy.getPersonById(event.employeeId);
             if (person)
-                sendNotification(Const.PLACE_EMPLOYEE, person, event.baseId);
+                sendNotification(Const.PLACE_EMPLOYEE, new HirePersonCmdData(person, event.baseId, event.professionId));
         }
         
         //----------------------------------
@@ -256,32 +251,18 @@ package mediator
             switch (notification.getName())
             {
                 case Const.NEW_PERSON_CREATED:
-                    // Создан новый пероснаж, приписать его к первой попавшейся базе
+                    // Создан новый пероснаж
                     var person:PersonVO = notification.getBody() as PersonVO;
-                    var base:BaseVO = this.base;
-                    if (person && base)
+                    if (person)
 					{
-                        sendNotification(Const.PLACE_EMPLOYEE, person, base.baseId);
-						
 						var freeSpace:int = (new ModulesHelper(basesListProxy)).getSpace(ModuleDescVO.HOUSING);
 						professionsView.hireNewEmployeeAvailable = freeSpace > 0;
 						
 						if (basesDataProvider.length > 1)
+                        {
+                            // Открыть UI перевода на другую базу, если есть куда переводить
 							professionsView.moveEmployee(person.personId);
-						
-						if (_personProfessions[person] != null)
-						{
-							for each (var employee:EmployeeVO in base.basePersonnel)
-							{
-								if (employee.employeePersonId == person.personId)
-								{
-									employee.employeeProfessionId = _personProfessions[person];
-									break;
-								}
-							}
-							
-							delete _personProfessions[person];
-						}
+                        }
 					}
 					else
 					{

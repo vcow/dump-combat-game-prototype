@@ -1,6 +1,6 @@
 package command
 {
-    import managers.EventOut;
+    import command.data.GameEventCmdData;
     import managers.EventsManager;
     
     import org.puremvc.as3.interfaces.INotification;
@@ -38,7 +38,7 @@ package command
                 throw Error("Inactive game event (" + notification.getType() + ").");
             
             var bases:Vector.<BaseVO> = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)).getBasesList();
-			var out:EventOut = new EventOut();
+			var out:GameEventCmdData = new GameEventCmdData();
 			
 			// Прокинуть евент по всем базам, отправить нотфикации, которые вернут value object-ы
             for each (var base:BaseVO in bases)
@@ -55,7 +55,7 @@ package command
 					}
 					else
 					{
-						sendNotification(key, base);
+						sendNotification(key, base.baseId);
 					}
 				}
 				
@@ -68,7 +68,7 @@ package command
 				if (data && data.length > 0)
 				{
 					for each (body in data)
-					sendNotification(key, body);
+                        sendNotification(key, body);
 				}
 				else
 				{

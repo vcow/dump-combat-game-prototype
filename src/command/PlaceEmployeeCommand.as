@@ -1,5 +1,7 @@
 package command
 {
+    import command.data.HirePersonCmdData;
+    
     import dictionary.Const;
     
     import helpers.PersonnelHelper;
@@ -8,7 +10,6 @@ package command
     import org.puremvc.as3.patterns.command.SimpleCommand;
     
     import proxy.BasesListProxy;
-    import proxy.PersonsProxy;
     
     import vo.BaseVO;
     import vo.EmployeeVO;
@@ -39,26 +40,29 @@ package command
         
         override public function execute(notification:INotification):void
         {
-            var baseListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
-            
-            var person:PersonVO = notification.getBody() as PersonVO;
-            var base:BaseVO = baseListProxy.getBaseById(notification.getType()) as BaseVO;
-            if (person && base)
+            var data:HirePersonCmdData = notification.getBody() as HirePersonCmdData;
+            if (data)
             {
-                var personnel:PersonnelVO = base.basePersonnel;
-                if (!personnel)
+                var baseListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
+                
+                var base:BaseVO = baseListProxy.getBaseById(data.baseId) as BaseVO;
+                if (data.person && data.person.personId && data.person.personId != Const.NO_GUID && base)
                 {
-                    personnel = new PersonnelVO();
-                    base.children.push(personnel);
+                    var personnel:PersonnelVO = base.basePersonnel;
+                    if (!personnel)
+                    {
+                        personnel = new PersonnelVO();
+                        base.children.push(personnel);
+                    }
+                    
+                    var personnelHelper:PersonnelHelper = new PersonnelHelper(baseListProxy);
+                    
+                    personnelHelper.fireEmployee(data.person.personId, false);
+                    var employee:EmployeeVO = personnelHelper.hireEmployee(data.person.personId, base.baseId, data.professionId);
+                    
+                    if (employee)
+                        sendNotification(Const.EMPLOYEE_IS_PLACED, employee);
                 }
-                
-                var personnelHelper:PersonnelHelper = new PersonnelHelper(baseListProxy);
-                
-                personnelHelper.fireEmployee(person.personId, false);
-                var employee:EmployeeVO = personnelHelper.hireEmployee(person.personId, base.baseId);
-                
-                if (employee)
-                    sendNotification(Const.EMPLOYEE_IS_PLACED, employee);
             }
         }
     }

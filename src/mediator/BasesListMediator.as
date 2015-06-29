@@ -2,6 +2,8 @@ package mediator
 {
 	import mx.collections.ArrayCollection;
 	
+	import command.data.RenameCmdData;
+	
 	import dictionary.Const;
 	
 	import events.BaseEvent;
@@ -128,7 +130,7 @@ package mediator
 		 */
 		private function renameBaseHandler(event:BaseEvent):void
 		{
-			sendNotification(Const.RENAME_BASE, event.data, event.baseId);
+			sendNotification(Const.RENAME_BASE, new RenameCmdData(event.baseId, event.data.toString()));
 		}
 		
 		//----------------------------------

@@ -1,15 +1,11 @@
 package vo
 {
+	import command.data.GameEventCmdData;
+	
 	import dictionary.CharacteristicsDict;
 	import dictionary.Const;
 	
-	import facade.ProtoFacade;
-	
 	import helpers.ResourcesHelper;
-	
-	import managers.EventOut;
-	
-	import proxy.PersonsProxy;
 	
 	/**
 	 * 
@@ -36,7 +32,6 @@ package vo
 		
 		private var _professionDesc:ProfessionDescVO;
 		private var _salaryEventId:String;
-		private var _person:PersonVO;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -55,6 +50,8 @@ package vo
 			_employeeProfessionId = value;
 			
 			_professionDesc = CharacteristicsDict.getInstance().getProfession(_employeeProfessionId);
+            var salary:PriceVO = _professionDesc.professionSalary;
+            _salaryEventId = salary ? salary.priceEventId : "";
 		}
 		
 		public function get employeeProfessionId():uint
@@ -67,20 +64,13 @@ package vo
 			return _professionDesc;
 		}
 		
-		public function get person():PersonVO
-		{
-			if (!_person)
-				_person = PersonsProxy(ProtoFacade.getInstance().retrieveProxy(PersonsProxy.NAME)).getPersonById(employeePersonId);
-			return _person;
-		}
-		
 		//----------------------------------
 		//  VO
 		//----------------------------------
 		
-		override public function event(eventId:String, out:EventOut=null):void
+		override public function event(eventId:String, out:GameEventCmdData=null):void
 		{
-			if (eventId == _salaryEventId)
+			if (_salaryEventId && eventId == _salaryEventId)
 			{
 				// Событие, по которому выплачивается зарплата для сотрудника
 				if (out)

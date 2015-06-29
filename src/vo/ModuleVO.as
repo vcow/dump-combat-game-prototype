@@ -5,7 +5,7 @@ package vo
     
     import helpers.ResourcesHelper;
     
-    import managers.EventOut;
+    import command.data.GameEventCmdData;
 
 	/**
 	 * 
@@ -69,9 +69,9 @@ package vo
 		//  VO
 		//----------------------------------
 		
-        override public function event(eventId:String, out:EventOut=null):void
+        override public function event(eventId:String, out:GameEventCmdData=null):void
         {
-            if (eventId == _feeEventId)
+            if (_feeEventId && eventId == _feeEventId)
             {
                 // Событие, по которому взымается плата за эксплуатацию модуля
                 if (out)

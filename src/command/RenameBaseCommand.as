@@ -1,5 +1,7 @@
 package command
 {
+	import command.data.RenameCmdData;
+	
 	import dictionary.Const;
 	
 	import org.puremvc.as3.interfaces.INotification;
@@ -26,14 +28,17 @@ package command
 		
 		override public function execute(notification:INotification):void
 		{
-			var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
-			var base:BaseVO = basesListProxy.getBaseById(notification.getType()) as BaseVO;
-			var newName:String = notification.getBody().toString();
-			if (base && base.baseName != newName)
-			{
-				base.baseName = newName;
-				sendNotification(Const.BASE_RENAMED, base);
-			}
+            var data:RenameCmdData = notification.getBody() as RenameCmdData;
+            if (data)
+            {
+                var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
+                var base:BaseVO = basesListProxy.getBaseById(data.renamedObjectId) as BaseVO;
+                if (base && base.baseName != data.newObjectName)
+                {
+                    base.baseName = data.newObjectName;
+                    sendNotification(Const.BASE_RENAMED, base);
+                }
+            }
 		}
 	}
 }

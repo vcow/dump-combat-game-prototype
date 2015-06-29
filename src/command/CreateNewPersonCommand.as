@@ -1,15 +1,17 @@
 package command
 {
-    import dictionary.CharacteristicsDict;
+    import command.data.HirePersonCmdData;
+    
     import dictionary.Const;
     
-    import helpers.ResourcesHelper;
+    import helpers.PersonnelHelper;
     
     import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.command.SimpleCommand;
     
-    import vo.PersonVO;
-    import vo.ProfessionDescVO;
+    import proxy.BasesListProxy;
+    
+    import vo.BaseVO;
     import vo.VO;
     
     /**
@@ -36,16 +38,20 @@ package command
         
         override public function execute(notification:INotification):void
         {
-            var person:PersonVO = notification.getBody() as PersonVO;
-			var profession:ProfessionDescVO = notification.getType() ? CharacteristicsDict.getInstance().getProfession(uint(parseInt(notification.getType()))) : null;
-            if (person)
+            var data:HirePersonCmdData = notification.getBody() as HirePersonCmdData;
+            if (data)
             {
-                if (!profession || !profession.professionHiringCost || (new ResourcesHelper()).pay(profession.professionHiringCost))
+                if (data.person)
                 {
-                    person.personId = VO.createGUID();
-                    sendNotification(Const.NEW_PERSON_CREATED, person);
+                    if (data.person.personId && data.person.personId != Const.NO_GUID)
+                        (new PersonnelHelper()).fireEmployee(data.person.personId);
+                    
+                    data.person.personId = VO.createGUID();
+                    sendNotification(Const.NEW_PERSON_CREATED, data.person);
                 }
             }
+            
+            sendNotification(Const.PLACE_EMPLOYEE, data);
         }
     }
 }
