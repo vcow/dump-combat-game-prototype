@@ -149,7 +149,8 @@
                     var prof:uint = hireEmployePopUp.profSelector.selectedItem ?
                         hireEmployePopUp.profSelector.selectedItem.professionId : ProfessionDescVO.LABORER;
                     
-                    dispatchEvent(new EmployeeListEvent(EmployeeListEvent.CREATE_PERSON, Const.NO_GUID, name, null, Const.MALE, prof));
+                    dispatchEvent(new EmployeeListEvent(EmployeeListEvent.CREATE_PERSON, Const.NO_GUID, name,
+                        hireEmployePopUp.avatar, hireEmployePopUp.gender, prof));
                 }
             }
             

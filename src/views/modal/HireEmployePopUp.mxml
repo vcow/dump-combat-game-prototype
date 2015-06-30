@@ -150,6 +150,16 @@
                     setDefaultProfession();
             }
             
+            public function get avatar():String
+            {
+                return _icon;
+            }
+            
+            public function get gender():String
+            {
+                return _gender;
+            }
+            
             private function setDefaultProfession():void
             {
                 var index:int = -1;
