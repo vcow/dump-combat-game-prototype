@@ -6,7 +6,7 @@
 						   xmlns:s="library://ns.adobe.com/flex/spark"
 						   xmlns:ui="views.ui.*"
                            xmlns:dropDownList="com.flextras.mobile.dropDownList.*"
-                           creationComplete="creationCompleteHandler(event)">
+                           creationComplete="creationCompleteHandler(event)" xmlns:mx="library://ns.adobe.com/flex/mx">
 	
 	<s:BorderContainer>
 		<s:layout>
@@ -27,11 +27,13 @@
                   paddingRight="5" paddingTop="5">
             
             <s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle">
-                <s:Button label="&lt;"/>
+                <s:Button label="&lt;" click="scrollBack_clickHandler(event)"/>
                 
-                <s:BorderContainer width="100" height="100"/>
+                <s:BorderContainer width="100" height="100">
+                    <mx:UIComponent id="iconView"/>
+                </s:BorderContainer>
                 
-                <s:Button label=">"/>
+                <s:Button label=">" click="scrollFront_clickHandler(event)"/>
             </s:HGroup>
             
             <s:TextInput id="employeeNameInput" text="{employeeName}" width="250" maxChars="25" focusAlpha="0"
@@ -53,7 +55,7 @@
             
             <s:HGroup width="100%">
                 <s:Button width="50%" label="@Resource(key='hire.popup.hire', bundle='common')"
-                          click="{close(false, Const.OK);}" enabled="{hireEnabled}"/>
+                          click="ok_clickHandler(event)" enabled="{hireEnabled}"/>
                 
                 <s:Button width="50%" label="@Resource(key='new.base.popup.cancel', bundle='common')"
                           click="{close(false, Const.CANCEL);}"/>
@@ -78,6 +80,9 @@
             
             import dictionary.Const;
             
+            import managers.ImagesManager;
+            import managers.PersonTemplatesManager;
+            
             import vo.PriceVO;
             import vo.ProfessionDescVO;
             
@@ -89,6 +94,12 @@
 			
             private var _defaultProfession:int;
             private var _professionsList:ArrayCollection;
+            
+            private var _personsData:Array = PersonTemplatesManager.getInstance().getPersonsList();
+            private var _personId:int = -1;
+            
+            private var _gender:String = "m";
+            private var _icon:String;
             
             [Bindable]
             private var hireEnabled:Boolean;
@@ -165,10 +176,61 @@
                     price = ProfessionDescVO(profSelector.selectedItem).professionHiringCost;
             }
             
+            private function set icon(value:String):void
+            {
+                if (value == _icon)
+                    return;
+                
+                _icon = value;
+                
+                ImagesManager.getInstance().paint(_icon, iconView.graphics);
+            }
+            
+            private function selectPerson(data:Object):void
+            {
+                employeeNameInput.text = data.name;
+                _gender = data.gender;
+                icon = data.avatar;
+            }
+            
             protected function creationCompleteHandler(event:FlexEvent):void
             {
                 setDefaultProfession();
+                
+                if (_personsData.length > 0)
+                    selectPerson(_personsData[++_personId]);
             }
+            
+            protected function scrollBack_clickHandler(event:MouseEvent):void
+            {
+                if (_personId < 0)
+                    return;
+                
+                _personId--;
+                if (_personId < 0)
+                    _personId = _personsData.length - 1;
+                
+                selectPerson(_personsData[_personId]);
+            }
+            
+            protected function scrollFront_clickHandler(event:MouseEvent):void
+            {
+                if (_personId < 0)
+                    return;
+                
+                _personId++;
+                if (_personId >= _personsData.length)
+                    _personId = 0;
+                
+                selectPerson(_personsData[_personId]);
+            }
+            
+            protected function ok_clickHandler(event:MouseEvent):void
+            {
+                PersonTemplatesManager.getInstance().select(employeeNameInput.text, _icon);
+                close(false, Const.OK);
+            }
+            
         ]]>
 	</fx:Script>
 </s:SkinnablePopUpContainer>
