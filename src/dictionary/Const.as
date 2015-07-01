@@ -34,5 +34,6 @@ package dictionary
         public static const EMPLOYEE_IS_PLACED:String = "employeeIsPlaced";                 //< Сотрудник приписан к базе
         public static const CHANGE_RESOURCES:String = "changeResources";                    //< Изменить количество ресурсов
         public static const RESOURCES_CHANGED:String = "resourcesChanged";                  //< Изменилось количество ресурсов
+        public static const ARTIFACT_FINDED:String = "artifactFinded";                      //< Найден артефакт
 	}
 }

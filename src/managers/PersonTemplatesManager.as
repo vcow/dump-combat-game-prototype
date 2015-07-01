@@ -78,7 +78,7 @@ package managers
             {
                 if (desc.hasOwnProperty("@id"))
                 {
-                    var id:int = parseInt(desc.@id.toString());
+                    var id:int = int(desc.@id);
                     _names.push({
                         id: id,
                         name: desc.hasOwnProperty("@name") ? desc.@name.toString() : "???",

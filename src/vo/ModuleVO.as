@@ -1,11 +1,11 @@
 package vo
 {
+    import command.data.GameEventCmdData;
+    
     import dictionary.Const;
     import dictionary.ModulesDict;
     
     import helpers.ResourcesHelper;
-    
-    import command.data.GameEventCmdData;
 
 	/**
 	 * 
@@ -26,6 +26,8 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
+        public var moduleInactive:uint;               //< Количество ходов, которое модуль пребывает в неактивном состоянии
+                                                //< (если 0, модуль активен)
 		public var moduleChance:Number;			//< Вероятность сохранения модуля после захвата базы
 												//< (если не NaN, переопределяет значение из словаря модулей ModuleDescVO)
 		
@@ -88,10 +90,13 @@ package vo
 					if (resourcesDecor.isEnoughResources(resourcesDecor.separatePrice(commonFee, true)[1]))
 					{
 						out.commonOut[Const.CHANGE_RESOURCES] = [ commonFee ];
+                        
+                        moduleInactive = 0;
 					}
 	                else
 	                {
 	                    // Отключить модуль за неуплату
+                        moduleInactive += 1;
 	                }
 				}
             }
@@ -116,6 +121,9 @@ package vo
 			// TODO: Сериализовать специфичные поля
 			
 			res.@id = moduleId;
+            
+            if (moduleInactive)
+                res.@inactive = moduleInactive;
 			
 			// /TODO
 			
@@ -130,6 +138,7 @@ package vo
 			
 			moduleId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
 			moduleChance = data.hasOwnProperty("@chance") ? Number(data.@chance) : NaN;
+            moduleInactive = data.hasOwnProperty("@inactive") ? uint(data.@inactive) : 0;
 			
 			// /TODO
 			

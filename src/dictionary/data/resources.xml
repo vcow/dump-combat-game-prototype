@@ -5,9 +5,13 @@
 		name={строковое значение} - наименование ресурса
 		description={строковое значение} - описание ресурса
 		size={числовое значение} - размер единицы ресурса при хранении на складах
-		price={дробное значение} - стоимость единицы ресурса в деньгах -->
+		price={дробное значение} - стоимость единицы ресурса в деньгах
+		artifact=["true","false"] - признак того, что ресурс является артефактом
+		(кроме ресурсов, помеченных флагом artifact, артефактами считаются все ресурсы, найденные впервые).-->
 	<!-- Деньги -->
 	<resourceDesc id="1" name="{cash.title}" descriiption="{cash.description}" size="0" price="1.0"/>
 	<!-- Еда -->
 	<resourceDesc id="2" name="{food.title}" descriiption="{food.description}" size="1" price="0.001"/>
+	<!-- Палка -->
+	<resourceDesc id="3" name="{cudgel.title}" descriiption="{cudgel.description}" size="2" price="0.01"/>
 </resourcesDict>

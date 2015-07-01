@@ -10,6 +10,8 @@ package proxy
     import org.puremvc.as3.patterns.proxy.Proxy;
     
     import vo.EventDescVO;
+    import vo.IVO;
+    import vo.NotificationVO;
     
     /**
      * 
@@ -46,7 +48,19 @@ package proxy
          */
         private function eventsManager_eventHandler(event:EventsManagerEvent):void
         {
-            sendNotification(Const.GAME_EVENT, null, event.eventId);
+            sendNotification(Const.GAME_EVENT, null, event.event.eventId);
+            
+            for each (var secondary:IVO in event.event.children)
+            {
+                switch (secondary.name)
+                {
+                    case NotificationVO.NAME:
+                        var notification:NotificationVO = NotificationVO(secondary);
+                        if (notification.notificationChance >= 1.0 || Math.random() < notification.notificationChance)
+                            sendNotification(notification.notificationId, notification.notificationData);
+                        break;
+                }
+            }
         }
         
         //----------------------------------

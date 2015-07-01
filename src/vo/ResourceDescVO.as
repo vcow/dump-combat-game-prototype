@@ -31,6 +31,7 @@ package vo
 		public var resourceDescription:String;	//< Описание ресурса
 		public var resourceSize:int;			//< Размер ресурса в складских единицах
 		public var resourcePrice:Number;		//< Цена ресурса в деньгах
+        public var resourceIsArtifact:Boolean;  //< Ресурс является артефактом
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -56,6 +57,9 @@ package vo
 			res.@description = resourceDescription;
 			res.@size = resourceSize;
 			res.@price = resourcePrice;
+            
+            if (resourceIsArtifact)
+                res.@artifact = resourceIsArtifact;
 			
 			// /TODO
 			
@@ -73,6 +77,7 @@ package vo
 			resourceDescription = data.hasOwnProperty("@description") ? VO.parseString(data.@description, "resources") : Const.NO_TEXT;
 			resourceSize = data.hasOwnProperty("@size") ? int(data.@size) : 0;
 			resourcePrice = data.hasOwnProperty("@price") ? Number(data.@price) : 0.0;
+            resourceIsArtifact = data.hasOwnProperty("@artifact") ? data.@artifact.toString().toLowerCase() == "true" : false;
 			
 			// /TODO
 			

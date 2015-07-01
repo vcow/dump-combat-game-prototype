@@ -41,31 +41,4 @@
 			</price>
 		</professionDesc>
 	</professions>
-	<!-- Скилы персонажа -->
-	<skills>
-		<skillDesc name="{skill.strength}" id="1"/>
-		<skillDesc name="{skill.stamina}" id="2"/>
-		<skillDesc name="{skill.agility}" id="3"/>
-		<skillDesc name="{skill.intellect}" id="4"/>
-	</skills>
-	<!-- Влияние профессии на скилы -->
-	<dependencies>
-		<dependence profession="1" event="artifactFound">
-			<progress skill="1" value="0.3"/>
-			<progress skill="2" value="0.1"/>
-		</dependence>
-		<dependence profession="2" event="battleComplete">
-			<progress skill="1" value="0.2"/>
-			<progress skill="2" value="0.2"/>
-			<progress skill="3" value="0.1"/>
-		</dependence>
-		<dependence profession="3" event="reseachCompleted">
-			<progress skill="3" value="0.1"/>
-			<progress skill="4" value="0.4"/>
-		</dependence>
-		<dependence profession="4" event="productionCompleted">
-			<progress skill="3" value="0.2"/>
-			<progress skill="4" value="0.1"/>
-		</dependence>
-	</dependencies>
 </characteristics>

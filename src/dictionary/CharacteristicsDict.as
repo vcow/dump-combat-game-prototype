@@ -1,9 +1,6 @@
 package dictionary
 {
-	import flash.utils.Dictionary;
-	
 	import vo.ProfessionDescVO;
-	import vo.SkillDescVO;
 	
 	/**
 	 * 
@@ -23,8 +20,6 @@ package dictionary
 		
 		private static var _instance:CharacteristicsDict;
 		private static var _professions:Vector.<ProfessionDescVO>;
-        private static var _skills:Vector.<SkillDescVO>;
-        private static var _dependencies:Dictionary;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -62,23 +57,6 @@ package dictionary
 		}
         
         /**
-         * Получить информацию по способности персонажа
-         * @param skillId идентификатор способности
-         * @return информация по способности
-         */
-        public function getSkill(skillId:uint):SkillDescVO
-        {
-            init();
-            
-            for each (var skill:SkillDescVO in _skills)
-            {
-                if (skill.skillId == skillId)
-                    return skill;
-            }
-            return null;
-        }
-        
-        /**
          * Получить список всех профессий
          */
         public function get professions():Vector.<ProfessionDescVO>
@@ -93,7 +71,7 @@ package dictionary
         
         private function init():void
         {
-            if (!_professions || !_skills || !_dependencies)
+            if (!_professions)
             {
                 _professions = new Vector.<ProfessionDescVO>();
                 
@@ -109,22 +87,6 @@ package dictionary
                         _professions.push(profession);
                     }
                 }
-                
-                _skills = new Vector.<SkillDescVO>();
-                
-                var skills:XMLList = src.skills;
-                for each (var skillDesc:XML in skills)
-                {
-                    items = skillDesc.child(SkillDescVO.NAME);
-                    for each (item in items)
-                    {
-                        var skill:SkillDescVO = new SkillDescVO();
-                        skill.deserialize(item);
-                        _skills.push(skill);
-                    }
-                }
-                
-                // TODO: Дописать парсинг зависимостей
             }
         }
 	}

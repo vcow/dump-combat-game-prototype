@@ -17,14 +17,6 @@ package vo
 		
 		public static const NAME:String = "eventDesc";
         
-        public static const SEC:String = "sec";
-        public static const MIN:String = "min";
-        public static const ARTIFACT_FOUND:String = "artifactFound";
-        public static const BATTLE_COMPLETED:String = "battleCompleted";
-        public static const RESEARCH_COMPLETED:String = "reseachCompleted";
-        public static const PRODUCTION_COMPLETED:String = "productionCompleted";
-        public static const PAY_DAY:String = "payDay";
-		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------

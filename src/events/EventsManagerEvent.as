@@ -2,6 +2,8 @@ package events
 {
     import flash.events.Event;
     
+    import vo.EventDescVO;
+    
     public class EventsManagerEvent extends Event
     {
         //--------------------------------------------------------------------------
@@ -17,16 +19,16 @@ package events
         // 
         //--------------------------------------------------------------------------
         
-        public var eventId:String;
+        public var event:EventDescVO;
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public function EventsManagerEvent(type:String, eventId:String=null, bubbles:Boolean=false, cancelable:Boolean=false)
+        public function EventsManagerEvent(type:String, event:EventDescVO=null, bubbles:Boolean=false, cancelable:Boolean=false)
         {
             super(type, bubbles, cancelable);
-            this.eventId = eventId;
+            this.event = event;
         }
     }
 }

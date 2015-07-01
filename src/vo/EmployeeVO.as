@@ -27,6 +27,7 @@ package vo
 		//--------------------------------------------------------------------------
 		
 		public var employeePersonId:String;				//< Уникальный идентификатор персонажа
+        public var employeeInactive:uint;               //< Количество ходов, которое сотрудник пребывает в неактивном состоянии
 		
 		private var _employeeProfessionId:uint;			//< Идентификатор профессии персонажа
 		
@@ -87,10 +88,15 @@ package vo
 					if (resourcesDecor.isEnoughResources(resourcesDecor.separatePrice(commonFee, true)[1]))
 					{
 						out.commonOut[Const.CHANGE_RESOURCES] = [ commonFee ];
+                        
+                        // Сейчас реализовано так, что сотрудник просто возобновляет деятельность,
+                        // как вариант, можно предусмотреть выплатить ему долг по зарплате
+                        employeeInactive = 0;
 					}
 					else
 					{
 						// Сократить сотрудника, или отправить в неоплачиваемый отпуск
+                        employeeInactive += 1;
 					}
 				}
 			}
@@ -109,6 +115,9 @@ package vo
 			res.@id = employeePersonId;
 			res.@profession = employeeProfessionId;
 			
+            if (employeeInactive)
+                res.@inactive = employeeInactive;
+            
 			// /TODO
 			
 			return res;
@@ -122,6 +131,7 @@ package vo
 			
 			employeePersonId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
 			employeeProfessionId = data.hasOwnProperty("@profession") ? uint(data.@profession) : 0;
+            employeeInactive = data.hasOwnProperty("@inactive") ? uint(data.@inactive) : 0;
 			
 			// /TODO
 			

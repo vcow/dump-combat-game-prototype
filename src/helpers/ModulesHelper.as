@@ -9,6 +9,7 @@ package helpers
 	import vo.BaseVO;
 	import vo.ModuleDescVO;
 	import vo.ModuleVO;
+	import vo.PersonnelVO;
 	import vo.ResourceVO;
 	import vo.StoreVO;
 
@@ -63,12 +64,21 @@ package helpers
 				var modules:Vector.<ModuleVO> = base.getModules(moduleId);
 				var space:int = modules.length * moduleDesc.moduleSpace;
 				
-				var store:StoreVO = base.baseStore;
-				if (store)
-				{
-					for each (var resource:ResourceVO in store.children)
-						space -= resource.resourceCount * resource.resourceDesc.resourceSize;
-				}
+                switch (moduleId)
+                {
+                    case ModuleDescVO.STORE:
+                        var store:StoreVO = base.baseStore;
+                        if (store)
+                        {
+                            for each (var resource:ResourceVO in store.children)
+                            space -= resource.resourceCount * resource.resourceDesc.resourceSize;
+                        }
+                        break;
+                    case ModuleDescVO.HOUSING:
+                        var personnel:PersonnelVO = base.basePersonnel;
+                        space -= personnel.children.length;
+                        break;
+                }
 				
 				res += space;
 			}

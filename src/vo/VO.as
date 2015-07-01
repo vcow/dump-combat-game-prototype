@@ -2,9 +2,9 @@ package vo
 {
 	import mx.resources.ResourceManager;
 	
-	import facade.ProtoFacade;
-	
 	import command.data.GameEventCmdData;
+	
+	import facade.ProtoFacade;
 	
 	/**
 	 * 
@@ -83,6 +83,41 @@ package vo
 		{
 			return <{_name}/>;
 		}
+        
+        /**
+         * Преобразовать XML в объект, где имя тэга является именем поля, а значение - значением поля
+         * @param xml исходные данные
+         * @return преобразованный объект
+         */
+        protected function parseAsObject(xml:XML):Object
+        {
+            if (xml.localName() == null)
+                return xml.toString();
+            
+            var data:Object = {};
+            var type:String = xml.hasOwnProperty("@type") ? xml.@type.toString().toLowerCase() : "";
+            var name:String = xml.localName().toString();
+            
+            for each (var child:XML in xml.children())
+            {
+                if (child.localName() == null)
+                {
+                    switch (type)
+                    {
+                        case "int": return int(parseInt(child.toString()));
+                        case "uint": return uint(parseInt(child.toString()));
+                        case "float": return parseFloat(child.toString());
+                    }
+                    return child.toString();
+                }
+                else
+                {
+                    data[child.localName().toString()] = parseAsObject(child);
+                }
+            }
+            
+            return data;
+        }
 		
 		/**
 		 * Парсинг строкового значения, полученного из описания, это может быть
@@ -202,6 +237,7 @@ package vo
                     case EventDescVO.NAME: value = new EventDescVO(); break;
                     case PersonsVO.NAME: value = new PersonsVO(); break;
                     case StuffVO.NAME: value = new StuffVO(); break;
+                    case NotificationVO.NAME: value = new NotificationVO(); break;
 					
 					// /TODO
 					

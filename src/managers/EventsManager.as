@@ -74,7 +74,7 @@ package managers
                     _activatedEvents[key] = now + eventDesc.eventInterval;
                     eventLastTimes[key] = now;
                     
-                    dispatchEvent(new EventsManagerEvent(EventsManagerEvent.EVENT, key));
+                    dispatchEvent(new EventsManagerEvent(EventsManagerEvent.EVENT, eventDesc));
                 }
             }
         }
@@ -121,7 +121,7 @@ package managers
                     _activatedEvents[eventDesc.eventId] = 0;
                 }
                 
-                dispatchEvent(new EventsManagerEvent(EventsManagerEvent.EVENT_ACTIVATED, eventDesc.eventId));
+                dispatchEvent(new EventsManagerEvent(EventsManagerEvent.EVENT_ACTIVATED, eventDesc));
             }
 			
 			if (!eventLastTimes[eventId])
@@ -143,7 +143,7 @@ package managers
             if (!isNaN(interval))
             {
                 delete _activatedEvents[eventId];
-                dispatchEvent(new EventsManagerEvent(EventsManagerEvent.EVENT_DEACTIVATED, eventId));
+                dispatchEvent(new EventsManagerEvent(EventsManagerEvent.EVENT_DEACTIVATED, EventsDict.getInstance().getEvent(eventId)));
             }
         }
         
