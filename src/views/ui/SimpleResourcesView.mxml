@@ -16,8 +16,15 @@
 			<s:HorizontalLayout paddingLeft="15" paddingRight="15" gap="10" horizontalAlign="right"/>
 		</s:layout>
 		
-		<ui:FoodView id="foodView"/>
-		<ui:CashView id="cashView"/>
+        <s:HGroup verticalAlign="middle">
+            <ui:ImageView imageId="smallIconFoodClass" width="24" height="24" stretch="true"/>
+            <s:Label text="{foodCount}" fontWeight="bold" minWidth="50"/>
+        </s:HGroup>
+        
+        <s:HGroup verticalAlign="middle">
+            <ui:ImageView imageId="smallIconCashClass" width="24" height="24" stretch="true"/>
+            <s:Label text="{cashCount}" fontWeight="bold" minWidth="50"/>
+        </s:HGroup>
 	</s:BorderContainer>
 	
 	<fx:Declarations>
@@ -30,10 +37,20 @@
 			import facade.ProtoFacade;
 			
 			import mediator.SimpleResourcesMediator;
+            
 			//--------------------------------------------------------------------------
 			// 
 			//--------------------------------------------------------------------------
 			
+            [Bindable]
+            public var foodCount:int;
+            
+            [Bindable]
+            public var cashCount:int;
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
 			protected var _simpleResourcesMediator:SimpleResourcesMediator
 			
 			//--------------------------------------------------------------------------

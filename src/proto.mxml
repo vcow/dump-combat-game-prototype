@@ -6,9 +6,9 @@
 							xmlns:s="library://ns.adobe.com/flex/spark"
 							firstView="views.protoMapView"
 							applicationDPI="160"
-							preinitialize="{_facade.startup(this);}"
-                            enterFrame="{EventsManager.getInstance().tick();}"
-                            creationComplete="creationCompleteHandler(event)">
+							preinitialize="preinitializeHandler(event)"
+                            creationComplete="creationCompleteHandler(event)"
+                            enterFrame="{EventsManager.getInstance().tick();}">
 	<fx:Declarations>
 	</fx:Declarations>
 	
@@ -38,8 +38,11 @@
             import facade.ProtoFacade;
             
             import managers.EventsManager;
+            import managers.ImagesManager;
             
             import proxy.AppDataProxy;
+            
+            import views.ui.Icons;
 			
 			//--------------------------------------------------------------------------
 			// 
@@ -51,6 +54,13 @@
 			// 
 			//--------------------------------------------------------------------------
             
+            protected function preinitializeHandler(event:FlexEvent):void
+            {
+                ImagesManager.getInstance().addAssets(Icons);
+                
+                _facade.startup(this);
+            }
+            
             protected function creationCompleteHandler(event:FlexEvent):void
             {
                 NativeApplication.nativeApplication.addEventListener(Event.EXITING, app_deactivateHandler);
@@ -61,6 +71,7 @@
             {
                 AppDataProxy(_facade.retrieveProxy(AppDataProxy.NAME)).saveData();
             }
+            
         ]]>
 	</fx:Script>
 </s:ViewNavigatorApplication>

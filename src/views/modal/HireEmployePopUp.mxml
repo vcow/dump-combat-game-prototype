@@ -6,7 +6,8 @@
 						   xmlns:s="library://ns.adobe.com/flex/spark"
 						   xmlns:ui="views.ui.*"
                            xmlns:dropDownList="com.flextras.mobile.dropDownList.*"
-                           creationComplete="creationCompleteHandler(event)" xmlns:mx="library://ns.adobe.com/flex/mx">
+                           xmlns:mx="library://ns.adobe.com/flex/mx"
+                           creationComplete="creationCompleteHandler(event)">
 	
 	<s:BorderContainer>
 		<s:layout>
@@ -29,8 +30,12 @@
             <s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle">
                 <s:Button label="&lt;" click="scrollBack_clickHandler(event)"/>
                 
-                <s:BorderContainer width="100" height="100">
-                    <mx:UIComponent id="iconView"/>
+                <s:BorderContainer>
+                    <s:layout>
+                        <s:VerticalLayout paddingLeft="1" paddingRight="1" paddingTop="1" paddingBottom="1"/>
+                    </s:layout>
+                    
+                    <ui:ImageView id="iconView" width="100" height="100"/>
                 </s:BorderContainer>
                 
                 <s:Button label=">" click="scrollFront_clickHandler(event)"/>
@@ -80,7 +85,6 @@
             
             import dictionary.Const;
             
-            import managers.ImagesManager;
             import managers.PersonTemplatesManager;
             
             import vo.PriceVO;
@@ -191,9 +195,7 @@
                 if (value == _icon)
                     return;
                 
-                _icon = value;
-                
-                ImagesManager.getInstance().paint(_icon, iconView.graphics);
+                iconView.imageId = _icon = value;
             }
             
             private function selectPerson(data:Object):void

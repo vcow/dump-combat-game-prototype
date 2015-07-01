@@ -72,7 +72,7 @@ package managers
                 }
             }
             
-            _images.sortOn("count", Array.NUMERIC | Array.DESCENDING);
+            _images.sortOn("count", Array.NUMERIC);
             
             for each (desc in XML(new namesClass()).children())
             {
@@ -88,7 +88,7 @@ package managers
                 }
             }
             
-            _names.sortOn("count", Array.NUMERIC | Array.DESCENDING);
+            _names.sortOn("count", Array.NUMERIC);
             
             ImagesManager.getInstance().addAssets(PersonAvatars);
         }

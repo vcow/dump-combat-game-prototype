@@ -72,8 +72,8 @@ package mediator
 			
 			// TODO: Проинициализировать поля компонента актуальными значениями, устновить оброботчики событий, если нужно
 			
-			simpleResourcesView.cashView.count = resourcesDecor.getResource(ResourceDescVO.CASH);
-			simpleResourcesView.foodView.count = resourcesDecor.getResource(ResourceDescVO.FOOD);
+			simpleResourcesView.cashCount = resourcesDecor.getResource(ResourceDescVO.CASH);
+			simpleResourcesView.foodCount = resourcesDecor.getResource(ResourceDescVO.FOOD);
 			
 			// /TODO
 		}
@@ -102,8 +102,8 @@ package mediator
 					// Изменилось количество ресурсов
 					if (simpleResourcesView)
 					{
-						simpleResourcesView.cashView.count = resourcesDecor.getResource(ResourceDescVO.CASH);
-						simpleResourcesView.foodView.count = resourcesDecor.getResource(ResourceDescVO.FOOD);
+						simpleResourcesView.cashCount = resourcesDecor.getResource(ResourceDescVO.CASH);
+						simpleResourcesView.foodCount = resourcesDecor.getResource(ResourceDescVO.FOOD);
 					}
 					break;
 			}
