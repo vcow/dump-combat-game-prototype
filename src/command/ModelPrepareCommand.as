@@ -7,6 +7,7 @@ package command
 	import proxy.BasesListProxy;
 	import proxy.EventsProxy;
 	import proxy.PersonsProxy;
+	import proxy.TriggersProxy;
 	
 	/**
 	 * 
@@ -35,6 +36,7 @@ package command
 			this.facade.registerProxy(new BasesListProxy());
 			this.facade.registerProxy(new PersonsProxy());
 			this.facade.registerProxy(new AppDataProxy());
+            this.facade.registerProxy(new TriggersProxy());
             this.facade.registerProxy(new EventsProxy());
 		}
 	}

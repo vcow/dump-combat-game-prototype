@@ -16,8 +16,39 @@
 		id={строковое значение} - имя инициируемой нотификации
 		chance={дробное значение от 1.0 до 0.0} - вероятность выполнения действия
 		Может содержать данные нотификации, которые будут преобразованы в иерархический объект с полями типа String,
-		если не указан иной тип (поддерживаемые типы: int, uint, float) -->
+		если не указан иной тип (поддерживаемые типы: int, uint, float), и дополнительное условие инициации. -->
 		<notification id="artifactFinded" chance="0.3">
+			<condition>
+			<and>
+			<or>
+				<if>
+					<trigger type="uint">1</trigger>
+					<value type="uint">1</value>
+					<min type="float">1</min>
+				</if>
+				<if>
+					<trigger type="uint">1</trigger>
+					<value type="uint">2</value>
+					<min type="float">1</min>
+				</if>
+			</or>
+				<if>
+					<trigger type="uint">1</trigger>
+					<value type="uint">3</value>
+					<min type="float">1</min>
+				</if>
+				<if>
+					<trigger type="uint">1</trigger>
+					<value type="uint">3</value>
+					<min type="float">1</min>
+				</if>
+				<if>
+					<trigger type="uint">1</trigger>
+					<value type="uint">3</value>
+					<min type="float">1</min>
+				</if>
+			</and>
+			</condition>
 			<resourceId type="uint">3</resourceId>
 		</notification>
 	</eventDesc>

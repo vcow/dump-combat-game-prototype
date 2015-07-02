@@ -59,7 +59,7 @@ package vo
 			res.@price = resourcePrice;
             
             if (resourceIsArtifact)
-                res.@artifact = resourceIsArtifact;
+                res.@artifact = "true";
 			
 			// /TODO
 			

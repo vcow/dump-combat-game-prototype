@@ -1,35 +1,58 @@
 package vo
 {
+	import dictionary.TriggersDict;
+
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object ресурса
+	 * Value Object триггера
 	 * 
 	 */
 	
-	public class NotificationVO extends VO
+	public class TriggerVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "notification";
+		public static const NAME:String = "trigger";
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-        public var notificationId:String;       //< Идентификатор нотификации
-        public var notificationChance:Number;   //< Вероятность срабатывания нотификации
-        public var notificationData:Object;     //< Данные нотификации
+		public var triggerValue:Number;			//< Значение триггера
+		
+		private var _triggerId:uint;			//< Идентификатор триггера
+		
+		private var _triggerDesc:TriggerDescVO;
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function NotificationVO()
+		public function TriggerVO()
 		{
 			super(NAME);
+		}
+		
+		public function set triggerId(value:uint):void
+		{
+			if (value == _triggerId)
+				return;
+			
+            _triggerId = value;
+            _triggerDesc = TriggersDict.getInstance().getTriggerById(_triggerId);
+		}
+		
+		public function get triggerId():uint
+		{
+			return _triggerId;
+		}
+		
+		public function get triggerDesc():TriggerDescVO
+		{
+			return _triggerDesc;
 		}
 		
 		//----------------------------------
@@ -42,8 +65,10 @@ package vo
 			
 			// TODO: Сериализовать специфичные поля
 			
-			res.@id = notificationId;
-			res.@chance = notificationChance;
+			res.@id = triggerId;
+            
+            if (!isNaN(triggerValue))
+                res.@value = triggerValue;
 			
 			// /TODO
 			
@@ -52,12 +77,12 @@ package vo
 		
 		override public function deserialize(data:XML):Boolean
 		{
+			super.deserialize(data);
+			
 			// TODO: десериализовать специфичные поля
 			
-            notificationId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
-            notificationChance = data.hasOwnProperty("@chance") ? Number(data.@chance) : 1.0;
-            
-            notificationData = parseAsObject(data);
+            triggerId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
+            triggerValue = data.hasOwnProperty("@value") ? Number(data.@value) : NaN;
 			
 			// /TODO
 			

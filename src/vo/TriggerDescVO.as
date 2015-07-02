@@ -3,31 +3,31 @@ package vo
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object ресурса
+	 * Value Object триггера
 	 * 
 	 */
 	
-	public class NotificationVO extends VO
+	public class TriggerDescVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "notification";
+		public static const NAME:String = "triggerDesc";
+        
+		//--------------------------------------------------------------------------
+		// 
+		//--------------------------------------------------------------------------
+		
+        public var triggerId:uint;              //< Идентификатор триггера
+        public var triggerName:String;          //< Название триггера
+        public var triggerIsComputable:Boolean; //< Признак вычислимого триггера
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-        public var notificationId:String;       //< Идентификатор нотификации
-        public var notificationChance:Number;   //< Вероятность срабатывания нотификации
-        public var notificationData:Object;     //< Данные нотификации
-		
-		//--------------------------------------------------------------------------
-		// 
-		//--------------------------------------------------------------------------
-		
-		public function NotificationVO()
+		public function TriggerDescVO()
 		{
 			super(NAME);
 		}
@@ -42,8 +42,11 @@ package vo
 			
 			// TODO: Сериализовать специфичные поля
 			
-			res.@id = notificationId;
-			res.@chance = notificationChance;
+			res.@id = triggerId;
+            res.@name = triggerName;
+            
+            if (triggerIsComputable)
+                res.@computable = "true";
 			
 			// /TODO
 			
@@ -52,12 +55,13 @@ package vo
 		
 		override public function deserialize(data:XML):Boolean
 		{
+			super.deserialize(data);
+			
 			// TODO: десериализовать специфичные поля
 			
-            notificationId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
-            notificationChance = data.hasOwnProperty("@chance") ? Number(data.@chance) : 1.0;
-            
-            notificationData = parseAsObject(data);
+            triggerId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
+            triggerName = data.hasOwnProperty("@name") ? data.@name.toString() : "";
+            triggerIsComputable = data.hasOwnProperty("@computable") ? data.@computable.toString().toLowerCase() == "true" : false;
 			
 			// /TODO
 			

@@ -5,6 +5,10 @@ package proxy
     
     import events.EventsManagerEvent;
     
+    import facade.ProtoFacade;
+    
+    import helpers.ConditionHelper;
+    
     import managers.EventsManager;
     
     import org.puremvc.as3.patterns.proxy.Proxy;
@@ -28,6 +32,8 @@ package proxy
         
         public static const NAME:String = "eventsProxy";
         
+        private var _triggersProxy:TriggersProxy;
+        
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
@@ -39,7 +45,14 @@ package proxy
         
         protected function get eventsManager():EventsManager
         {
-            return data as EventsManager;
+            return getData() as EventsManager;
+        }
+        
+        protected function get triggersProxy():TriggersProxy
+        {
+            if (!_triggersProxy)
+                _triggersProxy = TriggersProxy(ProtoFacade.getInstance().retrieveProxy(TriggersProxy.NAME));
+            return _triggersProxy;
         }
         
         /**
@@ -56,8 +69,15 @@ package proxy
                 {
                     case NotificationVO.NAME:
                         var notification:NotificationVO = NotificationVO(secondary);
-                        if (notification.notificationChance >= 1.0 || Math.random() < notification.notificationChance)
+                        
+                        var conditionIsSatisfied:Boolean = notification.notificationData.hasOwnProperty("condition") ?
+                            (new ConditionHelper(triggersProxy)).parseCondition(notification.notificationData.condition) : true;
+                        
+                        if (conditionIsSatisfied &&
+                            (notification.notificationChance >= 1.0 || Math.random() < notification.notificationChance))
+                        {
                             sendNotification(notification.notificationId, notification.notificationData);
+                        }
                         break;
                 }
             }

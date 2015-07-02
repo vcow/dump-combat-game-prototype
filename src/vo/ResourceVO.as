@@ -42,7 +42,7 @@ package vo
 				return;
 			
 			_resourceId = value;
-			_resourceDesc = ResourcesDict.getInstance().getResource(resourceId);
+			_resourceDesc = ResourcesDict.getInstance().getResource(_resourceId);
 		}
 		
 		public function get resourceId():uint

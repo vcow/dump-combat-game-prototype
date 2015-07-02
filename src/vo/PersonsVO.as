@@ -28,27 +28,6 @@ package vo
 		//  VO
 		//----------------------------------
 		
-		override protected function getSelfXMLObject():XML
-		{
-			var res:XML = super.getSelfXMLObject();
-			
-			// TODO: Сериализовать специфичные поля
-			
-			// /TODO
-			
-			return res;
-		}
-		
-		override public function deserialize(data:XML):Boolean
-		{
-			super.deserialize(data);
-			
-			// TODO: десериализовать специфичные поля
-			
-			// /TODO
-			
-			return true;
-		}
 	}
 }
 	

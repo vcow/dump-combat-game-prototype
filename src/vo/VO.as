@@ -96,7 +96,7 @@ package vo
             
             var data:Object = {};
             var type:String = xml.hasOwnProperty("@type") ? xml.@type.toString().toLowerCase() : "";
-            var name:String = xml.localName().toString();
+            var fieldsCtr:int = 0;
             
             for each (var child:XML in xml.children())
             {
@@ -112,7 +112,10 @@ package vo
                 }
                 else
                 {
-                    data[child.localName().toString()] = parseAsObject(child);
+                    var name:String = child.localName().toString();
+                    if (data.hasOwnProperty(name))
+                        name += ++fieldsCtr;
+                    data[name] = parseAsObject(child);
                 }
             }
             
@@ -238,6 +241,8 @@ package vo
                     case PersonsVO.NAME: value = new PersonsVO(); break;
                     case StuffVO.NAME: value = new StuffVO(); break;
                     case NotificationVO.NAME: value = new NotificationVO(); break;
+                    case TriggersVO.NAME: value = new TriggersVO(); break;
+                    case TriggerVO.NAME: value = new TriggerVO(); break;
 					
 					// /TODO
 					

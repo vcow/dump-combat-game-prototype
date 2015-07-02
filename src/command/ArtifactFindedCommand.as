@@ -1,7 +1,6 @@
 package command
 {
     import dictionary.Const;
-    import dictionary.ResourcesDict;
     
     import helpers.ResourcesHelper;
     
@@ -9,7 +8,6 @@ package command
     import org.puremvc.as3.patterns.command.SimpleCommand;
     
     import vo.PriceVO;
-    import vo.ResourceDescVO;
     import vo.ResourceVO;
     
     /**
