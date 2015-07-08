@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Алерт сообщений -->
+
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+                           xmlns:s="library://ns.adobe.com/flex/spark"
+                           skinClass="views.log.LogAlertSkin"
+                           addedToStage="addedToStageHandler(event)"
+                           removedFromStage="removedFromStageHandler(event)">
+    
+    <s:BorderContainer minWidth="36" height="36" left="20" bottom="20" cornerRadius="5"
+                       backgroundColor="yellow" borderWeight="2" borderColor="red">
+        <s:layout>
+            <s:HorizontalLayout paddingLeft="10" paddingRight="10" verticalAlign="middle" horizontalAlign="center"/>
+        </s:layout>
+        
+        <s:Label text="{newMessagesCount}" fontWeight="bold"/>
+    </s:BorderContainer>
+    
+    <fx:Declarations>
+    </fx:Declarations>
+    
+    <fx:Script>
+        <![CDATA[
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            [Bindable]
+            public var newMessagesCount:int;
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            protected function addedToStageHandler(event:Event):void
+            {
+                stage.addEventListener(Event.RESIZE, stage_resizeHandler);
+                stage_resizeHandler(null);
+            }
+            
+            protected function removedFromStageHandler(event:Event):void
+            {
+                stage.removeEventListener(Event.RESIZE, stage_resizeHandler);
+            }
+            
+            private function stage_resizeHandler(event:Event):void
+            {
+                width = stage.stageWidth;
+                height = stage.stageHeight;
+            }
+            
+        ]]>
+    </fx:Script>
+</s:SkinnablePopUpContainer>

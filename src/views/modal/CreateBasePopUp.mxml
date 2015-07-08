@@ -55,6 +55,10 @@
 	
 	<fx:Declarations>
 	</fx:Declarations>
+    
+    <fx:Metadata>
+        [ResourceBundle("common")]
+    </fx:Metadata>
 	
 	<fx:Script>
 		<![CDATA[

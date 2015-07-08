@@ -65,7 +65,7 @@
 				var h:Number = textArea.getStyle("paddingTop") + textArea.getStyle("paddingBottom");
 				for (var i:int = 0; i < numLines; i++)
 					h += textDisplay.getLineMetrics(i).height;
-				textArea.height = h;				
+				textArea.height = h;
 			}
 			
 		]]>

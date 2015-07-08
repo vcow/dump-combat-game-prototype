@@ -4,8 +4,6 @@ package events
     
     import dictionary.Const;
     
-    import vo.ProfessionDescVO;
-    
     /**
      * 
      * @author y.vircowskiy
@@ -38,7 +36,7 @@ package events
         //--------------------------------------------------------------------------
         
         public function EmployeeListEvent(type:String, employeeId:String, employeeName:String=null, employeeImage:String=null,
-                                          employeeGender:String=Const.MALE, professionId:uint=ProfessionDescVO.LABORER, baseId:String=Const.NO_GUID,
+                                          employeeGender:String=Const.MALE, professionId:uint=1, baseId:String=Const.NO_GUID,
                                           bubbles:Boolean=false, cancelable:Boolean=false)
         {
             super(type, bubbles, cancelable);

@@ -4,11 +4,13 @@
 
 <s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
 							xmlns:s="library://ns.adobe.com/flex/spark"
+                            xmlns:log="views.log.*"
 							firstView="views.protoMapView"
 							applicationDPI="160"
 							preinitialize="preinitializeHandler(event)"
                             creationComplete="creationCompleteHandler(event)"
                             enterFrame="{EventsManager.getInstance().tick();}">
+    
 	<fx:Declarations>
 	</fx:Declarations>
 	
@@ -32,6 +34,7 @@
 	<fx:Script>
 		<![CDATA[
             import mx.events.FlexEvent;
+            import mx.logging.Log;
             
             import spark.skins.mobile.TextAreaSkin;
             
@@ -40,8 +43,12 @@
             import managers.EventsManager;
             import managers.ImagesManager;
             
-            import proxy.AppDataProxy;
+            import mediator.LogMediator;
             
+            import proxy.AppDataProxy;
+            import proxy.LogProxy;
+            
+            import views.log.LogViewComponent;
             import views.ui.Icons;
 			
 			//--------------------------------------------------------------------------
@@ -65,11 +72,14 @@
             {
                 NativeApplication.nativeApplication.addEventListener(Event.EXITING, app_deactivateHandler);
                 NativeApplication.nativeApplication.addEventListener(Event.USER_IDLE, app_deactivateHandler);
+                
+                _facade.retrieveMediator(LogMediator.NAME).setViewComponent(new LogViewComponent());
             }
             
             private function app_deactivateHandler(event:Event):void
             {
                 AppDataProxy(_facade.retrieveProxy(AppDataProxy.NAME)).saveData();
+                LogProxy(_facade.retrieveProxy(LogProxy.NAME)).saveData();
             }
             
         ]]>
