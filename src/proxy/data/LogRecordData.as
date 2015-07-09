@@ -114,7 +114,28 @@ package proxy.data
          */
         public function toString():String
         {
-            return "qew";
+            switch (_type)
+            {
+                case TYPE_MESSAGE:
+                    return '<font size="10">[' + timeString + ']</font> <font color="#646464">' + _message + '</font>';
+                case TYPE_WARNING:
+                    return '<font color="#008400"><font size="10">[' + timeString + ']</font> <b>' + _message + '</b></font>';
+                case TYPE_ERROR:
+                    return '<font color="#840000"><font size="10">[' + timeString + ']</font> <b>' + _message + '</b></font>';
+            }
+            return _message;
+        }
+        
+        private function get timeString():String
+        {
+            var append:Function = function(raw:String):String {
+                return raw.length < 2 ? "0" + raw : raw;
+            };
+            return append(_time.getDate().toString()) + "." +
+                   append((_time.getMonth() + 1).toString()) + "." +
+                   _time.getFullYear().toString() + " " +
+                   append(_time.getHours().toString()) + ":" +
+                   append(_time.getMinutes().toString());
         }
         
         /**

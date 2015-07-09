@@ -2,12 +2,16 @@ package mediator
 {
     import mx.collections.ArrayCollection;
     
+    import dictionary.Const;
+    
+    import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.mediator.Mediator;
     
     import proxy.LogProxy;
     import proxy.data.LogRecordData;
     
     import views.log.LogViewComponent;
+    import views.log.LogViewComponentEvent;
     
     /**
      * 
@@ -84,6 +88,10 @@ package mediator
                 return;
             
             // TODO: Удалить все обработчики событий, если таковые были установлены
+            
+            logViewComponent.removeEventListener(LogViewComponentEvent.MESSAGE_IS_READED, logViewComponent_messageIsReadedHandler);
+            
+            // /TODO
         }
         
         /**
@@ -99,7 +107,28 @@ package mediator
             logViewComponent.newMessagesCount = newMessagesCount;
             logViewComponent.messages = logData;
             
+            logViewComponent.addEventListener(LogViewComponentEvent.MESSAGE_IS_READED, logViewComponent_messageIsReadedHandler);
+            
             // /TODO
+        }
+        
+        /**
+         * Сообщение прочитано
+         * @param event событие
+         */
+        private function logViewComponent_messageIsReadedHandler(event:LogViewComponentEvent):void
+        {
+            try {
+                var message:LogRecordData = logProxy.log[event.messageIndex];
+                if (message.isNew)
+                {
+                    message.isNew = false;
+                    if (logViewComponent)
+                        logViewComponent.newMessagesCount = newMessagesCount;
+                }
+            }
+            catch (e:Error) {
+            }
         }
         
         //----------------------------------
@@ -111,6 +140,26 @@ package mediator
             releaseViewComponent();
             super.setViewComponent(viewComponent);
             applyViewComponent();
+        }
+        
+        override public function listNotificationInterests():Array
+        {
+            return [ Const.GAME_MESSAGE_SENT, Const.OPEN_GAME_LOG ];
+        }
+        
+        override public function handleNotification(notification:INotification):void
+        {
+            switch (notification.getName())
+            {
+                case Const.GAME_MESSAGE_SENT:
+                    if (logViewComponent)
+                        logViewComponent.newMessagesCount = newMessagesCount;
+                    break;
+                case Const.OPEN_GAME_LOG:
+                    if (logViewComponent)
+                        logViewComponent.openLog();
+                    break;
+            }
         }
     }
 }

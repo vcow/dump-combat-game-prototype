@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Рендерер записи лога -->
+
+<s:DataRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+                xmlns:s="library://ns.adobe.com/flex/spark"
+                creationComplete="{updateText();}">
+    
+    <s:TextArea id="textArea" width="{calcWidth}" skinClass="spark.skins.mobile.TextAreaSkin"
+                fontSize="14" editable="false" selectable="false" borderVisible="false"
+                paddingLeft="5" paddingRight="5" paddingTop="1" paddingBottom="1"
+                verticalScrollPolicy="off" horizontalScrollPolicy="off"/>
+    
+    <fx:Declarations>
+    </fx:Declarations>
+    
+    <fx:Script>
+        <![CDATA[
+            import mx.events.FlexEvent;
+            
+            import spark.components.supportClasses.StyleableTextField;
+            import spark.skins.mobile.TextAreaSkin;
+            
+            private var _text:String = "";
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            [Bindable (event="calcWidthChanged")]
+            public function get calcWidth():Number
+            {
+                if (stage)
+                    return stage.stageWidth < 540 ? Math.max(100, stage.stageWidth - 40) : 500;
+                else
+                    addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+                return NaN;
+            }
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            private function addedToStageHandler(event:Event):void
+            {
+                removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+                dispatchEvent(new Event("calcWidthChanged"));
+            }
+            
+            override public function set data(value:Object):void
+            {
+                super.data = value;
+                
+                updateText();
+                
+                if (!data.readed)
+                    dispatchEvent(new LogListItemRendererEvent(LogListItemRendererEvent.MESSAGE_IS_READED, int(data.index)));
+            }
+            
+            private function updateText():void
+            {
+                if (!initialized)
+                    return;
+                
+                var value:String = data ? String(data.message) : "";
+                if (value == _text)
+                    return;
+                
+                _text = value;
+                
+                var textDisplay:StyleableTextField = StyleableTextField(textArea.textDisplay);
+                textDisplay.htmlText = value;
+                
+                var numLines:int = textDisplay.numLines;
+                var h:Number = textArea.getStyle("paddingTop") + textArea.getStyle("paddingBottom");
+                for (var i:int = 0; i < numLines; i++)
+                    h += textDisplay.getLineMetrics(i).height;
+                textArea.height = h;
+            }
+            
+        ]]>
+    </fx:Script>
+</s:DataRenderer>

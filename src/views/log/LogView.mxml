@@ -3,7 +3,8 @@
 <!-- Окно сообщений -->
 
 <s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
-                           xmlns:s="library://ns.adobe.com/flex/spark">
+                           xmlns:s="library://ns.adobe.com/flex/spark"
+                           creationComplete="creationCompleteHandler(event)">
     
     <s:BorderContainer>
         <s:layout>
@@ -14,15 +15,21 @@
         <s:BorderContainer width="100%" minHeight="0" backgroundColor="gray" borderVisible="false">
             <s:layout>
                 <s:HorizontalLayout verticalAlign="middle" paddingBottom="5" paddingLeft="5"
-                                  paddingRight="5" paddingTop="5"/>
+                                  paddingRight="5" paddingTop="5" gap="0"/>
             </s:layout>
             
             <s:Label color="white" text="@Resource(key='log.title', bundle='common')" width="100%" textAlign="center"/>
             
-            <s:Button click="{close();}"/>
+            <s:Button skinClass="views.log.CloseButtonSkin" click="{close();}"/>
         </s:BorderContainer>
         
-        
+        <s:Scroller height="{calcHeight}" id="logScroller">
+            <s:DataGroup dataProvider="{logData}" itemRenderer="views.log.LogListItemRenderer">
+                <s:layout>
+                    <s:VerticalLayout gap="0"/>
+                </s:layout>
+            </s:DataGroup>
+        </s:Scroller>
     </s:BorderContainer>
     
     <fx:Declarations>
@@ -35,17 +42,61 @@
     <fx:Script>
         <![CDATA[
             import mx.collections.ArrayCollection;
+            import mx.events.FlexEvent;
             
             //--------------------------------------------------------------------------
             // 
             //--------------------------------------------------------------------------
             
-            [Bindable]
-            public var logData:ArrayCollection;
+            private var _logData:ArrayCollection;
             
             //--------------------------------------------------------------------------
             // 
             //--------------------------------------------------------------------------
+            
+            [Bindable (event="logDataChanged")]
+            public function get logData():ArrayCollection
+            {
+                return _logData;
+            }
+            
+            public function set logData(value:ArrayCollection):void
+            {
+                if (value == _logData)
+                    return;
+                
+                _logData = value;
+                dispatchEvent(new Event("logDataChanged"));
+                
+                if (initialized)
+                    logScroller.viewport.verticalScrollPosition = logScroller.viewport.contentHeight - logScroller.viewport.height;
+            }
+            
+            [Bindable (event="calcHeightChanged")]
+            public function get calcHeight():Number
+            {
+                if (stage)
+                    return stage.stageHeight < 800 ? Math.max(20, stage.stageHeight - 100) : 700;
+                else
+                    addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+                return NaN;
+            }
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            private function addedToStageHandler(event:Event):void
+            {
+                removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+                dispatchEvent(new Event("calcHeightChanged"));
+            }
+            
+            protected function creationCompleteHandler(event:FlexEvent):void
+            {
+                if (_logData)
+                    logScroller.viewport.verticalScrollPosition = logScroller.viewport.contentHeight - logScroller.viewport.height;
+            }
             
         ]]>
     </fx:Script>

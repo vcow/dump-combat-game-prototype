@@ -36,7 +36,7 @@ package proxy
          * Записать лог в файл
          * @param linesLimit максимальное количество записей, подлежащих сохранению
          */
-        public function saveData(linesLimit:uint=50):void
+        public function saveData(linesLimit:uint=500):void
         {
             var file:File = File.applicationStorageDirectory;
             file = file.resolvePath(FILE_NAME);

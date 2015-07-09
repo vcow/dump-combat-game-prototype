@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        minWidth="32" minHeight="32"
+        alpha.disabled="0.5">
+    <!-- host component -->
+    <fx:Metadata>
+        [HostComponent("spark.components.Button")]
+    </fx:Metadata>
+    
+    <!-- states -->
+    <s:states>
+        <s:State name="disabled" />
+        <s:State name="down" />
+        <s:State name="over" />
+        <s:State name="up" />
+    </s:states>
+    
+    <!-- SkinParts
+    name=iconDisplay, type=spark.primitives.BitmapImage, required=false
+    name=labelDisplay, type=spark.core.IDisplayText, required=false
+    -->
+    
+    <s:Group left="0" top="0" right="1" bottom="1"
+             left.down="1" top.down="1" right.down="0" bottom.down="0">
+        <s:filters>
+            <s:DropShadowFilter alpha="0.7" distance="1" distance.down="0" blurX="1" blurY="1"/>
+        </s:filters>
+        
+        <s:Rect radiusX="3" radiusY="3" left="0" top="0" right="0" bottom="0">
+            <s:stroke>
+                <s:SolidColorStroke color="#646464"/>
+            </s:stroke>
+            <s:fill>
+                <s:LinearGradient rotation="90">
+                    <s:GradientEntry ratio="0" color="#ededed"/>
+                    <s:GradientEntry ratio="1" color="#cccccc"/>
+                </s:LinearGradient>
+            </s:fill>
+        </s:Rect>
+        
+        <s:BitmapImage source="@Embed(source='cross.png')" horizontalCenter="0" verticalCenter="0"/>
+    </s:Group> 
+</s:Skin>

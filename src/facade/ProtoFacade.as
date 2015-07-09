@@ -8,6 +8,7 @@ package facade
 	import command.NewPersonCreatedCommand;
 	import command.PlaceEmployeeCommand;
 	import command.RenameBaseCommand;
+	import command.SendGameMessageCommand;
 	import command.StartUpCommand;
 	
 	import dictionary.Const;
@@ -63,6 +64,7 @@ package facade
             registerCommand(Const.GAME_EVENT, GameEventCommand);
             registerCommand(Const.CHANGE_RESOURCES, ChangeResourcesCommand);
             registerCommand(Const.ARTIFACT_FINDED, ArtifactFindedCommand);
+            registerCommand(Const.SEND_GAME_MESSAGE, SendGameMessageCommand);
 		}
 	}
 }

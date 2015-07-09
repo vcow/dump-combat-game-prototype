@@ -21,6 +21,11 @@ package dictionary
         // Gender
         public static const MALE:String = "m";
         public static const FEMALE:String = "f";
+        
+        // Messages
+        public static const MESSAGE:String = "message";
+        public static const WARNING:String = "warning";
+        public static const ERROR:String = "error";
 		
 		// Notifications
         public static const GAME_EVENT:String = "gameEvent";                                //< Произошло внутриигровое событие
@@ -35,5 +40,8 @@ package dictionary
         public static const CHANGE_RESOURCES:String = "changeResources";                    //< Изменить количество ресурсов
         public static const RESOURCES_CHANGED:String = "resourcesChanged";                  //< Изменилось количество ресурсов
         public static const ARTIFACT_FINDED:String = "artifactFinded";                      //< Найден артефакт
+        public static const SEND_GAME_MESSAGE:String = "sendSystemMessage";                 //< Отправить системное сообщение
+        public static const GAME_MESSAGE_SENT:String = "systemMessageSent";                 //< Системное сообщение отправлено
+        public static const OPEN_GAME_LOG:String = "openGameLog";                           //< Отрыть лог игровых сообщений
 	}
 }

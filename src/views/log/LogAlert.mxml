@@ -9,12 +9,12 @@
                            removedFromStage="removedFromStageHandler(event)">
     
     <s:BorderContainer minWidth="36" height="36" left="20" bottom="20" cornerRadius="5"
-                       backgroundColor="yellow" borderWeight="2" borderColor="red">
+                       backgroundColor="#ffffdd" borderWeight="2">
         <s:layout>
             <s:HorizontalLayout paddingLeft="10" paddingRight="10" verticalAlign="middle" horizontalAlign="center"/>
         </s:layout>
         
-        <s:Label text="{newMessagesCount}" fontWeight="bold"/>
+        <s:Label text="{newMessagesCount}" fontWeight="bold" color="#484848"/>
     </s:BorderContainer>
     
     <fx:Declarations>

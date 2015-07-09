@@ -14,6 +14,8 @@ package views.log
     
     import mediator.LogMediator;
     
+    [Event(name="messageIsReaded", type="views.log.LogViewComponentEvent")]
+    
     public class LogViewComponent extends EventDispatcher
     {
         //--------------------------------------------------------------------------
@@ -39,7 +41,8 @@ package views.log
             
             _alert.addEventListener(MouseEvent.CLICK, alert_clickHandler);
             
-            _view.addEventListener(PopUpEvent.CLOSE, view_closeHandler)
+            _view.addEventListener(PopUpEvent.CLOSE, view_closeHandler);
+            _view.addEventListener(LogListItemRendererEvent.MESSAGE_IS_READED, logItem_messageIsReadedHandler);
         }
         
         /**
@@ -80,7 +83,23 @@ package views.log
          */
         public function set messages(value:ArrayCollection):void
         {
-            
+            _view.logData = value;
+        }
+        
+        /**
+         * Открыть лог игровых событий
+         */
+        public function openLog():void
+        {
+            if (!_view.isOpen)
+            {
+                if (_alert.isOpen)
+                    _alert.close();
+                
+                _view.logData = _logMediator.logData;
+                _view.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                PopUpManager.centerPopUp(_view);
+            }
         }
         
         /**
@@ -89,11 +108,7 @@ package views.log
          */
         private function alert_clickHandler(event:MouseEvent):void
         {
-            _alert.close();
-            
-            _view.logData = _logMediator.logData;
-            _view.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
-            PopUpManager.centerPopUp(_view);
+            openLog();
         }
         
         /**
@@ -102,8 +117,18 @@ package views.log
          */
         private function view_closeHandler(event:PopUpEvent):void
         {
-            if (_newMessagesCount >= 0 && !_alert.isOpen)
+            if (_newMessagesCount > 0 && !_alert.isOpen)
                 _alert.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), false);
+        }
+        
+        /**
+         * Сообщение просмотрено
+         * @param event событие
+         */
+        private function logItem_messageIsReadedHandler(event:LogListItemRendererEvent):void
+        {
+            event.stopPropagation();
+            dispatchEvent(new LogViewComponentEvent(LogViewComponentEvent.MESSAGE_IS_READED, event.index));
         }
     }
 }
