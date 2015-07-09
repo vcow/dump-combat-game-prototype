@@ -21,8 +21,6 @@
             import spark.components.supportClasses.StyleableTextField;
             import spark.skins.mobile.TextAreaSkin;
             
-            private var _text:String = "";
-            
             //--------------------------------------------------------------------------
             // 
             //--------------------------------------------------------------------------
@@ -62,14 +60,8 @@
                 if (!initialized)
                     return;
                 
-                var value:String = data ? String(data.message) : "";
-                if (value == _text)
-                    return;
-                
-                _text = value;
-                
                 var textDisplay:StyleableTextField = StyleableTextField(textArea.textDisplay);
-                textDisplay.htmlText = value;
+                textDisplay.htmlText = data ? data.message : "";
                 
                 var numLines:int = textDisplay.numLines;
                 var h:Number = textArea.getStyle("paddingTop") + textArea.getStyle("paddingBottom");

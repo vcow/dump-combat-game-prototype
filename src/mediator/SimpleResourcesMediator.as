@@ -1,12 +1,13 @@
 package mediator
 {
-	import helpers.ResourcesHelper;
-	
 	import dictionary.Const;
+	
+	import helpers.ResourcesHelper;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
+	import views.ui.SimpleResourceViewEvent;
 	import views.ui.SimpleResourcesView;
 	
 	import vo.ResourceDescVO;
@@ -60,6 +61,10 @@ package mediator
 				return;
 			
 			// TODO: Удалить все обработчики событий, если таковые были установлены
+            
+            simpleResourcesView.removeEventListener(SimpleResourceViewEvent.SHOW_LOG, simpleResourceView_showLogHandler);
+            
+            // /TODO
 		}
 		
 		/**
@@ -74,9 +79,20 @@ package mediator
 			
 			simpleResourcesView.cashCount = resourcesDecor.getResource(ResourceDescVO.CASH);
 			simpleResourcesView.foodCount = resourcesDecor.getResource(ResourceDescVO.FOOD);
+            
+            simpleResourcesView.addEventListener(SimpleResourceViewEvent.SHOW_LOG, simpleResourceView_showLogHandler);
 			
 			// /TODO
 		}
+        
+        /**
+         * Запрос на открытие лога
+         * @param event событие
+         */
+        private function simpleResourceView_showLogHandler(event:SimpleResourceViewEvent):void
+        {
+            sendNotification(Const.OPEN_GAME_LOG);
+        }
 		
 		//----------------------------------
 		//  Mediator
