@@ -1,5 +1,7 @@
 package command
 {
+    import mx.resources.ResourceManager;
+    
     import dictionary.Const;
     
     import helpers.ResourcesHelper;
@@ -9,6 +11,8 @@ package command
     
     import vo.PriceVO;
     import vo.ResourceVO;
+    
+    [ResourceBundle("messages")]
     
     /**
      * 
@@ -45,6 +49,8 @@ package command
 					if (rest < resource.resourceCount)
 					{
 						// Не хватает места на складах под этот ресурс
+                        var message:String = ResourceManager.getInstance().getString("messages", "full.store", [ resource.resourceDesc.name ]);
+                        sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
 					}
 				}
 				
@@ -54,6 +60,8 @@ package command
 					if (rest > 0)
 					{
 						// Не хватает ресурсов на складах
+                        message = ResourceManager.getInstance().getString("messages", "not.enough.resources", [ resource.resourceDesc.name ]);
+                        sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
 					}
 				}
 				

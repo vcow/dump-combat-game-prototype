@@ -1,11 +1,17 @@
 package vo
 {
+	import mx.resources.ResourceManager;
+	
 	import command.data.GameEventCmdData;
 	
 	import dictionary.CharacteristicsDict;
 	import dictionary.Const;
 	
+	import facade.ProtoFacade;
+	
 	import helpers.ResourcesHelper;
+	
+	import proxy.PersonsProxy;
 	
 	/**
 	 * 
@@ -97,6 +103,10 @@ package vo
 					{
 						// Сократить сотрудника, или отправить в неоплачиваемый отпуск
                         employeeInactive += 1;
+                        
+                        var person:PersonVO = PersonsProxy(ProtoFacade.getInstance().retrieveProxy(PersonsProxy.NAME)).getPersonById(employeePersonId);
+                        var message:String = ResourceManager.getInstance().getString("messages", "idle.worker", [ professionDesc.name, person.name ]);
+                        sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
 					}
 				}
 			}

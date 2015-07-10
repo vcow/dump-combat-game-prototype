@@ -13,7 +13,6 @@ package command
     
     import vo.BaseVO;
     import vo.EmployeeVO;
-    import vo.PersonVO;
     import vo.PersonnelVO;
     
     /**

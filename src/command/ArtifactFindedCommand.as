@@ -1,5 +1,7 @@
 package command
 {
+    import mx.resources.ResourceManager;
+    
     import dictionary.Const;
     
     import helpers.ResourcesHelper;
@@ -9,6 +11,8 @@ package command
     
     import vo.PriceVO;
     import vo.ResourceVO;
+    
+    [ResourceBundle("messages")]
     
     /**
      * 
@@ -53,6 +57,8 @@ package command
                 else
                 {
                     // Сообщить о нехватке места на складах под найденный артефакт
+                    var message:String = ResourceManager.getInstance().getString("messages", "artifact.lost", [ resource.resourceDesc.name ]);
+                    sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
                 }
             }
         }

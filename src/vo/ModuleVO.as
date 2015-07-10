@@ -1,5 +1,7 @@
 package vo
 {
+    import mx.resources.ResourceManager;
+    
     import command.data.GameEventCmdData;
     
     import dictionary.Const;
@@ -7,6 +9,8 @@ package vo
     
     import helpers.ResourcesHelper;
 
+    [ResourceBundle("messages")]
+    
 	/**
 	 * 
 	 * @author jvirkovskiy
@@ -26,12 +30,12 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-        public var moduleInactive:uint;               //< Количество ходов, которое модуль пребывает в неактивном состоянии
-                                                //< (если 0, модуль активен)
-		public var moduleChance:Number;			//< Вероятность сохранения модуля после захвата базы
-												//< (если не NaN, переопределяет значение из словаря модулей ModuleDescVO)
+        public var moduleInactive:uint;             //< Количество ходов, которое модуль пребывает в неактивном состоянии
+                                                    //< (если 0, модуль активен)
+		public var moduleChance:Number;             //< Вероятность сохранения модуля после захвата базы
+                                                    //< (если не NaN, переопределяет значение из словаря модулей ModuleDescVO)
 		
-		private var _moduleId:uint;				//< Идентификатор модуля
+		private var _moduleId:uint;                 //< Идентификатор модуля
 		
 		private var _moduleDesc:ModuleDescVO;
         private var _feeEventId:String;
@@ -97,6 +101,9 @@ package vo
 	                {
 	                    // Отключить модуль за неуплату
                         moduleInactive += 1;
+                        
+                        var message:String = ResourceManager.getInstance().getString("messages", "disconnected.for.non.payment", [ moduleDesc.name ]);
+                        sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
 	                }
 				}
             }
