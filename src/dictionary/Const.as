@@ -40,8 +40,8 @@ package dictionary
         public static const CHANGE_RESOURCES:String = "changeResources";                    //< Изменить количество ресурсов
         public static const RESOURCES_CHANGED:String = "resourcesChanged";                  //< Изменилось количество ресурсов
         public static const ARTIFACT_FINDED:String = "artifactFinded";                      //< Найден артефакт
-        public static const SEND_GAME_MESSAGE:String = "sendSystemMessage";                 //< Отправить системное сообщение
-        public static const GAME_MESSAGE_SENT:String = "systemMessageSent";                 //< Системное сообщение отправлено
+        public static const SEND_GAME_MESSAGE:String = "sendGameMessage";                   //< Отправить системное сообщение
+        public static const GAME_MESSAGE_SENT:String = "gameMessageSent";                   //< Системное сообщение отправлено
         public static const OPEN_GAME_LOG:String = "openGameLog";                           //< Отрыть лог игровых сообщений
 	}
 }

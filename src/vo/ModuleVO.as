@@ -102,7 +102,7 @@ package vo
 	                    // Отключить модуль за неуплату
                         moduleInactive += 1;
                         
-                        var message:String = ResourceManager.getInstance().getString("messages", "disconnected.for.non.payment", [ moduleDesc.name ]);
+                        var message:String = ResourceManager.getInstance().getString("messages", "disconnected.for.non.payment", [ moduleDesc.moduleName ]);
                         sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
 	                }
 				}

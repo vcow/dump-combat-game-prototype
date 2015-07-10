@@ -43,6 +43,7 @@
         <![CDATA[
             import mx.collections.ArrayCollection;
             import mx.events.FlexEvent;
+            import mx.events.PropertyChangeEvent;
             
             //--------------------------------------------------------------------------
             // 
@@ -54,23 +55,8 @@
             // 
             //--------------------------------------------------------------------------
             
-            [Bindable (event="logDataChanged")]
-            public function get logData():ArrayCollection
-            {
-                return _logData;
-            }
-            
-            public function set logData(value:ArrayCollection):void
-            {
-                if (value == _logData)
-                    return;
-                
-                _logData = value;
-                dispatchEvent(new Event("logDataChanged"));
-                
-                if (initialized)
-                    logScroller.viewport.verticalScrollPosition = logScroller.viewport.contentHeight - logScroller.viewport.height;
-            }
+            [Bindable]
+            public var logData:ArrayCollection;
             
             [Bindable (event="calcHeightChanged")]
             public function get calcHeight():Number
@@ -92,10 +78,22 @@
                 dispatchEvent(new Event("calcHeightChanged"));
             }
             
+            private function viewport_propertyChangeHandler(event:PropertyChangeEvent):void
+            {
+                switch(event.property) 
+                {
+                    case "contentHeight":
+                        logScroller.viewport.verticalScrollPosition = Number(event.newValue) - logScroller.height;
+                        break;
+                }
+            }
+            
             protected function creationCompleteHandler(event:FlexEvent):void
             {
                 if (_logData)
                     logScroller.viewport.verticalScrollPosition = logScroller.viewport.contentHeight - logScroller.viewport.height;
+                
+                logScroller.viewport.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, viewport_propertyChangeHandler);
             }
             
         ]]>

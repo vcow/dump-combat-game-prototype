@@ -57,7 +57,7 @@ package command
                 else
                 {
                     // Сообщить о нехватке места на складах под найденный артефакт
-                    var message:String = ResourceManager.getInstance().getString("messages", "artifact.lost", [ resource.resourceDesc.name ]);
+                    var message:String = ResourceManager.getInstance().getString("messages", "artifact.lost", [ resource.resourceDesc.resourceName ]);
                     sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
                 }
             }

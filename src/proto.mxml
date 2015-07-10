@@ -29,12 +29,15 @@
 		.tabBarStyle s|RadioButton {
 			skinClass:ClassReference("spark.skins.spark.ToggleButtonSkin");
 		}
+        
+        .baseNameButtonStyle {
+            color:#ffffff;
+        }
 	</fx:Style>
 	
 	<fx:Script>
 		<![CDATA[
             import mx.events.FlexEvent;
-            import mx.logging.Log;
             
             import spark.skins.mobile.TextAreaSkin;
             

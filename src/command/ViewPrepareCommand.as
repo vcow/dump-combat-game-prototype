@@ -1,6 +1,7 @@
 package command
 {
 	import mediator.ApplicationMediator;
+	import mediator.BaseMediator;
 	import mediator.BasesListMediator;
 	import mediator.LogMediator;
 	import mediator.ProfListMediator;
@@ -39,6 +40,7 @@ package command
 			this.facade.registerMediator(new SimpleResourcesMediator());
             this.facade.registerMediator(new ProfListMediator());
             this.facade.registerMediator(new LogMediator());
+            this.facade.registerMediator(new BaseMediator());
 		}
 	}
 }

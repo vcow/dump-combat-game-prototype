@@ -12,8 +12,8 @@
 			<s:VerticalLayout paddingLeft="15" paddingRight="15" paddingTop="15" paddingBottom="15" gap="15" horizontalAlign="center"/>
 		</s:layout>
 		
-		<s:TextArea id="textArea" width="250" skinClass="spark.skins.mobile.TextAreaSkin"
-					fontSize="14" editable="false" selectable="false" borderVisible="false"/>
+		<s:TextArea id="textArea" width="250" fontSize="14" editable="false" selectable="false" borderVisible="false"
+                    verticalScrollPolicy="off" horizontalScrollPolicy="off"/>
 
 		<s:Button label="@Resource(key='alert.ok', bundle='common')" width="100"
 				  click="{close(false, Const.OK);}"/>

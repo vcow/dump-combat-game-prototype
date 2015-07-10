@@ -6,10 +6,10 @@
                 xmlns:s="library://ns.adobe.com/flex/spark"
                 creationComplete="{updateText();}">
     
-    <s:TextArea id="textArea" width="{calcWidth}" skinClass="spark.skins.mobile.TextAreaSkin"
-                fontSize="14" editable="false" selectable="false" borderVisible="false"
-                paddingLeft="5" paddingRight="5" paddingTop="1" paddingBottom="1"
-                verticalScrollPolicy="off" horizontalScrollPolicy="off"/>
+    <s:TextArea id="textArea" width="{calcWidth}" fontSize="12" editable="false"
+                selectable="false" borderVisible="false" paddingLeft="5" paddingRight="5"
+                paddingTop="1" paddingBottom="1" verticalScrollPolicy="off"
+                horizontalScrollPolicy="off"/>
     
     <fx:Declarations>
     </fx:Declarations>
@@ -19,7 +19,6 @@
             import mx.events.FlexEvent;
             
             import spark.components.supportClasses.StyleableTextField;
-            import spark.skins.mobile.TextAreaSkin;
             
             //--------------------------------------------------------------------------
             // 

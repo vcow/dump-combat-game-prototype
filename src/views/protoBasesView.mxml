@@ -58,6 +58,7 @@
             
             import views.modal.CreateBasePopUp;
             import views.modal.RenameBasePopUp;
+            import views.ui.BaseView;
             
             import vo.BaseVO;
             import vo.RuinVO;
@@ -100,7 +101,9 @@
 			
 			protected function basesListView_changeHandler(event:IndexChangeEvent):void
 			{
-				
+				var base:Object = basesList.getItemAt(event.newIndex);
+                if (base && base.hasOwnProperty("baseId"))
+                    navigator.pushView(BaseView, base.baseId);
 			}
 			
 			protected function buildNewBase_clickHandler(event:MouseEvent):void

@@ -37,6 +37,7 @@ package mediator
 		public function SimpleResourcesMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
+            applyViewComponent();
 		}
 		
 		protected function get simpleResourcesView():SimpleResourcesView

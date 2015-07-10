@@ -117,11 +117,11 @@ package proxy.data
             switch (_type)
             {
                 case TYPE_MESSAGE:
-                    return '<font size="10">[' + timeString + ']</font> <font color="#646464">' + _message + '</font>';
+                    return '<font size="8">[' + timeString + ']</font> <font color="#646464">' + _message + '</font>';
                 case TYPE_WARNING:
-                    return '<font color="#008400"><font size="10">[' + timeString + ']</font> <b>' + _message + '</b></font>';
+                    return '<font color="#008400"><font size="8">[' + timeString + ']</font> <b>' + _message + '</b></font>';
                 case TYPE_ERROR:
-                    return '<font color="#840000"><font size="10">[' + timeString + ']</font> <b>' + _message + '</b></font>';
+                    return '<font color="#840000"><font size="8">[' + timeString + ']</font> <b>' + _message + '</b></font>';
             }
             return _message;
         }

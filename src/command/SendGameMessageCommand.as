@@ -25,7 +25,7 @@ package command
         
         override public function execute(notification:INotification):void
         {
-            var text:String = notification.getBody().toString;
+            var text:String = notification.getBody().toString();
             var type:uint;
             switch (notification.getType())
             {

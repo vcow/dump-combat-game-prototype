@@ -37,6 +37,7 @@ package mediator
         public function LogMediator(viewComponent:Object=null)
         {
             super(NAME, viewComponent);
+            applyViewComponent();
         }
         
         public function get logData():ArrayCollection

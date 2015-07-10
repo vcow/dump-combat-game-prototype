@@ -105,7 +105,8 @@ package vo
                         employeeInactive += 1;
                         
                         var person:PersonVO = PersonsProxy(ProtoFacade.getInstance().retrieveProxy(PersonsProxy.NAME)).getPersonById(employeePersonId);
-                        var message:String = ResourceManager.getInstance().getString("messages", "idle.worker", [ professionDesc.name, person.name ]);
+                        var message:String = ResourceManager.getInstance().getString("messages", "idle.worker",
+                            [ professionDesc.professionName, person.personName ]);
                         sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
 					}
 				}
