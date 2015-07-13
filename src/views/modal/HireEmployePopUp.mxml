@@ -62,7 +62,7 @@
                 <s:Button width="50%" label="@Resource(key='hire.popup.hire', bundle='common')"
                           click="ok_clickHandler(event)" enabled="{hireEnabled}"/>
                 
-                <s:Button width="50%" label="@Resource(key='new.base.popup.cancel', bundle='common')"
+                <s:Button width="50%" label="@Resource(key='alert.cancel', bundle='common')"
                           click="{close(false, Const.CANCEL);}"/>
             </s:HGroup>
         </s:VGroup>

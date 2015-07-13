@@ -29,7 +29,7 @@
 						  enabled="{isOtherBaseSelected(baseSelector.selectedItem as BaseVO)}"
 						  click="{close(false, Const.OK);}"/>
 				
-				<s:Button label="@Resource(key='new.base.popup.cancel', bundle='common')" width="50%" minWidth="120"
+				<s:Button label="@Resource(key='alert.cancel', bundle='common')" width="50%" minWidth="120"
 						  click="{close(false, Const.CANCEL);}"/>
 			</s:HGroup>
 		</s:VGroup>

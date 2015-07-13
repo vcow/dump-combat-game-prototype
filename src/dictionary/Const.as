@@ -13,10 +13,10 @@ package dictionary
 		public static const NO_GUID:String =				//< Не определенный GUID
 			"00000000-0000-0000-0000-000000000000";
 		
-		public static const CANCEL:int = 0;					//< Код кнопки Cancel для алертов
-		public static const OK:int = 1;						//< Код кнопки Ok для алертов
-		public static const YES:int = 2;					//< Код кнопки Yes для алертов
-		public static const NO:int = 3;						//< Код кнопки No для алертов
+		public static const CANCEL:uint = 1;				//< Код кнопки Cancel для алертов
+		public static const OK:uint = 2;					//< Код кнопки Ok для алертов
+		public static const YES:uint = 4;					//< Код кнопки Yes для алертов
+		public static const NO:uint = 8;					//< Код кнопки No для алертов
         
         // Gender
         public static const MALE:String = "m";
@@ -46,5 +46,6 @@ package dictionary
         public static const OPEN_SHOP:String = "openShop";                                  //< Открыть магазин
         public static const BUILD_MODULE:String = "buildModule";                            //< Построить модуль
         public static const MODULES_CHANGED:String = "modulesChanged";                      //< Изменилось количество модулей одной из баз
+        public static const REMOVE_MODULE:String = "removeModule";                          //< Удалить модуль
 	}
 }

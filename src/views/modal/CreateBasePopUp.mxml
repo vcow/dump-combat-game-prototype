@@ -45,7 +45,7 @@
 						  click="{close(false, Const.OK);}"
 						  enabled="{ruinsSelector.selectedItem != null}"/>
 				
-				<s:Button width="50%" label="@Resource(key='new.base.popup.cancel', bundle='common')"
+				<s:Button width="50%" label="@Resource(key='alert.cancel', bundle='common')"
 						  click="{close(false, Const.CANCEL);}"/>
 			</s:HGroup>
 		</s:VGroup>

@@ -85,6 +85,41 @@ package helpers
 			
 			return res;
 		}
+        
+        /**
+         * Получить количество модулей указанного типа для указанной базы
+         * @param moduleId идентификатор типа модулей, если 0, считаются все модули
+         * @param baseId идентификатор базы, если null, считаются все базы
+         * @return количество модулей
+         */
+        public function getModulesCount(moduleId:uint=0, baseId:String=null):int
+        {
+            var ctr:int = 0;
+            for each (var base:BaseVO in basesListProxy.getBasesList())
+            {
+                if (baseId)
+                {
+                    if (base.baseId == baseId)
+                    {
+                        for each (var module:ModuleVO in base.baseModules.children)
+                        {
+                            if (moduleId == 0 || module.moduleId == moduleId)
+                                ctr++;
+                        }
+                        break;
+                    }
+                }
+                else
+                {
+                    for each (module in base.baseModules.children)
+                    {
+                        if (moduleId == 0 || module.moduleId == moduleId)
+                            ctr++;
+                    }
+                }
+            }
+            return ctr;
+        }
 		
 		private function get basesListProxy():BasesListProxy
 		{

@@ -4,7 +4,8 @@
 
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark"
-		xmlns:modal="views.modal.*">
+		xmlns:modal="views.modal.*"
+        creationComplete="{updateCanRemove();}">
 	<s:layout>
 		<s:VerticalLayout gap="2" paddingLeft="5" paddingRight="5"/>
 	</s:layout>
@@ -29,7 +30,7 @@
                       enabled="{!modulesList || modulesList.length &lt; modulesLimit}"/>
             
             <s:Button label="-" click="removeModule_clickHandler(event)" minWidth="42"
-                      enabled="{modulesListView.selectedIndex >= 0}"/>
+                      enabled="{canRemoveModule}"/>
         </s:BorderContainer>
         
         <s:List id="modulesListView" verticalScrollPolicy="on" horizontalScrollPolicy="off"
@@ -79,6 +80,10 @@
             import facade.ProtoFacade;
             
             import mediator.BaseMediator;
+            
+            import views.modal.AlertPopUp;
+            
+            import vo.ModuleDescVO;
 			
 			//--------------------------------------------------------------------------
 			// 
@@ -89,6 +94,9 @@
 			protected var _baseMediator:BaseMediator;
 			
             private var _baseId:String;
+            
+            private var _canRemoveModule:Boolean;
+            private var _numStores:int;
             
 			//--------------------------------------------------------------------------
 			// 
@@ -103,9 +111,30 @@
             [Bindable]
             public var modulesLimit:int;
             
+            [Bindable (event="canRemoveModuleChanged")]
+            private function get canRemoveModule():Boolean
+            {
+                return _canRemoveModule;
+            }
+            
             //--------------------------------------------------------------------------
             // 
             //--------------------------------------------------------------------------
+            
+            /**
+             * Флаг, указывающий на то, что в этой базе остался последний складской модуль
+             * (служит для предотвращения удаления последнего складского модуля)
+             */
+            public function set numStores(value:int):void
+            {
+                if (value == _numStores)
+                    return;
+                
+                _numStores = value;
+                
+                if (initialized)
+                    updateCanRemove();
+            }
             
             /**
              * Идентификатор базы
@@ -137,7 +166,20 @@
             
             protected function removeModule_clickHandler(event:MouseEvent):void
             {
+                var alertPopUp:AlertPopUp = new AlertPopUp();
+                alertPopUp.text = resourceManager.getString("common", "alert.remove.module.warning");
+                alertPopUp.buttonFlags = Const.YES | Const.NO;
                 
+                alertPopUp.addEventListener(PopUpEvent.CLOSE, function(event:PopUpEvent):void {
+                    if (event.data == Const.YES)
+                    {
+                        for each (var data:Object in modulesListView.selectedItems)
+                            dispatchEvent(new BaseEvent(BaseEvent.REMOVE_MODULE, _baseMediator.baseId, data.index));
+                    }
+                });
+                
+                alertPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                PopUpManager.centerPopUp(alertPopUp);
             }
             
             protected function renameBase_clickHandler(event:MouseEvent):void
@@ -150,7 +192,26 @@
             
             protected function modulesListView_changeHandler(event:IndexChangeEvent):void
             {
+                updateCanRemove();
+            }
+            
+            private function updateCanRemove():void
+            {
+                var storesLeft:int = _numStores;
                 
+                for each (var data:Object in modulesListView.selectedItems)
+                {
+                    if (data.id == ModuleDescVO.STORE)
+                        storesLeft--;
+                }
+                
+                var canRemove:Boolean = modulesListView.selectedIndex >= 0 && storesLeft >= 1;
+                
+                if (canRemove == _canRemoveModule)
+                    return;
+                
+                _canRemoveModule = canRemove;
+                dispatchEvent(new Event("canRemoveModuleChanged"));
             }
             
             //----------------------------------

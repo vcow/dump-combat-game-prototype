@@ -34,6 +34,16 @@ package vo
 		{
 			super(NAME);
 		}
+        
+        public function get baseModules():ModulesVO
+        {
+            for each (var item:IVO in children)
+            {
+                if (item.name == ModulesVO.NAME)
+                    return item as ModulesVO;
+            }
+            return null;
+        }
 		
 		/**
 		 * Получить список модулей базы указанного типа
@@ -43,16 +53,13 @@ package vo
 		public function getModules(moduleId:uint):Vector.<ModuleVO>
 		{
 			var modules:Vector.<ModuleVO> = new Vector.<ModuleVO>();
-			for each (var item:IVO in children)
-			{
-				if (item.name == ModulesVO.NAME)
+            var allModules:ModulesVO = baseModules;
+            if (allModules)
+            {
+				for each (var module:ModuleVO in allModules.children)
 				{
-					for each (var module:ModuleVO in item.children)
-					{
-						if (module.moduleId == moduleId && !module.moduleInactive)
-							modules.push(module);
-					}
-					break;
+					if (module.moduleId == moduleId && !module.moduleInactive)
+						modules.push(module);
 				}
 			}
 			return modules;

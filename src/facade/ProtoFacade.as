@@ -8,6 +8,7 @@ package facade
 	import command.GameEventCommand;
 	import command.NewPersonCreatedCommand;
 	import command.PlaceEmployeeCommand;
+	import command.RemoveModuleCommand;
 	import command.RenameBaseCommand;
 	import command.SendGameMessageCommand;
 	import command.StartUpCommand;
@@ -67,6 +68,7 @@ package facade
             registerCommand(Const.ARTIFACT_FINDED, ArtifactFindedCommand);
             registerCommand(Const.SEND_GAME_MESSAGE, SendGameMessageCommand);
             registerCommand(Const.BUILD_MODULE, BuildModuleCommand);
+            registerCommand(Const.REMOVE_MODULE, RemoveModuleCommand);
 		}
 	}
 }

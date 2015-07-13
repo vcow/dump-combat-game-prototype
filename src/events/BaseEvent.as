@@ -17,6 +17,7 @@ package events
 		
 		public static const RENAME:String = "rename";
         public static const CREATE_MODULE:String = "createModule";
+        public static const REMOVE_MODULE:String = "removeModule";
 		
 		//--------------------------------------------------------------------------
 		// 

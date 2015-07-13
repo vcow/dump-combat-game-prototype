@@ -3,12 +3,15 @@ package mediator
     import mx.collections.ArrayCollection;
     
     import command.data.BuildModuleCmdData;
+    import command.data.RemoveModuleCmdData;
     import command.data.RenameCmdData;
     
     import dictionary.Const;
     import dictionary.ModulesDict;
     
     import events.BaseEvent;
+    
+    import helpers.ModulesHelper;
     
     import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.mediator.Mediator;
@@ -18,7 +21,6 @@ package mediator
     import views.ui.BaseView;
     
     import vo.BaseVO;
-    import vo.IVO;
     import vo.ModuleDescVO;
     import vo.ModuleVO;
     import vo.ModulesVO;
@@ -41,6 +43,8 @@ package mediator
         private var _base:BaseVO;
         
         private var _moduleTypesList:ArrayCollection;
+        
+        private var _modulesDecor:ModulesHelper;
         
         //--------------------------------------------------------------------------
         // 
@@ -69,20 +73,17 @@ package mediator
                 return null;
             
             var modules:Array = [];
-            for each (var item:IVO in _base.children)
+            var allModules:ModulesVO = _base.baseModules;
+            if (allModules)
             {
-                if (item.name == ModulesVO.NAME)
+                for each (var module:ModuleVO in allModules.children)
                 {
-                    for (var i:int = 0; i < item.children.length; i++)
-                    {
-                        var module:ModuleVO = ModuleVO(item.children[i]);
-                        modules.push({
-                            index: module.moduleIndex,
-                            label: ModulesDict.getInstance().getModule(module.moduleId).moduleName,
-                            inactive: module.moduleInactive
-                        });
-                    }
-                    break;
+                    modules.push({
+                        id: module.moduleId,
+                        index: module.moduleIndex,
+                        label: ModulesDict.getInstance().getModule(module.moduleId).moduleName,
+                        inactive: module.moduleInactive
+                    });
                 }
             }
             return new ArrayCollection(modules);
@@ -116,12 +117,8 @@ package mediator
         {
             if (_base)
             {
-                var modules:Array = [];
-                for each (var item:IVO in _base.children)
-                {
-                    if (item.name == ModulesVO.NAME)
-                        return ModulesVO(item).modulesMaxCount;
-                }
+                var modules:ModulesVO = _base.baseModules;
+                return modules ? modules.modulesMaxCount : 0;
             }
             return 0;
         }
@@ -151,6 +148,7 @@ package mediator
             
             baseView.removeEventListener(BaseEvent.RENAME, renameBaseHandler);
             baseView.removeEventListener(BaseEvent.CREATE_MODULE, createModuleHandler);
+            baseView.removeEventListener(BaseEvent.REMOVE_MODULE, removeModuleHandler);
             
             // /TODO
         }
@@ -169,11 +167,20 @@ package mediator
             baseView.modulesList = modules;
             baseView.modulesLimit = modulesMaxCount;
             baseView.buildModulePopUp.modulesList = moduleTypesList;
+            baseView.numStores = modulesDecor.getModulesCount(ModuleDescVO.STORE);
             
             baseView.addEventListener(BaseEvent.RENAME, renameBaseHandler);
             baseView.addEventListener(BaseEvent.CREATE_MODULE, createModuleHandler);
+            baseView.addEventListener(BaseEvent.REMOVE_MODULE, removeModuleHandler);
             
             // /TODO
+        }
+        
+        protected function get modulesDecor():ModulesHelper
+        {
+            if (!_modulesDecor)
+                _modulesDecor = new ModulesHelper();
+            return _modulesDecor;
         }
         
         /**
@@ -194,6 +201,29 @@ package mediator
             var module:ModuleDescVO = ModulesDict.getInstance().getModule(uint(event.data));
             if (module)
                 sendNotification(Const.BUILD_MODULE, new BuildModuleCmdData(event.baseId, module.moduleId));
+        }
+        
+        /**
+         * Запрос на удалений модуля
+         * @param event событие
+         */
+        private function removeModuleHandler(event:BaseEvent):void
+        {
+            if (_base)
+            {
+                var modules:ModulesVO = _base.baseModules;
+                if (modules)
+                {
+                    for each (var module:ModuleVO in modules.children)
+                    {
+                        if (module.moduleIndex == event.data)
+                        {
+                            sendNotification(Const.REMOVE_MODULE, new RemoveModuleCmdData(_base.baseId, module.moduleId, module.moduleIndex));
+                            return;
+                        }
+                    }
+                }
+            }
         }
         
         //----------------------------------
@@ -225,8 +255,13 @@ package mediator
                         baseView.baseName = baseName;
                     break;
                 case Const.MODULES_CHANGED:
-                    if (notification.getBody() == _base && baseView)
-                        baseView.modulesList = modules;
+                    if (baseView)
+                    {
+                        if (notification.getBody() == _base)
+                            baseView.modulesList = modules;
+                        
+                        baseView.numStores = modulesDecor.getModulesCount(ModuleDescVO.STORE);
+                    }
                     break;
             }
         }

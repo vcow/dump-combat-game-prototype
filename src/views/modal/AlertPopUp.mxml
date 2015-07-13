@@ -15,11 +15,18 @@
 		<s:TextArea id="textArea" width="250" fontSize="14" editable="false" selectable="false" borderVisible="false"
                     verticalScrollPolicy="off" horizontalScrollPolicy="off"/>
 
-		<s:Button label="@Resource(key='alert.ok', bundle='common')" width="100"
-				  click="{close(false, Const.OK);}"/>
+        <s:HGroup id="buttonsContainer" horizontalAlign="center" width="100%" gap="2"/>
 	</s:BorderContainer>
 	
 	<fx:Declarations>
+        <s:Button id="okBn" label="@Resource(key='alert.ok', bundle='common')" width="100"
+                  click="{close(false, Const.OK);}"/>
+        <s:Button id="cancelBn" label="@Resource(key='alert.cancel', bundle='common')" width="100"
+                  click="{close(false, Const.CANCEL);}"/>
+        <s:Button id="yesBn" label="@Resource(key='alert.yes', bundle='common')" width="100"
+                  click="{close(false, Const.YES);}"/>
+        <s:Button id="noBn" label="@Resource(key='alert.no', bundle='common')" width="100"
+                  click="{close(false, Const.NO);}"/>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -35,11 +42,24 @@
 			//--------------------------------------------------------------------------
 			
 			public var _text:String;
+            
+            private var _buttonFlags:uint = Const.OK;
 			
 			//--------------------------------------------------------------------------
 			// 
 			//--------------------------------------------------------------------------
 			
+            public function set buttonFlags(value:uint):void
+            {
+                if (value == _buttonFlags)
+                    return;
+                
+                _buttonFlags = value;
+                
+                if (initialized)
+                    updateButtons();
+            }
+            
 			public function set text(value:String):void
 			{
 				if (value == _text)
@@ -66,7 +86,29 @@
 				for (var i:int = 0; i < numLines; i++)
 					h += textDisplay.getLineMetrics(i).height;
 				textArea.height = h;
+                
+                updateButtons();
 			}
+            
+            private function updateButtons():void
+            {
+                buttonsContainer.removeAllElements();
+                
+                if (_buttonFlags & Const.OK)
+                    buttonsContainer.addElement(okBn);
+                
+                if (_buttonFlags & Const.YES)
+                    buttonsContainer.addElement(yesBn);
+                
+                if (_buttonFlags & Const.NO)
+                    buttonsContainer.addElement(noBn);
+                
+                if (_buttonFlags & Const.CANCEL)
+                    buttonsContainer.addElement(cancelBn);
+                
+                if (buttonsContainer.numElements == 0)
+                    buttonsContainer.addElement(okBn);
+            }
 			
 		]]>
 	</fx:Script>

@@ -70,20 +70,15 @@ package command
                         }
                     }
                     
-                    for each (var item:IVO in base.children)
+                    var modules:ModulesVO = base.baseModules;
+                    if (modules)
                     {
-                        if (item.name == ModulesVO.NAME)
-                        {
-                            var modules:ModulesVO = ModulesVO(item);
-                            
-                            var module:ModuleVO = new ModuleVO();
-                            module.moduleId = data.moduleTypeId;
-                            module.moduleIndex = modules.nextIndex;
-                            
-                            modules.children.push(module);
-                            sendNotification(Const.MODULES_CHANGED, base);
-                            break;
-                        }
+                        var module:ModuleVO = new ModuleVO();
+                        module.moduleId = data.moduleTypeId;
+                        module.moduleIndex = modules.nextIndex;
+                        
+                        modules.children.push(module);
+                        sendNotification(Const.MODULES_CHANGED, base);
                     }
                 }
             }
