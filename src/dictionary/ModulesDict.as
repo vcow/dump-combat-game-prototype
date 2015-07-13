@@ -46,26 +46,34 @@ package dictionary
 		 */
 		public function getModule(moduleId:uint):ModuleDescVO
 		{
-			if (!_modules)
-			{
-				_modules = new Vector.<ModuleDescVO>();
-				
-				var src:XML = XML(new source());
-				var items:XMLList = src.child(ModuleDescVO.NAME);
-				for each (var item:XML in items)
-				{
-					var module:ModuleDescVO = new ModuleDescVO();
-					module.deserialize(item);
-					_modules.push(module);
-				}
-			}
 			
-			for each (module in _modules)
+			for each (var module:ModuleDescVO in modules)
 			{
 				if (module.moduleId == moduleId)
 					return module;
 			}
 			return null;
 		}
+        
+        /**
+         * Список модулей
+         */
+        public function get modules():Vector.<ModuleDescVO>
+        {
+            if (!_modules)
+            {
+                _modules = new Vector.<ModuleDescVO>();
+                
+                var src:XML = XML(new source());
+                var items:XMLList = src.child(ModuleDescVO.NAME);
+                for each (var item:XML in items)
+                {
+                    var module:ModuleDescVO = new ModuleDescVO();
+                    module.deserialize(item);
+                    _modules.push(module);
+                }
+            }
+            return _modules;
+        }
 	}
 }

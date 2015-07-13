@@ -34,6 +34,7 @@ package vo
                                                     //< (если 0, модуль активен)
 		public var moduleChance:Number;             //< Вероятность сохранения модуля после захвата базы
                                                     //< (если не NaN, переопределяет значение из словаря модулей ModuleDescVO)
+        public var moduleIndex:uint;                //< Уникальный индекс модуля (служит для идентификации модуля в рамках базы)
 		
 		private var _moduleId:uint;                 //< Идентификатор модуля
 		
@@ -117,6 +118,7 @@ package vo
 		{
 			var res:ModuleVO = new ModuleVO();
 			res.moduleId = moduleId;
+            res.moduleIndex = moduleIndex;
 			
 			return res;
 		}
@@ -128,6 +130,7 @@ package vo
 			// TODO: Сериализовать специфичные поля
 			
 			res.@id = moduleId;
+            res.@index = moduleIndex;
             
             if (moduleInactive)
                 res.@inactive = moduleInactive;
@@ -146,6 +149,7 @@ package vo
 			moduleId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
 			moduleChance = data.hasOwnProperty("@chance") ? Number(data.@chance) : NaN;
             moduleInactive = data.hasOwnProperty("@inactive") ? uint(data.@inactive) : 0;
+            moduleIndex = data.hasOwnProperty("@index") ? uint(data.@index) : 0;
 			
 			// /TODO
 			

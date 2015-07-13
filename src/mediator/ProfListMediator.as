@@ -11,7 +11,6 @@ package mediator
     
     import helpers.ModulesHelper;
     import helpers.PersonnelHelper;
-    import helpers.ResourcesHelper;
     
     import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.mediator.Mediator;
@@ -25,7 +24,6 @@ package mediator
     import vo.BaseVO;
     import vo.ModuleDescVO;
     import vo.PersonVO;
-    import vo.PriceVO;
     import vo.ProfessionDescVO;
     
     public class ProfListMediator extends Mediator
@@ -197,16 +195,8 @@ package mediator
         private function createPersonHandler(event:EmployeeListEvent):void
         {
             var profession:ProfessionDescVO = CharacteristicsDict.getInstance().getProfession(event.professionId);
-            
             if (!profession)
                 return;
-            
-            var price:PriceVO = profession.professionHiringCost;
-            if (price && !(new ResourcesHelper(basesListProxy, appDataProxy)).isEnoughResources(price))
-            {
-                // TODO: Отправить на докупку ресурсов
-                return;
-            }
             
             if (event.employeeName)
             {
@@ -214,7 +204,7 @@ package mediator
                 person.personName = event.employeeName;
                 person.personImage = event.employeeImage;
                 person.personGender = event.employeeGender;
-				
+                
                 sendNotification(Const.CREATE_NEW_PERSON, new HirePersonCmdData(person, base.baseId, profession.professionId));
             }
         }

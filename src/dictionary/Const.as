@@ -42,6 +42,9 @@ package dictionary
         public static const ARTIFACT_FINDED:String = "artifactFinded";                      //< Найден артефакт
         public static const SEND_GAME_MESSAGE:String = "sendGameMessage";                   //< Отправить системное сообщение
         public static const GAME_MESSAGE_SENT:String = "gameMessageSent";                   //< Системное сообщение отправлено
-        public static const OPEN_GAME_LOG:String = "openGameLog";                           //< Отрыть лог игровых сообщений
+        public static const OPEN_GAME_LOG:String = "openGameLog";                           //< Открыть лог игровых сообщений
+        public static const OPEN_SHOP:String = "openShop";                                  //< Открыть магазин
+        public static const BUILD_MODULE:String = "buildModule";                            //< Построить модуль
+        public static const MODULES_CHANGED:String = "modulesChanged";                      //< Изменилось количество модулей одной из баз
 	}
 }

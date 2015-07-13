@@ -50,7 +50,7 @@
                 
                 updateText();
                 
-                if (!data.readed)
+                if (data && !data.readed)
                     dispatchEvent(new LogListItemRendererEvent(LogListItemRendererEvent.MESSAGE_IS_READED, int(data.index)));
             }
             

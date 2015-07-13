@@ -38,7 +38,6 @@
 	<fx:Declarations>
         <modal:HireEmployePopUp id="hireEmployePopUp" close="hireEmployePopUp_closeHandler(event)"/>
         <modal:PlaceEmployeePopUp id="placeEmployeePopUp" close="placeEmployeePopUp_closeHandler(event)"/>
-        <modal:AlertPopUp id="alertPopUp"/>
 		
 		<s:RadioButtonGroup id="categoryRadioGroup" change="categoryRadioGroup_changeHandler(event)"/>
 	</fx:Declarations>
@@ -67,6 +66,8 @@
             import facade.ProtoFacade;
             
             import mediator.ProfListMediator;
+            
+            import views.modal.AlertPopUp;
             
             import vo.ProfessionDescVO;
 			
@@ -120,6 +121,7 @@
                 }
                 else
                 {
+                    var alertPopUp:AlertPopUp = new AlertPopUp();
                     alertPopUp.text = resourceManager.getString("common", "alert.noroom");
                     alertPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
                     PopUpManager.centerPopUp(alertPopUp);

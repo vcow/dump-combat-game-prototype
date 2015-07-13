@@ -136,6 +136,7 @@ package command
 				else
 				{
 					// Не хватает ресурсов, запустить сценарий покупки ресурсов
+                    sendNotification(Const.OPEN_SHOP, notification);
 				}
 			}
 		}

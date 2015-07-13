@@ -6,7 +6,7 @@
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:modal="views.modal.*">
 	<s:layout>
-		<s:VerticalLayout gap="0"/>
+		<s:VerticalLayout gap="2" paddingLeft="5" paddingRight="5"/>
 	</s:layout>
     
     <s:titleContent>
@@ -18,26 +18,46 @@
 		<s:Button label="&lt;" click="{navigator.popView();}"/>
 	</s:navigationContent>
     
-    <s:actionContent>
-        <s:Button label="+" click="buildNewModule_clickHandler(event)"
-                  enabled="{!modulesList || modulesList.length &lt; modulesLimit}"/>
-    </s:actionContent>
-	
-    <s:List id="modulesListView" verticalScrollPolicy="on" horizontalScrollPolicy="off"
-            width="100%" height="100%" change="modulesListView_changeHandler(event)"
-            dataProvider="{modulesList}"/>
+    <s:VGroup width="100%" height="100%" paddingLeft="5" paddingTop="10" paddingRight="5" paddingBottom="5">
+        
+        <s:BorderContainer backgroundColor="#f0f0f0" borderVisible="false" width="100%" minHeight="0">
+            <s:layout>
+                <s:HorizontalLayout paddingLeft="2" paddingRight="2" paddingTop="2" paddingBottom="2" horizontalAlign="right" gap="2"/>
+            </s:layout>
+            
+            <s:Button label="+" click="buildNewModule_clickHandler(event)" minWidth="42"
+                      enabled="{!modulesList || modulesList.length &lt; modulesLimit}"/>
+            
+            <s:Button label="-" click="removeModule_clickHandler(event)" minWidth="42"
+                      enabled="{modulesListView.selectedIndex >= 0}"/>
+        </s:BorderContainer>
+        
+        <s:List id="modulesListView" verticalScrollPolicy="on" horizontalScrollPolicy="off"
+                width="100%" height="100%" change="modulesListView_changeHandler(event)"
+                dataProvider="{modulesList}" allowMultipleSelection="true"/>
+    </s:VGroup>
     
-    <s:HGroup width="100%" horizontalAlign="center" gap="1">
+    <s:Group width="100%">
+        <s:Line left="0" right="0">
+            <s:stroke>
+                <s:SolidColorStroke color="#404040"/>
+            </s:stroke>
+        </s:Line>
+    </s:Group>
+    
+    <s:HGroup width="100%" horizontalAlign="center" gap="1" paddingTop="5" paddingBottom="10">
         <s:Button maxWidth="250" label="@Resource(key='base.personnel', bundle='common')" width="50%"/>
         <s:Button maxWidth="250" label="@Resource(key='base.garrison', bundle='common')" width="50%"/>
     </s:HGroup>
     
 	<fx:Declarations>
 		<modal:RenameBasePopUp id="renameBasePopUp" close="renamePopUp_closeHandler(event)"/>
+        <modal:BuildModulePopUp id="buildModulePopUp" close="buildModulePopUp_closeHandler(event)"/>
 	</fx:Declarations>
 	
 	<fx:Metadata>
 		[Event(name="rename", type="events.BaseEvent")]
+        [Event(name="createModule", type="events.BaseEvent")]
 		
 		[ResourceBundle("common")]
 	</fx:Metadata>
@@ -102,7 +122,20 @@
                         StringUtil.trim(renameBasePopUp.baseNameInput.text)));
             }
             
+            protected function buildModulePopUp_closeHandler(event:PopUpEvent):void
+            {
+                if (event.data == Const.OK)
+                    dispatchEvent(new BaseEvent(BaseEvent.CREATE_MODULE, _baseMediator.baseId,
+                        uint(buildModulePopUp.moduleTypeSelector.selectedItem.id)));
+            }
+            
             protected function buildNewModule_clickHandler(event:MouseEvent):void
+            {
+                buildModulePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                PopUpManager.centerPopUp(buildModulePopUp);
+            }
+            
+            protected function removeModule_clickHandler(event:MouseEvent):void
             {
                 
             }

@@ -1,6 +1,7 @@
 package facade
 {
 	import command.ArtifactFindedCommand;
+	import command.BuildModuleCommand;
 	import command.ChangeResourcesCommand;
 	import command.CreateNewBaseCommand;
 	import command.CreateNewPersonCommand;
@@ -65,6 +66,7 @@ package facade
             registerCommand(Const.CHANGE_RESOURCES, ChangeResourcesCommand);
             registerCommand(Const.ARTIFACT_FINDED, ArtifactFindedCommand);
             registerCommand(Const.SEND_GAME_MESSAGE, SendGameMessageCommand);
+            registerCommand(Const.BUILD_MODULE, BuildModuleCommand);
 		}
 	}
 }

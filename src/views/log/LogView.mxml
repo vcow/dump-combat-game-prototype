@@ -49,12 +49,6 @@
             // 
             //--------------------------------------------------------------------------
             
-            private var _logData:ArrayCollection;
-            
-            //--------------------------------------------------------------------------
-            // 
-            //--------------------------------------------------------------------------
-            
             [Bindable]
             public var logData:ArrayCollection;
             
@@ -90,7 +84,7 @@
             
             protected function creationCompleteHandler(event:FlexEvent):void
             {
-                if (_logData)
+                if (logData)
                     logScroller.viewport.verticalScrollPosition = logScroller.viewport.contentHeight - logScroller.viewport.height;
                 
                 logScroller.viewport.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, viewport_propertyChangeHandler);

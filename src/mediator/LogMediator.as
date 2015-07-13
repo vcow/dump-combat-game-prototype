@@ -30,6 +30,8 @@ package mediator
         
         private var _logProxy:LogProxy;
         
+        private var _logData:ArrayCollection = new ArrayCollection();
+        
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
@@ -42,16 +44,19 @@ package mediator
         
         public function get logData():ArrayCollection
         {
-            var data:Array = [];
-            for each (var record:LogRecordData in logProxy.log)
+            for (var i:int = _logData.length; i < logProxy.log.length; i++)
             {
-                data.push({
+                var record:LogRecordData = logProxy.log[i];
+                _logData.addItem({
                     message: String(record),
                     index: record.index,
                     readed: !record.isNew
                 });
+                
+                if (_logData.length > 100)
+                    _logData.removeItemAt(0);
             }
-            return new ArrayCollection(data);
+            return _logData;
         }
         
         /**

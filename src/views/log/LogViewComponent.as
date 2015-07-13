@@ -27,7 +27,7 @@ package views.log
         private var _newMessagesCount:int;
         
         private var _alert:LogAlert = new LogAlert();
-        private var _view:LogView = new LogView();
+        private var _view:LogView;
         
         //--------------------------------------------------------------------------
         // 
@@ -40,9 +40,6 @@ package views.log
             _logMediator = LogMediator(ProtoFacade.getInstance().retrieveMediator(LogMediator.NAME));
             
             _alert.addEventListener(MouseEvent.CLICK, alert_clickHandler);
-            
-            _view.addEventListener(PopUpEvent.CLOSE, view_closeHandler);
-            _view.addEventListener(LogListItemRendererEvent.MESSAGE_IS_READED, logItem_messageIsReadedHandler);
         }
         
         /**
@@ -65,7 +62,7 @@ package views.log
             }
             else
             {
-                if (_view.isOpen)
+                if (_view && _view.isOpen)
                 {
                     if (increase)
                         _view.logData = _logMediator.logData;
@@ -83,7 +80,8 @@ package views.log
          */
         public function set messages(value:ArrayCollection):void
         {
-            _view.logData = value;
+            if (_view)
+                _view.logData = value;
         }
         
         /**
@@ -91,6 +89,14 @@ package views.log
          */
         public function openLog():void
         {
+            if (!_view)
+            {
+                _view = new LogView();
+                
+                _view.addEventListener(PopUpEvent.CLOSE, view_closeHandler);
+                _view.addEventListener(LogListItemRendererEvent.MESSAGE_IS_READED, logItem_messageIsReadedHandler);
+            }
+            
             if (!_view.isOpen)
             {
                 if (_alert.isOpen)
@@ -117,6 +123,10 @@ package views.log
          */
         private function view_closeHandler(event:PopUpEvent):void
         {
+            _view.removeEventListener(PopUpEvent.CLOSE, view_closeHandler);
+            _view.removeEventListener(LogListItemRendererEvent.MESSAGE_IS_READED, logItem_messageIsReadedHandler);
+            _view = null;
+            
             if (_newMessagesCount > 0 && !_alert.isOpen)
                 _alert.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), false);
         }

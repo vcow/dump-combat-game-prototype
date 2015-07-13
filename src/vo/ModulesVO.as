@@ -29,6 +29,20 @@ package vo
 		{
 			super(NAME);
 		}
+        
+        /**
+         * Следующий уникальный индекс для модуля из этого списка модулей
+         */
+        public function get nextIndex():uint
+        {
+            var index:int = -1;
+            for each (var module:ModuleVO in children)
+            {
+                if (index < int(module.moduleIndex))
+                    index = module.moduleIndex;
+            }
+            return index + 1;
+        }
 		
 		//----------------------------------
 		//  VO

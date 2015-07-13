@@ -50,7 +50,7 @@
 			</s:HGroup>
 		</s:VGroup>
 		
-		<ui:SimpleResourcesView/>
+		<ui:SimpleResourcesView logButtonVisible="false"/>
 	</s:BorderContainer>
 	
 	<fx:Declarations>

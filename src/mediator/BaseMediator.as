@@ -2,6 +2,7 @@ package mediator
 {
     import mx.collections.ArrayCollection;
     
+    import command.data.BuildModuleCmdData;
     import command.data.RenameCmdData;
     
     import dictionary.Const;
@@ -18,6 +19,7 @@ package mediator
     
     import vo.BaseVO;
     import vo.IVO;
+    import vo.ModuleDescVO;
     import vo.ModuleVO;
     import vo.ModulesVO;
     
@@ -37,6 +39,8 @@ package mediator
         public static const NAME:String = "baseMediator";
         
         private var _base:BaseVO;
+        
+        private var _moduleTypesList:ArrayCollection;
         
         //--------------------------------------------------------------------------
         // 
@@ -73,7 +77,7 @@ package mediator
                     {
                         var module:ModuleVO = ModuleVO(item.children[i]);
                         modules.push({
-                            index: i,
+                            index: module.moduleIndex,
                             label: ModulesDict.getInstance().getModule(module.moduleId).moduleName,
                             inactive: module.moduleInactive
                         });
@@ -82,6 +86,27 @@ package mediator
                 }
             }
             return new ArrayCollection(modules);
+        }
+        
+        /**
+         * Список типов модулей базы
+         */
+        public function get moduleTypesList():ArrayCollection
+        {
+            if (!_moduleTypesList)
+            {
+                var types:Array = [];
+                for each (var module:ModuleDescVO in ModulesDict.getInstance().modules)
+                {
+                    types.push({
+                        label: module.moduleName,
+                        id: module.moduleId,
+                        price: module.modulePrice
+                    });
+                }
+                _moduleTypesList = new ArrayCollection(types);
+            }
+            return _moduleTypesList;
         }
         
         /**
@@ -125,6 +150,7 @@ package mediator
             // TODO: Удалить все обработчики событий, если таковые были установлены
             
             baseView.removeEventListener(BaseEvent.RENAME, renameBaseHandler);
+            baseView.removeEventListener(BaseEvent.CREATE_MODULE, createModuleHandler);
             
             // /TODO
         }
@@ -142,8 +168,10 @@ package mediator
             baseView.baseName = baseName;
             baseView.modulesList = modules;
             baseView.modulesLimit = modulesMaxCount;
+            baseView.buildModulePopUp.modulesList = moduleTypesList;
             
             baseView.addEventListener(BaseEvent.RENAME, renameBaseHandler);
+            baseView.addEventListener(BaseEvent.CREATE_MODULE, createModuleHandler);
             
             // /TODO
         }
@@ -155,6 +183,17 @@ package mediator
         private function renameBaseHandler(event:BaseEvent):void
         {
             sendNotification(Const.RENAME_BASE, new RenameCmdData(event.baseId, event.data.toString()));
+        }
+        
+        /**
+         * Запрос на постройку нового модуля
+         * @param event событие
+         */
+        private function createModuleHandler(event:BaseEvent):void
+        {
+            var module:ModuleDescVO = ModulesDict.getInstance().getModule(uint(event.data));
+            if (module)
+                sendNotification(Const.BUILD_MODULE, new BuildModuleCmdData(event.baseId, module.moduleId));
         }
         
         //----------------------------------
@@ -174,7 +213,7 @@ package mediator
         
         override public function listNotificationInterests():Array
         {
-            return [ Const.BASE_RENAMED ];
+            return [ Const.BASE_RENAMED, Const.MODULES_CHANGED ];
         }
         
         override public function handleNotification(notification:INotification):void
@@ -182,8 +221,12 @@ package mediator
             switch (notification.getName())
             {
                 case Const.BASE_RENAMED:
-                    if (baseView)
+                    if (notification.getBody() == _base && baseView)
                         baseView.baseName = baseName;
+                    break;
+                case Const.MODULES_CHANGED:
+                    if (notification.getBody() == _base && baseView)
+                        baseView.modulesList = modules;
                     break;
             }
         }
