@@ -15,6 +15,12 @@
 		<price details="fee" event="min">
 			<resource id="2" count="1"/>
 		</price>
+		<!-- Время создания содержит следующие параметры:
+			time=[{количество милисекунд},{время в формате ##h##m##s}] - время
+			event={строковое значение} - внутриигровое событие, которое генерируется по завершению таймера
+			notification={строковое значение} - нотификация, которая отправляется по завершению таймера
+			Может содержать дополнительные параметры для нотификации -->
+		<leadTime time="30s" event="constructionCompleted"/>
 	</moduleDesc>
 	<!-- Складской модуль -->
 	<moduleDesc id="2" name="{store.title}" description="{store.description}" space="500" chance="0.2">

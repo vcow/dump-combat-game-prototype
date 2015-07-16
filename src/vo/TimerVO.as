@@ -5,32 +5,31 @@ package vo
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object персонажа
+	 * Value Object таймера
 	 * 
 	 */
 	
-	public class PersonVO extends VO
+	public class TimerVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "person";
+		public static const NAME:String = "timer";
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public var personId:String;             //< Уникальный идентификатор персонажа
-        public var personName:String;           //< Имя персонажа
-        public var personGender:String;         //< Пол персонажа (m/f)
-        public var personImage:String;          //< Изображение персонажа
+		public var timerId:String;              //< Уникальный идентификатор таймера
+        public var timerStartTime:Number;       //< Время запуска таймера
+        public var timerDelay:Number;           //< Прдолжительность таймера
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function PersonVO()
+		public function TimerVO()
 		{
 			super(NAME);
 		}
@@ -45,12 +44,9 @@ package vo
 			
 			// TODO: Сериализовать специфичные поля
 			
-			res.@id = personId || Const.NO_GUID;
-            res.@name = personName;
-            res.@gender = personGender;
-            
-            if (personImage)
-                res.@image = personImage;
+			res.@id = timerId || Const.NO_GUID;
+            res.@startTime = isNaN(timerStartTime) ? 0 : timerStartTime;
+            res.@delay = isNaN(timerDelay) ? 0 : timerDelay;
 			
 			// /TODO
 			
@@ -63,10 +59,9 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-			personId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
-            personName = data.hasOwnProperty("@name") ? data.@name.toString() : "";
-            personGender = data.hasOwnProperty("@gender") ? data.@gender.toString() : Const.MALE;
-            personImage = data.hasOwnProperty("@image") ? data.@image.toString() : null;
+            timerId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
+            timerStartTime = data.hasOwnProperty("@startTime") ? Number(data.@startTime) : 0;
+            timerDelay = data.hasOwnProperty("@delay") ? Number(data.@delay) : 0;
 			
 			// /TODO
 			

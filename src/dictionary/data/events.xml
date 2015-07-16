@@ -33,4 +33,6 @@
 	<eventDesc id="min" interval="1m"/>
 	<!-- Зарплата всем работникам -->
 	<eventDesc id="payDay" interval="10m"/>
+	<!-- Завершено строительство модуля -->
+	<eventDesc id="constructionCompleted"/>
 </events>

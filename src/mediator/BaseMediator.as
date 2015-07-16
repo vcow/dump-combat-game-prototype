@@ -82,10 +82,12 @@ package mediator
                         id: module.moduleId,
                         index: module.moduleIndex,
                         label: ModulesDict.getInstance().getModule(module.moduleId).moduleName,
-                        inactive: module.moduleInactive
+                        inactive: module.moduleInactive,
+                        under_construct: Boolean(module.moduleBuildTimer)
                     });
                 }
             }
+            
             return new ArrayCollection(modules);
         }
         

@@ -75,19 +75,20 @@ package vo
 		//  VO
 		//----------------------------------
 		
-		override public function event(eventId:String, out:GameEventCmdData=null):void
+		override public function event(eventId:String, data:Object=null, out:GameEventCmdData=null):void
 		{
 			if (_salaryEventId && eventId == _salaryEventId)
 			{
 				// Событие, по которому выплачивается зарплата для сотрудника
 				if (out)
 				{
-					var data:Array = out.commonOut[Const.CHANGE_RESOURCES] as Array;
+					var outData:Array = out.commonOut[Const.CHANGE_RESOURCES] as Array;
 					var resourcesDecor:ResourcesHelper = new ResourcesHelper();
 					
 					var commonFee:PriceVO;
-					if (data)
-						commonFee = resourcesDecor.joinPrice(resourcesDecor.joinPrice.apply(this, data), resourcesDecor.invertPrice(professionDesc.professionSalary));
+					if (outData)
+						commonFee = resourcesDecor.joinPrice(resourcesDecor.joinPrice.apply(this, outData),
+                            resourcesDecor.invertPrice(professionDesc.professionSalary));
 					else
 						commonFee = resourcesDecor.invertPrice(professionDesc.professionSalary);
 					
@@ -113,7 +114,7 @@ package vo
 			}
 			else
 			{
-				super.event(eventId, out);
+				super.event(eventId, data, out);
 			}
 		}
 		

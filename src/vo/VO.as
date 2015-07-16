@@ -55,12 +55,13 @@ package vo
         /**
          * Разослать внутриигровое событие всем дочерним объектам
          * @param eventId идентификатор внутриигрового события
+         * @param data данные события
          * @param out объект, в котором могут быть возвращены дополнительные параметры из дочерних элементов
          */
-        public function event(eventId:String, out:GameEventCmdData=null):void
+        public function event(eventId:String, data:Object=null, out:GameEventCmdData=null):void
         {
             for each (var value:VO in _children)
-                value.event(eventId, out);
+                value.event(eventId, data, out);
         }
         
         /**
@@ -243,6 +244,9 @@ package vo
                     case NotificationVO.NAME: value = new NotificationVO(); break;
                     case TriggersVO.NAME: value = new TriggersVO(); break;
                     case TriggerVO.NAME: value = new TriggerVO(); break;
+                    case LeadTimeVO.NAME: value = new LeadTimeVO(); break;
+                    case TimerVO.NAME: value = new TimerVO(); break;
+                    case TimersVO.NAME: value = new TimersVO(); break;
 					
 					// /TODO
 					

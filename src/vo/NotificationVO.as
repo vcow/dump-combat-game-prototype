@@ -3,7 +3,7 @@ package vo
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object ресурса
+	 * Value Object нотификации
 	 * 
 	 */
 	

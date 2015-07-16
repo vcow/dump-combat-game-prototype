@@ -35,11 +35,13 @@ package vo
 		public var moduleChance:Number;             //< Вероятность сохранения модуля после захвата базы
                                                     //< (если не NaN, переопределяет значение из словаря модулей ModuleDescVO)
         public var moduleIndex:uint;                //< Уникальный индекс модуля (служит для идентификации модуля в рамках базы)
+        public var moduleBuildTimer:String;         //< Идентификатор таймера постройки (если есть, здание строится)
 		
 		private var _moduleId:uint;                 //< Идентификатор модуля
 		
 		private var _moduleDesc:ModuleDescVO;
         private var _feeEventId:String;
+        private var _builtEventId:String;
         
 		//--------------------------------------------------------------------------
 		// 
@@ -58,8 +60,12 @@ package vo
             _moduleId = value;
             
 			_moduleDesc = ModulesDict.getInstance().getModule(_moduleId);
+            
             var fee:PriceVO = _moduleDesc.moduleFee;
             _feeEventId = fee ? fee.priceEventId : "";
+            
+            var leadTime:LeadTimeVO = _moduleDesc.moduleLeadTime;
+            _builtEventId = leadTime ? leadTime.leadTimeEvent : "";
         }
         
         public function get moduleId():uint
@@ -71,24 +77,25 @@ package vo
 		{
 			return _moduleDesc;
 		}
-		
+        
 		//----------------------------------
 		//  VO
 		//----------------------------------
 		
-        override public function event(eventId:String, out:GameEventCmdData=null):void
+        override public function event(eventId:String, data:Object=null, out:GameEventCmdData=null):void
         {
             if (_feeEventId && eventId == _feeEventId)
             {
                 // Событие, по которому взымается плата за эксплуатацию модуля
                 if (out)
 				{
-					var data:Array = out.commonOut[Const.CHANGE_RESOURCES] as Array;
+					var outData:Array = out.commonOut[Const.CHANGE_RESOURCES] as Array;
 					var resourcesDecor:ResourcesHelper = new ResourcesHelper();
 					
 					var commonFee:PriceVO;
-                    if (data)
-						commonFee = resourcesDecor.joinPrice(resourcesDecor.joinPrice.apply(this, data), resourcesDecor.invertPrice(moduleDesc.moduleFee));
+                    if (outData)
+						commonFee = resourcesDecor.joinPrice(resourcesDecor.joinPrice.apply(this, outData),
+                            resourcesDecor.invertPrice(moduleDesc.moduleFee));
 					else
 						commonFee = resourcesDecor.invertPrice(moduleDesc.moduleFee);
 					
@@ -96,11 +103,18 @@ package vo
 					{
 						out.commonOut[Const.CHANGE_RESOURCES] = [ commonFee ];
                         
-                        moduleInactive = 0;
+                        if (moduleInactive > 0)
+                        {
+                            moduleInactive = 0;
+                            out.privateOut[Const.MODULES_CHANGED] = [];
+                        }
 					}
 	                else
 	                {
 	                    // Отключить модуль за неуплату
+                        if (moduleInactive == 0)
+                            out.privateOut[Const.MODULES_CHANGED] = [];
+                        
                         moduleInactive += 1;
                         
                         var message:String = ResourceManager.getInstance().getString("messages", "disconnected.for.non.payment", [ moduleDesc.moduleName ]);
@@ -108,9 +122,23 @@ package vo
 	                }
 				}
             }
+            else if (moduleBuildTimer && _builtEventId && eventId == _builtEventId)
+            {
+                var timerId:String = data ? data.toString() : "";
+                if (moduleBuildTimer == timerId)
+                {
+                    // Сработал таймер окончания постройки этого модуля
+                    moduleBuildTimer = "";
+                    out.privateOut[Const.MODULES_CHANGED] = [];
+                }
+                else
+                {
+                    super.event(eventId, data, out);
+                }
+            }
             else
             {
-                super.event(eventId, out);
+                super.event(eventId, data, out);
             }
         }
         
@@ -134,6 +162,9 @@ package vo
             
             if (moduleInactive)
                 res.@inactive = moduleInactive;
+            
+            if (moduleBuildTimer)
+                res.@buildTimer = moduleBuildTimer;
 			
 			// /TODO
 			
@@ -150,6 +181,7 @@ package vo
 			moduleChance = data.hasOwnProperty("@chance") ? Number(data.@chance) : NaN;
             moduleInactive = data.hasOwnProperty("@inactive") ? uint(data.@inactive) : 0;
             moduleIndex = data.hasOwnProperty("@index") ? uint(data.@index) : 0;
+            moduleBuildTimer = data.hasOwnProperty("@buildTimer") ? data.@buildTimer.toString() : "";
 			
 			// /TODO
 			

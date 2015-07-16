@@ -30,5 +30,10 @@ package events
             super(type, bubbles, cancelable);
             this.event = event;
         }
+        
+        override public function clone():Event
+        {
+            return new EventsManagerEvent(type, event, bubbles, cancelable);
+        }
     }
 }

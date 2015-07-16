@@ -59,11 +59,11 @@ package managers
          */
         public function tick():void
         {
-            if (hasEventListener(EventsManagerEvent.TICK))
-                dispatchEvent(new EventsManagerEvent(EventsManagerEvent.TICK));
-            
             var now:Number = (new Date()).time;
             appDataProxy.stuff.timestamp = now;
+            
+            if (hasEventListener(EventsManagerEvent.TICK))
+                dispatchEvent(new EventsManagerEvent(EventsManagerEvent.TICK));
             
             for (var key:String in _activatedEvents)
             {
@@ -109,10 +109,19 @@ package managers
                     else
                     {
                         var exitTime:Number = appDataProxy.stuff.exitTime;
-                        if (isNaN(exitTime) || exitTime  < eventLastTime)
-                            _activatedEvents[eventDesc.eventId] = now + eventDesc.eventInterval;
+                        if (eventLastTime < exitTime)
+                        {
+                            var restoreTime:Number = appDataProxy.stuff.restoreTime;
+                            var delta:Number = !isNaN(exitTime) && !isNaN(restoreTime) && restoreTime > exitTime ? restoreTime - exitTime : 0;
+                            
+                            eventLastTime += delta;
+                            eventLastTimes[eventDesc.eventId] = eventLastTime;
+                            _activatedEvents[eventDesc.eventId] = eventLastTime + eventDesc.eventInterval;
+                        }
                         else
-                            _activatedEvents[eventDesc.eventId] = now + eventDesc.eventInterval - (exitTime - eventLastTime);
+                        {
+                            _activatedEvents[eventDesc.eventId] = now + eventDesc.eventInterval;
+                        }
                     }
                 }
                 else

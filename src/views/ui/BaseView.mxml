@@ -35,7 +35,35 @@
         
         <s:List id="modulesListView" verticalScrollPolicy="on" horizontalScrollPolicy="off"
                 width="100%" height="100%" change="modulesListView_changeHandler(event)"
-                dataProvider="{modulesList}" allowMultipleSelection="true"/>
+                dataProvider="{modulesList}" allowMultipleSelection="true">
+            <s:itemRenderer>
+                <fx:Component>
+                    <s:LabelItemRenderer>
+                        <fx:Script>
+                            <![CDATA[
+                                override public function set data(value:Object):void
+                                {
+                                    super.data = value;
+                                    if (data)
+                                    {
+                                        if (data.under_construct)
+                                        {
+                                            setStyle("alternatingItemColors", 0xa3d39c);
+                                            setStyle("color", 0x005e20);
+                                            label = resourceManager.getString("common", "base.under.construct", [ data.label ]);
+                                        }
+                                        else
+                                        {
+                                            setStyle("alternatingItemColors", data.inactive ? 0xf69679 : 0xffffff);
+                                        }
+                                    }
+                                }
+                            ]]>
+                        </fx:Script>
+                    </s:LabelItemRenderer>
+                </fx:Component>
+            </s:itemRenderer>
+        </s:List>
     </s:VGroup>
     
     <s:Group width="100%">

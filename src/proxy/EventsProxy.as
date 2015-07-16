@@ -95,10 +95,7 @@ package proxy
             
             // Стартовать систему событий
             for each (var eventDesc:EventDescVO in EventsDict.getInstance().events)
-            {
-                if (eventDesc.eventInterval)
-                    eventsManager.activateEvent(eventDesc.eventId);
-            }
+                eventsManager.activateEvent(eventDesc.eventId);
         }
         
         override public function onRemove():void

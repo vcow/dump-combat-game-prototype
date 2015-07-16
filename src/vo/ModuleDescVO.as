@@ -74,6 +74,19 @@ package vo
 			}
 			return null;
 		}
+        
+        /**
+         * Время на постройку модуля
+         */
+        public function get moduleLeadTime():LeadTimeVO
+        {
+            for each (var value:IVO in children)
+            {
+                if (value.name == LeadTimeVO.NAME)
+                    return value as LeadTimeVO;
+            }
+            return null;
+        }
 		
 		//----------------------------------
 		//  VO

@@ -43,7 +43,7 @@ package command
 			// Прокинуть евент по всем базам, отправить нотфикации, которые вернут value object-ы
             for each (var base:BaseVO in bases)
             {
-                base.event(notification.getType(), out);
+                base.event(notification.getType(), notification.getBody(), out);
                 
 				for (var key:String in out.privateOut)
 				{
@@ -55,7 +55,7 @@ package command
 					}
 					else
 					{
-						sendNotification(key, base.baseId);
+						sendNotification(key, base);
 					}
 				}
 				

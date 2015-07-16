@@ -8,6 +8,7 @@ package command
 	import proxy.EventsProxy;
 	import proxy.LogProxy;
 	import proxy.PersonsProxy;
+	import proxy.TimersProxy;
 	import proxy.TriggersProxy;
 	
 	/**
@@ -40,6 +41,7 @@ package command
             this.facade.registerProxy(new TriggersProxy());
             this.facade.registerProxy(new LogProxy());
             this.facade.registerProxy(new EventsProxy());
+            this.facade.registerProxy(new TimersProxy());
 		}
 	}
 }
