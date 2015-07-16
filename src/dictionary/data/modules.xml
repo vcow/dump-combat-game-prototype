@@ -23,12 +23,23 @@
 		<leadTime time="30s" event="constructionCompleted"/>
 	</moduleDesc>
 	<!-- Складской модуль -->
-	<moduleDesc id="2" name="{store.title}" description="{store.description}" space="500" chance="0.2">
+	<moduleDesc id="2" name="{store.title}" description="{store.description}" space="500" chance="0.4">
 		<price details="price">
 			<resource id="2" count="150"/>
 		</price>
 		<price details="fee" event="min">
 			<resource id="2" count="1"/>
 		</price>
+		<leadTime time="10s" event="constructionCompleted"/>
+	</moduleDesc>
+	<!-- Лаборатория -->
+	<moduleDesc id="3" name="{lab.title}" description="{lab.description}" space="15" chance="0.1">
+		<price details="price">
+			<resource id="2" count="200"/>
+		</price>
+		<price details="fee" event="min">
+			<resource id="2" count="5"/>
+		</price>
+		<leadTime time="1m" event="constructionCompleted"/>
 	</moduleDesc>
 </modulesDict>

@@ -1,5 +1,10 @@
 package helpers
 {
+    import mx.resources.IResourceManager;
+    import mx.resources.ResourceManager;
+
+    [ResourceBundle("time")]
+    
     /**
      * 
      * @author y.vircowskiy
@@ -84,6 +89,44 @@ package helpers
                 res += x.toString();
             
             return res;
+        }
+        
+        /**
+         * Преобразовать количество милисекунд в литературное строковое представление времени
+         * @param time количество милисекунд
+         * @return строковое представление
+         */
+        public function getTimeDescription(time:Number):String
+        {
+            var res:String = "";
+            var resourceManager:IResourceManager = ResourceManager.getInstance();
+            
+            var x:int = int(time / 3600000.0);
+            if (x > 0)
+                res += resourceManager.getString("time", "hour" + getIndex(x), [ x ]);
+            
+            x = int(time / 60000.0) % 60;
+            if (x > 0)
+                res += (res ? " " : "") +  resourceManager.getString("time", "min" + getIndex(x), [ x ]);
+            
+            x = int(time / 1000.0) % 60;
+            if (x > 0)
+                res += (res ? " " : "") +  resourceManager.getString("time", "sec" + getIndex(x), [ x ]);
+            
+            return res;
+        }
+        
+        private function getIndex(value:int):int
+        {
+            var num:int = value % 10;
+            var decnum:int = value % 100;
+            if (num == 1 && decnum != 11)
+                return 1;
+            if (decnum >= 10 && decnum <= 20)
+                return 3;
+            if (num >= 2 && num <= 4)
+                return 2;
+            return 3;
         }
     }
 }

@@ -104,7 +104,8 @@ package mediator
                     types.push({
                         label: module.moduleName,
                         id: module.moduleId,
-                        price: module.modulePrice
+                        price: module.modulePrice,
+                        leadTime: module.moduleLeadTime
                     });
                 }
                 _moduleTypesList = new ArrayCollection(types);

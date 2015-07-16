@@ -21,6 +21,7 @@ package vo
 		
 		public static const HOUSING:uint = 1;		//< Жилой модуль
 		public static const STORE:uint = 2;			//< Складской модуль
+        public static const LAB:uint = 3;           //< Лаборатория
 		
 		//--------------------------------------------------------------------------
 		// 

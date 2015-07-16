@@ -6,7 +6,12 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark"
                xmlns:dropDownList="com.flextras.mobile.dropDownList.*"
                xmlns:ui="views.ui.*"
-               creationComplete="creationCompleteHandler(event)">
+               creationComplete="creationCompleteHandler(event)"
+               currentState="immediately">
+    <s:states>
+        <s:State name="immediately"/>
+        <s:State name="hasLeadTime"/>
+    </s:states>
 	
 	<s:BorderContainer>
 		<s:layout>
@@ -23,13 +28,16 @@
 		
 		<s:VGroup gap="7" paddingLeft="5" paddingRight="5" paddingTop="0" paddingBottom="5" horizontalAlign="center">
             
-            <dropDownList:DropDownList id="moduleTypeSelector" width="100%" dataProvider="{modulesList}"/>
+            <dropDownList:DropDownList id="moduleTypeSelector" width="100%" dataProvider="{modulesList}"
+                                       change="moduleTypeSelector_changeHandler(event)"/>
             
             <s:VGroup gap="3" horizontalAlign="center">
                 <s:Label text="@Resource(key='new.base.popup.price', bundle='common')"/>
                 
                 <ui:PriceView width="100%" price="{moduleTypeSelector.selectedItem ? moduleTypeSelector.selectedItem.price : null}"/>
             </s:VGroup>
+            
+            <s:Label includeIn="hasLeadTime" text="{leadTimeText}" width="100%" textAlign="center" fontSize="11"/>
 			
 			<s:HGroup width="100%">
 				<s:Button label="@Resource(key='base.create.module.build', bundle='common')" width="50%" minWidth="120"
@@ -55,7 +63,11 @@
             import mx.collections.ArrayCollection;
             import mx.events.FlexEvent;
             
+            import spark.events.IndexChangeEvent;
+            
             import dictionary.Const;
+            
+            import helpers.TimeHelper;
             
 			//--------------------------------------------------------------------------
 			// 
@@ -66,6 +78,9 @@
             //--------------------------------------------------------------------------
             // 
             //--------------------------------------------------------------------------
+            
+            [Bindable]
+            private var leadTimeText:String;
             
             [Bindable (event="modulesListChanged")]
             public function get modulesList():ArrayCollection
@@ -81,8 +96,13 @@
                 _modulesList = value;
                 dispatchEvent(new Event("modulesListChanged"));
                 
-                if (initialized && _modulesList && _modulesList.length > 0)
-                    moduleTypeSelector.selectedIndex = 0;
+                if (initialized)
+                {
+                    if (_modulesList && _modulesList.length > 0)
+                        moduleTypeSelector.selectedIndex = 0;
+                    
+                    moduleTypeSelector_changeHandler(null);
+                }
             }
             
 			//--------------------------------------------------------------------------
@@ -92,7 +112,24 @@
             protected function creationCompleteHandler(event:FlexEvent):void
             {
                 if (_modulesList && _modulesList.length > 0)
+                {
                     moduleTypeSelector.selectedIndex = 0;
+                    moduleTypeSelector_changeHandler(null);
+                }
+            }
+            
+            protected function moduleTypeSelector_changeHandler(event:IndexChangeEvent):void
+            {
+                if (moduleTypeSelector.selectedItem && moduleTypeSelector.selectedItem.leadTime)
+                {
+                    leadTimeText = resourceManager.getString("common", "base.create.lead.time",
+                        [ (new TimeHelper()).getTimeDescription(moduleTypeSelector.selectedItem.leadTime.leadTimeTime) ]);
+                    currentState = "hasLeadTime";
+                }
+                else
+                {
+                    currentState = "immediately";
+                }
             }
             
         ]]>

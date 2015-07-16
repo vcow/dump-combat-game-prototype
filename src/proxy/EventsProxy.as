@@ -61,15 +61,18 @@ package proxy
          */
         private function eventsManager_eventHandler(event:EventsManagerEvent):void
         {
+            // Прогнать событие по дереву
             sendNotification(Const.GAME_EVENT, null, event.event.eventId);
             
             for each (var secondary:IVO in event.event.children)
             {
+                // У этого события имеются дополнительные действия
                 switch (secondary.name)
                 {
-                    case NotificationVO.NAME:
+                    case NotificationVO.NAME:       // Отправить нотификацию
                         var notification:NotificationVO = NotificationVO(secondary);
                         
+                        // Проверить наличие и выполнение условия отправки
                         var conditionIsSatisfied:Boolean = notification.notificationData.hasOwnProperty("condition") ?
                             (new ConditionHelper(triggersProxy)).parseCondition(notification.notificationData.condition) : true;
                         
