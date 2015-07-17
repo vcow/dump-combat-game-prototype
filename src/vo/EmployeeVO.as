@@ -4,7 +4,7 @@ package vo
 	
 	import command.data.GameEventCmdData;
 	
-	import dictionary.CharacteristicsDict;
+	import dictionary.ProfessionsDict;
 	import dictionary.Const;
 	
 	import facade.ProtoFacade;
@@ -56,7 +56,7 @@ package vo
 			
 			_employeeProfessionId = value;
 			
-			_professionDesc = CharacteristicsDict.getInstance().getProfession(_employeeProfessionId);
+			_professionDesc = ProfessionsDict.getInstance().getProfession(_employeeProfessionId);
             var salary:PriceVO = _professionDesc.professionSalary;
             _salaryEventId = salary ? salary.priceEventId : "";
 		}

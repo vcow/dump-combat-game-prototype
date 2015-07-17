@@ -6,6 +6,7 @@ package command
 	import proxy.AppDataProxy;
 	import proxy.BasesListProxy;
 	import proxy.EventsProxy;
+	import proxy.InvestigationsProxy;
 	import proxy.LogProxy;
 	import proxy.PersonsProxy;
 	import proxy.TimersProxy;
@@ -40,6 +41,7 @@ package command
 			this.facade.registerProxy(new AppDataProxy());
             this.facade.registerProxy(new TriggersProxy());
             this.facade.registerProxy(new LogProxy());
+            this.facade.registerProxy(new InvestigationsProxy());
             this.facade.registerProxy(new EventsProxy());
             this.facade.registerProxy(new TimersProxy());
 		}

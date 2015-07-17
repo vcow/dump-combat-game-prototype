@@ -2,7 +2,7 @@ package command
 {
     import command.data.HirePersonCmdData;
     
-    import dictionary.CharacteristicsDict;
+    import dictionary.ProfessionsDict;
     import dictionary.Const;
     
     import helpers.PersonnelHelper;
@@ -42,7 +42,7 @@ package command
             var data:HirePersonCmdData = notification.getBody() as HirePersonCmdData;
             if (data && data.person)
             {
-                var profession:ProfessionDescVO = CharacteristicsDict.getInstance().getProfession(data.professionId);
+                var profession:ProfessionDescVO = ProfessionsDict.getInstance().getProfession(data.professionId);
                 if (profession)
                 {
                     var price:PriceVO = profession.professionHiringCost;

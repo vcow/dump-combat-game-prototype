@@ -5,37 +5,37 @@ package dictionary
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Библиотека характеристик персонажей
+	 * Библиотека профессий
 	 * 
 	 */
 	
-	public final class CharacteristicsDict
+	public final class ProfessionsDict
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		[Embed(source="data/characteristics.xml", mimeType="application/octet-stream")]
+		[Embed(source="data/professions.xml", mimeType="application/octet-stream")]
 		private static const source:Class;
 		
-		private static var _instance:CharacteristicsDict;
+		private static var _instance:ProfessionsDict;
 		private static var _professions:Vector.<ProfessionDescVO>;
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
         
-        public function CharacteristicsDict()
+        public function ProfessionsDict()
         {
             if (_instance != null)
-                throw Error("CharacteristicsDict is singleton, use getInstance() to get it.");
+                throw Error("ProfessionsDict is singleton, use getInstance() to get it.");
             _instance = this;
         }
 		
-		public static function getInstance():CharacteristicsDict
+		public static function getInstance():ProfessionsDict
 		{
 			if (!_instance)
-				_instance = new CharacteristicsDict();
+				_instance = new ProfessionsDict();
 			return _instance;
 		}
 		
@@ -76,16 +76,11 @@ package dictionary
                 _professions = new Vector.<ProfessionDescVO>();
                 
                 var src:XML = XML(new source());
-                var professions:XMLList = src.professions;
-                for each (var professionDesc:XML in professions)
+                for each (var item:XML in src.children())
                 {
-                    var items:XMLList = professionDesc.child(ProfessionDescVO.NAME);
-                    for each (var item:XML in items)
-                    {
-                        var profession:ProfessionDescVO = new ProfessionDescVO();
-                        profession.deserialize(item);
-                        _professions.push(profession);
-                    }
+                    var profession:ProfessionDescVO = new ProfessionDescVO();
+                    profession.deserialize(item);
+                    _professions.push(profession);
                 }
             }
         }

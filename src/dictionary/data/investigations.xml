@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<investigationsDict>
+	<!-- Описание исследования содержит следующие параметры:
+		id={числовое значение} - уникальный идентификатор исследования
+		title={строковое значение} - наименование исследования
+		resultTitle={стрококое значение} - наименование завершенного исследования
+		price={числовое значение} - стоимость исследования в человекочасах ученых
+		danger={дробное значение от 0 до 1.0} - опасность исследования, с заданной вероятностью приводит к срыву
+			исследования и уничтожению лаборатории.
+		Содержит условия, при которых возможно начать исследование и результат завершения исследования. --> 
+	<researchDesc id="1" title="{cudgel.research.title}" resultTitle="{cudgel.result.title}" price="50" danger="0">
+		<condition>
+			<if>
+				<trigger>resourcesCount</trigger>
+				<value type="uint">3</value>
+				<min type="float">1</min>
+			</if>
+		</condition>
+		<result>
+			<trigger id="cudgelResearchComplete" value="1" type="set"/>
+		</result>
+	</researchDesc>
+</investigationsDict>

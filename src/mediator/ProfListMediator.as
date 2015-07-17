@@ -4,7 +4,7 @@ package mediator
     
     import command.data.HirePersonCmdData;
     
-    import dictionary.CharacteristicsDict;
+    import dictionary.ProfessionsDict;
     import dictionary.Const;
     
     import events.EmployeeListEvent;
@@ -160,7 +160,7 @@ package mediator
             professionsView.hireNewEmployeeAvailable = freeSpace > 0;
             
             var profs:Array = [];
-            for each (var profession:ProfessionDescVO in CharacteristicsDict.getInstance().professions)
+            for each (var profession:ProfessionDescVO in ProfessionsDict.getInstance().professions)
                 profs.push(profession);
 			
             professionsView.hireEmployePopUp.professionsList = new ArrayCollection(profs);
@@ -194,7 +194,7 @@ package mediator
          */
         private function createPersonHandler(event:EmployeeListEvent):void
         {
-            var profession:ProfessionDescVO = CharacteristicsDict.getInstance().getProfession(event.professionId);
+            var profession:ProfessionDescVO = ProfessionsDict.getInstance().getProfession(event.professionId);
             if (!profession)
                 return;
             

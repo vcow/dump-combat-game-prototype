@@ -62,26 +62,11 @@ package dictionary
          * @param triggerId идентификатор триггера
          * @return описание
          */
-        public function getTriggerById(triggerId:uint):TriggerDescVO
+        public function getTrigger(triggerId:String):TriggerDescVO
         {
             for each (var trigger:TriggerDescVO in triggers)
             {
                 if (trigger.triggerId == triggerId)
-                    return trigger;
-            }
-            return null;
-        }
-        
-        /**
-         * Получить описание триггера по его названию
-         * @param triggerName имя триггера
-         * @return описание
-         */
-        public function getTriggerByName(triggerName:String):TriggerDescVO
-        {
-            for each (var trigger:TriggerDescVO in triggers)
-            {
-                if (trigger.triggerName == triggerName)
                     return trigger;
             }
             return null;

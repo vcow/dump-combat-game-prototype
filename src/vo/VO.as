@@ -243,7 +243,7 @@ package vo
                     case StuffVO.NAME: value = new StuffVO(); break;
                     case NotificationVO.NAME: value = new NotificationVO(); break;
                     case TriggersVO.NAME: value = new TriggersVO(); break;
-                    case TriggerVO.NAME: value = new TriggerVO(); break;
+                    case TriggerValueVO.NAME: value = new TriggerValueVO(); break;
                     case LeadTimeVO.NAME: value = new LeadTimeVO(); break;
                     case TimerVO.NAME: value = new TimerVO(); break;
                     case TimersVO.NAME: value = new TimersVO(); break;

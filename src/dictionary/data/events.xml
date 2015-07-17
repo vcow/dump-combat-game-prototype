@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Все внутриигровые события -->
-<events>
+<eventsDict>
 	<!-- Событие может иметь следующе параметры:
 		id={строковое значение} - уникальный идентификатор события
 		interval=[{количество милисекунд},{время в формате ##h##m##s}] - интервал срабатывания события
@@ -21,7 +21,7 @@
 		<notification id="artifactFinded" chance="0.3">
 			<condition>
 				<if>
-					<trigger type="uint">1</trigger>
+					<trigger>employeesCount</trigger>
 					<value type="uint">1</value>
 					<min type="float">1</min>
 				</if>
@@ -35,4 +35,4 @@
 	<eventDesc id="payDay" interval="10m"/>
 	<!-- Завершено строительство модуля -->
 	<eventDesc id="constructionCompleted"/>
-</events>
+</eventsDict>

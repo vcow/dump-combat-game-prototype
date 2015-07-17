@@ -31,7 +31,6 @@ package vo
         public var resourceDescription:String;              //< Описание ресурса
         public var resourceSize:int;                        //< Размер ресурса в складских единицах
         public var resourcePrice:Number;                    //< Цена ресурса в деньгах
-        public var resourceResearchCost:int;                //< Стоимость исследования артефакта
         public var resourceDescriptionInvestigated:String;  //< Расширенное описание ресурса после его исследования
 		
 		//--------------------------------------------------------------------------
@@ -42,6 +41,14 @@ package vo
 		{
 			super(NAME);
 		}
+        
+        /**
+         * Признак того, что ресурс является артефактом
+         */
+        public function get isArtifact():Boolean
+        {
+            return Boolean(resourceDescriptionInvestigated);
+        }
 		
 		//----------------------------------
 		//  VO
@@ -59,11 +66,8 @@ package vo
 			res.@size = resourceSize;
 			res.@price = resourcePrice;
             
-            if (resourceResearchCost > 0)
-            {
-                res.@researchCost = resourceResearchCost;
+            if (resourceDescriptionInvestigated)
                 res.@descriptionInvestigated = resourceDescriptionInvestigated;
-            }
 			
 			// /TODO
 			
@@ -81,9 +85,8 @@ package vo
 			resourceDescription = data.hasOwnProperty("@description") ? VO.parseString(data.@description, "resources") : Const.NO_TEXT;
 			resourceSize = data.hasOwnProperty("@size") ? int(data.@size) : 0;
 			resourcePrice = data.hasOwnProperty("@price") ? Number(data.@price) : 0.0;
-            resourceResearchCost = data.hasOwnProperty("@researchCost") ? int(data.@researchCost) : 0;
             resourceDescriptionInvestigated = data.hasOwnProperty("@descriptionInvestigated") ?
-                VO.parseString(data.@descriptionInvestigated, "resources") : Const.NO_TEXT;
+                VO.parseString(data.@descriptionInvestigated, "resources") : "";
 			
 			// /TODO
 			

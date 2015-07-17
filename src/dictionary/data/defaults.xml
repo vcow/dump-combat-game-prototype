@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<defaults>
+<defaultsDict>
 	<!-- Ресурсы игрока по умолчанию -->
 	<store>
 		<resource id="1" count="10"/>
@@ -10,4 +10,4 @@
 	<basesDef>
 		<ruinDef id="38AA7031-A150-4BF2-A87F-0695C5EAF3B7"/>
 	</basesDef>
-</defaults>
+</defaultsDict>

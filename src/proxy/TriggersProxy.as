@@ -5,7 +5,7 @@ package proxy
     
     import org.puremvc.as3.patterns.proxy.Proxy;
     
-    import vo.TriggerVO;
+    import vo.TriggerValueVO;
     import vo.TriggersVO;
     
     /**
@@ -47,16 +47,16 @@ package proxy
          * @param args список дополнительных аргументов (для вычислимых триггеров)
          * @return значение триггера
          */
-        public function getTriggerValue(triggerId:uint, ...args):Number
+        public function getTriggerValue(triggerId:String, ...args):Number
         {
-            for each (var trigger:TriggerVO in triggersVO.children)
+            for each (var trigger:TriggerValueVO in triggersVO.children)
             {
-                if (trigger.triggerId == triggerId)
-                    return trigger.triggerValue;
+                if (trigger.triggerValueTriggerId == triggerId)
+                    return trigger.triggerValueValue;
             }
             
-            trigger = new TriggerVO();
-            trigger.triggerId = triggerId;
+            trigger = new TriggerValueVO();
+            trigger.triggerValueTriggerId = triggerId;
             
             if (!trigger.triggerDesc)
                 throw Error("Requested the value of undefined trigger (" + triggerId + ").");
@@ -74,13 +74,13 @@ package proxy
          * @param type тип операции (set - задать указанное значение, inc - прибавить указанное значение, dec - вычесть указанное значение)
          * @return true, если значение изменено
          */
-        public function setTriggerValue(triggerId:uint, value:Number, type:String):Boolean
+        public function setTriggerValue(triggerId:String, value:Number, type:String):Boolean
         {
-            for each (var trigger:TriggerVO in triggersVO.children)
+            for each (var trigger:TriggerValueVO in triggersVO.children)
             {
-                if (trigger.triggerId == triggerId)
+                if (trigger.triggerValueTriggerId == triggerId)
                 {
-                    var newValue:Number = isNaN(trigger.triggerValue) ? 0 : trigger.triggerValue;
+                    var newValue:Number = isNaN(trigger.triggerValueValue) ? 0 : trigger.triggerValueValue;
                     switch (type)
                     {
                         case SET: newValue = value; break;
@@ -89,13 +89,13 @@ package proxy
                         default: return false;
                     }
                     
-                    trigger.triggerValue = newValue;
+                    trigger.triggerValueValue = newValue;
                     return true;
                 }
             }
             
-            trigger = new TriggerVO();
-            trigger.triggerId = triggerId;
+            trigger = new TriggerValueVO();
+            trigger.triggerValueTriggerId = triggerId;
             
             if (!trigger.triggerDesc)
                 throw Error("Trying to set the value of undefined trigger (" + triggerId + ").");
@@ -105,8 +105,8 @@ package proxy
                 switch (type)
                 {
                     case SET: 
-                    case INC: trigger.triggerValue = value; break;
-                    case DEC: trigger.triggerValue = -value; break;
+                    case INC: trigger.triggerValueValue = value; break;
+                    case DEC: trigger.triggerValueValue = -value; break;
                     default: return false;
                 }
                 
@@ -127,11 +127,11 @@ package proxy
          * @param args дополнительные аргументы
          * @return расчетное значение триггера
          */
-        protected function calcTriggerValue(triggerId:uint, args:Array):Number
+        protected function calcTriggerValue(triggerId:String, args:Array):Number
         {
             switch (triggerId)
             {
-                case 1:     //< employeesCount
+                case "employeesCount":
                     if (args.length == 0)
                     {
                         // Вернуть общее количество сотрудников
@@ -145,7 +145,7 @@ package proxy
                             return (new PersonnelHelper()).getEmployees(professionId).length;
                     }
                     break;
-                case 2:     //< resourcesCount
+                case "resourcesCount":
                     // Вернуть количество ресурсов указанного типа
                     var resourceId:uint = args.length > 0 ? uint(args[0]) : 0;
                     if (resourceId)

@@ -19,8 +19,7 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-        public var triggerId:uint;              //< Идентификатор триггера
-        public var triggerName:String;          //< Название триггера
+        public var triggerId:String;            //< Идентификатор триггера
         public var triggerIsComputable:Boolean; //< Признак вычислимого триггера
 		
 		//--------------------------------------------------------------------------
@@ -43,7 +42,6 @@ package vo
 			// TODO: Сериализовать специфичные поля
 			
 			res.@id = triggerId;
-            res.@name = triggerName;
             
             if (triggerIsComputable)
                 res.@computable = "true";
@@ -59,8 +57,7 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-            triggerId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
-            triggerName = data.hasOwnProperty("@name") ? data.@name.toString() : "";
+            triggerId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
             triggerIsComputable = data.hasOwnProperty("@computable") ? data.@computable.toString().toLowerCase() == "true" : false;
 			
 			// /TODO
