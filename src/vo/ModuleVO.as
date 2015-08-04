@@ -37,7 +37,7 @@ package vo
         public var moduleIndex:uint;                //< Уникальный индекс модуля (служит для идентификации модуля в рамках базы)
         public var moduleBuildTimer:String;         //< Идентификатор таймера постройки (если есть, здание строится)
 		
-		private var _moduleId:uint;                 //< Идентификатор модуля
+		private var _moduleId:String;               //< Идентификатор модуля
 		
 		private var _moduleDesc:ModuleDescVO;
         private var _feeEventId:String;
@@ -52,7 +52,7 @@ package vo
 			super(NAME);
 		}
         
-        public function set moduleId(value:uint):void
+        public function set moduleId(value:String):void
         {
             if (value == _moduleId)
                 return;
@@ -68,7 +68,7 @@ package vo
             _builtEventId = leadTime ? leadTime.leadTimeEvent : "";
         }
         
-        public function get moduleId():uint
+        public function get moduleId():String
         {
             return _moduleId;
         }
@@ -177,7 +177,7 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-			moduleId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
+			moduleId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
 			moduleChance = data.hasOwnProperty("@chance") ? Number(data.@chance) : NaN;
             moduleInactive = data.hasOwnProperty("@inactive") ? uint(data.@inactive) : 0;
             moduleIndex = data.hasOwnProperty("@index") ? uint(data.@index) : 0;

@@ -8,7 +8,7 @@
 		chance={дробное значение от 1.0 до 0.0} - вероятность сохранения модуля при захвате базы
 		Может содержать две цены - цену постройки модуля и цену обслуживания модуля -->
 	<!-- Жилой модуль -->
-	<moduleDesc id="1" name="{housing.title}" description="{housing.description}" space="25" chance="0.3">
+	<moduleDesc id="housing" name="{housing.title}" description="{housing.description}" space="25" chance="0.3">
 		<price details="price">
 			<resource id="food" count="100"/>
 		</price>
@@ -23,7 +23,7 @@
 		<leadTime time="30s" event="constructionCompleted"/>
 	</moduleDesc>
 	<!-- Складской модуль -->
-	<moduleDesc id="2" name="{store.title}" description="{store.description}" space="500" chance="0.4">
+	<moduleDesc id="store" name="{store.title}" description="{store.description}" space="500" chance="0.4">
 		<price details="price">
 			<resource id="food" count="150"/>
 		</price>
@@ -33,7 +33,7 @@
 		<leadTime time="10s" event="constructionCompleted"/>
 	</moduleDesc>
 	<!-- Лаборатория -->
-	<moduleDesc id="3" name="{lab.title}" description="{lab.description}" space="15" chance="0.1">
+	<moduleDesc id="lab" name="{lab.title}" description="{lab.description}" space="15" chance="0.1">
 		<price details="price">
 			<resource id="food" count="200"/>
 		</price>

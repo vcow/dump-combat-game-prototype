@@ -201,7 +201,7 @@ package mediator
          */
         private function createModuleHandler(event:BaseEvent):void
         {
-            var module:ModuleDescVO = ModulesDict.getInstance().getModule(uint(event.data));
+            var module:ModuleDescVO = ModulesDict.getInstance().getModule(event.data.toString());
             if (module)
                 sendNotification(Const.BUILD_MODULE, new BuildModuleCmdData(event.baseId, module.moduleId));
         }

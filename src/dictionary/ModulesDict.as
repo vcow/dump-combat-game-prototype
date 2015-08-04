@@ -44,7 +44,7 @@ package dictionary
 		 * @param moduleId идентификатор модуля
 		 * @return информация по модулю
 		 */
-		public function getModule(moduleId:uint):ModuleDescVO
+		public function getModule(moduleId:String):ModuleDescVO
 		{
 			
 			for each (var module:ModuleDescVO in modules)

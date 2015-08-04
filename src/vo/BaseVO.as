@@ -50,7 +50,7 @@ package vo
 		 * @param moduleId идентификатор типа модуля
 		 * @return список модулей базы
 		 */
-		public function getModules(moduleId:uint):Vector.<ModuleVO>
+		public function getModules(moduleId:String):Vector.<ModuleVO>
 		{
 			var modules:Vector.<ModuleVO> = new Vector.<ModuleVO>();
             var allModules:ModulesVO = baseModules;

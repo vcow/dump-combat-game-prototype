@@ -10,9 +10,9 @@ package command.data
     public class BuildModuleCmdData
     {
         public var baseId:String;               //< Идентификатор базы, на которой строится модуль
-        public var moduleTypeId:uint;           //< Тип строящегося модуля
+        public var moduleTypeId:String;           //< Тип строящегося модуля
         
-        public function BuildModuleCmdData(baseId:String, moduleTypeId:uint)
+        public function BuildModuleCmdData(baseId:String, moduleTypeId:String)
         {
             this.baseId = baseId;
             this.moduleTypeId = moduleTypeId;

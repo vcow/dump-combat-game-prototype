@@ -43,7 +43,7 @@ package helpers
 		 * @param base база, для которой определяется загрузка модуля, если null, загрузка определяется для всех баз
 		 * @return незанятое пространство (может быть отрицательным, если модули переполнены)
 		 */
-		public function getSpace(moduleId:uint, base:BaseVO=null):int
+		public function getSpace(moduleId:String, base:BaseVO=null):int
 		{
 			var res:int = 0;
 			
@@ -92,7 +92,7 @@ package helpers
          * @param baseId идентификатор базы, если null, считаются все базы
          * @return количество модулей
          */
-        public function getModulesCount(moduleId:uint=0, baseId:String=null):int
+        public function getModulesCount(moduleId:String=null, baseId:String=null):int
         {
             var ctr:int = 0;
             for each (var base:BaseVO in basesListProxy.getBasesList())
@@ -103,7 +103,7 @@ package helpers
                     {
                         for each (var module:ModuleVO in base.baseModules.children)
                         {
-                            if (moduleId == 0 || module.moduleId == moduleId)
+                            if (!moduleId || module.moduleId == moduleId)
                                 ctr++;
                         }
                         break;
@@ -113,7 +113,7 @@ package helpers
                 {
                     for each (module in base.baseModules.children)
                     {
-                        if (moduleId == 0 || module.moduleId == moduleId)
+                        if (!moduleId || module.moduleId == moduleId)
                             ctr++;
                     }
                 }

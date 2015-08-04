@@ -19,15 +19,15 @@ package vo
 		
 		public static const NAME:String = "moduleDesc";
 		
-		public static const HOUSING:uint = 1;		//< Жилой модуль
-		public static const STORE:uint = 2;			//< Складской модуль
-        public static const LAB:uint = 3;           //< Лаборатория
+		public static const HOUSING:String = "housing";		//< Жилой модуль
+		public static const STORE:String = "store";			//< Складской модуль
+        public static const LAB:String = "lab";             //< Лаборатория
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public var moduleId:uint;				//< Идентификатор модуля
+		public var moduleId:String;				//< Идентификатор модуля
 		public var moduleName:String;			//< Название модуля
 		public var moduleDescription:String;	//< Описание модуля
 		public var moduleSpace:int;				//< Вместительность модуля
@@ -116,7 +116,7 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-			moduleId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
+			moduleId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
 			moduleName = data.hasOwnProperty("@name") ? VO.parseString(data.@name, "modules") : Const.NO_TEXT;
 			moduleDescription = data.hasOwnProperty("@description") ? VO.parseString(data.@description, "modules") : Const.NO_TEXT;
 			moduleSpace = data.hasOwnProperty("@space") ? int(data.@space) : 0;
