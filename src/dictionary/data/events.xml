@@ -23,7 +23,7 @@
 				<if>
 					<trigger>employeesCount</trigger>
 					<value>laborer</value>
-					<min type="float">1</min>
+					<min type="int">1</min>
 				</if>
 			</condition>
 			<resourceId>cudgel</resourceId>
