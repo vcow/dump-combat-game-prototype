@@ -140,7 +140,7 @@ package proxy
                     else
                     {
                         // Вернуть количество сотрудников указанной профессии
-                        var professionId:uint = uint(args[0]);
+                        var professionId:String = args[0].toString();
                         if (professionId)
                             return (new PersonnelHelper()).getEmployees(professionId).length;
                     }

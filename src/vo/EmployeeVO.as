@@ -35,7 +35,7 @@ package vo
 		public var employeePersonId:String;				//< Уникальный идентификатор персонажа
         public var employeeInactive:uint;               //< Количество ходов, которое сотрудник пребывает в неактивном состоянии
 		
-		private var _employeeProfessionId:uint;			//< Идентификатор профессии персонажа
+		private var _employeeProfessionId:String;			//< Идентификатор профессии персонажа
 		
 		private var _professionDesc:ProfessionDescVO;
 		private var _salaryEventId:String;
@@ -49,7 +49,7 @@ package vo
 			super(NAME);
 		}
 		
-		public function set employeeProfessionId(value:uint):void
+		public function set employeeProfessionId(value:String):void
 		{
 			if (value == _employeeProfessionId)
 				return;
@@ -61,7 +61,7 @@ package vo
             _salaryEventId = salary ? salary.priceEventId : "";
 		}
 		
-		public function get employeeProfessionId():uint
+		public function get employeeProfessionId():String
 		{
 			return _employeeProfessionId;
 		}
@@ -142,7 +142,7 @@ package vo
 			// TODO: десериализовать специфичные поля
 			
 			employeePersonId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
-			employeeProfessionId = data.hasOwnProperty("@profession") ? uint(data.@profession) : 0;
+			employeeProfessionId = data.hasOwnProperty("@profession") ? data.@profession.toString() : "";
             employeeInactive = data.hasOwnProperty("@inactive") ? uint(data.@inactive) : 0;
 			
 			// /TODO

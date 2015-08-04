@@ -7,7 +7,7 @@
 		Может содержать в качестве дочерних объектов стоимость найма (details="price") и зарплату (details="fee")
 		работника этой професии. Зарплата, чтобы быть функциональной, должна содержать событие, по которому она будет
 		выплачиваться. -->
-	<professionDesc name="{prof.laborer}" category="{personnel.cat.laborers}" id="1">
+	<professionDesc id="laborer" name="{prof.laborer}" category="{personnel.cat.laborers}">
 		<price details="price">
 			<resource id="food" count="5"/>
 		</price>
@@ -15,7 +15,7 @@
 			<resource id="food" count="-1"/>
 		</price>
 	</professionDesc>
-	<professionDesc name="{prof.solgier}" category="{personnel.cat.soldiers}" id="2">
+	<professionDesc id="solgier" name="{prof.solgier}" category="{personnel.cat.soldiers}">
 		<price details="price">
 			<resource id="food" count="10"/>
 		</price>
@@ -23,7 +23,7 @@
 			<resource id="food" count="1"/>
 		</price>
 	</professionDesc>
-	<professionDesc name="{prof.scientist}" category="{personnel.cat.scientists}" id="3">
+	<professionDesc id="scientist" name="{prof.scientist}" category="{personnel.cat.scientists}">
 		<price details="price">
 			<resource id="food" count="10"/>
 		</price>
@@ -31,7 +31,7 @@
 			<resource id="food" count="1"/>
 		</price>
 	</professionDesc>
-	<professionDesc name="{prof.engineer}" category="{personnel.cat.engineers}" id="4">
+	<professionDesc id="engineer" name="{prof.engineer}" category="{personnel.cat.engineers}">
 		<price details="price">
 			<resource id="food" count="10"/>
 		</price>

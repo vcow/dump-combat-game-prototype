@@ -91,7 +91,7 @@ package helpers
          * @param professionId идентификатор профессии, на которую нанимается сотрудник
          * @return новый сотрудник, или null, если найм невозможен
          */
-        public function hireEmployee(personId:String, baseId:String, professionId:uint):EmployeeVO
+        public function hireEmployee(personId:String, baseId:String, professionId:String):EmployeeVO
         {
             var base:BaseVO = basesListProxy.getBaseById(baseId) as BaseVO;
             var person:PersonVO = personsProxy.getPersonById(personId);
@@ -153,7 +153,7 @@ package helpers
 		 * @param baseId идентификатор базы, для которой запрашиваются сотрудники, null - если запрашиваются для всех баз
 		 * @return список сотрудников указанной професии из указанной базы
 		 */
-		public function getEmployees(professionId:uint=0, baseId:String=null):Vector.<PersonVO>
+		public function getEmployees(professionId:String=null, baseId:String=null):Vector.<PersonVO>
 		{
 			var employees:Vector.<PersonVO> = new Vector.<PersonVO>();
 			for each (var base:BaseVO in basesListProxy.getBasesList())
@@ -167,7 +167,7 @@ package helpers
 				
 				for each (var employee:EmployeeVO in personnel.children)
 				{
-					if (professionId == 0 || employee.employeeProfessionId == professionId)
+					if (!professionId || employee.employeeProfessionId == professionId)
 						employees.push(personsProxy.getPersonById(employee.employeePersonId));
 				}
 			}

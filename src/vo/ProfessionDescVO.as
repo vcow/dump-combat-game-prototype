@@ -19,16 +19,16 @@ package vo
 		
 		public static const NAME:String = "professionDesc";
 		
-		public static const LABORER:uint = 1;
-		public static const SOLGIER:uint = 2;
-		public static const SCIENTIST:uint = 3;
-		public static const ENGENEER:uint = 4;
+		public static const LABORER:String = "laborer";
+		public static const SOLGIER:String = "solgier";
+		public static const SCIENTIST:String = "scientist";
+		public static const ENGENEER:String = "engeneer";
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public var professionId:uint;				//< Идентификатор профессии
+		public var professionId:String;				//< Идентификатор профессии
 		public var professionName:String;			//< Название профессии
         public var professionCategory:String;       //< Название категории работников
 		
@@ -92,7 +92,7 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-			professionId = data.hasOwnProperty("@id") ? uint(data.@id) : LABORER;
+			professionId = data.hasOwnProperty("@id") ? data.@id.toString() : LABORER;
 			professionName = data.hasOwnProperty("@name") ? VO.parseString(data.@name, "common") : Const.NO_TEXT;
             professionCategory = data.hasOwnProperty("@category") ? VO.parseString(data.@category, "common") : Const.NO_TEXT;
 			

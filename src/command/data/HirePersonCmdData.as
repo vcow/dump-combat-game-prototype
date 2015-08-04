@@ -13,9 +13,9 @@ package command.data
     {
         public var person:PersonVO;
         public var baseId:String;
-        public var professionId:uint;
+        public var professionId:String;
         
-        public function HirePersonCmdData(person:PersonVO, baseId:String, professionId:uint)
+        public function HirePersonCmdData(person:PersonVO, baseId:String, professionId:String)
         {
             this.person = person;
             this.baseId = baseId;

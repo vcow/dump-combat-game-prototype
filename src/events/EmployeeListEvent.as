@@ -4,6 +4,8 @@ package events
     
     import dictionary.Const;
     
+    import vo.ProfessionDescVO;
+    
     /**
      * 
      * @author y.vircowskiy
@@ -28,7 +30,7 @@ package events
         public var employeeImage:String;
         public var employeeId:String;
         public var employeeGender:String;
-        public var professionId:uint;
+        public var professionId:String;
         public var baseId:String;
         
         //--------------------------------------------------------------------------
@@ -36,7 +38,7 @@ package events
         //--------------------------------------------------------------------------
         
         public function EmployeeListEvent(type:String, employeeId:String, employeeName:String=null, employeeImage:String=null,
-                                          employeeGender:String=Const.MALE, professionId:uint=1, baseId:String=Const.NO_GUID,
+                                          employeeGender:String=Const.MALE, professionId:String=ProfessionDescVO.LABORER, baseId:String=Const.NO_GUID,
                                           bubbles:Boolean=false, cancelable:Boolean=false)
         {
             super(type, bubbles, cancelable);

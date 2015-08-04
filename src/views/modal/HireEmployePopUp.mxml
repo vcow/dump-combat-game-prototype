@@ -96,7 +96,7 @@
             
             // TODO: сделать поддержку списка кандидатов
 			
-            private var _defaultProfession:int;
+            private var _defaultProfession:String;
             private var _professionsList:ArrayCollection;
             
             private var _personsData:Array = PersonTemplatesManager.getInstance().getPersonsList();
@@ -143,7 +143,7 @@
 			// 
 			//--------------------------------------------------------------------------
 			
-            public function set defaultProfession(value:uint):void
+            public function set defaultProfession(value:String):void
             {
                 if (value == _defaultProfession)
                     return;

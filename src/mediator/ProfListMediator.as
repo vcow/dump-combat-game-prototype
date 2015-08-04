@@ -85,7 +85,7 @@ package mediator
 		 * @param professionId идентификатор професии, если 0, возвращаются все сотрудники
 		 * @return данные по сотрудникам
 		 */
-		public function getEmployeeData(professionId:int=0):ArrayCollection
+		public function getEmployeeData(professionId:String=null):ArrayCollection
 		{
 			var personnelDecor:PersonnelHelper = new PersonnelHelper(basesListProxy, personsProxy);
 			var employeeData:Array = [];

@@ -44,7 +44,7 @@ package dictionary
 		 * @param professionId идентификатор профессии
 		 * @return информация по професии
 		 */
-		public function getProfession(professionId:uint):ProfessionDescVO
+		public function getProfession(professionId:String):ProfessionDescVO
 		{
             init();
 			
