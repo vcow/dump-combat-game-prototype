@@ -55,7 +55,7 @@ package helpers
                     case IF:
                         try {
                             res = false;
-                            var args:Array = [uint(data.trigger)].concat(parseValue(data.value));
+                            var args:Array = [ data.trigger ].concat(parseValue(data.value));
                             var value:Number = _triggersProxy.getTriggerValue.apply(this, args);
                             if (isNaN(value))
                                 break;
