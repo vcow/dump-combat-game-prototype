@@ -23,7 +23,7 @@ package vo
 		
 		public var resourceCount:int;			//< Количество ресурсов
 		
-		private var _resourceId:uint;			//< Идентификатор ресурса
+		private var _resourceId:String;			//< Идентификатор ресурса
 		
 		private var _resourceDesc:ResourceDescVO;
 		
@@ -36,7 +36,7 @@ package vo
 			super(NAME);
 		}
 		
-		public function set resourceId(value:uint):void
+		public function set resourceId(value:String):void
 		{
 			if (value == _resourceId)
 				return;
@@ -45,7 +45,7 @@ package vo
 			_resourceDesc = ResourcesDict.getInstance().getResource(_resourceId);
 		}
 		
-		public function get resourceId():uint
+		public function get resourceId():String
 		{
 			return _resourceId;
 		}
@@ -87,7 +87,7 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-			resourceId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
+			resourceId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
 			resourceCount = data.hasOwnProperty("@count") ? int(data.@count) : 0;
 			
 			// /TODO

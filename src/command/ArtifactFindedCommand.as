@@ -41,7 +41,7 @@ package command
             var data:Object = notification.getBody();
             
             var resource:ResourceVO = new ResourceVO();
-            resource.resourceId = data ? uint(data.resourceId) : 0;
+            resource.resourceId = data ? data.resourceId.toString() : "";
             resource.resourceCount = 1;
             
             if (resource.resourceDesc)

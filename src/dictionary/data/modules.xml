@@ -10,10 +10,10 @@
 	<!-- Жилой модуль -->
 	<moduleDesc id="1" name="{housing.title}" description="{housing.description}" space="25" chance="0.3">
 		<price details="price">
-			<resource id="2" count="100"/>
+			<resource id="food" count="100"/>
 		</price>
 		<price details="fee" event="min">
-			<resource id="2" count="1"/>
+			<resource id="food" count="1"/>
 		</price>
 		<!-- Время создания содержит следующие параметры:
 			time=[{количество милисекунд},{время в формате ##h##m##s}] - время
@@ -25,20 +25,20 @@
 	<!-- Складской модуль -->
 	<moduleDesc id="2" name="{store.title}" description="{store.description}" space="500" chance="0.4">
 		<price details="price">
-			<resource id="2" count="150"/>
+			<resource id="food" count="150"/>
 		</price>
 		<price details="fee" event="min">
-			<resource id="2" count="1"/>
+			<resource id="food" count="1"/>
 		</price>
 		<leadTime time="10s" event="constructionCompleted"/>
 	</moduleDesc>
 	<!-- Лаборатория -->
 	<moduleDesc id="3" name="{lab.title}" description="{lab.description}" space="15" chance="0.1">
 		<price details="price">
-			<resource id="2" count="200"/>
+			<resource id="food" count="200"/>
 		</price>
 		<price details="fee" event="min">
-			<resource id="2" count="5"/>
+			<resource id="food" count="5"/>
 		</price>
 		<leadTime time="1m" event="constructionCompleted"/>
 	</moduleDesc>

@@ -26,7 +26,7 @@
 					<min type="float">1</min>
 				</if>
 			</condition>
-			<resourceId type="uint">3</resourceId>
+			<resourceId>cudgel</resourceId>
 		</notification>
 	</eventDesc>
 	<!-- Минутный тик -->

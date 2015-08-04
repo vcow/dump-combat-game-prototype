@@ -19,14 +19,15 @@ package vo
 		
 		public static const NAME:String = "resourceDesc";
 		
-		public static const CASH:uint = 1;
-		public static const FOOD:uint = 2;
+		public static const CASH:String = "cash";
+		public static const FOOD:String = "food";
+        public static const CUDGEL:String = "cudgel";
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-        public var resourceId:uint;                         //< Идентификатор ресурса
+        public var resourceId:String;                       //< Идентификатор ресурса
         public var resourceName:String;                     //< Название ресурса
         public var resourceDescription:String;              //< Описание ресурса
         public var resourceSize:int;                        //< Размер ресурса в складских единицах
@@ -80,7 +81,7 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-			resourceId = data.hasOwnProperty("@id") ? uint(data.@id) : 0;
+			resourceId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
 			resourceName = data.hasOwnProperty("@name") ? VO.parseString(data.@name, "resources") : Const.NO_TEXT;
 			resourceDescription = data.hasOwnProperty("@description") ? VO.parseString(data.@description, "resources") : Const.NO_TEXT;
 			resourceSize = data.hasOwnProperty("@size") ? int(data.@size) : 0;

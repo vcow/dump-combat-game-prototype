@@ -25,7 +25,7 @@
 			Содержит цену восстановления базы из руин -->
 		<ruinTempl name="{start.ruin.title}">
 			<price>
-				<resource id="2" count="110"/>
+				<resource id="food" count="110"/>
 			</price>
 		</ruinTempl>
 	</baseTempl>

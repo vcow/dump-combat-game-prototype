@@ -147,7 +147,7 @@ package proxy
                     break;
                 case "resourcesCount":
                     // Вернуть количество ресурсов указанного типа
-                    var resourceId:uint = args.length > 0 ? uint(args[0]) : 0;
+                    var resourceId:String = args.length > 0 ? args[0].toString() : "";
                     if (resourceId)
                         return (new ResourcesHelper()).getResource(resourceId);
                     break;

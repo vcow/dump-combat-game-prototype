@@ -235,7 +235,7 @@ package helpers
 		 * @param resourceId идентификатор ресурса
 		 * @return количество ресурса
 		 */
-		public function getResource(resourceId:uint):int
+		public function getResource(resourceId:String):int
 		{
 			var store:StoreVO = getAllResources() || getAllResources(true);
 			for each (var value:ResourceVO in store.children)
@@ -252,7 +252,7 @@ package helpers
          * @param resourceCount удаляемое количество ресурса
          * @return остаток, который не удалось удалить (будет больше нуля, если ресурсов на складах не хватило)
          */
-        public function removeResource(resourceId:uint, resourceCount:int):int
+        public function removeResource(resourceId:String, resourceCount:int):int
         {
             if (resourceCount <= 0)
                 return 0;
@@ -300,7 +300,7 @@ package helpers
 		 * @param resourceCount добавляемое количество ресурса
 		 * @return количество ресурса, размещенное на складах (будет меньше добавляемого количества, если складов не хватает)
 		 */
-		public function addResource(resourceId:uint, resourceCount:int):int
+		public function addResource(resourceId:String, resourceCount:int):int
 		{
 			var moduleDesc:ModuleDescVO = ModulesDict.getInstance().getModule(ModuleDescVO.STORE);
 			var resourceDesc:ResourceDescVO = ResourcesDict.getInstance().getResource(resourceId);
@@ -373,7 +373,7 @@ package helpers
 		 * @param resourceId идентификатор добавляемого ресурса
 		 * @param count количество добавляемого ресурса
 		 */
-		private function addResourceToBase(base:BaseVO, resourceId:uint, count:int):void
+		private function addResourceToBase(base:BaseVO, resourceId:String, count:int):void
 		{
 			// Добавить ресурс
 			var resourceAdded:Boolean = false;

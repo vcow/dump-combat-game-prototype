@@ -44,7 +44,7 @@ package dictionary
 		 * @param resourceId идентификатор ресурса
 		 * @return информация по ресурсу
 		 */
-		public function getResource(resourceId:uint):ResourceDescVO
+		public function getResource(resourceId:String):ResourceDescVO
 		{
 			if (!_resources)
 			{
