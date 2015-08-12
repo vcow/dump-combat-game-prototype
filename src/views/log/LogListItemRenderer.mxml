@@ -8,8 +8,7 @@
     
     <s:TextArea id="textArea" width="{calcWidth}" fontSize="12" editable="false"
                 selectable="false" borderVisible="false" paddingLeft="5" paddingRight="5"
-                paddingTop="1" paddingBottom="1" verticalScrollPolicy="off"
-                horizontalScrollPolicy="off"/>
+                paddingBottom="7" verticalScrollPolicy="off" horizontalScrollPolicy="off"/>
     
     <fx:Declarations>
     </fx:Declarations>

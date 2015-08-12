@@ -1,10 +1,14 @@
 package proxy
 {
+    import dictionary.Const;
+    import dictionary.TriggersDict;
+    
     import helpers.PersonnelHelper;
     import helpers.ResourcesHelper;
     
     import org.puremvc.as3.patterns.proxy.Proxy;
     
+    import vo.TriggerDescVO;
     import vo.TriggerValueVO;
     import vo.TriggersVO;
     
@@ -26,6 +30,9 @@ package proxy
         public static const SET:String = "set";
         public static const INC:String = "inc";
         public static const DEC:String = "dec";
+        
+        public static const EMPLOYEES_COUNT_TRIGGER:String = "employeesCount";
+        public static const RESOURCES_COUNT_TRIGGER:String = "resourcesCount";
         
         //--------------------------------------------------------------------------
         // 
@@ -90,6 +97,7 @@ package proxy
                     }
                     
                     trigger.triggerValueValue = newValue;
+                    sendNotification(Const.TRIGGER_CHANGED, trigger.triggerDesc);
                     return true;
                 }
             }
@@ -111,10 +119,22 @@ package proxy
                 }
                 
                 triggersVO.children.push(trigger);
+                sendNotification(Const.TRIGGER_CHANGED, trigger.triggerDesc);
                 return true;
             }
             
             return false;
+        }
+        
+        /**
+         * Произошло изменение значения, влекущее изменение триггера
+         * @param triggerId идентификатор изменившегося
+         */
+        public function valueChanged(triggerId:String):void
+        {
+            var triggerDesc:TriggerDescVO = TriggersDict.getInstance().getTrigger(triggerId);
+            if (triggerDesc && triggerDesc.triggerIsComputable)
+                sendNotification(Const.TRIGGER_CHANGED, triggerDesc);
         }
         
         //--------------------------------------------------------------------------
@@ -131,7 +151,7 @@ package proxy
         {
             switch (triggerId)
             {
-                case "employeesCount":
+                case EMPLOYEES_COUNT_TRIGGER:
                     if (args.length == 0)
                     {
                         // Вернуть общее количество сотрудников
@@ -145,7 +165,7 @@ package proxy
                             return (new PersonnelHelper()).getEmployees(professionId).length;
                     }
                     break;
-                case "resourcesCount":
+                case RESOURCES_COUNT_TRIGGER:
                     // Вернуть количество ресурсов указанного типа
                     var resourceId:String = args.length > 0 ? args[0].toString() : "";
                     if (resourceId)

@@ -11,4 +11,8 @@
 	<triggerDesc id="resourcesCount" computable="true"/>
 	<!-- Исследование палки завершено -->
 	<triggerDest id="cudgelResearchComplete"/>
+	<!-- Исследование гвоздя завершено -->
+	<triggerDest id="nailResearchComplete"/>
+	<!-- Исследование палицы завершено -->
+	<triggerDest id="maceResearchComplete"/>
 </triggersDict>

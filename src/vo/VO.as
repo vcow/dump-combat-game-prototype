@@ -247,6 +247,10 @@ package vo
                     case LeadTimeVO.NAME: value = new LeadTimeVO(); break;
                     case TimerVO.NAME: value = new TimerVO(); break;
                     case TimersVO.NAME: value = new TimersVO(); break;
+                    case ConditionVO.NAME: value = new ConditionVO(); break;
+                    case DataVO.NAME: value = new DataVO(); break;
+                    case VisibilityVO.NAME: value = new VisibilityVO(); break;
+                    case ResultVO.NAME: value = new ResultVO(); break;
 					
 					// /TODO
 					

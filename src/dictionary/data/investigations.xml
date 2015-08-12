@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <investigationsDict>
+	<!-- Изучить палку -->
 	<!-- Описание исследования содержит следующие параметры:
 		id={строковое значение} - уникальный идентификатор исследования
 		title={строковое значение} - наименование исследования
@@ -8,7 +9,7 @@
 		danger={дробное значение от 0 до 1.0} - опасность исследования, с заданной вероятностью приводит к срыву
 			исследования и уничтожению лаборатории.
 		Содержит условия, при которых возможно начать исследование и результат завершения исследования. --> 
-	<researchDesc id="cudgelResearch" title="{cudgel.research.title}" resultTitle="{cudgel.result.title}" price="50" danger="0">
+	<researchDesc id="cudgelResearch" title="{cudgel.research.title}" resultTitle="{cudgel.result.title}" resultDescription="{cudgel.result.description}" price="50" danger="0">
 		<condition>
 			<if>
 				<trigger>resourcesCount</trigger>
@@ -16,8 +17,70 @@
 				<min type="int">1</min>
 			</if>
 		</condition>
+		<!-- Условие видимости. То же, что и обычное условие, но в игровой логике отвечает за видимость объекта -->
+		<visibility>
+			<if>
+				<trigger>resourcesCount</trigger>
+				<value>cudgel</value>
+				<min type="int">1</min>
+			</if>
+		</visibility>
+		<!-- Результат исследования -->
 		<result>
+			<!-- Новое значение триггера (неприменимо к вычислимым триггерам). Содержит следующие параметры:
+				id={строковое значение} - уникальный идентификатор триггера
+				value={числовое значение} - новое значение триггера
+				type=["set","inc","dec"] - тип модификации значения: set - выставить в качестве значения триггера новое значение;
+				inc - увеличить значение триггера на новое значение; dec - уменьшить значение триггера на новое значение. -->
 			<trigger id="cudgelResearchComplete" value="1" type="set"/>
+		</result>
+	</researchDesc>
+	
+	<!-- Изучить гвоздь -->
+	<researchDesc id="nailResearch" title="{nail.research.title}" resultTitle="{nail.result.title}" resultDescription="{nail.result.description}" price="40" danger="0">
+		<condition>
+			<if>
+				<trigger>resourcesCount</trigger>
+				<value>nail</value>
+				<min type="int">1</min>
+			</if>
+		</condition>
+		<visibility>
+			<if>
+				<trigger>resourcesCount</trigger>
+				<value>nail</value>
+				<min type="int">1</min>
+			</if>
+		</visibility>
+		<result>
+			<trigger id="nailResearchComplete" value="1" type="set"/>
+		</result>
+	</researchDesc>
+	
+	<!-- Изучить булаву -->
+	<researchDesc id="maceResearch" title="{mace.research.title}" resultTitle="{mace.result.title}" resultDescription="{mace.result.description}" price="60" danger="0">
+		<condition>
+			<and>
+				<if>
+					<trigger>cudgelResearchComplete</trigger>
+				</if>
+				<if>
+					<trigger>nailResearchComplete</trigger>
+				</if>
+			</and>
+		</condition>
+		<visibility>
+			<or>
+				<if>
+					<trigger>cudgelResearchComplete</trigger>
+				</if>
+				<if>
+					<trigger>nailResearchComplete</trigger>
+				</if>
+			</or>
+		</visibility>
+		<result>
+			<trigger id="maceResearchComplete" value="1" type="set"/>
 		</result>
 	</researchDesc>
 </investigationsDict>

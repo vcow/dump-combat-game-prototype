@@ -21,7 +21,6 @@ package vo
 		
 		public static const CASH:String = "cash";
 		public static const FOOD:String = "food";
-        public static const CUDGEL:String = "cudgel";
 		
 		//--------------------------------------------------------------------------
 		// 

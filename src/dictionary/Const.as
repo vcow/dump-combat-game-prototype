@@ -47,5 +47,6 @@ package dictionary
         public static const BUILD_MODULE:String = "buildModule";                            //< Построить модуль
         public static const MODULES_CHANGED:String = "modulesChanged";                      //< Изменилось количество модулей одной из баз
         public static const REMOVE_MODULE:String = "removeModule";                          //< Удалить модуль
+        public static const TRIGGER_CHANGED:String = "triggerCchanged";                     //< Изменилось значение триггера
 	}
 }

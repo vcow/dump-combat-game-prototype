@@ -21,7 +21,6 @@ package vo
 		
         public var notificationId:String;       //< Идентификатор нотификации
         public var notificationChance:Number;   //< Вероятность срабатывания нотификации
-        public var notificationData:Object;     //< Данные нотификации
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -31,6 +30,26 @@ package vo
 		{
 			super(NAME);
 		}
+        
+        public function get notificationCondition():Object
+        {
+            for each (var child:IVO in children)
+            {
+                if (child.name == ConditionVO.NAME)
+                    return ConditionVO(child).conditionData;
+            }
+            return {};
+        }
+        
+        public function get notificationData():Object
+        {
+            for each (var child:IVO in children)
+            {
+                if (child.name == DataVO.NAME)
+                    return DataVO(child).dataValue;
+            }
+            return {};
+        }
 		
 		//----------------------------------
 		//  VO
@@ -52,12 +71,12 @@ package vo
 		
 		override public function deserialize(data:XML):Boolean
 		{
+            super.deserialize(data);
+            
 			// TODO: десериализовать специфичные поля
 			
             notificationId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
             notificationChance = data.hasOwnProperty("@chance") ? Number(data.@chance) : 1.0;
-            
-            notificationData = parseAsObject(data);
 			
 			// /TODO
 			

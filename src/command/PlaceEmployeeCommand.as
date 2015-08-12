@@ -10,6 +10,7 @@ package command
     import org.puremvc.as3.patterns.command.SimpleCommand;
     
     import proxy.BasesListProxy;
+    import proxy.TriggersProxy;
     
     import vo.BaseVO;
     import vo.EmployeeVO;
@@ -56,11 +57,16 @@ package command
                     
                     var personnelHelper:PersonnelHelper = new PersonnelHelper(baseListProxy);
                     
-                    personnelHelper.fireEmployee(data.person.personId, false);
+                    var oldBaseId:String = personnelHelper.fireEmployee(data.person.personId, false);
                     var employee:EmployeeVO = personnelHelper.hireEmployee(data.person.personId, base.baseId, data.professionId);
                     
                     if (employee)
+                    {
                         sendNotification(Const.EMPLOYEE_IS_PLACED, employee);
+                        
+                        if (!oldBaseId || oldBaseId == Const.NO_GUID)
+                            TriggersProxy(this.facade.retrieveProxy(TriggersProxy.NAME)).valueChanged(TriggersProxy.EMPLOYEES_COUNT_TRIGGER);
+                    }
                 }
             }
         }

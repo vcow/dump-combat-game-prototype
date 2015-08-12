@@ -47,12 +47,16 @@
             import mx.events.FlexEvent;
             
             import spark.events.IndexChangeEvent;
+            
+            import facade.ProtoFacade;
+            
+            import mediator.InvestigationsMediator;
 			
 			//--------------------------------------------------------------------------
 			// 
 			//--------------------------------------------------------------------------
 			
-            public var hireNewEmployeeAvailable:Boolean = false;
+            private var _investigationsMediator:InvestigationsMediator;
             
 			//--------------------------------------------------------------------------
 			// 
@@ -67,6 +71,8 @@
             
             protected function creationCompleteHandler(event:FlexEvent):void
             {
+                _investigationsMediator = InvestigationsMediator(ProtoFacade.getInstance().retrieveMediator(InvestigationsMediator.NAME));
+                _investigationsMediator.setViewComponent(this);
             }
 			
 			protected function categoryRadioGroup_changeHandler(event:Event):void

@@ -10,6 +10,7 @@ package facade
 	import command.PlaceEmployeeCommand;
 	import command.RemoveModuleCommand;
 	import command.RenameBaseCommand;
+	import command.ResourcesChangedCommand;
 	import command.SendGameMessageCommand;
 	import command.StartUpCommand;
 	
@@ -69,6 +70,7 @@ package facade
             registerCommand(Const.SEND_GAME_MESSAGE, SendGameMessageCommand);
             registerCommand(Const.BUILD_MODULE, BuildModuleCommand);
             registerCommand(Const.REMOVE_MODULE, RemoveModuleCommand);
+            registerCommand(Const.RESOURCES_CHANGED, ResourcesChangedCommand);
 		}
 	}
 }

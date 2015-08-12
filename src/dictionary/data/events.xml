@@ -10,7 +10,9 @@
 	<!-- Секундный тик -->
 	<eventDesc id="sec" interval="1s"/>
 	<!-- Пятисекундный тик -->
-	<eventDesc id="5sec" interval="5s">
+	<eventDesc id="5sec" interval="5s"/>
+	<!-- Минутный тик -->
+	<eventDesc id="min" interval="1m">
 		<!-- Действие отправки нотификации, инициирует нотификацию с именем, указанным в id
 		и содержимым раздела в качестве данных. Имеет следующие поля:
 		id={строковое значение} - имя инициируемой нотификации
@@ -18,7 +20,7 @@
 		Может содержать данные нотификации, которые будут преобразованы в иерархический объект с полями типа String,
 		если не указан иной тип (поддерживаемые типы: int, uint, float), и дополнительное условие инициации (поле
 		value может содержать несколько значений) -->
-		<notification id="artifactFinded" chance="0.3">
+		<notification id="artifactFinded" chance="0.1">
 			<condition>
 				<if>
 					<trigger>employeesCount</trigger>
@@ -26,11 +28,11 @@
 					<min type="int">1</min>
 				</if>
 			</condition>
-			<resourceId>cudgel</resourceId>
+			<data>
+				<resourceId>cudgel</resourceId>
+			</data>
 		</notification>
 	</eventDesc>
-	<!-- Минутный тик -->
-	<eventDesc id="min" interval="1m"/>
 	<!-- Зарплата всем работникам -->
 	<eventDesc id="payDay" interval="10m"/>
 	<!-- Завершено строительство модуля -->

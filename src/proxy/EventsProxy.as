@@ -73,10 +73,7 @@ package proxy
                         var notification:NotificationVO = NotificationVO(secondary);
                         
                         // Проверить наличие и выполнение условия отправки
-                        var conditionIsSatisfied:Boolean = notification.notificationData.hasOwnProperty("condition") ?
-                            (new ConditionHelper(triggersProxy)).parseCondition(notification.notificationData.condition) : true;
-                        
-                        if (conditionIsSatisfied &&
+                        if ((new ConditionHelper(triggersProxy)).parseCondition(notification.notificationCondition) &&
                             (notification.notificationChance >= 1.0 || Math.random() < notification.notificationChance))
                         {
                             sendNotification(notification.notificationId, notification.notificationData);

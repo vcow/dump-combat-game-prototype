@@ -1,6 +1,8 @@
 package dictionary
 {
-	import vo.ProfessionDescVO;
+	import helpers.ConditionHelper;
+	
+	import vo.ResearchDescVO;
 	
 	/**
 	 * 
@@ -19,7 +21,7 @@ package dictionary
 		private static const source:Class;
 		
 		private static var _instance:InvestigationsDict;
-		private static var _professions:Vector.<ProfessionDescVO>;
+		private static var _investigations:Vector.<ResearchDescVO>;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -38,23 +40,50 @@ package dictionary
 				_instance = new InvestigationsDict();
 			return _instance;
 		}
-		
+        
+        /**
+         * Получить список исследований
+         * @param available флаг, указывающий включать в список только доступные на данный момент исследования
+         * @param visible флаг, указывающий включать в список только видимые на данный момент исследования
+         * @return список исследований
+         */
+        public function getInvestigations(available:Boolean=true, visible:Boolean=true):Vector.<ResearchDescVO>
+        {
+            init();
+            
+            var res:Vector.<ResearchDescVO> = new Vector.<ResearchDescVO>();
+            var conditionDecor:ConditionHelper = new ConditionHelper();
+            
+            for each (var research:ResearchDescVO in _investigations)
+            {
+                if (available && !conditionDecor.parseCondition(research.researchCondition))
+                    continue;
+                
+                if (visible && !conditionDecor.parseCondition(research.researchVisibilityCondition))
+                    continue;
+                
+                res.push(research);
+            }
+            
+            return res;
+        }
+        
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
         private function init():void
         {
-            if (!_professions)
+            if (!_investigations)
             {
-                _professions = new Vector.<ProfessionDescVO>();
+                _investigations = new Vector.<ResearchDescVO>();
                 
                 var src:XML = XML(new source());
                 for each (var item:XML in src.children())
                 {
-                    var profession:ProfessionDescVO = new ProfessionDescVO();
-                    profession.deserialize(item);
-                    _professions.push(profession);
+                    var research:ResearchDescVO = new ResearchDescVO();
+                    research.deserialize(item);
+                    _investigations.push(research);
                 }
             }
         }
