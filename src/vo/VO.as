@@ -251,6 +251,7 @@ package vo
                     case DataVO.NAME: value = new DataVO(); break;
                     case VisibilityVO.NAME: value = new VisibilityVO(); break;
                     case ResultVO.NAME: value = new ResultVO(); break;
+                    case CompleteVO.NAME: value = new CompleteVO(); break;
 					
 					// /TODO
 					

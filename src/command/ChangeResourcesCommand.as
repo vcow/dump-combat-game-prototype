@@ -46,7 +46,7 @@ package command
                 
 				for each (var resource:ResourceVO in dc[0].children)
 				{
-                    var isNewArtifact:Boolean = resource.resourceDesc.isArtifact && resourcesDecor.getResource(resource.resourceId) == 0;
+                    var isNewArtifact:Boolean = resource.resourceDesc.resourceIsArtifact && resourcesDecor.getResource(resource.resourceId) == 0;
                     
 					var rest:int = resourcesDecor.addResource(resource.resourceId, resource.resourceCount);
                     resourcesChanged ||= rest != 0;

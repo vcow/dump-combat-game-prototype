@@ -2,8 +2,6 @@ package vo
 {
     import dictionary.Const;
     
-    import flashx.textLayout.formats.Float;
-
     [ResourceBundle("investigations")]
     
     /**
@@ -30,15 +28,16 @@ package vo
         public var researchResultTitle:String;              //< Название исследования после завершения
         public var researchResultDescription:String;        //< Результаты исследования
         public var researchPrice:int;                       //< Стоимость исследования в человеко-часах ученых
-        public var researchDanger:Float;                    //< Опасность исследования
+        public var researchDanger:Number;                   //< Опасность исследования
+        public var researchEventId:String;                  //< Идентификатор события, по которому происходит пересчет завершенности исследования
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public function ResearchDescVO(name:String)
+        public function ResearchDescVO()
         {
-            super(name);
+            super(NAME);
         }
         
         public function get researchCondition():Object
@@ -61,6 +60,16 @@ package vo
             return {};
         }
         
+        public function get researchCompleteCondition():Object
+        {
+            for each (var child:IVO in children)
+            {
+                if (child.name == CompleteVO.NAME)
+                    return CompleteVO(child).conditionData;
+            }
+            return {};
+        }
+        
         //----------------------------------
         //  VO
         //----------------------------------
@@ -77,6 +86,7 @@ package vo
             res.@resultDescription = researchResultDescription;
             res.@price = researchPrice;
             res.@danger = researchDanger;
+            res.@event = researchEventId;
             
             // /TODO
             
@@ -95,6 +105,7 @@ package vo
             researchResultDescription = data.hasOwnProperty("@resultDescription") ? VO.parseString(data.@resultDescription, "investigations") : Const.NO_TEXT;
             researchPrice = data.hasOwnProperty("@price") ? int(data.@price) : 0;
             researchDanger = data.hasOwnProperty("@danger") ? Number(data.@danger) : 0;
+            researchEventId = data.hasOwnProperty("@event") ? data.@event.toString() : EventDescVO.DEFAULT_RESEARCH_EVENT;
             
             // /TODO
             

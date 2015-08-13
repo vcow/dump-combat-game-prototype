@@ -35,6 +35,8 @@
 	</eventDesc>
 	<!-- Зарплата всем работникам -->
 	<eventDesc id="payDay" interval="10m"/>
+	<!-- Шаг исследования -->
+	<eventDesc id="research" interval="3s"/>
 	<!-- Завершено строительство модуля -->
 	<eventDesc id="constructionCompleted"/>
 </eventsDict>

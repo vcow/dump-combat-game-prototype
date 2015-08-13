@@ -7,9 +7,10 @@
 		resultTitle={стрококое значение} - наименование завершенного исследования
 		price={числовое значение} - стоимость исследования в человекочасах ученых
 		danger={дробное значение от 0 до 1.0} - опасность исследования, с заданной вероятностью приводит к срыву
-			исследования и уничтожению лаборатории.
+			исследования и уничтожению лаборатории
+		event={строковое значение} - идентификатор события, по которому пересчитывается процент завершенности исследования.
 		Содержит условия, при которых возможно начать исследование и результат завершения исследования. --> 
-	<researchDesc id="cudgelResearch" title="{cudgel.research.title}" resultTitle="{cudgel.result.title}" resultDescription="{cudgel.result.description}" price="50" danger="0">
+	<researchDesc id="cudgelResearch" title="{cudgel.research.title}" resultTitle="{cudgel.result.title}" resultDescription="{cudgel.result.description}" price="50" danger="0" event="research">
 		<condition>
 			<if>
 				<trigger>resourcesCount</trigger>
@@ -25,6 +26,12 @@
 				<min type="int">1</min>
 			</if>
 		</visibility>
+		<!-- Условие завершенности. То же, что и обычное условие, при выполнении, означает, что исследование завершено -->
+		<complete>
+			<if>
+				<trigger>cudgelResearchComplete</trigger>
+			</if>
+		</complete>
 		<!-- Результат исследования -->
 		<result>
 			<!-- Новое значение триггера (неприменимо к вычислимым триггерам). Содержит следующие параметры:
@@ -37,7 +44,7 @@
 	</researchDesc>
 	
 	<!-- Изучить гвоздь -->
-	<researchDesc id="nailResearch" title="{nail.research.title}" resultTitle="{nail.result.title}" resultDescription="{nail.result.description}" price="40" danger="0">
+	<researchDesc id="nailResearch" title="{nail.research.title}" resultTitle="{nail.result.title}" resultDescription="{nail.result.description}" price="40" danger="0" event="research">
 		<condition>
 			<if>
 				<trigger>resourcesCount</trigger>
@@ -52,13 +59,18 @@
 				<min type="int">1</min>
 			</if>
 		</visibility>
+		<complete>
+			<if>
+				<trigger>nailResearchComplete</trigger>
+			</if>
+		</complete>
 		<result>
 			<trigger id="nailResearchComplete" value="1" type="set"/>
 		</result>
 	</researchDesc>
 	
 	<!-- Изучить булаву -->
-	<researchDesc id="maceResearch" title="{mace.research.title}" resultTitle="{mace.result.title}" resultDescription="{mace.result.description}" price="60" danger="0">
+	<researchDesc id="maceResearch" title="{mace.research.title}" resultTitle="{mace.result.title}" resultDescription="{mace.result.description}" price="60" danger="0" event="research">
 		<condition>
 			<and>
 				<if>
@@ -79,6 +91,11 @@
 				</if>
 			</or>
 		</visibility>
+		<complete>
+			<if>
+				<trigger>maceResearchComplete</trigger>
+			</if>
+		</complete>
 		<result>
 			<trigger id="maceResearchComplete" value="1" type="set"/>
 		</result>

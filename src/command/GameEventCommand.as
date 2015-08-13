@@ -1,14 +1,17 @@
 package command
 {
     import command.data.GameEventCmdData;
+    
     import managers.EventsManager;
     
     import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.command.SimpleCommand;
     
     import proxy.BasesListProxy;
+    import proxy.InvestigationsProxy;
     
     import vo.BaseVO;
+    import vo.InvestigationsVO;
     
     /**
      * 
@@ -61,6 +64,10 @@ package command
 				
 				out.reset();
             }
+            
+            // Прокинуть евент по всем исследованиям
+            var investigations:InvestigationsVO = InvestigationsProxy(this.facade.retrieveProxy(InvestigationsProxy.NAME)).investigationsVO;
+            investigations.event(notification.getType(), notification.getBody(), out);
 			
 			for (key in out.commonOut)
 			{

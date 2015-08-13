@@ -43,11 +43,12 @@ package dictionary
         
         /**
          * Получить список исследований
-         * @param available флаг, указывающий включать в список только доступные на данный момент исследования
-         * @param visible флаг, указывающий включать в список только видимые на данный момент исследования
+         * @param complete флаг, указывающий включать в список завершенные исследования
+         * @param availableOnly флаг, указывающий включать в список только доступные на данный момент исследования
+         * @param visibleOnly флаг, указывающий включать в список только видимые на данный момент исследования
          * @return список исследований
          */
-        public function getInvestigations(available:Boolean=true, visible:Boolean=true):Vector.<ResearchDescVO>
+        public function getInvestigations(complete:Boolean=false, availableOnly:Boolean=true, visibleOnly:Boolean=true):Vector.<ResearchDescVO>
         {
             init();
             
@@ -56,16 +57,42 @@ package dictionary
             
             for each (var research:ResearchDescVO in _investigations)
             {
-                if (available && !conditionDecor.parseCondition(research.researchCondition))
+                var researchIsComplete:Boolean = conditionDecor.parseCondition(research.researchCompleteCondition);
+                if (researchIsComplete)
+                {
+                    if (complete)
+                        res.push(research);
+                    continue;
+                }
+                
+                var researchIsAvailable:Boolean = conditionDecor.parseCondition(research.researchCondition);
+                if (availableOnly && !researchIsAvailable)
                     continue;
                 
-                if (visible && !conditionDecor.parseCondition(research.researchVisibilityCondition))
+                var researchIsVisible:Boolean = conditionDecor.parseCondition(research.researchVisibilityCondition);
+                if (visibleOnly && !researchIsVisible)
                     continue;
                 
-                res.push(research);
+                if (researchIsAvailable && researchIsVisible)
+                    res.push(research);
             }
             
             return res;
+        }
+        
+        /**
+         * Получить описание исследования по его идентификатору
+         * @param researchId идентификатор исследования
+         * @return описание исследования
+         */
+        public function getResearch(researchId:String):ResearchDescVO
+        {
+            for each (var research:ResearchDescVO in _investigations)
+            {
+                if (research.researchId == researchId)
+                    return research;
+            }
+            return null;
         }
         
         //--------------------------------------------------------------------------

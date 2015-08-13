@@ -17,6 +17,9 @@ package vo
 		
 		public static const NAME:String = "eventDesc";
         
+        public static const DEFAULT_PAY_EVENT:String = "payDay";
+        public static const DEFAULT_RESEARCH_EVENT:String = "research";
+        
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------

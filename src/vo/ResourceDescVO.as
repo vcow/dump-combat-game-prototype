@@ -45,9 +45,25 @@ package vo
         /**
          * Признак того, что ресурс является артефактом
          */
-        public function get isArtifact():Boolean
+        public function get resourceIsArtifact():Boolean
         {
             return Boolean(resourceDescriptionInvestigated);
+        }
+        
+        /**
+         * Условие, при выполнении которого артефакт считается изученным
+         */
+        public function get resourceArtifactCompleteCondition():Object
+        {
+            if (resourceIsArtifact)
+            {
+                for each (var child:IVO in children)
+                {
+                    if (child.name == CompleteVO.NAME)
+                        return CompleteVO(child).conditionData;
+                }
+            }
+            return {};
         }
 		
 		//----------------------------------

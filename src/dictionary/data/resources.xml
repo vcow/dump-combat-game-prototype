@@ -15,5 +15,12 @@
 	<!-- Палка -->
 	<resourceDesc id="cudgel" name="{cudgel.title}" descriiption="{cudgel.description}" size="2" price="0.01" descriptionInvestigated="{cudgel.description.investigated}"/>
 	<!-- Палка -->
-	<resourceDesc id="nail" name="{nail.title}" descriiption="{nail.description}" size="0" price="0.005" descriptionInvestigated="{nail.description.investigated}"/>
+	<resourceDesc id="nail" name="{nail.title}" descriiption="{nail.description}" size="0" price="0.005" descriptionInvestigated="{nail.description.investigated}">
+		<!-- Условие, при выполнении которого артефакт считается изученным -->
+		<complete>
+			<if>
+				<trigger>cudgelResearchComplete</trigger>
+			</if>
+		</complete>
+	</resourceDesc>
 </resourcesDict>
