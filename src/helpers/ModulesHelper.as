@@ -5,6 +5,7 @@ package helpers
 	import facade.ProtoFacade;
 	
 	import proxy.BasesListProxy;
+	import proxy.InvestigationsProxy;
 	
 	import vo.BaseVO;
 	import vo.ModuleDescVO;
@@ -27,14 +28,16 @@ package helpers
 		//--------------------------------------------------------------------------
 		
 		private var _basesListProxy:BasesListProxy;
+        private var _investigationsProxy:InvestigationsProxy;
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function ModulesHelper(basesListProxy:BasesListProxy=null)
+		public function ModulesHelper(basesListProxy:BasesListProxy=null, investigationsProxy:InvestigationsProxy=null)
 		{
 			_basesListProxy = basesListProxy;
+            _investigationsProxy = investigationsProxy;
 		}
 		
 		/**
@@ -76,6 +79,10 @@ package helpers
                         break;
                     case ModuleDescVO.HOUSING:
                         var personnel:PersonnelVO = base.basePersonnel;
+                        space -= personnel.children.length;
+                        break;
+                    case ModuleDescVO.LAB:
+                        personnel = investigationsProxy.getEmployedScientists(null, base.baseId);
                         space -= personnel.children.length;
                         break;
                 }
@@ -127,5 +134,12 @@ package helpers
 				_basesListProxy = BasesListProxy(ProtoFacade.getInstance().retrieveProxy(BasesListProxy.NAME));
 			return _basesListProxy;
 		}
+        
+        private function get investigationsProxy():InvestigationsProxy
+        {
+            if (!_investigationsProxy)
+                _investigationsProxy = InvestigationsProxy(ProtoFacade.getInstance().retrieveProxy(InvestigationsProxy.NAME));
+            return _investigationsProxy;
+        }
 	}
 }

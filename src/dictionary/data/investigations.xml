@@ -8,9 +8,10 @@
 		price={числовое значение} - стоимость исследования в человекочасах ученых
 		danger={дробное значение от 0 до 1.0} - опасность исследования, с заданной вероятностью приводит к срыву
 			исследования и уничтожению лаборатории
-		event={строковое значение} - идентификатор события, по которому пересчитывается процент завершенности исследования.
+		event={строковое значение} - идентификатор события, по которому пересчитывается процент завершенности исследования
+		requirements={строковое значение} - описание требований для начала исследования
 		Содержит условия, при которых возможно начать исследование и результат завершения исследования. --> 
-	<researchDesc id="cudgelResearch" title="{cudgel.research.title}" resultTitle="{cudgel.result.title}" resultDescription="{cudgel.result.description}" price="50" danger="0" event="research">
+	<researchDesc id="cudgelResearch" title="{cudgel.research.title}" resultTitle="{cudgel.result.title}" resultDescription="{cudgel.result.description}" price="50" danger="0" event="research" requirements="{cudgel.research.requirements}">
 		<condition>
 			<if>
 				<trigger>resourcesCount</trigger>
@@ -44,7 +45,7 @@
 	</researchDesc>
 	
 	<!-- Изучить гвоздь -->
-	<researchDesc id="nailResearch" title="{nail.research.title}" resultTitle="{nail.result.title}" resultDescription="{nail.result.description}" price="40" danger="0" event="research">
+	<researchDesc id="nailResearch" title="{nail.research.title}" resultTitle="{nail.result.title}" resultDescription="{nail.result.description}" price="40" danger="0" event="research" requirements="{nail.research.requirements}">
 		<condition>
 			<if>
 				<trigger>resourcesCount</trigger>
@@ -70,7 +71,7 @@
 	</researchDesc>
 	
 	<!-- Изучить булаву -->
-	<researchDesc id="maceResearch" title="{mace.research.title}" resultTitle="{mace.result.title}" resultDescription="{mace.result.description}" price="60" danger="0" event="research">
+	<researchDesc id="maceResearch" title="{mace.research.title}" resultTitle="{mace.result.title}" resultDescription="{mace.result.description}" price="60" danger="0" event="research" requirements="{mace.research.requirements}">
 		<condition>
 			<and>
 				<if>

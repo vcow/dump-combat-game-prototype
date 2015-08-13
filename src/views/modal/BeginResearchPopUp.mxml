@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Интерфейс запуска исследования -->
+
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+						   xmlns:s="library://ns.adobe.com/flex/spark"
+						   xmlns:ui="views.ui.*"
+                           xmlns:dropDownList="com.flextras.mobile.dropDownList.*"
+                           xmlns:mx="library://ns.adobe.com/flex/mx"
+                           creationComplete="creationCompleteHandler(event)">
+	
+	<s:BorderContainer>
+		<s:layout>
+			<s:VerticalLayout gap="10" paddingBottom="1" paddingLeft="1" paddingRight="1"
+							  paddingTop="1"/>
+		</s:layout>
+		
+		<s:BorderContainer width="100%" minHeight="0" backgroundColor="gray" borderVisible="false">
+			<s:layout>
+				<s:VerticalLayout horizontalAlign="center" paddingBottom="5" paddingLeft="5"
+								  paddingRight="5" paddingTop="5"/>
+			</s:layout>
+			
+			<s:Label color="white" text="@Resource(key='research.begin.popup.title', bundle='common')"/>
+		</s:BorderContainer>
+        
+        <s:VGroup width="100%" gap="10" horizontalAlign="center" paddingBottom="5" paddingLeft="5"
+                  paddingRight="5" paddingTop="5">
+            
+            <s:VGroup width="100%" gap="3" horizontalAlign="center">
+                <s:Label text="@Resource(key='research.begin.popup.research', bundle='common')"/>
+                
+                <dropDownList:DropDownList id="researchSelector" width="100%" dataProvider="{investigationsList}">
+                    <dropDownList:itemRenderer>
+                        <fx:Component>
+                            <s:LabelItemRenderer>
+                                <fx:Script>
+                                    <![CDATA[
+                                        override public function set data(value:Object):void
+                                        {
+                                            super.data = value;
+                                            setStyle("color", data && data.available ? 0x000000 : 0xacacac);
+                                        }
+                                    ]]>
+                                </fx:Script>
+                            </s:LabelItemRenderer>
+                        </fx:Component>
+                    </dropDownList:itemRenderer>
+                </dropDownList:DropDownList>
+            </s:VGroup>
+            
+            <s:HGroup verticalAlign="middle">
+                
+                <s:Label text="@Resource(key='research.begin.popup.scientists.count', bundle='common')"/>
+                
+                <ui:NumericStepper/>
+            </s:HGroup>
+            
+            <s:HGroup width="100%">
+                <s:Button width="50%" label="@Resource(key='research.begin.popup.explore', bundle='common')"
+                          click="{close(false, Const.OK);}"/>
+                
+                <s:Button width="50%" label="@Resource(key='alert.cancel', bundle='common')"
+                          click="{close(false, Const.CANCEL);}"/>
+            </s:HGroup>
+        </s:VGroup>
+	</s:BorderContainer>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+    
+    <fx:Metadata>
+        [ResourceBundle("common")]
+    </fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+            import mx.collections.ArrayCollection;
+            import mx.events.FlexEvent;
+            
+            import dictionary.Const;
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            private var _investigationsList:ArrayCollection;
+            private var _freeScientists:int;
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            [Bindable (event="investigationsListChanged")]
+            public function get investigationsList():ArrayCollection
+            {
+                return _investigationsList;
+            }
+            
+            public function set investigationsList(value:ArrayCollection):void
+            {
+                if (value == _investigationsList)
+                    return;
+                
+                _investigationsList = value;
+                dispatchEvent(new Event("investigationsListChanged"));
+                
+                if (initialized && _investigationsList && _investigationsList.length > 0)
+                    researchSelector.selectedIndex = 0;
+            }
+            
+            [Bindable (event="freeScientistsChanged")]
+            public function get freeScientists():int
+            {
+                return _freeScientists;
+            }
+            
+            public function set freeScientists(value:int):void
+            {
+                if (value == _freeScientists)
+                    return;
+                
+                _freeScientists = value;
+                dispatchEvent(new Event("freeScientistsChanged"));
+                
+                if (initialized)
+                {
+                    
+                }
+            }
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            protected function creationCompleteHandler(event:FlexEvent):void
+            {
+                if (investigationsList && investigationsList.length > 0)
+                    researchSelector.selectedIndex = 0;
+            }
+        ]]>
+	</fx:Script>
+</s:SkinnablePopUpContainer>

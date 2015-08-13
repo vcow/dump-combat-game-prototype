@@ -17,7 +17,7 @@ package vo
         // 
         //--------------------------------------------------------------------------
         
-        public static const NAME:String = "resourceDesc";
+        public static const NAME:String = "researchDesc";
         
         //--------------------------------------------------------------------------
         // 
@@ -30,6 +30,7 @@ package vo
         public var researchPrice:int;                       //< Стоимость исследования в человеко-часах ученых
         public var researchDanger:Number;                   //< Опасность исследования
         public var researchEventId:String;                  //< Идентификатор события, по которому происходит пересчет завершенности исследования
+        public var researchRequirements:String;             //< Описание требований для начала исследования
         
         //--------------------------------------------------------------------------
         // 
@@ -87,6 +88,7 @@ package vo
             res.@price = researchPrice;
             res.@danger = researchDanger;
             res.@event = researchEventId;
+            res.@requirements = researchRequirements;
             
             // /TODO
             
@@ -106,6 +108,7 @@ package vo
             researchPrice = data.hasOwnProperty("@price") ? int(data.@price) : 0;
             researchDanger = data.hasOwnProperty("@danger") ? Number(data.@danger) : 0;
             researchEventId = data.hasOwnProperty("@event") ? data.@event.toString() : EventDescVO.DEFAULT_RESEARCH_EVENT;
+            researchRequirements = data.hasOwnProperty("@requirements") ? VO.parseString(data.@requirements, "investigations") : Const.NO_TEXT;
             
             // /TODO
             

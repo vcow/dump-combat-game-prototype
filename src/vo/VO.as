@@ -252,6 +252,9 @@ package vo
                     case VisibilityVO.NAME: value = new VisibilityVO(); break;
                     case ResultVO.NAME: value = new ResultVO(); break;
                     case CompleteVO.NAME: value = new CompleteVO(); break;
+                    case InvestigationsVO.NAME: value = new InvestigationsVO(); break;
+                    case TriggerVO.NAME: value = new TriggerVO(); break;
+                    case WorkerVO.NAME: value = new WorkerVO(); break;
 					
 					// /TODO
 					

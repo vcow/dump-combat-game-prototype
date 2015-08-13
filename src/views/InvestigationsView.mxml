@@ -35,6 +35,8 @@
 	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="categoryRadioGroup" change="categoryRadioGroup_changeHandler(event)"/>
+        
+        <modal:BeginResearchPopUp id="beginResearchPopUp" close="beginResearchPopUp_closeHandler(event)"/>
 	</fx:Declarations>
 	
 	<fx:Metadata>
@@ -44,13 +46,26 @@
 	<fx:Script>
 		<![CDATA[
             import mx.collections.ArrayCollection;
+            import mx.core.FlexGlobals;
             import mx.events.FlexEvent;
+            import mx.managers.PopUpManager;
             
             import spark.events.IndexChangeEvent;
+            import spark.events.PopUpEvent;
             
             import facade.ProtoFacade;
             
+            import helpers.ModulesHelper;
+            import helpers.PersonnelHelper;
+            
             import mediator.InvestigationsMediator;
+            
+            import proxy.InvestigationsProxy;
+            
+            import views.modal.AlertPopUp;
+            
+            import vo.ModuleDescVO;
+            import vo.ProfessionDescVO;
 			
 			//--------------------------------------------------------------------------
 			// 
@@ -81,10 +96,40 @@
 			
             protected function beginResearch_clickHandler(event:MouseEvent):void
             {
+                /*var freeLabSpace:int = new ModulesHelper().getSpace(ModuleDescVO.LAB);
+                if (freeLabSpace <= 0)
+                {
+                    var alertPopUp:AlertPopUp = new AlertPopUp();
+                    alertPopUp.text = resourceManager.getString("common", "alert.nolab");
+                    alertPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                    PopUpManager.centerPopUp(alertPopUp);
+                    return;
+                }
+                
+                var totalScientists:int = new PersonnelHelper().getEmployees(ProfessionDescVO.SCIENTIST).length;
+                var employedScientists:int = InvestigationsProxy(ProtoFacade.getInstance().retrieveProxy(InvestigationsProxy.NAME)).getEmployedScientists().children.length;
+                var freeScientists:int = totalScientists - employedScientists;
+                if (freeScientists <= 0)
+                {
+                    alertPopUp = new AlertPopUp();
+                    alertPopUp.text = resourceManager.getString("common", "alert.noscientists");
+                    alertPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                    PopUpManager.centerPopUp(alertPopUp);
+                    return;
+                }
+                */
+                beginResearchPopUp.investigationsList = _investigationsMediator.getAvailableResearch();
+                beginResearchPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                PopUpManager.centerPopUp(beginResearchPopUp);
             }
             
             protected function researchView_changeHandler(event:IndexChangeEvent):void
             {
+            }
+            
+            protected function beginResearchPopUp_closeHandler(event:PopUpEvent):void
+            {
+                
             }
             
         ]]>

@@ -32,7 +32,6 @@ package com.flextras.mobile.dropDownList
 	
 	import spark.components.Button;
 	import spark.components.DropDownList;
-	import spark.components.Label;
 	import spark.components.LabelItemRenderer;
 	import spark.components.supportClasses.TextBase;
 	import spark.events.RendererExistenceEvent;
