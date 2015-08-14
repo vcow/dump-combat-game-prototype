@@ -41,6 +41,21 @@ package proxy
         }
         
         /**
+         * Получить активное исследование по его идентификатору
+         * @param researchId идентификатор исследования
+         * @return активное исследование
+         */
+        public function getResearch(researchId:String):ResearchVO
+        {
+            for each (var research:ResearchVO in investigationsVO.children)
+            {
+                if (research.researchId == researchId)
+                    return research;
+            }
+            return null;
+        }
+        
+        /**
          * Получить сотрудников из указанной базы, задействованных в указаном исследовании
          * @param researchId идентификатор исследования, если null, возвращается для всех исследований
          * @param baseId идентификатор базы, если null, возвращается для всех баз

@@ -2,7 +2,12 @@ package mediator
 {
     import mx.collections.ArrayCollection;
     
+    import command.data.UpdateResearchCmdData;
+    
+    import dictionary.Const;
     import dictionary.InvestigationsDict;
+    
+    import events.ResearchEvent;
     
     import helpers.ConditionHelper;
     
@@ -140,6 +145,7 @@ package mediator
             
             // TODO: Удалить все обработчики событий, если таковые были установлены
             
+            investigationsView.removeEventListener(ResearchEvent.BEGIN_RESEARCH, beginResearchHandler);
             
             // /TODO
         }
@@ -154,8 +160,18 @@ package mediator
             
             // TODO: Проинициализировать поля компонента актуальными значениями, устновить оброботчики событий, если нужно
             
+            investigationsView.addEventListener(ResearchEvent.BEGIN_RESEARCH, beginResearchHandler);
             
             // /TODO
+        }
+        
+        /**
+         * Пришла команда на начало нового исследования
+         * @param event событие
+         */
+        private function beginResearchHandler(event:ResearchEvent):void
+        {
+            sendNotification(Const.UPDATE_RESEARCH, new UpdateResearchCmdData(event.researchId, event.numScientists));
         }
         
         //----------------------------------

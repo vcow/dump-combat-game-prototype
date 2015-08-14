@@ -182,8 +182,7 @@
             protected function buildModulePopUp_closeHandler(event:PopUpEvent):void
             {
                 if (event.data == Const.OK)
-                    dispatchEvent(new BaseEvent(BaseEvent.CREATE_MODULE, _baseMediator.baseId,
-                        uint(buildModulePopUp.moduleTypeSelector.selectedItem.id)));
+                    dispatchEvent(new BaseEvent(BaseEvent.CREATE_MODULE, _baseMediator.baseId, buildModulePopUp.moduleTypeSelector.selectedItem.id));
             }
             
             protected function buildNewModule_clickHandler(event:MouseEvent):void

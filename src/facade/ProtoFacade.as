@@ -13,6 +13,7 @@ package facade
 	import command.ResourcesChangedCommand;
 	import command.SendGameMessageCommand;
 	import command.StartUpCommand;
+	import command.UpdateResearchCommand;
 	
 	import dictionary.Const;
 	
@@ -71,6 +72,7 @@ package facade
             registerCommand(Const.BUILD_MODULE, BuildModuleCommand);
             registerCommand(Const.REMOVE_MODULE, RemoveModuleCommand);
             registerCommand(Const.RESOURCES_CHANGED, ResourcesChangedCommand);
+            registerCommand(Const.UPDATE_RESEARCH, UpdateResearchCommand);
 		}
 	}
 }

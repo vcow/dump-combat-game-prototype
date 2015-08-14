@@ -39,6 +39,9 @@
 	
 	<fx:Metadata>
 		[ResourceBundle("common")]
+        
+        [Event(name="beginResearch", type="events.ResearchEvent")]
+        [Event(name="changeResearchScientistsCount", type="events.ResearchEvent")]
 	</fx:Metadata>
 	
 	<fx:Script>
@@ -51,20 +54,21 @@
             import spark.events.IndexChangeEvent;
             import spark.events.PopUpEvent;
             
+            import dictionary.Const;
+            
+            import events.ResearchEvent;
+            
             import facade.ProtoFacade;
             
+            import helpers.InvestigationsHelper;
             import helpers.ModulesHelper;
-            import helpers.PersonnelHelper;
             
             import mediator.InvestigationsMediator;
-            
-            import proxy.InvestigationsProxy;
             
             import views.modal.AlertPopUp;
             import views.modal.BeginResearchPopUp;
             
             import vo.ModuleDescVO;
-            import vo.ProfessionDescVO;
 			
 			//--------------------------------------------------------------------------
 			// 
@@ -95,19 +99,27 @@
 			
             protected function beginResearch_clickHandler(event:MouseEvent):void
             {
-                var freeLabSpace:int = new ModulesHelper().getSpace(ModuleDescVO.LAB);
-                if (freeLabSpace <= 0)
+                var availableResearch:ArrayCollection = _investigationsMediator.getAvailableResearch();
+                if (!availableResearch || availableResearch.length <= 0)
                 {
                     var alertPopUp:AlertPopUp = new AlertPopUp();
+                    alertPopUp.text = resourceManager.getString("common", "alert.noresearch");
+                    alertPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                    PopUpManager.centerPopUp(alertPopUp);
+                    return;
+                }
+                
+                var freeLabSpace:int = (new ModulesHelper()).getSpace(ModuleDescVO.LAB);
+                if (freeLabSpace <= 0)
+                {
+                    alertPopUp = new AlertPopUp();
                     alertPopUp.text = resourceManager.getString("common", "alert.nolab");
                     alertPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
                     PopUpManager.centerPopUp(alertPopUp);
                     return;
                 }
                 
-                var totalScientists:int = new PersonnelHelper().getEmployees(ProfessionDescVO.SCIENTIST).length;
-                var employedScientists:int = InvestigationsProxy(ProtoFacade.getInstance().retrieveProxy(InvestigationsProxy.NAME)).getEmployedScientists().children.length;
-                var freeScientists:int = totalScientists - employedScientists;
+                var freeScientists:int = (new InvestigationsHelper()).getFreeScientists().length;
                 if (freeScientists <= 0)
                 {
                     alertPopUp = new AlertPopUp();
@@ -120,7 +132,7 @@
                 var beginResearchPopUp:BeginResearchPopUp = new BeginResearchPopUp();
                 beginResearchPopUp.addEventListener(PopUpEvent.CLOSE, beginResearchPopUp_closeHandler);
                 
-                beginResearchPopUp.investigationsList = _investigationsMediator.getAvailableResearch();
+                beginResearchPopUp.investigationsList = availableResearch;
                 beginResearchPopUp.freeScientists = Math.min(freeScientists, freeLabSpace);
                 
                 beginResearchPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
@@ -135,6 +147,12 @@
             {
                 var beginResearchPopUp:BeginResearchPopUp = BeginResearchPopUp(event.target);
                 beginResearchPopUp.removeEventListener(PopUpEvent.CLOSE, beginResearchPopUp_closeHandler);
+                
+                if (event.data == Const.OK && beginResearchPopUp.researchSelector.selectedItem)
+                {
+                    dispatchEvent(new ResearchEvent(ResearchEvent.BEGIN_RESEARCH,
+                        beginResearchPopUp.researchSelector.selectedItem.id, beginResearchPopUp.scientistsCtr.value));
+                }
             }
             
         ]]>

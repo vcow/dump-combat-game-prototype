@@ -3,7 +3,8 @@
 <!-- Интерфейс для задания нового имени базы -->
 
 <s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
-			   xmlns:s="library://ns.adobe.com/flex/spark">
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+               filters="{proto.popUpShadow}">
 	
 	<s:BorderContainer>
 		<s:layout>

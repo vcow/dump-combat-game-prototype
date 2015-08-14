@@ -7,7 +7,8 @@
                xmlns:dropDownList="com.flextras.mobile.dropDownList.*"
                xmlns:ui="views.ui.*"
                creationComplete="creationCompleteHandler(event)"
-               currentState="immediately">
+               currentState="immediately"
+               filters="{proto.popUpShadow}">
     <s:states>
         <s:State name="immediately"/>
         <s:State name="hasLeadTime"/>

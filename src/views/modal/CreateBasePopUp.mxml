@@ -6,7 +6,8 @@
 						   xmlns:s="library://ns.adobe.com/flex/spark"
 						   xmlns:ui="views.ui.*"
                            xmlns:dropDownList="com.flextras.mobile.dropDownList.*"
-						   creationComplete="creationCompleteHandler(event)">
+						   creationComplete="creationCompleteHandler(event)"
+                           filters="{proto.popUpShadow}">
 	
 	<s:BorderContainer>
 		<s:layout>

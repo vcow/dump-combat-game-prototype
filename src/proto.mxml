@@ -39,6 +39,7 @@
 		<![CDATA[
             import mx.events.FlexEvent;
             
+            import spark.filters.DropShadowFilter;
             import spark.skins.mobile.TextAreaSkin;
             
             import facade.ProtoFacade;
@@ -58,6 +59,12 @@
 			// 
 			//--------------------------------------------------------------------------
 			
+            public static const popUpShadow:Array = [ new DropShadowFilter(15, 45, 0x000000, 0.7, 20, 20) ];
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
 			private var _facade:ProtoFacade = ProtoFacade.getInstance();
 			
 			//--------------------------------------------------------------------------
