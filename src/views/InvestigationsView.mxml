@@ -35,8 +35,6 @@
 	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="categoryRadioGroup" change="categoryRadioGroup_changeHandler(event)"/>
-        
-        <modal:BeginResearchPopUp id="beginResearchPopUp" close="beginResearchPopUp_closeHandler(event)"/>
 	</fx:Declarations>
 	
 	<fx:Metadata>
@@ -63,6 +61,7 @@
             import proxy.InvestigationsProxy;
             
             import views.modal.AlertPopUp;
+            import views.modal.BeginResearchPopUp;
             
             import vo.ModuleDescVO;
             import vo.ProfessionDescVO;
@@ -96,7 +95,7 @@
 			
             protected function beginResearch_clickHandler(event:MouseEvent):void
             {
-                /*var freeLabSpace:int = new ModulesHelper().getSpace(ModuleDescVO.LAB);
+                var freeLabSpace:int = new ModulesHelper().getSpace(ModuleDescVO.LAB);
                 if (freeLabSpace <= 0)
                 {
                     var alertPopUp:AlertPopUp = new AlertPopUp();
@@ -117,8 +116,13 @@
                     PopUpManager.centerPopUp(alertPopUp);
                     return;
                 }
-                */
+                
+                var beginResearchPopUp:BeginResearchPopUp = new BeginResearchPopUp();
+                beginResearchPopUp.addEventListener(PopUpEvent.CLOSE, beginResearchPopUp_closeHandler);
+                
                 beginResearchPopUp.investigationsList = _investigationsMediator.getAvailableResearch();
+                beginResearchPopUp.freeScientists = Math.min(freeScientists, freeLabSpace);
+                
                 beginResearchPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
                 PopUpManager.centerPopUp(beginResearchPopUp);
             }
@@ -129,7 +133,8 @@
             
             protected function beginResearchPopUp_closeHandler(event:PopUpEvent):void
             {
-                
+                var beginResearchPopUp:BeginResearchPopUp = BeginResearchPopUp(event.target);
+                beginResearchPopUp.removeEventListener(PopUpEvent.CLOSE, beginResearchPopUp_closeHandler);
             }
             
         ]]>

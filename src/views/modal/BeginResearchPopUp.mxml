@@ -7,7 +7,7 @@
 						   xmlns:ui="views.ui.*"
                            xmlns:dropDownList="com.flextras.mobile.dropDownList.*"
                            xmlns:mx="library://ns.adobe.com/flex/mx"
-                           creationComplete="creationCompleteHandler(event)">
+                           creationComplete="{updateResearchInfo();}">
 	
 	<s:BorderContainer>
 		<s:layout>
@@ -30,7 +30,8 @@
             <s:VGroup width="100%" gap="3" horizontalAlign="center">
                 <s:Label text="@Resource(key='research.begin.popup.research', bundle='common')"/>
                 
-                <dropDownList:DropDownList id="researchSelector" width="100%" dataProvider="{investigationsList}">
+                <dropDownList:DropDownList id="researchSelector" width="100%" dataProvider="{investigationsList}"
+                                           change="{scientistsCtr.value = 0; scientistsLeave = freeScientists;}">
                     <dropDownList:itemRenderer>
                         <fx:Component>
                             <s:LabelItemRenderer>
@@ -49,16 +50,32 @@
                 </dropDownList:DropDownList>
             </s:VGroup>
             
-            <s:HGroup verticalAlign="middle">
+            <s:BorderContainer cornerRadius="4">
+                <s:layout>
+                    <s:VerticalLayout paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="5"/>
+                </s:layout>
                 
-                <s:Label text="@Resource(key='research.begin.popup.scientists.count', bundle='common')"/>
+                <s:TextArea id="requirementsTextArea" width="250" fontSize="14" editable="false" selectable="false" borderVisible="false"
+                            verticalScrollPolicy="off" horizontalScrollPolicy="off" minHeight="20"/>
+            </s:BorderContainer>
+            
+            <s:VGroup gap="3" horizontalAlign="center" paddingTop="10" paddingBottom="5">
                 
-                <ui:NumericStepper/>
-            </s:HGroup>
+                <s:Label text="{resourceManager.getString('common', 'research.begin.popup.scientists.free', [ scientistsLeave ])}" fontWeight="bold"/>
+                
+                <s:HGroup verticalAlign="middle" enabled="{researchSelector.selectedItem &amp;&amp; researchSelector.selectedItem.available}">
+                    
+                    <s:Label text="@Resource(key='research.begin.popup.scientists.count', bundle='common')"/>
+                    
+                    <ui:NumericStepper id="scientistsCtr" min="0" max="{freeScientists}"
+                                       change="{scientistsLeave = freeScientists - scientistsCtr.value;}"/>
+                </s:HGroup>
+            </s:VGroup>
             
             <s:HGroup width="100%">
                 <s:Button width="50%" label="@Resource(key='research.begin.popup.explore', bundle='common')"
-                          click="{close(false, Const.OK);}"/>
+                          click="{close(false, Const.OK);}"
+                          enabled="{researchSelector.selectedItem &amp;&amp; researchSelector.selectedItem.available &amp;&amp; scientistsCtr.value > 0}"/>
                 
                 <s:Button width="50%" label="@Resource(key='alert.cancel', bundle='common')"
                           click="{close(false, Const.CANCEL);}"/>
@@ -78,6 +95,8 @@
             import mx.collections.ArrayCollection;
             import mx.events.FlexEvent;
             
+            import spark.components.supportClasses.StyleableTextField;
+            
             import dictionary.Const;
             
             //--------------------------------------------------------------------------
@@ -86,6 +105,9 @@
             
             private var _investigationsList:ArrayCollection;
             private var _freeScientists:int;
+            
+            [Bindable]
+            private var scientistsLeave:int;
             
             //--------------------------------------------------------------------------
             // 
@@ -105,8 +127,15 @@
                 _investigationsList = value;
                 dispatchEvent(new Event("investigationsListChanged"));
                 
-                if (initialized && _investigationsList && _investigationsList.length > 0)
-                    researchSelector.selectedIndex = 0;
+                if (initialized)
+                {
+                    researchSelector.selectedIndex = -1;
+                    
+                    requirementsTextArea.text = "";
+                    requirementsTextArea.height = requirementsTextArea.minHeight;
+                    
+                    updateResearchInfo();
+                }
             }
             
             [Bindable (event="freeScientistsChanged")]
@@ -123,21 +152,43 @@
                 _freeScientists = value;
                 dispatchEvent(new Event("freeScientistsChanged"));
                 
+                scientistsLeave = _freeScientists;
+                
                 if (initialized)
-                {
-                    
-                }
+                    scientistsCtr.value = 0;
             }
             
             //--------------------------------------------------------------------------
             // 
             //--------------------------------------------------------------------------
             
-            protected function creationCompleteHandler(event:FlexEvent):void
+            private function updateResearchInfo():void
             {
-                if (investigationsList && investigationsList.length > 0)
+                var data:Object = researchSelector.selectedItem;
+                if (!data && investigationsList.length > 0)
+                {
                     researchSelector.selectedIndex = 0;
+                    data = researchSelector.selectedItem;
+                }
+                
+                if (data)
+                {
+                    var textDisplay:StyleableTextField = StyleableTextField(requirementsTextArea.textDisplay);
+                    textDisplay.htmlText = data.available ? data.requirements : '<font color="#c70000">' + data.requirements + '</font>';
+                    
+                    var numLines:int = textDisplay.numLines;
+                    var h:Number = requirementsTextArea.getStyle("paddingTop") + requirementsTextArea.getStyle("paddingBottom");
+                    for (var i:int = 0; i < numLines; i++)
+                        h += textDisplay.getLineMetrics(i).height;
+                    requirementsTextArea.height = h;
+                }
+                else
+                {
+                    requirementsTextArea.text = "";
+                    requirementsTextArea.height = requirementsTextArea.minHeight;
+                }
             }
+            
         ]]>
 	</fx:Script>
 </s:SkinnablePopUpContainer>

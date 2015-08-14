@@ -48,6 +48,7 @@ package mediator
                 res.push({
                     id: researchDesc.researchId,
                     label: researchDesc.researchResultTitle,
+                    requirements: researchDesc.researchRequirements,
                     description: researchDesc.researchResultDescription,
                     complete: true,
                     inProcess: false,
@@ -71,6 +72,7 @@ package mediator
                 res.push({
                     id: researchDesc.researchId,
                     label: researchDesc.researchTitle,
+                    requirements: researchDesc.researchRequirements,
                     description: "",
                     complete: false,
                     inProcess: true,
@@ -106,6 +108,7 @@ package mediator
                 res.push({
                     id: researchDesc.researchId,
                     label: researchDesc.researchTitle,
+                    requirements: researchDesc.researchRequirements,
                     description: "",
                     complete: false,
                     inProcess: false,

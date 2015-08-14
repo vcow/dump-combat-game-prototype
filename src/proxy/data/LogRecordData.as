@@ -121,7 +121,7 @@ package proxy.data
                 case TYPE_WARNING:
                     return '<font color="#9e0b0f"><font size="8">[' + timeString + ']</font> <b>' + _message + '</b></font>';
                 case TYPE_ERROR:
-                    return '<font color="#840000"><font size="8">[' + timeString + ']</font> <b>' + _message + '</b></font>';
+                    return '<font color="#c70000"><font size="8">[' + timeString + ']</font> <b>' + _message + '</b></font>';
             }
             return _message;
         }

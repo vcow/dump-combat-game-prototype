@@ -12,8 +12,8 @@
     </s:BorderContainer>
     
     <s:VGroup gap="-1">
-        <s:Button label="+" width="34" height="34" click="{value += 1;}"/>
-        <s:Button label="-" width="34" height="34" click="{value -= 1;}"/>
+        <s:Button label="+" width="34" height="34" mouseDown="inc_mouseDownHandler(event)" mouseUp="inc_mouseUpHandler(event)" rollOut="inc_mouseUpHandler(event)"/>
+        <s:Button label="-" width="34" height="34" mouseDown="dec_mouseDownHandler(event)" mouseUp="dec_mouseUpHandler(event)" rollOut="dec_mouseUpHandler(event)"/>
     </s:VGroup>
     
     <fx:Declarations>
@@ -31,10 +31,19 @@
             //--------------------------------------------------------------------------
             
             private var _value:int;
+            private var _delta:int;
+            
+            private var _timer:Timer;
+            
+            private static const START_TIME:Number = 1000;
+            private static const REPEAT_TIME:Number = 100;
             
             //--------------------------------------------------------------------------
             // 
             //--------------------------------------------------------------------------
+            
+            public var min:int = int.MIN_VALUE;
+            public var max:int = int.MAX_VALUE;
             
             [Bindable]
             public var editable:Boolean;
@@ -59,6 +68,69 @@
             // 
             //--------------------------------------------------------------------------
             
+            protected function inc_mouseDownHandler(event:MouseEvent):void
+            {
+                if (_delta != 0 || _value >= max)
+                    return;
+                
+                _delta = 1;
+                initTimer(true);
+                
+                value++;
+            }
+            
+            protected function dec_mouseDownHandler(event:MouseEvent):void
+            {
+                if (_delta != 0 || _value <= min)
+                    return;
+                
+                _delta = -1;
+                initTimer(true);
+                
+                value--;
+            }
+            
+            protected function inc_mouseUpHandler(event:MouseEvent):void
+            {
+                _delta = 0;
+                killTimer();
+            }
+            
+            protected function dec_mouseUpHandler(event:MouseEvent):void
+            {
+                _delta = 0;
+                killTimer();
+            }
+            
+            private function initTimer(start:Boolean):void
+            {
+                killTimer();
+                
+                _timer = new Timer(start ? START_TIME : REPEAT_TIME);
+                _timer.addEventListener(TimerEvent.TIMER, timerHandler, false, 0, true);
+                _timer.start();
+            }
+            
+            private function killTimer():void
+            {
+                if (_timer)
+                {
+                    _timer.removeEventListener(TimerEvent.TIMER, timerHandler);
+                    _timer.stop();
+                    _timer = null;
+                }
+            }
+            
+            private function timerHandler(event:TimerEvent):void
+            {
+                if (_delta == 0)
+                    killTimer();
+                else
+                    value += _delta;
+                
+                if (Timer(event.target).delay == START_TIME)
+                    initTimer(false);
+            }
         ]]>
     </fx:Script>
 </s:HGroup>
