@@ -128,14 +128,14 @@ package mediator
         
         override public function listNotificationInterests():Array
         {
-            return [ Const.RESEARCH_COMPLETE, Const.RESEARCH_UPDATED ];
+            return [ Const.RESEARCH_COMPLETED, Const.RESEARCH_UPDATED ];
         }
         
         override public function handleNotification(notification:INotification):void
         {
             switch (notification.getName())
             {
-                case Const.RESEARCH_COMPLETE:
+                case Const.RESEARCH_COMPLETED:
                     if (researchView)
                     {
                         if (notification.getBody().toString() == researchView.researchId)

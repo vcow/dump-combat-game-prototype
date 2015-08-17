@@ -41,6 +41,9 @@ package vo
             super(NAME);
         }
         
+        /**
+         * Условие на начало исследования
+         */
         public function get researchCondition():Object
         {
             for each (var child:IVO in children)
@@ -51,6 +54,9 @@ package vo
             return {};
         }
         
+        /**
+         * Условие на видимость исследования в списке
+         */
         public function get researchVisibilityCondition():Object
         {
             for each (var child:IVO in children)
@@ -61,6 +67,9 @@ package vo
             return {};
         }
         
+        /**
+         * Условие, при котором исследование считается завершенным
+         */
         public function get researchCompleteCondition():Object
         {
             for each (var child:IVO in children)
@@ -69,6 +78,19 @@ package vo
                     return CompleteVO(child).conditionData;
             }
             return {};
+        }
+        
+        /**
+         * Результат исследования
+         */
+        public function get researchResult():ResultVO
+        {
+            for each (var item:IVO in children)
+            {
+                if (item.name == ResultVO.NAME)
+                    return item as ResultVO;
+            }
+            return null;
         }
         
         //----------------------------------

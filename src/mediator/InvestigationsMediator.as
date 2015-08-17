@@ -190,7 +190,7 @@ package mediator
         
         override public function listNotificationInterests():Array
         {
-            return [ Const.RESEARCH_UPDATED, Const.RESEARCH_STARTED, Const.RESEARCH_COMPLETE ];
+            return [ Const.RESEARCH_UPDATED, Const.RESEARCH_STARTED, Const.RESEARCH_COMPLETED ];
         }
         
         override public function handleNotification(notification:INotification):void
@@ -199,7 +199,7 @@ package mediator
             {
                 case Const.RESEARCH_UPDATED:
                 case Const.RESEARCH_STARTED:
-                case Const.RESEARCH_COMPLETE:
+                case Const.RESEARCH_COMPLETED:
                     if (investigationsView)
                         investigationsView.updateList();
                     break;

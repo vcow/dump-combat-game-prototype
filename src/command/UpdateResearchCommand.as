@@ -87,7 +87,7 @@ package command
                         throw Error("Trying to start unexisting investigation (" + data.researchId + ").");
                     
                     var conditionDecor:ConditionHelper = new ConditionHelper();
-                    if (!conditionDecor.parseCondition(research.researchDesc.researchRequirements) ||
+                    if (!conditionDecor.parseCondition(research.researchDesc.researchCondition) ||
                         conditionDecor.parseCondition(research.researchDesc.researchCompleteCondition))
                     {
                         // Исследование не может быть начато, или уже завершено

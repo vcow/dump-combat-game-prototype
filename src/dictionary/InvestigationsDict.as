@@ -87,6 +87,8 @@ package dictionary
          */
         public function getResearch(researchId:String):ResearchDescVO
         {
+            init();
+            
             for each (var research:ResearchDescVO in _investigations)
             {
                 if (research.researchId == researchId)

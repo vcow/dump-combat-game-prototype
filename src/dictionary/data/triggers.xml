@@ -10,9 +10,9 @@
 	<!-- Количество ресурсов указанного типа, количество всех ресурсов, если тип не указан -->
 	<triggerDesc id="resourcesCount" computable="true"/>
 	<!-- Исследование палки завершено -->
-	<triggerDest id="cudgelResearchComplete"/>
+	<triggerDesc id="cudgelResearchComplete"/>
 	<!-- Исследование гвоздя завершено -->
-	<triggerDest id="nailResearchComplete"/>
+	<triggerDesc id="nailResearchComplete"/>
 	<!-- Исследование палицы завершено -->
-	<triggerDest id="maceResearchComplete"/>
+	<triggerDesc id="maceResearchComplete"/>
 </triggersDict>

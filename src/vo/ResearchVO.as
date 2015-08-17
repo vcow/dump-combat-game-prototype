@@ -2,7 +2,12 @@ package vo
 {
     import command.data.GameEventCmdData;
     
+    import dictionary.Const;
     import dictionary.InvestigationsDict;
+    
+    import facade.ProtoFacade;
+    
+    import proxy.InvestigationsProxy;
 
 	/**
 	 * 
@@ -28,6 +33,8 @@ package vo
 		private var _researchId:String;
         private var _researchDesc:ResearchDescVO;
         private var _researchEvent:String;
+        
+        private var _investigationsProxy:InvestigationsProxy;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -63,6 +70,13 @@ package vo
         {
             return _researchDesc;
         }
+        
+        private function get investigationsProxy():InvestigationsProxy
+        {
+            if (!_investigationsProxy)
+                _investigationsProxy = InvestigationsProxy(ProtoFacade.getInstance().retrieveProxy(InvestigationsProxy.NAME));
+            return _investigationsProxy;
+        }
 		
 		//----------------------------------
 		//  VO
@@ -74,6 +88,28 @@ package vo
             {
                 // Событие, по которому происходит пересчет процента завершенности исследования
                 
+                if (out)
+                {
+                    if (researchDesc.researchPrice > 0)
+                    {
+                        var numEmployedScientists:Number = investigationsProxy.getEmployedScientists(researchId).children.length;
+                        var delta:Number = numEmployedScientists / Number(researchDesc.researchPrice);
+                        researchPercent += delta;
+                    }
+                    else
+                    {
+                        researchPercent = 1.0;
+                    }
+                    
+                    if (researchPercent >= 1.0)
+                    {
+                        // Исследование завершено
+                        var outData:Array = out.commonOut[Const.COMPLETE_RESEARCH] as Array;
+                        if (!outData)
+                            out.commonOut[Const.COMPLETE_RESEARCH] = outData = [];
+                        outData.push(researchId);
+                    }
+                }
             }
             else
             {
