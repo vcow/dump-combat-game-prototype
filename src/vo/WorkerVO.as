@@ -2,10 +2,6 @@ package vo
 {
     import dictionary.Const;
     
-    import facade.ProtoFacade;
-    
-    import proxy.PersonsProxy;
-
 	/**
 	 * 
 	 * @author jvirkovskiy
@@ -25,8 +21,7 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-		private var _workerPersonId:String;
-        private var _workerPerson:PersonVO;
+		public var workerPersonId:String;           // Идентификатор персонажа
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -37,31 +32,6 @@ package vo
 			super(NAME);
 		}
         
-        /**
-         * Идентификатор персонажа
-         */
-        public function set workerPersonId(value:String):void
-        {
-            if (value == _workerPersonId)
-                return;
-            
-            _workerPersonId = value;
-            _workerPerson = PersonsProxy(ProtoFacade.getInstance().retrieveProxy(PersonsProxy.NAME)).getPersonById(_workerPersonId);
-        }
-        
-        public function get workerPersonId():String
-        {
-            return _workerPersonId;
-        }
-        
-        /**
-         * Описание персонажа
-         */
-        public function get workerPerson():PersonVO
-        {
-            return _workerPerson;
-        }
-		
 		//----------------------------------
 		//  VO
 		//----------------------------------

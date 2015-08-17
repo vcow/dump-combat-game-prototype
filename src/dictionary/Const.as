@@ -49,5 +49,8 @@ package dictionary
         public static const REMOVE_MODULE:String = "removeModule";                          //< Удалить модуль
         public static const TRIGGER_CHANGED:String = "triggerCchanged";                     //< Изменилось значение триггера
         public static const UPDATE_RESEARCH:String = "updateResearch";                      //< Изменить параметры активного исследования
+        public static const RESEARCH_UPDATED:String = "researchUpdated";                    //< Изменились параметры исследования
+        public static const RESEARCH_STARTED:String = "researchStarted";                    //< Исследование начато
+        public static const RESEARCH_COMPLETE:String = "researchComplete";                  //< Исследование завершено
 	}
 }

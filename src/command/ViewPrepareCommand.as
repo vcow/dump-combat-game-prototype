@@ -6,6 +6,7 @@ package command
 	import mediator.InvestigationsMediator;
 	import mediator.LogMediator;
 	import mediator.ProfListMediator;
+	import mediator.ResearchMediator;
 	import mediator.SimpleResourcesMediator;
 	
 	import org.puremvc.as3.interfaces.INotification;
@@ -43,6 +44,7 @@ package command
             this.facade.registerMediator(new LogMediator());
             this.facade.registerMediator(new BaseMediator());
             this.facade.registerMediator(new InvestigationsMediator());
+            this.facade.registerMediator(new ResearchMediator());
 		}
 	}
 }

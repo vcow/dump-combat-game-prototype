@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- UI исследования -->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:modal="views.modal.*"
+        xmlns:ui="views.ui.*"
+        title="{researchTitle}"
+        title.complete="{completeResearchTitle}"
+        creationComplete="creationCompleteHandler(event)"
+        currentState="unexplored">
+	<s:layout>
+		<s:VerticalLayout gap="2" paddingLeft="5" paddingRight="5"/>
+	</s:layout>
+    
+    <s:states>
+        <s:State name="unexplored"/>
+        <s:State name="complete"/>
+    </s:states>
+    
+	<s:navigationContent>
+		<s:Button label="&lt;" click="{navigator.popView();}"/>
+	</s:navigationContent>
+    
+    <s:VGroup gap="3" horizontalAlign="center" paddingTop="10" paddingBottom="5" includeIn="unexplored">
+        
+        <s:Label text="{resourceManager.getString('common', 'research.begin.popup.scientists.free', [ scientistsLeave ])}" fontWeight="bold"/>
+        
+        <s:HGroup verticalAlign="middle">
+            
+            <s:Label text="@Resource(key='research.begin.popup.scientists.count1', bundle='common')"/>
+            
+            <ui:NumericStepper id="scientistsCtr" min="0" max="{freeScientists}" value="{employeedScientists}"/>
+        </s:HGroup>
+    </s:VGroup>
+    
+    <s:TextArea id="descriptionTextArea" width="250" fontSize="14" editable="false" selectable="false" borderVisible="false"
+                verticalScrollPolicy="off" horizontalScrollPolicy="off" includeIn="complete"
+                creationComplete="descriptionTextArea_creationCompleteHandler(event)"/>
+    
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Metadata>
+		[ResourceBundle("common")]
+        [Event(name="changeResearchScientistsCount", type="events.ResearchEvent")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+            import mx.events.FlexEvent;
+            
+            import spark.components.supportClasses.StyleableTextField;
+            
+            import dictionary.InvestigationsDict;
+            
+            import events.ResearchEvent;
+            
+            import facade.ProtoFacade;
+            
+            import mediator.ResearchMediator;
+            
+            import vo.ResearchDescVO;
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+            private var _researchMediator:ResearchMediator;
+            private var _freeScientists:int;
+            private var _description:String;
+            
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+            [Bindable]
+            private var researchTitle:String;
+            
+            [Bindable]
+            private var completeResearchTitle:String;
+            
+            [Bindable]
+            private var scientistsLeave:int;
+            
+            [Bindable]
+            private var employeedScientists:int;
+            
+            [Bindable (event="freeScientistsChanged")]
+            public function get freeScientists():int
+            {
+                return _freeScientists;
+            }
+            
+            public function set freeScientists(value:int):void
+            {
+                if (value == _freeScientists)
+                    return;
+                
+                _freeScientists = value;
+                scientistsLeave = _freeScientists - (initialized ? scientistsCtr.value : employeedScientists);
+                
+                dispatchEvent(new Event("freeScientistsChanged"));
+            }
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            public function get researchId():String
+            {
+                return data.toString();
+            }
+            
+            protected function creationCompleteHandler(event:FlexEvent):void
+            {
+                _researchMediator = ResearchMediator(ProtoFacade.getInstance().retrieveMediator(ResearchMediator.NAME));
+                _researchMediator.setViewComponent(this);
+                
+                updateResearch();
+                
+                scientistsCtr.addEventListener(Event.CHANGE, scientistsCtr_changeHandler, false, 0, true);
+            }
+            
+            private function updateResearch():void
+            {
+                if (_researchMediator)
+                {
+                    employeedScientists = _researchMediator.getEmployedScientists(researchId);
+                    freeScientists = _researchMediator.getFreeScientists();
+                }
+            }
+            
+            protected function set description(value:String):void
+            {
+                if (value == _description)
+                    return;
+                
+                _description = value;
+                
+                if (descriptionTextArea)
+                    updateDescription();
+            }
+            
+            protected function descriptionTextArea_creationCompleteHandler(event:FlexEvent):void
+            {
+                updateDescription();
+            }
+            
+            private function updateDescription():void
+            {
+                var textDisplay:StyleableTextField = StyleableTextField(descriptionTextArea.textDisplay);
+                textDisplay.htmlText = _description;
+                
+                var numLines:int = textDisplay.numLines;
+                var h:Number = descriptionTextArea.getStyle("paddingTop") + descriptionTextArea.getStyle("paddingBottom");
+                for (var i:int = 0; i < numLines; i++)
+                    h += textDisplay.getLineMetrics(i).height;
+                descriptionTextArea.height = h;
+            }
+            
+            //----------------------------------
+            //  View
+            //----------------------------------
+			
+            override public function set data(value:Object):void
+            {
+                super.data = value;
+                
+                var researchDesc:ResearchDescVO = InvestigationsDict.getInstance().getResearch(researchId);
+                if (researchDesc)
+                {
+                    researchTitle = researchDesc.researchTitle;
+                    completeResearchTitle = researchDesc.researchResultTitle;
+                    description = researchDesc.researchResultDescription;
+                }
+                
+                if (initialized)
+                    updateResearch();
+            }
+            
+            protected function scientistsCtr_changeHandler(event:Event):void
+            {
+                scientistsLeave = freeScientists - scientistsCtr.value;
+                dispatchEvent(new ResearchEvent(ResearchEvent.CHANGE_RESEARCH_SCIENTISTS_COUNT, researchId, scientistsCtr.value));
+            }
+            
+        ]]>
+	</fx:Script>
+</s:View>

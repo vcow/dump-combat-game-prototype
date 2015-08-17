@@ -31,7 +31,40 @@
 	
 	<s:List id="researchView" verticalScrollPolicy="on" horizontalScrollPolicy="off"
 			width="100%" height="100%" change="researchView_changeHandler(event)"
-            dataProvider="{_researchList}"/>
+            dataProvider="{_researchList}">
+        <s:itemRenderer>
+            <fx:Component>
+                <s:LabelItemRenderer>
+                    <fx:Script>
+                        <![CDATA[
+                            import facade.ProtoFacade;
+                            
+                            import proxy.InvestigationsProxy;
+                            
+                            override public function set data(value:Object):void
+                            {
+                                super.data = value;
+                                if (data)
+                                {
+                                    if (data.complete)
+                                    {
+                                        setStyle("alternatingItemColors", 0xffffff);
+                                        setStyle("color", 0x000000);
+                                    }
+                                    else
+                                    {
+                                        var numScientists:int = InvestigationsProxy(ProtoFacade.getInstance().retrieveProxy(InvestigationsProxy.NAME)).getEmployedScientists(data.id).children.length;
+                                        setStyle("alternatingItemColors", numScientists > 0 ? 0xa3d39c : 0xff7777);
+                                        setStyle("color", numScientists > 0 ? 0x005e20 : 0x6b0000);
+                                    }
+                                }
+                            }
+                        ]]>
+                    </fx:Script>
+                </s:LabelItemRenderer>
+            </fx:Component>
+        </s:itemRenderer>
+    </s:List>
 	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="categoryRadioGroup" change="categoryRadioGroup_changeHandler(event)"/>
@@ -39,9 +72,7 @@
 	
 	<fx:Metadata>
 		[ResourceBundle("common")]
-        
         [Event(name="beginResearch", type="events.ResearchEvent")]
-        [Event(name="changeResearchScientistsCount", type="events.ResearchEvent")]
 	</fx:Metadata>
 	
 	<fx:Script>
@@ -67,6 +98,7 @@
             
             import views.modal.AlertPopUp;
             import views.modal.BeginResearchPopUp;
+            import views.ui.ResearchView;
             
             import vo.ModuleDescVO;
 			
@@ -87,14 +119,36 @@
 			// 
 			//--------------------------------------------------------------------------
             
+            public function updateList():void
+            {
+                if (initialized)
+                {
+                    switch (categoryRadioGroup.selectedValue)
+                    {
+                        case 0:
+                            _researchList = _investigationsMediator.getAllResearch();
+                            break;
+                        case 1:
+                            _researchList = _investigationsMediator.getCompletedResearch();
+                            break;
+                        case 2:
+                            _researchList = _investigationsMediator.getUnfinishedResearch();
+                            break;
+                    }
+                }
+            }
+            
             protected function creationCompleteHandler(event:FlexEvent):void
             {
                 _investigationsMediator = InvestigationsMediator(ProtoFacade.getInstance().retrieveMediator(InvestigationsMediator.NAME));
                 _investigationsMediator.setViewComponent(this);
+                
+                updateList();
             }
 			
 			protected function categoryRadioGroup_changeHandler(event:Event):void
 			{
+                updateList();
 			}
 			
             protected function beginResearch_clickHandler(event:MouseEvent):void
@@ -141,6 +195,9 @@
             
             protected function researchView_changeHandler(event:IndexChangeEvent):void
             {
+                var research:Object = _researchList.getItemAt(event.newIndex);
+                if (research && research.hasOwnProperty("id"))
+                    navigator.pushView(ResearchView, research.id);
             }
             
             protected function beginResearchPopUp_closeHandler(event:PopUpEvent):void

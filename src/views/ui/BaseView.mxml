@@ -242,7 +242,7 @@
             }
             
             //----------------------------------
-            //  Mediator
+            //  View
             //----------------------------------
 			
             override public function set data(value:Object):void

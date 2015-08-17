@@ -58,9 +58,9 @@ package dictionary
             for each (var research:ResearchDescVO in _investigations)
             {
                 var researchIsComplete:Boolean = conditionDecor.parseCondition(research.researchCompleteCondition);
-                if (researchIsComplete)
+                if (complete)
                 {
-                    if (complete)
+                    if (researchIsComplete)
                         res.push(research);
                     continue;
                 }

@@ -2,6 +2,7 @@ package command
 {
     import command.data.UpdateResearchCmdData;
     
+    import helpers.ConditionHelper;
     import helpers.InvestigationsHelper;
     import helpers.ModulesHelper;
     
@@ -47,7 +48,27 @@ package command
                 if (research)
                 {
                     // Модифицируется существующее исследование
-                    
+                    if (research.children.length > data.numScientists)
+                    {
+                        // Ученые снимаются с исследования
+                        var numScientists:int = data.numScientists < 0 ? 0 : data.numScientists;
+                        research.children.splice(0, research.children.length - numScientists);
+                    }
+                    else if (research.children.length < data.numScientists)
+                    {
+                        // Ученые назначаются на исследование
+                        var freeScientists:Vector.<PersonVO> = (new InvestigationsHelper(investigationsProxy)).getFreeScientists();
+                        var freeLabSpace:int = (new ModulesHelper()).getSpace(ModuleDescVO.LAB);
+                        numScientists = Math.min(freeScientists.length, freeLabSpace, data.numScientists - research.children.length);
+                        
+                        for (var i:int = 0; i < numScientists; i++)
+                        {
+                            var worker:WorkerVO = new WorkerVO();
+                            worker.workerPersonId = freeScientists[i].personId;
+                            
+                            research.children.push(worker);
+                        }
+                    }
                 }
                 else
                 {
@@ -59,15 +80,23 @@ package command
                     if (!research.researchDesc)
                         throw Error("Trying to start unexisting investigation (" + data.researchId + ").");
                     
+                    var conditionDecor:ConditionHelper = new ConditionHelper();
+                    if (!conditionDecor.parseCondition(research.researchDesc.researchRequirements) ||
+                        conditionDecor.parseCondition(research.researchDesc.researchCompleteCondition))
+                    {
+                        // Исследование не может быть начато, или уже завершено
+                        return;
+                    }
+                    
                     investigationsProxy.investigationsVO.children.push(research);
                     
-                    var freeScientists:Vector.<PersonVO> = (new InvestigationsHelper(investigationsProxy)).getFreeScientists();
-                    var freeLabSpace:int = (new ModulesHelper()).getSpace(ModuleDescVO.LAB);
-                    var numScientists:int = Math.min(freeScientists.length, freeLabSpace, data.numScientists);
+                    freeScientists = (new InvestigationsHelper(investigationsProxy)).getFreeScientists();
+                    freeLabSpace = (new ModulesHelper()).getSpace(ModuleDescVO.LAB);
+                    numScientists = Math.min(freeScientists.length, freeLabSpace, data.numScientists);
                     
-                    for (var i:int = 0; i < numScientists; i++)
+                    for (i = 0; i < numScientists; i++)
                     {
-                        var worker:WorkerVO = new WorkerVO();
+                        worker = new WorkerVO();
                         worker.workerPersonId = freeScientists[i].personId;
                         
                         research.children.push(worker);

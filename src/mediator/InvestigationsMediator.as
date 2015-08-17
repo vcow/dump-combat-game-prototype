@@ -16,7 +16,7 @@ package mediator
     
     import proxy.InvestigationsProxy;
     
-    import views.InvestigationsView;
+    import views.protoInvestigationsView;
     
     import vo.ResearchDescVO;
     import vo.ResearchVO;
@@ -110,6 +110,9 @@ package mediator
             
             for each (var researchDesc:ResearchDescVO in investigations)
             {
+                if (investigationsProxy.getResearch(researchDesc.researchId))
+                    continue;
+                
                 res.push({
                     id: researchDesc.researchId,
                     label: researchDesc.researchTitle,
@@ -123,9 +126,9 @@ package mediator
             return new ArrayCollection(res);
         }
         
-        protected function get investigationsView():InvestigationsView
+        protected function get investigationsView():protoInvestigationsView
         {
-            return viewComponent as InvestigationsView;
+            return viewComponent as protoInvestigationsView;
         }
         
         protected function get investigationsProxy():InvestigationsProxy
@@ -187,14 +190,19 @@ package mediator
         
         override public function listNotificationInterests():Array
         {
-            return [  ];
+            return [ Const.RESEARCH_UPDATED, Const.RESEARCH_STARTED, Const.RESEARCH_COMPLETE ];
         }
         
         override public function handleNotification(notification:INotification):void
         {
             switch (notification.getName())
             {
-                
+                case Const.RESEARCH_UPDATED:
+                case Const.RESEARCH_STARTED:
+                case Const.RESEARCH_COMPLETE:
+                    if (investigationsView)
+                        investigationsView.updateList();
+                    break;
             }
         }
     }

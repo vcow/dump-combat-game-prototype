@@ -255,6 +255,7 @@ package vo
                     case InvestigationsVO.NAME: value = new InvestigationsVO(); break;
                     case TriggerVO.NAME: value = new TriggerVO(); break;
                     case WorkerVO.NAME: value = new WorkerVO(); break;
+                    case ResearchVO.NAME: value = new ResearchVO(); break;
 					
 					// /TODO
 					

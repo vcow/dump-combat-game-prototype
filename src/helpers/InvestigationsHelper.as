@@ -41,7 +41,7 @@ package helpers
         {
             var personnel:PersonnelVO = _investigationsProxy.getEmployedScientists();
             var scientists:Vector.<PersonVO> = (new PersonnelHelper()).getEmployees(ProfessionDescVO.SCIENTIST);
-            for each (var employee:EmployeeVO in personnel.children.length)
+            for each (var employee:EmployeeVO in personnel.children)
             {
                 for (var i:int = 0; i < scientists.length; i++)
                 {
