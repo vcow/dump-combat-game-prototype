@@ -2,6 +2,8 @@ package command
 {
     import command.data.UpdateResearchCmdData;
     
+    import dictionary.Const;
+    
     import helpers.ConditionHelper;
     import helpers.InvestigationsHelper;
     import helpers.ModulesHelper;
@@ -53,6 +55,8 @@ package command
                         // Ученые снимаются с исследования
                         var numScientists:int = data.numScientists < 0 ? 0 : data.numScientists;
                         research.children.splice(0, research.children.length - numScientists);
+                        
+                        sendNotification(Const.RESEARCH_UPDATED, research.researchId);
                     }
                     else if (research.children.length < data.numScientists)
                     {
@@ -68,6 +72,8 @@ package command
                             
                             research.children.push(worker);
                         }
+                        
+                        sendNotification(Const.RESEARCH_UPDATED, research.researchId);
                     }
                 }
                 else
@@ -101,6 +107,8 @@ package command
                         
                         research.children.push(worker);
                     }
+                    
+                    sendNotification(Const.RESEARCH_STARTED, research.researchId);
                 }
             }
         }

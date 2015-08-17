@@ -128,7 +128,7 @@ package mediator
         
         override public function listNotificationInterests():Array
         {
-            return [ Const.RESEARCH_COMPLETE ];
+            return [ Const.RESEARCH_COMPLETE, Const.RESEARCH_UPDATED ];
         }
         
         override public function handleNotification(notification:INotification):void
@@ -138,11 +138,20 @@ package mediator
                 case Const.RESEARCH_COMPLETE:
                     if (researchView)
                     {
-                        var researchId:String = notification.getBody().toString();
-                        if (researchId == researchView.researchId)
+                        if (notification.getBody().toString() == researchView.researchId)
                             researchView.currentState = "complete";
                         else
                             researchView.freeScientists = getFreeScientists();
+                    }
+                    break;
+                case Const.RESEARCH_UPDATED:
+                    if (researchView)
+                    {
+                        if (notification.getBody().toString() == researchView.researchId)
+                        {
+                            researchView.freeScientists = getFreeScientists();
+                            researchView.employeedScientists = getEmployedScientists(researchView.researchId);
+                        }
                     }
                     break;
             }

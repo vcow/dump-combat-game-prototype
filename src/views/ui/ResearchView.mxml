@@ -25,13 +25,13 @@
     
     <s:VGroup gap="3" horizontalAlign="center" paddingTop="10" paddingBottom="5" includeIn="unexplored">
         
-        <s:Label text="{resourceManager.getString('common', 'research.begin.popup.scientists.free', [ scientistsLeave ])}" fontWeight="bold"/>
+        <s:Label text="{resourceManager.getString('common', 'research.begin.popup.scientists.free', [ freeScientists ])}" fontWeight="bold"/>
         
         <s:HGroup verticalAlign="middle">
             
             <s:Label text="@Resource(key='research.begin.popup.scientists.count1', bundle='common')"/>
             
-            <ui:NumericStepper id="scientistsCtr" min="0" max="{freeScientists}" value="{employeedScientists}"/>
+            <ui:NumericStepper id="scientistsCtr" min="0" max="{freeScientists + employeedScientists}" value="{employeedScientists}"/>
         </s:HGroup>
     </s:VGroup>
     
@@ -82,27 +82,10 @@
             private var completeResearchTitle:String;
             
             [Bindable]
-            private var scientistsLeave:int;
+            public var employeedScientists:int;
             
             [Bindable]
-            private var employeedScientists:int;
-            
-            [Bindable (event="freeScientistsChanged")]
-            public function get freeScientists():int
-            {
-                return _freeScientists;
-            }
-            
-            public function set freeScientists(value:int):void
-            {
-                if (value == _freeScientists)
-                    return;
-                
-                _freeScientists = value;
-                scientistsLeave = _freeScientists - (initialized ? scientistsCtr.value : employeedScientists);
-                
-                dispatchEvent(new Event("freeScientistsChanged"));
-            }
+            public var freeScientists:int
             
             //--------------------------------------------------------------------------
             // 
@@ -182,7 +165,6 @@
             
             protected function scientistsCtr_changeHandler(event:Event):void
             {
-                scientistsLeave = freeScientists - scientistsCtr.value;
                 dispatchEvent(new ResearchEvent(ResearchEvent.CHANGE_RESEARCH_SCIENTISTS_COUNT, researchId, scientistsCtr.value));
             }
             
