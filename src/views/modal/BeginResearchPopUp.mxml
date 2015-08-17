@@ -32,7 +32,7 @@
                 <s:Label text="@Resource(key='research.begin.popup.research', bundle='common')"/>
                 
                 <dropDownList:DropDownList id="researchSelector" width="100%" dataProvider="{investigationsList}"
-                                           change="{scientistsCtr.value = 0; scientistsLeave = freeScientists;}">
+                                           change="researchSelector_changeHandler(event)">
                     <dropDownList:itemRenderer>
                         <fx:Component>
                             <s:LabelItemRenderer>
@@ -41,7 +41,7 @@
                                         override public function set data(value:Object):void
                                         {
                                             super.data = value;
-                                            setStyle("color", data && data.available ? 0x000000 : 0xacacac);
+                                            setStyle("color", data && data.available ? 0x000000 : 0x6b0000);
                                         }
                                     ]]>
                                 </fx:Script>
@@ -60,11 +60,12 @@
                             verticalScrollPolicy="off" horizontalScrollPolicy="off" minHeight="20"/>
             </s:BorderContainer>
             
-            <s:VGroup gap="3" horizontalAlign="center" paddingTop="10" paddingBottom="5">
+            <s:VGroup gap="3" horizontalAlign="center" paddingTop="10" paddingBottom="5"
+                      enabled="{researchSelector.selectedItem &amp;&amp; researchSelector.selectedItem.available}">
                 
                 <s:Label text="{resourceManager.getString('common', 'research.begin.popup.scientists.free', [ scientistsLeave ])}" fontWeight="bold"/>
                 
-                <s:HGroup verticalAlign="middle" enabled="{researchSelector.selectedItem &amp;&amp; researchSelector.selectedItem.available}">
+                <s:HGroup verticalAlign="middle">
                     
                     <s:Label text="@Resource(key='research.begin.popup.scientists.count', bundle='common')"/>
                     
@@ -97,6 +98,7 @@
             import mx.events.FlexEvent;
             
             import spark.components.supportClasses.StyleableTextField;
+            import spark.events.IndexChangeEvent;
             
             import dictionary.Const;
             
@@ -174,6 +176,8 @@
                 
                 if (data)
                 {
+                    researchSelector.setStyle("color", data.available ? 0x000000 : 0x6b0000);
+                    
                     var textDisplay:StyleableTextField = StyleableTextField(requirementsTextArea.textDisplay);
                     textDisplay.htmlText = data.available ? data.requirements : '<font color="#c70000">' + data.requirements + '</font>';
                     
@@ -185,9 +189,18 @@
                 }
                 else
                 {
+                    researchSelector.setStyle("color", 0x000000);
+                    
                     requirementsTextArea.text = "";
                     requirementsTextArea.height = requirementsTextArea.minHeight;
                 }
+            }
+            
+            protected function researchSelector_changeHandler(event:IndexChangeEvent):void
+            {
+                researchSelector.setStyle("color", researchSelector.selectedItem && researchSelector.selectedItem.available ? 0x000000 : 0x6b0000);
+                scientistsCtr.value = 0;
+                scientistsLeave = freeScientists;
             }
             
         ]]>

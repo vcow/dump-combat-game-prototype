@@ -65,6 +65,9 @@ package dictionary
                     continue;
                 }
                 
+                if (researchIsComplete)
+                    continue;
+                
                 var researchIsAvailable:Boolean = conditionDecor.parseCondition(research.researchCondition);
                 if (availableOnly && !researchIsAvailable)
                     continue;
@@ -73,7 +76,7 @@ package dictionary
                 if (visibleOnly && !researchIsVisible)
                     continue;
                 
-                if (researchIsAvailable && researchIsVisible)
+                if (researchIsAvailable || researchIsVisible)
                     res.push(research);
             }
             
