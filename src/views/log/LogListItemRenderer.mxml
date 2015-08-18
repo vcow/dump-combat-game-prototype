@@ -7,8 +7,7 @@
                 creationComplete="{updateText();}">
     
     <s:TextArea id="textArea" width="{calcWidth}" fontSize="12" editable="false"
-                selectable="false" borderVisible="false" paddingLeft="5" paddingRight="5"
-                paddingBottom="7" verticalScrollPolicy="off" horizontalScrollPolicy="off"/>
+                selectable="false" paddingLeft="5" paddingRight="5" paddingBottom="7"/>
     
     <fx:Declarations>
     </fx:Declarations>

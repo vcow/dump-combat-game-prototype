@@ -24,6 +24,9 @@
 		s|TextArea {
 			skinClass:ClassReference("spark.skins.mobile.TextAreaSkin");
 			contentBackgroundAlpha:0;
+            borderVisible:false;
+            verticalScrollPolicy:off;
+            horizontalScrollPolicy:off;
 		}
 		
 		.tabBarStyle s|RadioButton {

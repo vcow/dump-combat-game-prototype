@@ -13,8 +13,7 @@
 			<s:VerticalLayout paddingLeft="15" paddingRight="15" paddingTop="15" paddingBottom="15" gap="15" horizontalAlign="center"/>
 		</s:layout>
 		
-		<s:TextArea id="textArea" width="250" fontSize="14" editable="false" selectable="false" borderVisible="false"
-                    verticalScrollPolicy="off" horizontalScrollPolicy="off"/>
+		<s:TextArea id="textArea" width="250" fontSize="14" editable="false" selectable="false"/>
 
         <s:HGroup id="buttonsContainer" horizontalAlign="center" width="100%" gap="2"/>
 	</s:BorderContainer>
