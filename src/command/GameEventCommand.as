@@ -9,9 +9,11 @@ package command
     
     import proxy.BasesListProxy;
     import proxy.InvestigationsProxy;
+    import proxy.ProductionsProxy;
     
     import vo.BaseVO;
     import vo.InvestigationsVO;
+    import vo.ProductionsVO;
     
     /**
      * 
@@ -68,6 +70,10 @@ package command
             // Прокинуть евент по всем исследованиям
             var investigations:InvestigationsVO = InvestigationsProxy(this.facade.retrieveProxy(InvestigationsProxy.NAME)).investigationsVO;
             investigations.event(notification.getType(), notification.getBody(), out);
+            
+            // Прокинуть евент по производствам
+            var productions:ProductionsVO = ProductionsProxy(this.facade.retrieveProxy(ProductionsProxy.NAME)).productionsVO;
+            productions.event(notification.getType(), notification.getBody(), out);
 			
 			for (key in out.commonOut)
 			{

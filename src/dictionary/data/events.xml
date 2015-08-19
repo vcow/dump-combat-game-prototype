@@ -51,6 +51,8 @@
 	<eventDesc id="payDay" interval="10m"/>
 	<!-- Шаг исследования -->
 	<eventDesc id="research" interval="3s"/>
+	<!-- Шаг производства -->
+	<eventDesc id="product" interval="3s"/>
 	<!-- Завершено строительство модуля -->
 	<eventDesc id="constructionCompleted"/>
 </eventsDict>

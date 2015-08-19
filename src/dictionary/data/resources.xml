@@ -29,4 +29,6 @@
 			</if>
 		</complete>
 	</resourceDesc>
+	<!-- Булава -->
+	<resourceDesc id="mace" name="{mace.title}" description="{mace.description}" size="2" price="0.1"/>
 </resourcesDict>

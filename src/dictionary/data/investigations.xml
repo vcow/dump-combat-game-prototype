@@ -10,7 +10,7 @@
 			исследования и уничтожению лаборатории
 		event={строковое значение} - идентификатор события, по которому пересчитывается процент завершенности исследования
 		requirements={строковое значение} - описание требований для начала исследования
-		Содержит условия, при которых возможно начать исследование и результат завершения исследования. --> 
+		Содержит условия, при которых возможно начать исследование, условия видимости исследования в списке и результат завершения исследования. --> 
 	<researchDesc id="cudgelResearch" title="{cudgel.research.title}" resultTitle="{cudgel.result.title}" resultDescription="{cudgel.result.description}" price="50" danger="0" event="research" requirements="{cudgel.research.requirements}">
 		<condition>
 			<if>

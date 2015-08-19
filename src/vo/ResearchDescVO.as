@@ -46,10 +46,10 @@ package vo
          */
         public function get researchCondition():Object
         {
-            for each (var child:IVO in children)
+            for each (var item:IVO in children)
             {
-                if (child.name == ConditionVO.NAME)
-                    return ConditionVO(child).conditionData;
+                if (item.name == ConditionVO.NAME)
+                    return ConditionVO(item).conditionData;
             }
             return {};
         }
@@ -59,10 +59,10 @@ package vo
          */
         public function get researchVisibilityCondition():Object
         {
-            for each (var child:IVO in children)
+            for each (var item:IVO in children)
             {
-                if (child.name == VisibilityVO.NAME)
-                    return VisibilityVO(child).conditionData;
+                if (item.name == VisibilityVO.NAME)
+                    return VisibilityVO(item).conditionData;
             }
             return {};
         }
@@ -72,10 +72,10 @@ package vo
          */
         public function get researchCompleteCondition():Object
         {
-            for each (var child:IVO in children)
+            for each (var item:IVO in children)
             {
-                if (child.name == CompleteVO.NAME)
-                    return CompleteVO(child).conditionData;
+                if (item.name == CompleteVO.NAME)
+                    return CompleteVO(item).conditionData;
             }
             return {};
         }

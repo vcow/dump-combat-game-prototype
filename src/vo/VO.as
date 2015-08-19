@@ -256,6 +256,8 @@ package vo
                     case TriggerVO.NAME: value = new TriggerVO(); break;
                     case WorkerVO.NAME: value = new WorkerVO(); break;
                     case ResearchVO.NAME: value = new ResearchVO(); break;
+                    case ProductionsVO.NAME: value = new ProductionsVO(); break;
+                    case ProductionVO.NAME:value = new ProductionVO(); break;
 					
 					// /TODO
 					

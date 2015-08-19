@@ -6,72 +6,72 @@ package proxy
     
     import vo.BaseVO;
     import vo.EmployeeVO;
-    import vo.InvestigationsVO;
+    import vo.ProductionsVO;
     import vo.PersonnelVO;
-    import vo.ResearchVO;
+    import vo.ProductionVO;
     import vo.WorkerVO;
     
     /**
      * 
      * @author y.vircowskiy
-     * Прокси активных исследований
+     * Прокси активных производств
      * 
      */
     
-    public class InvestigationsProxy extends Proxy
+    public class ProductionsProxy extends Proxy
     {
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public static const NAME:String = "investigationsProxy";
+        public static const NAME:String = "productionsProxy";
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public function InvestigationsProxy(data:InvestigationsVO=null)
+        public function ProductionsProxy(data:ProductionsVO=null)
         {
             super(NAME, data);
         }
         
-        public function get investigationsVO():InvestigationsVO
+        public function get productionsVO():ProductionsVO
         {
-            return getData() as InvestigationsVO;
+            return getData() as ProductionsVO;
         }
         
         /**
-         * Получить активное исследование по его идентификатору
-         * @param researchId идентификатор исследования
-         * @return активное исследование
+         * Получить активное производство по его идентификатору
+         * @param productionId идентификатор производства
+         * @return активное производство
          */
-        public function getResearch(researchId:String):ResearchVO
+        public function getProduction(productionId:String):ProductionVO
         {
-            for each (var research:ResearchVO in investigationsVO.children)
+            for each (var production:ProductionVO in productionsVO.children)
             {
-                if (research.researchId == researchId)
-                    return research;
+                if (production.productionId == productionId)
+                    return production;
             }
             return null;
         }
         
         /**
-         * Получить сотрудников из указанной базы, задействованных в указаном исследовании
-         * @param researchId идентификатор исследования, если null, возвращается для всех исследований
+         * Получить сотрудников из указанной базы, задействованных в указаном производстве
+         * @param productionId идентификатор производства, если null, возвращается для всех производств
          * @param baseId идентификатор базы, если null, возвращается для всех баз
          * @return список сотрудников в виде персонала базы
          */
-        public function getEmployedScientists(researchId:String=null, baseId:String=null):PersonnelVO
+        public function getEmployedEngineers(productionId:String=null, baseId:String=null):PersonnelVO
         {
             var personnel:PersonnelVO = new PersonnelVO;
             var personnelDecor:PersonnelHelper = new PersonnelHelper();
             
-            for each (var research:ResearchVO in investigationsVO.children)
+            for each (var production:ProductionVO in productionsVO.children)
             {
-                if (researchId && research.researchId != researchId)
+                if (productionId && production.productionId != productionId)
                     continue;
                 
-                for each (var worker:WorkerVO in research.children)
+                for each (var worker:WorkerVO in production.children)
                 {
                     var base:BaseVO = personnelDecor.getEmployeePlace(worker.workerPersonId);
                     if (baseId && base.baseId != baseId)
@@ -100,14 +100,14 @@ package proxy
             if (!data)
             {
                 var appDataProxy:AppDataProxy = AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME));
-                var value:InvestigationsVO = appDataProxy.getChildByName(InvestigationsVO.NAME) as InvestigationsVO;
+                var value:ProductionsVO = appDataProxy.getChildByName(ProductionsVO.NAME) as ProductionsVO;
                 
                 if (!value)
-                    value = new InvestigationsVO();
+                    value = new ProductionsVO();
                 
                 setData(value);
                 
-                appDataProxy.updateChild(investigationsVO);
+                appDataProxy.updateChild(productionsVO);
             }
             
             return data;
