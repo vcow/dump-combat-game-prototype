@@ -36,9 +36,7 @@
             dataProvider="{_employeeList}"/>
 	
 	<fx:Declarations>
-        <modal:HireEmployePopUp id="hireEmployePopUp" close="hireEmployePopUp_closeHandler(event)"/>
         <modal:PlaceEmployeePopUp id="placeEmployeePopUp" close="placeEmployeePopUp_closeHandler(event)"/>
-		
 		<s:RadioButtonGroup id="categoryRadioGroup" change="categoryRadioGroup_changeHandler(event)"/>
 	</fx:Declarations>
 	
@@ -68,6 +66,7 @@
             import mediator.ProfListMediator;
             
             import views.modal.AlertPopUp;
+            import views.modal.HireEmployePopUp;
             
             import vo.ProfessionDescVO;
 			
@@ -75,7 +74,9 @@
 			// 
 			//--------------------------------------------------------------------------
 			
-            public var hireNewEmployeeAvailable:Boolean = false;
+            public var hireNewEmployeeAvailable:Boolean;
+            public var professionsList:ArrayCollection;
+            public var defaultProfession:String;
             
 			//--------------------------------------------------------------------------
 			// 
@@ -116,6 +117,12 @@
 			{
                 if (hireNewEmployeeAvailable)
                 {
+                    var hireEmployePopUp:HireEmployePopUp = new HireEmployePopUp();
+                    hireEmployePopUp.addEventListener(PopUpEvent.CLOSE, hireEmployePopUp_closeHandler);
+                    
+                    hireEmployePopUp.professionsList = professionsList;
+                    hireEmployePopUp.defaultProfession = defaultProfession;
+                    
                     hireEmployePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
                     PopUpManager.centerPopUp(hireEmployePopUp);
                 }
@@ -145,6 +152,8 @@
 			
             private function hireEmployePopUp_closeHandler(event:PopUpEvent):void
             {
+                var hireEmployePopUp:HireEmployePopUp = HireEmployePopUp(event.target);
+                
                 if (event.data == Const.OK)
                 {
                     var name:String = StringUtil.trim(hireEmployePopUp.employeeNameInput.text);

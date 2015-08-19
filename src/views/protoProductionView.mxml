@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- UI производства -->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:modal="views.modal.*"
+		title="@Resource(key='production.title', bundle='common')"
+		creationComplete="creationCompleteHandler(event)">
+	<s:layout>
+		<s:VerticalLayout gap="0"/>
+	</s:layout>
+	
+	<s:navigationContent>
+		<s:Button label="&lt;" click="{navigator.popView();}"/>
+	</s:navigationContent>
+	
+	<s:actionContent>
+		<s:Button label="+" click="startNewProd_clickHandler(event)"/>
+	</s:actionContent>
+	
+	<s:List id="prodListView" verticalScrollPolicy="on" horizontalScrollPolicy="off"
+			width="100%" height="100%" change="prodListView_changeHandler(event)"
+			dataProvider="{productionsList}" labelField="baseName"/>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Metadata>
+		[ResourceBundle("common")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+            import mx.collections.ArrayCollection;
+            import mx.events.FlexEvent;
+            
+            import spark.events.IndexChangeEvent;
+            
+            import facade.ProtoFacade;
+            
+            import mediator.ProductionMediator;
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+			[Bindable]
+			public var productionsList:ArrayCollection;
+            
+            private var _productionMediator:ProductionMediator;
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+                _productionMediator = ProductionMediator(ProtoFacade.getInstance().retrieveMediator(ProductionMediator.NAME));
+                _productionMediator.setViewComponent(this);
+			}
+			
+			protected function prodListView_changeHandler(event:IndexChangeEvent):void
+			{
+			}
+			
+			protected function startNewProd_clickHandler(event:MouseEvent):void
+			{
+			}
+			
+		]]>
+	</fx:Script>
+</s:View>

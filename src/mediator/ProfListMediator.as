@@ -163,8 +163,8 @@ package mediator
             for each (var profession:ProfessionDescVO in ProfessionsDict.getInstance().professions)
                 profs.push(profession);
 			
-            professionsView.hireEmployePopUp.professionsList = new ArrayCollection(profs);
-			professionsView.hireEmployePopUp.defaultProfession = ProfessionDescVO.LABORER;
+            professionsView.professionsList = new ArrayCollection(profs);
+			professionsView.defaultProfession = ProfessionDescVO.LABORER;
             
             professionsView.addEventListener(EmployeeListEvent.CREATE_PERSON, createPersonHandler, false, 0, true);
             professionsView.addEventListener(EmployeeListEvent.PLACE_EMPLOYEE, placeEmployeeHandler, false, 0, true);

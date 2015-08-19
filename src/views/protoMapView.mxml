@@ -19,6 +19,7 @@
 				<fx:Object label="bases.title" view="{views.protoBasesView}"/>
 				<fx:Object label="personnel.title" view="{views.protoProfessionsView}"/>
                 <fx:Object label="research.title" view="{views.protoInvestigationsView}"/>
+                <fx:Object label="production.title" view="{views.protoProductionView}"/>
 			</s:ArrayCollection>
 		</s:dataProvider>
 	</s:List>
