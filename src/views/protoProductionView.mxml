@@ -66,6 +66,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+            import views.ui.ProductionView;
             import mx.collections.ArrayCollection;
             import mx.core.FlexGlobals;
             import mx.events.FlexEvent;
@@ -113,6 +114,9 @@
 			
 			protected function prodListView_changeHandler(event:IndexChangeEvent):void
 			{
+                var production:Object = productionsList.getItemAt(event.newIndex);
+                if (production && production.hasOwnProperty("id"))
+                    navigator.pushView(ProductionView, production.id);
 			}
             
             public function updateList():void

@@ -31,7 +31,7 @@ package mediator
         // 
         //--------------------------------------------------------------------------
         
-        public static const NAME:String = "productionMediator";
+        public static const NAME:String = "productionListMediator";
         
         private var _productionsProxy:ProductionsProxy;
         

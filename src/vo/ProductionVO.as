@@ -113,22 +113,21 @@ package vo
                         {
                             // Завершено изготовление единицы продукции
                             var resourcesDecor:ResourcesHelper = new ResourcesHelper();
-                            var result:PriceVO = (new ResultHelper(null, resourcesDecor)).applyResult(productionDesc.productionResult, true) || new PriceVO();
                             
-                            var outData:Array = out.commonOut[Const.CHANGE_RESOURCES] as Array;
-                            var commonPrice:PriceVO;
-                            if (outData)
-                                commonPrice = resourcesDecor.joinPrice(resourcesDecor.joinPrice.apply(this, outData), result);
-                            else
-                                commonPrice = result;
-                            out.commonOut[Const.CHANGE_RESOURCES] = [ commonPrice ];
-                            
+                            (new ResultHelper(null, resourcesDecor)).applyResult(productionDesc.productionResult);
                             productionRest--;
+                            sendNotification(Const.PRODUCT_UNIT_COMPLETED, productionId);
                             
                             if (productionRest > 0)
                             {
                                 // Запустить в производство очередную единицу продукции
-                                commonPrice = resourcesDecor.joinPrice(commonPrice, resourcesDecor.invertPrice(productionDesc.productionStartPrice));
+                                var outData:Array = out.commonOut[Const.CHANGE_RESOURCES] as Array;
+                                var commonPrice:PriceVO;
+                                if (outData)
+                                    commonPrice = resourcesDecor.joinPrice(resourcesDecor.joinPrice.apply(this, outData),
+                                        resourcesDecor.invertPrice(productionDesc.productionStartPrice));
+                                else
+                                    commonPrice = resourcesDecor.invertPrice(productionDesc.productionStartPrice);
                                 
                                 if (resourcesDecor.isEnoughResources(resourcesDecor.separatePrice(commonPrice, true)[1]))
                                 {

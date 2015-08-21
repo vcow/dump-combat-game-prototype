@@ -58,5 +58,6 @@ package dictionary
         public static const PRODUCTION_UPDATED:String = "productionUpdated";                //< Изменились параметры производства
         public static const PRODUCTION_STARTED:String = "productionStarted";                //< Производство начато
         public static const PRODUCTION_COMPLETED:String = "productionCompleted";            //< Производство завершено
+        public static const PRODUCT_UNIT_COMPLETED:String = "productUnitCompleted";         //< Завершено производство единицы продукции
 	}
 }

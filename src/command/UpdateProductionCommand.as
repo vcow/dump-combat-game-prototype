@@ -51,6 +51,8 @@ package command
                 if (production)
                 {
                     // Модифицируется существующее производство
+                    
+                    
                 }
                 else if (data.numProducts > 0)
                 {

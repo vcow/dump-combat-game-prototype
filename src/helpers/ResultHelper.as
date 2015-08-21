@@ -38,15 +38,13 @@ package helpers
         /**
          * Применить результат
          * @param result результат
-         * @param extractPriceOnly извлечь и вернуть суммарную цену, указанную в обрабатываемом результате, если false, цена, в добавок, будет добавлена к ресурсам
          * @return выделенная цена, если таковая имеется в результате
          */
-        public function applyResult(result:ResultVO, extractPriceOnly:Boolean=false):PriceVO
+        public function applyResult(result:ResultVO):Boolean
         {
             if (!result)
-                return null;
+                return false;
             
-            var res:PriceVO;
             for each (var item:IVO in result.children)
             {
                 switch (item.name)
@@ -57,17 +55,11 @@ package helpers
                         break;
                     case PriceVO.NAME:
                         var price:PriceVO = PriceVO(item);
-                        if (res)
-                            res = resourceHelper.joinPrice(res, price);
-                        else
-                            res = price;
-                        
-                        if (!extractPriceOnly)
-                            resourceHelper.pay(resourceHelper.invertPrice(price));
+                        resourceHelper.pay(resourceHelper.invertPrice(price));
                         break;
                 }
             }
-            return res;
+            return true;
         }
         
         private function get resourceHelper():ResourcesHelper

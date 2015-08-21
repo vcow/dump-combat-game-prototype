@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- UI производства -->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:modal="views.modal.*"
+        xmlns:ui="views.ui.*"
+        title="{productionTitle}"
+        creationComplete="creationCompleteHandler(event)">
+	<s:layout>
+		<s:VerticalLayout gap="2" paddingLeft="5" paddingRight="5"/>
+	</s:layout>
+    
+	<s:navigationContent>
+		<s:Button label="&lt;" click="{goBack();}"/>
+	</s:navigationContent>
+    
+    <s:VGroup gap="3" horizontalAlign="center" paddingTop="10" paddingBottom="5">
+        
+        <s:Label text="{resourceManager.getString('common', 'production.start.popup.engineers.free', [ freeEngineers ])}" fontWeight="bold"/>
+        
+        <s:VGroup horizontalAlign="right" gap="3">
+            
+            <s:HGroup verticalAlign="middle">
+                
+                <s:Label text="@Resource(key='production.start.popup.engineers.count', bundle='common')"/>
+                
+                <ui:NumericStepper id="engineersCtr" min="0" max="{freeEngineers + employeedEngineers}" value="{employeedEngineers}"/>
+            </s:HGroup>
+            
+            <s:HGroup verticalAlign="middle">
+                
+                <s:Label text="@Resource(key='production.start.popup.products.count', bundle='common')"/>
+                
+                <ui:NumericStepper id="productsCtr" min="0" value="{productionsCount}"/>
+            </s:HGroup>
+        </s:VGroup>
+    </s:VGroup>
+    
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Metadata>
+		[ResourceBundle("common")]
+        
+        [Event(name="changeProductionEngineersCount", type="events.ProductionEvent")]
+        [Event(name="changeProductsCount", type="events.ProductionEvent")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+            import mx.events.FlexEvent;
+            
+            import dictionary.ProductionsDict;
+            
+            import events.ProductionEvent;
+            
+            import facade.ProtoFacade;
+            
+            import mediator.ProductionMediator;
+            
+            import vo.ProductionDescVO;
+            
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+            private var _productionMediator:ProductionMediator;
+            private var _freeEngineers:int;
+            
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+            [Bindable]
+            private var productionTitle:String;
+            
+            [Bindable]
+            public var employeedEngineers:int;
+            
+            [Bindable]
+            public var productionsCount:int;
+            
+            [Bindable]
+            public var freeEngineers:int
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            public function goBack():void
+            {
+                navigator.popView();
+            }
+            
+            public function get productionId():String
+            {
+                return data.toString();
+            }
+            
+            protected function creationCompleteHandler(event:FlexEvent):void
+            {
+                _productionMediator = ProductionMediator(ProtoFacade.getInstance().retrieveMediator(ProductionMediator.NAME));
+                _productionMediator.setViewComponent(this);
+                
+                updateProduction();
+                
+                engineersCtr.addEventListener(Event.CHANGE, engineersCtr_changeHandler, false, 0, true);
+                productsCtr.addEventListener(Event.CHANGE, productsCtr_changeHandler, false, 0, true);
+            }
+            
+            private function updateProduction():void
+            {
+                if (_productionMediator)
+                {
+                    employeedEngineers = _productionMediator.getEmployedEngineers(productionId);
+                    freeEngineers = _productionMediator.getFreeEngineers();
+                    productionsCount = _productionMediator.getProductionsCount(productionId);
+                }
+            }
+            
+            protected function engineersCtr_changeHandler(event:Event):void
+            {
+                dispatchEvent(new ProductionEvent(ProductionEvent.CHANGE_PRODUCTION_ENGINEERS_COUNT, productionId, engineersCtr.value, productsCtr.value));
+            }
+            
+            protected function productsCtr_changeHandler(event:Event):void
+            {
+                dispatchEvent(new ProductionEvent(ProductionEvent.CHANGE_PRODUCTS_COUNT, productionId, engineersCtr.value, productsCtr.value));
+            }
+            
+            //----------------------------------
+            //  View
+            //----------------------------------
+			
+            override public function set data(value:Object):void
+            {
+                super.data = value;
+                
+                var productionDesc:ProductionDescVO = ProductionsDict.getInstance().getProduction(productionId);
+                if (productionDesc)
+                    productionTitle = productionDesc.productionName;
+                
+                if (initialized)
+                    updateProduction();
+            }
+            
+            protected function back_clickHandler(event:MouseEvent):void
+            {
+                // TODO Auto-generated method stub
+                
+            }
+            
+        ]]>
+	</fx:Script>
+</s:View>
