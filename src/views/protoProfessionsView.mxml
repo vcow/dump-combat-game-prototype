@@ -27,7 +27,7 @@
 		</s:HGroup>
 		<s:HGroup width="100%" gap="-1" height="30">
 			<s:RadioButton label="@Resource(key='personnel.cat.scientists', bundle='common')" width="100%" height="100%" groupName="categoryRadioGroup" value="{ProfessionDescVO.SCIENTIST}"/>
-			<s:RadioButton label="@Resource(key='personnel.cat.engineers', bundle='common')" width="100%" height="100%" groupName="categoryRadioGroup" value="{ProfessionDescVO.ENGENEER}"/>
+			<s:RadioButton label="@Resource(key='personnel.cat.engineers', bundle='common')" width="100%" height="100%" groupName="categoryRadioGroup" value="{ProfessionDescVO.ENGINEER}"/>
 		</s:HGroup>
 	</s:VGroup>
 	
@@ -145,7 +145,7 @@
 						break;
 					case ProfessionDescVO.SCIENTIST:
 						break;
-					case ProfessionDescVO.ENGENEER:
+					case ProfessionDescVO.ENGINEER:
 						break;
 				}
 			}

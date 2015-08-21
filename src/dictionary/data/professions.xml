@@ -11,8 +11,8 @@
 		<price details="price">
 			<resource id="food" count="5"/>
 		</price>
-		<price details="fee" event="min">
-			<resource id="food" count="-1"/>
+		<price details="fee" event="gather">
+			<resource id="food" count="-2"/>
 		</price>
 	</professionDesc>
 	<professionDesc id="solgier" name="{prof.solgier}" category="{personnel.cat.soldiers}">

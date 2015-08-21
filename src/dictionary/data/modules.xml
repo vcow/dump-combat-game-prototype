@@ -42,4 +42,14 @@
 		</price>
 		<leadTime time="1m" event="constructionCompleted"/>
 	</moduleDesc>
+	<!-- Мастерская -->
+	<moduleDesc id="workshop" name="{workshop.title}" description="{workshop.description}" space="10" chance="0.3">
+		<price details="price">
+			<resource id="food" count="170"/>
+		</price>
+		<price details="fee" event="min">
+			<resource id="food" count="3"/>
+		</price>
+		<leadTime time="30s" event="constructionCompleted"/>
+	</moduleDesc>
 </modulesDict>

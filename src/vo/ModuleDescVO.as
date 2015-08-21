@@ -22,6 +22,7 @@ package vo
 		public static const HOUSING:String = "housing";		//< Жилой модуль
 		public static const STORE:String = "store";			//< Складской модуль
         public static const LAB:String = "lab";             //< Лаборатория
+        public static const WORKSHOP:String = "workshop";   //< Мастерская
 		
 		//--------------------------------------------------------------------------
 		// 

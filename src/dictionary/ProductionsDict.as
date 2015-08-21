@@ -1,5 +1,11 @@
 package dictionary
 {
+	import facade.ProtoFacade;
+	
+	import helpers.ConditionHelper;
+	
+	import proxy.TriggersProxy;
+	
 	import vo.ProductionDescVO;
 	
 	/**
@@ -20,6 +26,8 @@ package dictionary
 		
 		private static var _instance:ProductionsDict;
 		private static var _productions:Vector.<ProductionDescVO>;
+        
+        private var _triggersProxy:TriggersProxy;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -54,6 +62,33 @@ package dictionary
                     return production;
             }
             return null;
+        }
+        
+        /**
+         * Получить список доступных производств
+         * @return список доступных производств
+         */
+        public function getAvailableProductions():Vector.<ProductionDescVO>
+        {
+            init();
+            
+            var conditionDecor:ConditionHelper = new ConditionHelper(triggersProxy);
+            var prod:Vector.<ProductionDescVO> = new Vector.<ProductionDescVO>();
+            
+            for each (var production:ProductionDescVO in _productions)
+            {
+                if (conditionDecor.parseCondition(production.productionCondition))
+                    prod.push(production);
+            }
+            
+            return prod;
+        }
+        
+        protected function get triggersProxy():TriggersProxy
+        {
+            if (!_triggersProxy)
+                _triggersProxy = TriggersProxy(ProtoFacade.getInstance().retrieveProxy(TriggersProxy.NAME));
+            return _triggersProxy;
         }
         
         //--------------------------------------------------------------------------

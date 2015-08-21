@@ -6,6 +6,7 @@ package helpers
 	
 	import proxy.BasesListProxy;
 	import proxy.InvestigationsProxy;
+	import proxy.ProductionsProxy;
 	
 	import vo.BaseVO;
 	import vo.ModuleDescVO;
@@ -29,15 +30,18 @@ package helpers
 		
 		private var _basesListProxy:BasesListProxy;
         private var _investigationsProxy:InvestigationsProxy;
+        private var _productionsProxy:ProductionsProxy;
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function ModulesHelper(basesListProxy:BasesListProxy=null, investigationsProxy:InvestigationsProxy=null)
+		public function ModulesHelper(basesListProxy:BasesListProxy=null, investigationsProxy:InvestigationsProxy=null,
+                                      productionsProxy:ProductionsProxy=null)
 		{
 			_basesListProxy = basesListProxy;
             _investigationsProxy = investigationsProxy;
+            _productionsProxy = productionsProxy;
 		}
 		
 		/**
@@ -83,6 +87,10 @@ package helpers
                         break;
                     case ModuleDescVO.LAB:
                         personnel = investigationsProxy.getEmployedScientists(null, base.baseId);
+                        space -= personnel.children.length;
+                        break;
+                    case ModuleDescVO.WORKSHOP:
+                        personnel = productionsProxy.getEmployedEngineers(null, base.baseId);
                         space -= personnel.children.length;
                         break;
                 }
@@ -140,6 +148,13 @@ package helpers
             if (!_investigationsProxy)
                 _investigationsProxy = InvestigationsProxy(ProtoFacade.getInstance().retrieveProxy(InvestigationsProxy.NAME));
             return _investigationsProxy;
+        }
+        
+        private function get productionsProxy():ProductionsProxy
+        {
+            if (!_productionsProxy)
+                _productionsProxy = ProductionsProxy(ProtoFacade.getInstance().retrieveProxy(ProductionsProxy.NAME));
+            return _productionsProxy;
         }
 	}
 }

@@ -53,6 +53,10 @@ package dictionary
         public static const RESEARCH_UPDATED:String = "researchUpdated";                    //< Изменились параметры исследования
         public static const RESEARCH_STARTED:String = "researchStarted";                    //< Исследование начато
         public static const RESEARCH_COMPLETED:String = "researchComplete";                 //< Исследование завершено
+        public static const UPDATE_PRODUCTION:String = "updateProduction";                  //< Изменить параметры активного производства
         public static const COMPLETE_PRODUCTION:String = "completeProduction";              //< Команда на завершение производства
+        public static const PRODUCTION_UPDATED:String = "productionUpdated";                //< Изменились параметры производства
+        public static const PRODUCTION_STARTED:String = "productionStarted";                //< Производство начато
+        public static const PRODUCTION_COMPLETED:String = "productionCompleted";            //< Производство завершено
 	}
 }

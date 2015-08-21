@@ -22,7 +22,7 @@ package vo
 		public static const LABORER:String = "laborer";
 		public static const SOLGIER:String = "solgier";
 		public static const SCIENTIST:String = "scientist";
-		public static const ENGENEER:String = "engeneer";
+		public static const ENGINEER:String = "engineer";
 		
 		//--------------------------------------------------------------------------
 		// 

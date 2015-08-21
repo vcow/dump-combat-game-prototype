@@ -5,7 +5,7 @@ package command
 	import mediator.BasesListMediator;
 	import mediator.InvestigationsMediator;
 	import mediator.LogMediator;
-	import mediator.ProductionMediator;
+	import mediator.ProductionListMediator;
 	import mediator.ProfListMediator;
 	import mediator.ResearchMediator;
 	import mediator.SimpleResourcesMediator;
@@ -46,7 +46,7 @@ package command
             this.facade.registerMediator(new BaseMediator());
             this.facade.registerMediator(new InvestigationsMediator());
             this.facade.registerMediator(new ResearchMediator());
-            this.facade.registerMediator(new ProductionMediator());
+            this.facade.registerMediator(new ProductionListMediator());
 		}
 	}
 }

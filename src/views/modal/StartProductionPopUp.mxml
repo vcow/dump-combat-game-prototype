@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Интерфейс запуска производства -->
+
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+                           xmlns:s="library://ns.adobe.com/flex/spark"
+                           xmlns:ui="views.ui.*"
+                           xmlns:dropDownList="com.flextras.mobile.dropDownList.*"
+                           xmlns:mx="library://ns.adobe.com/flex/mx"
+                           creationComplete="{updateProdInfo();}"
+                           filters="{proto.popUpShadow}">
+    <s:BorderContainer>
+        <s:layout>
+            <s:VerticalLayout gap="10" paddingBottom="1" paddingLeft="1" paddingRight="1"
+                              paddingTop="1"/>
+        </s:layout>
+        
+        <s:BorderContainer width="100%" minHeight="0" backgroundColor="gray" borderVisible="false">
+            <s:layout>
+                <s:VerticalLayout horizontalAlign="center" paddingBottom="5" paddingLeft="5"
+                                  paddingRight="5" paddingTop="5"/>
+            </s:layout>
+            
+            <s:Label color="white" text="@Resource(key='production.start.popup.title', bundle='common')"/>
+        </s:BorderContainer>
+        
+        <s:VGroup width="100%" gap="10" horizontalAlign="center" paddingBottom="5" paddingLeft="5"
+                  paddingRight="5" paddingTop="5">
+            
+            <s:VGroup width="100%" gap="3" horizontalAlign="center">
+                <s:Label text="@Resource(key='production.start.popup.product', bundle='common')"/>
+                
+                <dropDownList:DropDownList id="prodSelector" width="100%" dataProvider="{productionsList}"
+                                           change="prodSelector_changeHandler(event)"/>
+            </s:VGroup>
+            
+            <s:BorderContainer cornerRadius="4">
+                <s:layout>
+                    <s:VerticalLayout paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="5"/>
+                </s:layout>
+                
+                <s:TextArea id="requirementsTextArea" width="250" fontSize="14" editable="false" selectable="false" minHeight="20"/>
+            </s:BorderContainer>
+            
+            <s:VGroup gap="3" horizontalAlign="center" paddingTop="10" paddingBottom="5">
+                
+                <s:Label text="{resourceManager.getString('common', 'production.start.popup.engineers.free', [ engineersLeave ])}" fontWeight="bold"/>
+                
+                <s:VGroup horizontalAlign="right" gap="3">
+                    
+                    <s:HGroup verticalAlign="middle">
+                        
+                        <s:Label text="@Resource(key='production.start.popup.engineers.count', bundle='common')"/>
+                        
+                        <ui:NumericStepper id="engineersCtr" min="0" max="{freeEngineers}"
+                                           change="{engineersLeave = freeEngineers - engineersCtr.value;}"/>
+                    </s:HGroup>
+                    
+                    <s:HGroup verticalAlign="middle">
+                        
+                        <s:Label text="@Resource(key='production.start.popup.products.count', bundle='common')"/>
+                        
+                        <ui:NumericStepper id="productsCtr" min="0"/>
+                    </s:HGroup>
+                </s:VGroup>
+            </s:VGroup>
+            
+            <s:HGroup width="100%">
+                <s:Button width="50%" label="@Resource(key='production.start.popup.begin', bundle='common')" click="{close(false, Const.OK);}"
+                          enabled="{prodSelector.selectedItem &amp;&amp; engineersCtr.value > 0 &amp;&amp; productsCtr.value > 0}"/>
+                
+                <s:Button width="50%" label="@Resource(key='alert.cancel', bundle='common')"
+                          click="{close(false, Const.CANCEL);}"/>
+            </s:HGroup>
+        </s:VGroup>
+    </s:BorderContainer>
+    
+    <fx:Declarations>
+    </fx:Declarations>
+    
+    <fx:Metadata>
+        [ResourceBundle("common")]
+    </fx:Metadata>
+    
+    <fx:Script>
+        <![CDATA[
+            import mx.collections.ArrayCollection;
+            import mx.events.FlexEvent;
+            
+            import spark.components.supportClasses.StyleableTextField;
+            import spark.events.IndexChangeEvent;
+            
+            import dictionary.Const;
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            private var _productionsList:ArrayCollection;
+            private var _freeEngineers:int;
+            
+            [Bindable]
+            private var engineersLeave:int;
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            [Bindable (event="productionsListChanged")]
+            public function get productionsList():ArrayCollection
+            {
+                return _productionsList;
+            }
+            
+            public function set productionsList(value:ArrayCollection):void
+            {
+                if (value == _productionsList)
+                    return;
+                
+                _productionsList = value;
+                dispatchEvent(new Event("productionsListChanged"));
+                
+                if (initialized)
+                {
+                    prodSelector.selectedIndex = -1;
+                    
+                    requirementsTextArea.text = "";
+                    requirementsTextArea.height = requirementsTextArea.minHeight;
+                    
+                    updateProdInfo();
+                }
+            }
+            
+            [Bindable (event="freeEngineersChanged")]
+            public function get freeEngineers():int
+            {
+                return _freeEngineers;
+            }
+            
+            public function set freeEngineers(value:int):void
+            {
+                if (value == _freeEngineers)
+                    return;
+                
+                _freeEngineers = value;
+                dispatchEvent(new Event("freeEngineersChanged"));
+                
+                engineersLeave = _freeEngineers;
+                
+                if (initialized)
+                    engineersCtr.value = 0;
+            }
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            private function updateProdInfo():void
+            {
+                var data:Object = prodSelector.selectedItem;
+                if (!data && productionsList.length > 0)
+                {
+                    prodSelector.selectedIndex = 0;
+                    data = prodSelector.selectedItem;
+                }
+                
+                if (data)
+                {
+                    var textDisplay:StyleableTextField = StyleableTextField(requirementsTextArea.textDisplay);
+                    textDisplay.htmlText = data.requirements;
+                    
+                    var numLines:int = textDisplay.numLines;
+                    var h:Number = requirementsTextArea.getStyle("paddingTop") + requirementsTextArea.getStyle("paddingBottom");
+                    for (var i:int = 0; i < numLines; i++)
+                        h += textDisplay.getLineMetrics(i).height;
+                    requirementsTextArea.height = h;
+                }
+                else
+                {
+                    requirementsTextArea.text = "";
+                    requirementsTextArea.height = requirementsTextArea.minHeight;
+                }
+            }
+            
+            protected function prodSelector_changeHandler(event:IndexChangeEvent):void
+            {
+                engineersCtr.value = 0;
+                engineersLeave = freeEngineers;
+                
+                updateProdInfo();
+            }
+            
+        ]]>
+    </fx:Script>
+</s:SkinnablePopUpContainer>

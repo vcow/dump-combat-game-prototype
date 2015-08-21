@@ -47,6 +47,8 @@
 			</data>
 		</notification>
 	</eventDesc>
+	<!-- Сбор ресурсов -->
+	<eventDesc id="gather" interval="20s"/>
 	<!-- Зарплата всем работникам -->
 	<eventDesc id="payDay" interval="10m"/>
 	<!-- Шаг исследования -->
