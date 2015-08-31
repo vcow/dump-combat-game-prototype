@@ -6,6 +6,7 @@ package helpers
     
     import vo.IVO;
     import vo.PriceVO;
+    import vo.ResourceVO;
     import vo.ResultVO;
     import vo.TriggerVO;
 
@@ -55,6 +56,11 @@ package helpers
                         break;
                     case PriceVO.NAME:
                         var price:PriceVO = PriceVO(item);
+                        resourceHelper.pay(resourceHelper.invertPrice(price));
+                        break;
+                    case ResourceVO.NAME:
+                        price = new PriceVO();
+                        price.children.push(ResourceVO(item));
                         resourceHelper.pay(resourceHelper.invertPrice(price));
                         break;
                 }

@@ -9,6 +9,8 @@ package command
     import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.command.SimpleCommand;
     
+    import proxy.TriggersProxy;
+    
     import vo.PriceVO;
     import vo.ResourceVO;
     
@@ -46,8 +48,6 @@ package command
                 
 				for each (var resource:ResourceVO in dc[0].children)
 				{
-                    var isNewArtifact:Boolean = resource.resourceDesc.resourceIsArtifact && resourcesDecor.getResource(resource.resourceId) == 0;
-                    
 					var rest:int = resourcesDecor.addResource(resource.resourceId, resource.resourceCount);
                     resourcesChanged ||= rest != 0;
 					if (rest < resource.resourceCount)
@@ -57,10 +57,16 @@ package command
                         sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
 					}
                     
-                    if (isNewArtifact)
+                    if (resource.resourceDesc.resourceTrigger)
                     {
-                        message = ResourceManager.getInstance().getString("messages", "artifact.found", [ resource.resourceDesc.resourceName ]);
-                        sendNotification(Const.SEND_GAME_MESSAGE, message, Const.MESSAGE);
+                        var triggersProxy:TriggersProxy = TriggersProxy(this.facade.retrieveProxy(TriggersProxy.NAME));
+                        triggersProxy.setTriggerValue(resource.resourceDesc.resourceTrigger, 1, TriggersProxy.INC);
+                        if (resource.resourceDesc.resourceIsArtifact && triggersProxy.getTriggerValue(resource.resourceDesc.resourceTrigger) == 1)
+                        {
+                            // Артефакт найден впервые
+                            message = ResourceManager.getInstance().getString("messages", "artifact.found", [ resource.resourceDesc.resourceName ]);
+                            sendNotification(Const.SEND_GAME_MESSAGE, message, Const.MESSAGE);
+                        }
                     }
 				}
 				

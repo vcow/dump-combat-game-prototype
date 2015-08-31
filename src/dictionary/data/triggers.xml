@@ -15,4 +15,8 @@
 	<triggerDesc id="nailResearchComplete"/>
 	<!-- Исследование палицы завершено -->
 	<triggerDesc id="maceResearchComplete"/>
+	<!-- Найдена палка -->
+	<triggerDesc id="foundCudgel"/>
+	<!-- Найден гвоздь -->
+	<triggerDesc id="foundNail"/>
 </triggersDict>

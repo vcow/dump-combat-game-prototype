@@ -148,7 +148,7 @@ package mediator
                             productionView.freeEngineers = getFreeEngineers();
                     }
                     break;
-                case Const.RESEARCH_UPDATED:
+                case Const.PRODUCTION_UPDATED:
                     if (productionView)
                     {
                         if (notification.getBody().toString() == productionView.productionId)

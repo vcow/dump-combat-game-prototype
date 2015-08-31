@@ -32,6 +32,7 @@ package vo
         public var resourceSize:int;                        //< Размер ресурса в складских единицах
         public var resourcePrice:Number;                    //< Цена ресурса в деньгах
         public var resourceDescriptionInvestigated:String;  //< Расширенное описание ресурса после его исследования
+        public var resourceTrigger:String;                  //< Триггер, который увеличивается при нахождении ресурса
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -84,6 +85,9 @@ package vo
             
             if (resourceDescriptionInvestigated)
                 res.@descriptionInvestigated = resourceDescriptionInvestigated;
+            
+            if (resourceTrigger)
+                res.@trigger = resourceTrigger;
 			
 			// /TODO
 			
@@ -103,6 +107,7 @@ package vo
 			resourcePrice = data.hasOwnProperty("@price") ? Number(data.@price) : 0.0;
             resourceDescriptionInvestigated = data.hasOwnProperty("@descriptionInvestigated") ?
                 VO.parseString(data.@descriptionInvestigated, "resources") : "";
+            resourceTrigger = data.hasOwnProperty("@trigger") ? data.@trigger.toString() : "";
 			
 			// /TODO
 			

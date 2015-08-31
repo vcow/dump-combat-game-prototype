@@ -7,13 +7,14 @@
 		size={числовое значение} - размер единицы ресурса при хранении на складах
 		price={дробное значение} - стоимость единицы ресурса в деньгах
 		descriptionInvestigated={строковое значение} - расширенное описание ресурса, получаемое после его исследования
-			(наличие этого поля является признаком артефакта).-->
+			(наличие этого поля является признаком артефакта)
+		trigger={строковое значение} - идентификатор триггера, который увеличивается на 1 при нахождении ресурса.-->
 	<!-- Деньги -->
 	<resourceDesc id="cash" name="{cash.title}" descriiption="{cash.description}" size="0" price="1.0"/>
 	<!-- Еда -->
 	<resourceDesc id="food" name="{food.title}" descriiption="{food.description}" size="1" price="0.001"/>
 	<!-- Палка -->
-	<resourceDesc id="cudgel" name="{cudgel.title}" descriiption="{cudgel.description}" size="2" price="0.01" descriptionInvestigated="{cudgel.description.investigated}">
+	<resourceDesc id="cudgel" name="{cudgel.title}" descriiption="{cudgel.description}" size="2" price="0.01" descriptionInvestigated="{cudgel.description.investigated}" trigger="foundCudgel">
 		<!-- Условие, при выполнении которого артефакт считается изученным -->
 		<complete>
 			<if>
@@ -22,7 +23,7 @@
 		</complete>
 	</resourceDesc>
 	<!-- Гвоздь -->
-	<resourceDesc id="nail" name="{nail.title}" descriiption="{nail.description}" size="0" price="0.005" descriptionInvestigated="{nail.description.investigated}">
+	<resourceDesc id="nail" name="{nail.title}" descriiption="{nail.description}" size="0" price="0.005" descriptionInvestigated="{nail.description.investigated}" trigger="foundNail">
 		<complete>
 			<if>
 				<trigger>nailResearchComplete</trigger>

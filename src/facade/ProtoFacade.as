@@ -3,6 +3,7 @@ package facade
 	import command.ArtifactFindedCommand;
 	import command.BuildModuleCommand;
 	import command.ChangeResourcesCommand;
+	import command.CompleteProductionCommand;
 	import command.CompleteResearchCommand;
 	import command.CreateNewBaseCommand;
 	import command.CreateNewPersonCommand;
@@ -77,6 +78,7 @@ package facade
             registerCommand(Const.UPDATE_RESEARCH, UpdateResearchCommand);
             registerCommand(Const.COMPLETE_RESEARCH, CompleteResearchCommand);
             registerCommand(Const.UPDATE_PRODUCTION, UpdateProductionCommand);
+            registerCommand(Const.COMPLETE_PRODUCTION, CompleteProductionCommand);
 		}
 	}
 }

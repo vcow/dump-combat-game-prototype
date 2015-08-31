@@ -33,8 +33,12 @@
                 
                 <s:Label text="@Resource(key='production.start.popup.products.count', bundle='common')"/>
                 
-                <ui:NumericStepper id="productsCtr" min="0" value="{productionsCount}"/>
+                <ui:NumericStepper id="productsCtr" min="1" value="{productionsCount}"/>
             </s:HGroup>
+        </s:VGroup>
+        
+        <s:VGroup paddingTop="20">
+            <s:Button label="@Resource(key='production.abort', bundle='common')" click="abort_clickHandler(event)"/>
         </s:VGroup>
     </s:VGroup>
     
@@ -130,6 +134,11 @@
                 dispatchEvent(new ProductionEvent(ProductionEvent.CHANGE_PRODUCTS_COUNT, productionId, engineersCtr.value, productsCtr.value));
             }
             
+            protected function abort_clickHandler(event:MouseEvent):void
+            {
+                dispatchEvent(new ProductionEvent(ProductionEvent.CHANGE_PRODUCTS_COUNT, productionId, engineersCtr.value, 0));
+            }
+            
             //----------------------------------
             //  View
             //----------------------------------
@@ -144,12 +153,6 @@
                 
                 if (initialized)
                     updateProduction();
-            }
-            
-            protected function back_clickHandler(event:MouseEvent):void
-            {
-                // TODO Auto-generated method stub
-                
             }
             
         ]]>

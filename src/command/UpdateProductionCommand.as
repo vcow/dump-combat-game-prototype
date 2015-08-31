@@ -51,8 +51,50 @@ package command
                 if (production)
                 {
                     // Модифицируется существующее производство
+                    var productionIsUpdated:Boolean;
                     
+                    if (production.children.length > data.numEngineers)
+                    {
+                        // Инженеры снимаются с производства
+                        var numEngineers:int = data.numEngineers < 0 ? 0 : data.numEngineers;
+                        production.children.splice(0, production.children.length - numEngineers);
+                        
+                        productionIsUpdated = true;
+                    }
+                    else if (production.children.length < data.numEngineers)
+                    {
+                        // Инженеры ставятся на производство
+                        var freeEngineers:Vector.<PersonVO> = (new ProductionsHelper(productionsProxy)).getFreeEngineers();
+                        var freeWorkshopSpace:int = (new ModulesHelper()).getSpace(ModuleDescVO.WORKSHOP);
+                        numEngineers = Math.min(freeEngineers.length, freeWorkshopSpace, data.numEngineers - production.children.length);
+                        
+                        for (var i:int = 0; i < numEngineers; i++)
+                        {
+                            var worker:WorkerVO = new WorkerVO();
+                            worker.workerPersonId = freeEngineers[i].personId;
+                            
+                            production.children.push(worker);
+                        }
+                        
+                        productionIsUpdated = true;
+                    }
                     
+                    if (production.productionRest != data.numProducts)
+                    {
+                        // Изменилось количество продукции, запланированной к выпуску
+                        if (data.numProducts <= 0)
+                        {
+                            // Производство сворачивается
+                            sendNotification(Const.COMPLETE_PRODUCTION, production.productionId);
+                            return;
+                        }
+                        
+                        production.productionRest = data.numProducts;
+                        productionIsUpdated = true;
+                    }
+                    
+                    if (productionIsUpdated)
+                        sendNotification(Const.PRODUCTION_UPDATED, production.productionId);
                 }
                 else if (data.numProducts > 0)
                 {
@@ -80,15 +122,16 @@ package command
                         return;
                     }
                     
+                    resourcesDecor.pay(production.productionDesc.productionStartPrice);
                     productionsProxy.productionsVO.children.push(production);
                     
-                    var freeEngineers:Vector.<PersonVO> = (new ProductionsHelper(productionsProxy)).getFreeEngineers();
-                    var freeWorkshopSpace:int = (new ModulesHelper()).getSpace(ModuleDescVO.WORKSHOP);
-                    var numEngineers:int = Math.min(freeEngineers.length, freeWorkshopSpace, data.numEngineers);
+                    freeEngineers = (new ProductionsHelper(productionsProxy)).getFreeEngineers();
+                    freeWorkshopSpace = (new ModulesHelper()).getSpace(ModuleDescVO.WORKSHOP);
+                    numEngineers = Math.min(freeEngineers.length, freeWorkshopSpace, data.numEngineers);
                     
-                    for (var i:int = 0; i < numEngineers; i++)
+                    for (i = 0; i < numEngineers; i++)
                     {
-                        var worker:WorkerVO = new WorkerVO();
+                        worker = new WorkerVO();
                         worker.workerPersonId = freeEngineers[i].personId;
                         
                         production.children.push(worker);
