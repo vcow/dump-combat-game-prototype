@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- UI персонажа -->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:modal="views.modal.*"
+        xmlns:ui="views.ui.*"
+        creationComplete="creationCompleteHandler(event)">
+	<s:layout>
+		<s:VerticalLayout paddingLeft="5" paddingRight="5"/>
+	</s:layout>
+    
+    <s:navigationContent>
+        <s:Button label="&lt;" click="{goBack();}"/>
+    </s:navigationContent>
+    
+    <s:VGroup width="100%" horizontalAlign="center" paddingTop="15">
+        
+        <ui:ImageView id="iconView" width="100" height="100"/>
+    </s:VGroup>
+    
+    <s:BorderContainer width="100%" cornerRadius="5">
+        <s:layout>
+            <s:VerticalLayout paddingLeft="15" paddingRight="15" paddingTop="10" paddingBottom="10" horizontalAlign="center"/>
+        </s:layout>
+        
+        <s:Label text="@Resource(key='person.place.title', bundle='common')" fontSize="12"/>
+        
+        <s:Label text="{baseName}" fontSize="16" fontWeight="bold"/>
+    </s:BorderContainer>
+    
+    <s:BorderContainer width="100%" cornerRadius="5">
+        <s:layout>
+            <s:VerticalLayout paddingLeft="15" paddingRight="15" paddingTop="10" paddingBottom="10" horizontalAlign="center"/>
+        </s:layout>
+        
+        <s:Label text="@Resource(key='person.profession.title', bundle='common')" fontSize="12"/>
+        
+        <s:Label text="{professionName}" fontSize="16" fontWeight="bold"/>
+    </s:BorderContainer>
+    
+    <s:HGroup width="100%" paddingTop="10" paddingLeft="15" paddingRight="15" paddingBottom="15">
+        <s:Button width="50%" label="@Resource(key='person.move', bundle='common')" click="move_clickHandler(event)"/>
+        <s:Button width="50%" label="@Resource(key='person.fire', bundle='common')" click="fire_clickHandler(event)"/>
+    </s:HGroup>
+    
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Metadata>
+		[ResourceBundle("common")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+            import mx.events.FlexEvent;
+            
+            import dictionary.Const;
+            import dictionary.ProfessionsDict;
+            
+            import facade.ProtoFacade;
+            
+            import mediator.PersonMediator;
+            
+            import vo.BaseVO;
+            import vo.ProfessionDescVO;
+            
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+            private var _personMediator:PersonMediator;
+            
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+            [Bindable]
+            private var baseName:String;
+            
+            [Bindable]
+            private var professionName:String;
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            public function goBack():void
+            {
+                navigator.popView();
+            }
+            
+            public function get productionId():String
+            {
+                return data.toString();
+            }
+            
+            protected function creationCompleteHandler(event:FlexEvent):void
+            {
+                _personMediator = PersonMediator(ProtoFacade.getInstance().retrieveMediator(PersonMediator.NAME));
+                _personMediator.setViewComponent(this);
+                
+                updatePerson();
+            }
+            
+            private function updatePerson():void
+            {
+                if (_personMediator)
+                {
+                    _personMediator.personId = data.toString();
+                    
+                    title = _personMediator.personName;
+                    iconView.imageId = _personMediator.personAvatar;
+                    var base:BaseVO = _personMediator.personBase;
+                    baseName = base ? base.baseName : Const.NO_TEXT;
+                    var profession:ProfessionDescVO = ProfessionsDict.getInstance().getProfession(_personMediator.personProfession);
+                    professionName = profession ? profession.professionName : Const.NO_TEXT;
+                }
+            }
+            
+            protected function move_clickHandler(event:MouseEvent):void
+            {
+                // TODO Auto-generated method stub
+                
+            }
+            
+            protected function fire_clickHandler(event:MouseEvent):void
+            {
+                // TODO Auto-generated method stub
+                
+            }
+            
+            //----------------------------------
+            //  View
+            //----------------------------------
+			
+            override public function set data(value:Object):void
+            {
+                super.data = value;
+                
+                if (initialized)
+                    updatePerson();
+            }
+            
+        ]]>
+	</fx:Script>
+</s:View>

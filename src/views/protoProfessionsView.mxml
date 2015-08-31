@@ -67,6 +67,7 @@
             
             import views.modal.AlertPopUp;
             import views.modal.HireEmployePopUp;
+            import views.ui.PersonView;
             
             import vo.ProfessionDescVO;
 			
@@ -137,17 +138,7 @@
 			
 			protected function employeCategoriesView_changeHandler(event:IndexChangeEvent):void
 			{
-				switch (employeCategoriesView.selectedItem.professionId)
-				{
-					case ProfessionDescVO.LABORER:
-						break;
-					case ProfessionDescVO.SOLGIER:
-						break;
-					case ProfessionDescVO.SCIENTIST:
-						break;
-					case ProfessionDescVO.ENGINEER:
-						break;
-				}
+				navigator.pushView(PersonView, employeCategoriesView.selectedItem.personId);
 			}
 			
             private function hireEmployePopUp_closeHandler(event:PopUpEvent):void
