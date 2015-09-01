@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Интерфейс для перемещения сотрудника -->
+
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:dropDownList="com.flextras.mobile.dropDownList.*"
+               xmlns:ui="views.ui.*"
+               creationComplete="creationCompleteHandler(event)"
+               filters="{proto.popUpShadow}"
+               currentState="simple">
+	<s:states>
+        <s:State name="simple"/>
+        <s:State name="withPrice"/>
+    </s:states>
+    
+	<s:BorderContainer>
+		<s:layout>
+			<s:VerticalLayout paddingLeft="1" paddingRight="1" paddingTop="1" paddingBottom="1" gap="10"/>
+		</s:layout>
+		
+		<s:BorderContainer width="100%" minHeight="0" backgroundColor="gray" borderVisible="false">
+			<s:layout>
+				<s:VerticalLayout paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="5" horizontalAlign="center"/>
+			</s:layout>
+			
+			<s:Label text="@Resource(key='move.person.popup.title', bundle='common')" color="white"/>
+		</s:BorderContainer>
+		
+		<s:VGroup gap="7" paddingLeft="5" paddingRight="5" paddingTop="0" paddingBottom="5" horizontalAlign="center">
+            <s:VGroup horizontalAlign="center" width="100%">
+                
+                <s:Label text="@Resource(key='move.person.popup.base', bundle='common')"/>
+                
+                <dropDownList:DropDownList id="baseSelector" width="100%" dataProvider="{basesList}"
+                                           labelField="baseName"/>
+            </s:VGroup>
+			
+            <s:VGroup horizontalAlign="center" width="100%">
+                
+                <s:Label text="@Resource(key='move.person.popup.profession', bundle='common')"/>
+                
+                <dropDownList:DropDownList id="profSelector" width="100%" dataProvider="{professionsList}"
+                                           labelField="professionName" change="{updatePrice();}"/>
+            </s:VGroup>
+            
+            <s:VGroup gap="3" horizontalAlign="center" includeIn="withPrice">
+                <s:Label text="@Resource(key='move.person.popup.surcharge', bundle='common')"/>
+                
+                <ui:PriceView width="100%" price="{price}"/>
+            </s:VGroup>
+            
+			<s:HGroup width="100%">
+				<s:Button label="@Resource(key='place.popup.move', bundle='common')" width="50%" minWidth="120"
+						  enabled="{isOtherBaseSelected(baseSelector.selectedItem as BaseVO) || isOtherProfessionSelected(profSelector.selectedItem as ProfessionDescVO)}"
+						  click="okButton_clickHandler(event)"/>
+				
+				<s:Button label="@Resource(key='alert.cancel', bundle='common')" width="50%" minWidth="120"
+						  click="{close(false, Const.CANCEL);}"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:BorderContainer>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+    
+    <fx:Metadata>
+        [ResourceBundle("common")]
+    </fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+            import mx.collections.ArrayCollection;
+            import mx.core.FlexGlobals;
+            import mx.events.FlexEvent;
+            import mx.managers.PopUpManager;
+            
+            import dictionary.Const;
+            import dictionary.ProfessionsDict;
+            
+            import helpers.ModulesHelper;
+            import helpers.ResourcesHelper;
+            
+            import vo.BaseVO;
+            import vo.ModuleDescVO;
+            import vo.PriceVO;
+            import vo.ProfessionDescVO;
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+            
+            private var _basesList:ArrayCollection;
+            private var _selectedBaseId:String;
+            
+            private var _defaultProfession:String;
+            private var _professionsList:ArrayCollection;
+            
+            public var employeeId:String;
+			
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            [Bindable]
+            private var price:PriceVO;
+            
+            [Bindable (event="basesListChanged")]
+            public function get basesList():ArrayCollection
+            {
+                return _basesList;
+            }
+            
+            public function set basesList(value:ArrayCollection):void
+            {
+                if (value == _basesList)
+                    return;
+                
+                _basesList = value;
+                dispatchEvent(new Event("basesListChanged"));
+                
+                if (initialized)
+                    updateSelectedBase();
+            }
+            
+            [Bindable (event="professionsListChanged")]
+            public function get professionsList():ArrayCollection
+            {
+                return _professionsList;
+            }
+            
+            public function set professionsList(value:ArrayCollection):void
+            {
+                if (value == _professionsList)
+                    return;
+                
+                _professionsList = value;
+                dispatchEvent(new Event("professionsListChanged"));
+                
+                if (initialized)
+                    setDefaultProfession();
+            }
+			
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+            
+            public function set selectedBase(value:String):void
+            {
+                _selectedBaseId = value;
+                
+                if (initialized)
+                    updateSelectedBase();
+            }
+            
+            public function set defaultProfession(value:String):void
+            {
+                if (value == _defaultProfession)
+                    return;
+                
+                _defaultProfession = value;
+                
+                if (initialized)
+                    setDefaultProfession();
+            }
+            
+            protected function creationCompleteHandler(event:FlexEvent):void
+            {
+                updateSelectedBase();
+                setDefaultProfession();
+            }
+            
+            private function updateSelectedBase():void
+            {
+                if (_basesList && _selectedBaseId)
+                {
+                    for (var i:int = 0; i < _basesList.length; i++)
+                    {
+                        var base:BaseVO = BaseVO(_basesList[i]);
+                        if (base.baseId == _selectedBaseId)
+                        {
+                            baseSelector.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            private function setDefaultProfession():void
+            {
+                var index:int = -1;
+                if (professionsList)
+                {
+                    for (var i:int = 0; i < professionsList.length; i++)
+                    {
+                        var prof:ProfessionDescVO = ProfessionDescVO(professionsList[i]);
+                        if (prof.professionId == _defaultProfession)
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+                }
+                profSelector.selectedIndex = index;
+                
+                updatePrice();
+            }
+            
+            private function updatePrice():void
+            {
+                var prof:ProfessionDescVO = ProfessionsDict.getInstance().getProfession(_defaultProfession);
+                if (prof)
+                {
+                    var price1:PriceVO = prof.professionHiringCost;
+                    prof = profSelector.selectedItem as ProfessionDescVO;
+                    if (prof)
+                    {
+                        var price2:PriceVO = prof.professionHiringCost;
+                        var resourcesDecor:ResourcesHelper = new ResourcesHelper();
+                        price1 = resourcesDecor.joinPrice(price1, resourcesDecor.invertPrice(price2));
+                        price1 = resourcesDecor.separatePrice(price1)[1];
+                        
+                        if (price1.children.length > 0)
+                        {
+                            // Есть доплата для перевода на новую должность
+                            currentState = "withPrice";
+                            price = resourcesDecor.invertPrice(price1);
+                            return;
+                        }
+                    }
+                }
+                currentState = "simple";
+            }
+			
+			private function isOtherBaseSelected(base:BaseVO):Boolean
+			{
+				return base != null && base.baseId != _selectedBaseId;
+			}
+            
+            private function isOtherProfessionSelected(prof:ProfessionDescVO):Boolean
+            {
+                return prof != null && prof.professionId != _defaultProfession;
+            }
+            
+            protected function okButton_clickHandler(event:MouseEvent):void
+            {
+                var base:BaseVO = baseSelector.selectedItem as BaseVO;
+                if (base && base.baseId != _selectedBaseId && (new ModulesHelper()).getSpace(ModuleDescVO.HOUSING, base) <= 0)
+                {
+                    // Нет мест на базе назначения
+                    var alert:AlertPopUp = new AlertPopUp();
+                    alert.text = resourceManager.getString("common", "alert.move.noroom", [ base.baseName ]);
+                    alert.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                    PopUpManager.centerPopUp(alert);
+                    return;
+                }
+                
+                close(false, Const.OK);
+            }
+            
+        ]]>
+	</fx:Script>
+</s:SkinnablePopUpContainer>

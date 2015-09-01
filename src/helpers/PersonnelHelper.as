@@ -1,15 +1,22 @@
 package helpers
 {
+    import dictionary.Const;
+    
     import facade.ProtoFacade;
     
     import proxy.BasesListProxy;
+    import proxy.InvestigationsProxy;
     import proxy.PersonsProxy;
+    import proxy.ProductionsProxy;
     
     import vo.BaseVO;
     import vo.EmployeeVO;
     import vo.ModuleDescVO;
     import vo.PersonVO;
     import vo.PersonnelVO;
+    import vo.ProductionVO;
+    import vo.ResearchVO;
+    import vo.WorkerVO;
 
     /**
      * 
@@ -70,6 +77,9 @@ package helpers
             
             if (replacePerson)
             {
+                var investigationsProxy:InvestigationsProxy = InvestigationsProxy(ProtoFacade.getInstance().retrieveProxy(InvestigationsProxy.NAME));
+                var productionsProxy:ProductionsProxy = ProductionsProxy(ProtoFacade.getInstance().retrieveProxy(ProductionsProxy.NAME));
+                
                 for (i = 0; i < personsProxy.personsVO.children.length; i++)
                 {
                     var person:PersonVO = PersonVO(personsProxy.personsVO.children[i]);
@@ -77,6 +87,34 @@ package helpers
                     {
                         personsProxy.personsVO.children.splice(i, 1);
                         break;
+                    }
+                }
+                
+                for each (var research:ResearchVO in investigationsProxy.investigationsVO.children)
+                {
+                    for (i = 0; i < research.children.length; i++)
+                    {
+                        var worker:WorkerVO = WorkerVO(research.children[i]);
+                        if (worker.workerPersonId == personId)
+                        {
+                            research.children.splice(i, 1);
+                            ProtoFacade.getInstance().sendNotification(Const.RESEARCH_UPDATED, research.researchId);
+                            break;
+                        }
+                    }
+                }
+                
+                for each (var production:ProductionVO in productionsProxy.productionsVO.children)
+                {
+                    for (i = 0; i < production.children.length; i++)
+                    {
+                        worker = WorkerVO(production.children[i]);
+                        if (worker.workerPersonId == personId)
+                        {
+                            production.children.splice(i, 1);
+                            ProtoFacade.getInstance().sendNotification(Const.PRODUCTION_UPDATED, production.productionId);
+                            break;
+                        }
                     }
                 }
             }

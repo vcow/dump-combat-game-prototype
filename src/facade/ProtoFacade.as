@@ -8,10 +8,12 @@ package facade
 	import command.CreateNewBaseCommand;
 	import command.CreateNewPersonCommand;
 	import command.GameEventCommand;
+	import command.MovePersonCommand;
 	import command.NewPersonCreatedCommand;
 	import command.PlaceEmployeeCommand;
 	import command.RemoveModuleCommand;
 	import command.RenameBaseCommand;
+	import command.ReplacePersonCommand;
 	import command.ResourcesChangedCommand;
 	import command.SendGameMessageCommand;
 	import command.StartUpCommand;
@@ -79,6 +81,8 @@ package facade
             registerCommand(Const.COMPLETE_RESEARCH, CompleteResearchCommand);
             registerCommand(Const.UPDATE_PRODUCTION, UpdateProductionCommand);
             registerCommand(Const.COMPLETE_PRODUCTION, CompleteProductionCommand);
+            registerCommand(Const.REPLACE_PERSON, ReplacePersonCommand);
+            registerCommand(Const.MOVE_PERSON, MovePersonCommand);
 		}
 	}
 }

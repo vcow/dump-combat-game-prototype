@@ -1,6 +1,13 @@
 package mediator
 {
+    import mx.collections.ArrayCollection;
+    
+    import command.data.MovePersonCmdData;
+    
     import dictionary.Const;
+    import dictionary.ProfessionsDict;
+    
+    import events.PersonEvent;
     
     import helpers.PersonnelHelper;
     
@@ -9,6 +16,7 @@ package mediator
     import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.mediator.Mediator;
     
+    import proxy.BasesListProxy;
     import proxy.PersonsProxy;
     
     import views.ui.PersonView;
@@ -16,6 +24,7 @@ package mediator
     import vo.BaseVO;
     import vo.EmployeeVO;
     import vo.PersonVO;
+    import vo.ProfessionDescVO;
     
     public class PersonMediator extends Mediator
     {
@@ -27,7 +36,8 @@ package mediator
         
         private var _person:PersonVO;
         private var _personsProxy:PersonsProxy;
-        private var _personnelDecor:PersonnelHelper;
+        private var _basesListProxy:BasesListProxy;
+        private var _profDataProvider:ArrayCollection;
         
         //--------------------------------------------------------------------------
         // 
@@ -40,6 +50,9 @@ package mediator
             PersonTemplatesManager.getInstance();
         }
         
+        /**
+         * Идентификатор персонажа
+         */
         public function set personId(value:String):void
         {
             if (_person && _person.personId == value)
@@ -48,26 +61,38 @@ package mediator
             _person = personsProxy.getPersonById(value);
         }
         
+        /**
+         * Имя выбранного персонажа
+         */
         public function get personName():String
         {
             return _person ? _person.personName : Const.NO_TEXT;
         }
         
+        /**
+         * Аватар выбранного персонажа
+         */
         public function get personAvatar():String
         {
             return _person ? _person.personImage : "";
         }
         
+        /**
+         * База выбранного персонажа
+         */
         public function get personBase():BaseVO
         {
-            return _person ? personnelDecor.getEmployeePlace(_person.personId) : null;
+            return _person ? (new PersonnelHelper(basesListProxy, personsProxy)).getEmployeePlace(_person.personId) : null;
         }
         
+        /**
+         * Идентификатор профессии выбранного персонажа
+         */
         public function get personProfession():String
         {
             if (_person)
             {
-                var base:BaseVO = personnelDecor.getEmployeePlace(_person.personId);
+                var base:BaseVO = (new PersonnelHelper(basesListProxy, personsProxy)).getEmployeePlace(_person.personId);
                 if (base)
                 {
                     for each (var employee:EmployeeVO in base.basePersonnel.children)
@@ -78,6 +103,34 @@ package mediator
                 }
             }
             return "";
+        }
+        
+        /**
+         * Источник данных для списка баз
+         */
+        public function get basesDataProvider():ArrayCollection
+        {
+            var bases:Array = [];
+            for each (var base:BaseVO in basesListProxy.getBasesList())
+                bases.push(base);
+            
+            bases.sortOn("baseName");
+            return new ArrayCollection(bases);
+        }
+        
+        /**
+         * Список профессий
+         */
+        public function get profDataProvider():ArrayCollection
+        {
+            if (!_profDataProvider)
+            {
+                var profs:Array = [];
+                for each (var profession:ProfessionDescVO in ProfessionsDict.getInstance().professions)
+                   profs.push(profession);
+               _profDataProvider = new ArrayCollection(profs);
+            }
+            return _profDataProvider;
         }
         
         protected function get personView():PersonView
@@ -92,11 +145,11 @@ package mediator
             return _personsProxy;
         }
         
-        protected function get personnelDecor():PersonnelHelper
+        protected function get basesListProxy():BasesListProxy
         {
-            if (!_personnelDecor)
-                _personnelDecor = new PersonnelHelper(null, personsProxy);
-            return _personnelDecor;
+            if (!_basesListProxy)
+                _basesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
+            return _basesListProxy;
         }
         
         //--------------------------------------------------------------------------
@@ -113,6 +166,8 @@ package mediator
             
             // TODO: Удалить все обработчики событий, если таковые были установлены
             
+            personView.removeEventListener(PersonEvent.FIRE_PERSON, firePersonHandler);
+            personView.removeEventListener(PersonEvent.MOVE_PERSON, movePersonHandler);
             
             // /TODO
         }
@@ -127,8 +182,20 @@ package mediator
             
             // TODO: Проинициализировать поля компонента актуальными значениями, устновить оброботчики событий, если нужно
             
+            personView.addEventListener(PersonEvent.FIRE_PERSON, firePersonHandler);
+            personView.addEventListener(PersonEvent.MOVE_PERSON, movePersonHandler);
             
             // /TODO
+        }
+        
+        private function firePersonHandler(event:PersonEvent):void
+        {
+            sendNotification(Const.REPLACE_PERSON, event.personId);
+        }
+        
+        private function movePersonHandler(event:PersonEvent):void
+        {
+            sendNotification(Const.MOVE_PERSON, new MovePersonCmdData(event.personId, event.baseId, event.professionId));
         }
         
         //----------------------------------
@@ -144,14 +211,30 @@ package mediator
         
         override public function listNotificationInterests():Array
         {
-            return [  ];
+            return [ Const.PERSON_IS_REPLACED, Const.EMPLOYEE_PROF_IS_CHANGED, Const.EMPLOYEE_IS_PLACED ];
         }
         
         override public function handleNotification(notification:INotification):void
         {
             switch (notification.getName())
             {
-                
+                case Const.PERSON_IS_REPLACED:
+                    if (personView)
+                    {
+                        if (notification.getBody().toString() == personView.personId)
+                            personView.goBack();
+                    }
+                    break;
+                case Const.EMPLOYEE_PROF_IS_CHANGED:
+                    var employee:EmployeeVO = notification.getBody() as EmployeeVO;
+                    if (employee && personView && employee.employeePersonId == personView.personId)
+                        personView.updateProfession();
+                    break;
+                case Const.EMPLOYEE_IS_PLACED:
+                    employee = notification.getBody() as EmployeeVO;
+                    if (employee && personView && employee.employeePersonId == personView.personId)
+                        personView.updateBase();
+                    break;
             }
         }
     }

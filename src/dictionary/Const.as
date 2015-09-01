@@ -37,6 +37,7 @@ package dictionary
         public static const NEW_PERSON_CREATED:String = "newPersonCreated";                 //< Был создан новый персонаж
         public static const PLACE_EMPLOYEE:String = "placeEmployee";                        //< Запрос на приписку сотрудника к базе
         public static const EMPLOYEE_IS_PLACED:String = "employeeIsPlaced";                 //< Сотрудник приписан к базе
+        public static const EMPLOYEE_PROF_IS_CHANGED:String = "employeeProfIsChanged";      //< Изменена профессия сотрудника
         public static const CHANGE_RESOURCES:String = "changeResources";                    //< Изменить количество ресурсов
         public static const RESOURCES_CHANGED:String = "resourcesChanged";                  //< Изменилось количество ресурсов
         public static const ARTIFACT_FINDED:String = "artifactFinded";                      //< Найден артефакт
@@ -59,5 +60,8 @@ package dictionary
         public static const PRODUCTION_STARTED:String = "productionStarted";                //< Производство начато
         public static const PRODUCTION_COMPLETED:String = "productionCompleted";            //< Производство завершено
         public static const PRODUCT_UNIT_COMPLETED:String = "productUnitCompleted";         //< Завершено производство единицы продукции
+        public static const REPLACE_PERSON:String = "firePerson";                           //< Удалить персонажа
+        public static const PERSON_IS_REPLACED:String = "personIsFired";                    //< Персонаж удален
+        public static const MOVE_PERSON:String = "movePerson";                              //< Перевести сотрудника
 	}
 }

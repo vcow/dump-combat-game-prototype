@@ -4,8 +4,8 @@ package mediator
     
     import command.data.HirePersonCmdData;
     
-    import dictionary.ProfessionsDict;
     import dictionary.Const;
+    import dictionary.ProfessionsDict;
     
     import events.EmployeeListEvent;
     
@@ -233,7 +233,7 @@ package mediator
         
         override public function listNotificationInterests():Array
         {
-            return [ Const.NEW_PERSON_CREATED, Const.EMPLOYEE_IS_PLACED ];
+            return [ Const.NEW_PERSON_CREATED, Const.EMPLOYEE_IS_PLACED, Const.PERSON_IS_REPLACED, Const.EMPLOYEE_PROF_IS_CHANGED ];
         }
         
         override public function handleNotification(notification:INotification):void
@@ -260,6 +260,8 @@ package mediator
 					}
                     break;
 				case Const.EMPLOYEE_IS_PLACED:
+                case Const.PERSON_IS_REPLACED:
+                case Const.EMPLOYEE_PROF_IS_CHANGED:
 					professionsView.updateList();
 					break;
             }

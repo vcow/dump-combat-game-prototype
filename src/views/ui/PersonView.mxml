@@ -50,18 +50,30 @@
 	
 	<fx:Metadata>
 		[ResourceBundle("common")]
+        
+        [Event(name="movePerson", type="events.PersonEvent")]
+        [Event(name="firePerson", type="events.PersonEvent")]
 	</fx:Metadata>
 	
 	<fx:Script>
 		<![CDATA[
+            import mx.core.FlexGlobals;
             import mx.events.FlexEvent;
+            import mx.managers.PopUpManager;
+            
+            import spark.events.PopUpEvent;
             
             import dictionary.Const;
             import dictionary.ProfessionsDict;
             
+            import events.PersonEvent;
+            
             import facade.ProtoFacade;
             
             import mediator.PersonMediator;
+            
+            import views.modal.AlertPopUp;
+            import views.modal.MoveEmployeePopUp;
             
             import vo.BaseVO;
             import vo.ProfessionDescVO;
@@ -91,9 +103,27 @@
                 navigator.popView();
             }
             
-            public function get productionId():String
+            public function get personId():String
             {
                 return data.toString();
+            }
+            
+            public function updateProfession():void
+            {
+                if (_personMediator)
+                {
+                    var profession:ProfessionDescVO = ProfessionsDict.getInstance().getProfession(_personMediator.personProfession);
+                    professionName = profession ? profession.professionName : Const.NO_TEXT;
+                }
+            }
+            
+            public function updateBase():void
+            {
+                if (_personMediator)
+                {
+                    var base:BaseVO = _personMediator.personBase;
+                    baseName = base ? base.baseName : Const.NO_TEXT;
+                }
             }
             
             protected function creationCompleteHandler(event:FlexEvent):void
@@ -121,14 +151,48 @@
             
             protected function move_clickHandler(event:MouseEvent):void
             {
-                // TODO Auto-generated method stub
+                var moveEmployeePopUp:MoveEmployeePopUp = new MoveEmployeePopUp();
+                moveEmployeePopUp.addEventListener(PopUpEvent.CLOSE, moveEmployeePopUp_closeHandler);
                 
+                if (_personMediator)
+                {
+                    moveEmployeePopUp.basesList = _personMediator.basesDataProvider;
+                    var base:BaseVO = _personMediator.personBase;
+                    moveEmployeePopUp.selectedBase = base ? base.baseId : Const.NO_GUID;
+                    moveEmployeePopUp.professionsList = _personMediator.profDataProvider;
+                    var profession:ProfessionDescVO = ProfessionsDict.getInstance().getProfession(_personMediator.personProfession);
+                    moveEmployeePopUp.defaultProfession = profession ? profession.professionId : "";
+                }
+                
+                moveEmployeePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                PopUpManager.centerPopUp(moveEmployeePopUp);
             }
             
             protected function fire_clickHandler(event:MouseEvent):void
             {
-                // TODO Auto-generated method stub
+                var alert:AlertPopUp = new AlertPopUp();
+                alert.buttonFlags = Const.YES | Const.NO;
+                alert.text = resourceManager.getString("common", "alert.fire.confirm");
+                alert.addEventListener(PopUpEvent.CLOSE, function(event:PopUpEvent):void {
+                    if (event.data == Const.YES)
+                        dispatchEvent(new PersonEvent(PersonEvent.FIRE_PERSON, personId, null, null));
+                });
+                alert.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                PopUpManager.centerPopUp(alert);
+            }
+            
+            private function moveEmployeePopUp_closeHandler(event:PopUpEvent):void
+            {
+                var moveEmployeePopUp:MoveEmployeePopUp = MoveEmployeePopUp(event.target);
+                moveEmployeePopUp.removeEventListener(PopUpEvent.CLOSE, moveEmployeePopUp_closeHandler);
                 
+                if (event.data == Const.OK)
+                {
+                    var base:BaseVO = moveEmployeePopUp.baseSelector.selectedItem as BaseVO;
+                    var profession:ProfessionDescVO = moveEmployeePopUp.profSelector.selectedItem as ProfessionDescVO;
+                    if (base && profession)
+                        dispatchEvent(new PersonEvent(PersonEvent.MOVE_PERSON, personId, base.baseId, profession.professionId));
+                }
             }
             
             //----------------------------------

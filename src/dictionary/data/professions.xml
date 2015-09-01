@@ -25,7 +25,7 @@
 	</professionDesc>
 	<professionDesc id="scientist" name="{prof.scientist}" category="{personnel.cat.scientists}">
 		<price details="price">
-			<resource id="food" count="10"/>
+			<resource id="food" count="15"/>
 		</price>
 		<price details="fee" event="payDay">
 			<resource id="food" count="1"/>
@@ -33,7 +33,7 @@
 	</professionDesc>
 	<professionDesc id="engineer" name="{prof.engineer}" category="{personnel.cat.engineers}">
 		<price details="price">
-			<resource id="food" count="10"/>
+			<resource id="food" count="12"/>
 		</price>
 		<price details="fee" event="payDay">
 			<resource id="food" count="1"/>

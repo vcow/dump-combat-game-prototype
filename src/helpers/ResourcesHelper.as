@@ -85,12 +85,15 @@ package helpers
 		public function invertPrice(sourcePrice:PriceVO):PriceVO
 		{
 			var invert:PriceVO = new PriceVO();
-			for each (var resource:ResourceVO in sourcePrice.children)
-			{
-				var ires:ResourceVO = ResourceVO(resource.clone());
-				ires.resourceCount *= -1;
-				invert.children.push(ires);
-			}
+            if (sourcePrice)
+            {
+    			for each (var resource:ResourceVO in sourcePrice.children)
+    			{
+    				var ires:ResourceVO = ResourceVO(resource.clone());
+    				ires.resourceCount *= -1;
+    				invert.children.push(ires);
+    			}
+            }
 			return invert;
 		}
 		
@@ -128,7 +131,7 @@ package helpers
 		public function joinPrice(...args):PriceVO
 		{
 			if (args.length == 1)
-				return args[0];
+				return args[0] is PriceVO ? args[0] : new PriceVO();
 			
 			var price:PriceVO = new PriceVO();
 			for each (var src:PriceVO in args)
