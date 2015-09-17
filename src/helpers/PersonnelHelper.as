@@ -90,7 +90,7 @@ package helpers
                     }
                 }
                 
-                for each (var research:ResearchVO in investigationsProxy.investigationsVO.children)
+                for each (var research:ResearchVO in investigationsProxy.armyVO.children)
                 {
                     for (i = 0; i < research.children.length; i++)
                     {

@@ -71,7 +71,7 @@ package mediator
         {
             var res:Array = [];
             var investigationsDict:InvestigationsDict = InvestigationsDict.getInstance();
-            for each (var research:ResearchVO in investigationsProxy.investigationsVO.children)
+            for each (var research:ResearchVO in investigationsProxy.armyVO.children)
             {
                 var researchDesc:ResearchDescVO = investigationsDict.getResearch(research.researchId);
                 res.push({

@@ -68,7 +68,7 @@ package command
             }
             
             // Прокинуть евент по всем исследованиям
-            var investigations:InvestigationsVO = InvestigationsProxy(this.facade.retrieveProxy(InvestigationsProxy.NAME)).investigationsVO;
+            var investigations:InvestigationsVO = InvestigationsProxy(this.facade.retrieveProxy(InvestigationsProxy.NAME)).armyVO;
             investigations.event(notification.getType(), notification.getBody(), out);
             
             // Прокинуть евент по производствам

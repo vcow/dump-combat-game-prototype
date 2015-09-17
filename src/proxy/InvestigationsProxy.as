@@ -35,7 +35,7 @@ package proxy
             super(NAME, data);
         }
         
-        public function get investigationsVO():InvestigationsVO
+        public function get armyVO():InvestigationsVO
         {
             return getData() as InvestigationsVO;
         }
@@ -47,7 +47,7 @@ package proxy
          */
         public function getResearch(researchId:String):ResearchVO
         {
-            for each (var research:ResearchVO in investigationsVO.children)
+            for each (var research:ResearchVO in armyVO.children)
             {
                 if (research.researchId == researchId)
                     return research;
@@ -66,7 +66,7 @@ package proxy
             var personnel:PersonnelVO = new PersonnelVO;
             var personnelDecor:PersonnelHelper = new PersonnelHelper();
             
-            for each (var research:ResearchVO in investigationsVO.children)
+            for each (var research:ResearchVO in armyVO.children)
             {
                 if (researchId && research.researchId != researchId)
                     continue;
@@ -107,7 +107,7 @@ package proxy
                 
                 setData(value);
                 
-                appDataProxy.updateChild(investigationsVO);
+                appDataProxy.updateChild(armyVO);
             }
             
             return data;

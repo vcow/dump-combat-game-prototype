@@ -95,7 +95,7 @@ package command
                         return;
                     }
                     
-                    investigationsProxy.investigationsVO.children.push(research);
+                    investigationsProxy.armyVO.children.push(research);
                     
                     freeScientists = (new InvestigationsHelper(investigationsProxy)).getFreeScientists();
                     freeLabSpace = (new ModulesHelper()).getSpace(ModuleDescVO.LAB);

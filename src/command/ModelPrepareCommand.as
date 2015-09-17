@@ -4,6 +4,7 @@ package command
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 	
 	import proxy.AppDataProxy;
+	import proxy.ArmyProxy;
 	import proxy.BasesListProxy;
 	import proxy.EventsProxy;
 	import proxy.InvestigationsProxy;
@@ -44,6 +45,7 @@ package command
             this.facade.registerProxy(new LogProxy());
             this.facade.registerProxy(new InvestigationsProxy());
             this.facade.registerProxy(new ProductionsProxy());
+            this.facade.registerProxy(new ArmyProxy());
             this.facade.registerProxy(new EventsProxy());
             this.facade.registerProxy(new TimersProxy());
 		}

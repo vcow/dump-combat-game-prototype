@@ -38,11 +38,11 @@ package command
             var research:ResearchVO = investigationsProxy.getResearch(notification.getBody().toString());
             if (research && research.researchPercent >= 1.0)
             {
-                for (var i:int = 0; i < investigationsProxy.investigationsVO.children.length; i++)
+                for (var i:int = 0; i < investigationsProxy.armyVO.children.length; i++)
                 {
-                    if (investigationsProxy.investigationsVO.children[i] == research)
+                    if (investigationsProxy.armyVO.children[i] == research)
                     {
-                        investigationsProxy.investigationsVO.children.splice(i, 1);
+                        investigationsProxy.armyVO.children.splice(i, 1);
                         break;
                     }
                 }

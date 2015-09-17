@@ -238,7 +238,7 @@ package vo
 					case PersonnelVO.NAME: value = new PersonnelVO(); break;
                     case PersonVO.NAME: value = new PersonVO(); break;
                     case EmployeeVO.NAME: value = new EmployeeVO(); break;
-                    case EventDescVO.NAME: value = new EventDescVO(); break;
+                    case ArmyVO.NAME: value = new ArmyVO(); break;
                     case PersonsVO.NAME: value = new PersonsVO(); break;
                     case StuffVO.NAME: value = new StuffVO(); break;
                     case NotificationVO.NAME: value = new NotificationVO(); break;
