@@ -2,7 +2,6 @@ package dictionary
 {
 	import vo.AmmoDescVO;
 	import vo.ArmorDescVO;
-	import vo.ResourceDescVO;
 	import vo.WeaponDescVO;
 	
 	/**

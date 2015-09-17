@@ -22,11 +22,11 @@ package vo
 		//--------------------------------------------------------------------------
 		
         public var weaponId:String;                 //< Уникальный идентификатор
-        public var weaponSharp:Number;              //< Режущий урон
-        public var weaponSpike:Number;              //< Колющий урон
-        public var weaponBlunt:Number;              //< Урон от удара
-        public var weaponFire:Number;               //< Урон от огня
-        public var weaponStrength:int;              //< Сила оружия
+        public var weaponSharpDmg:Number;           //< Режущий урон
+        public var weaponSpikeDmg:Number;           //< Колющий урон
+        public var weaponBluntDmg:Number;           //< Урон от удара
+        public var weaponFireDmg:Number;            //< Урон от огня
+        public var weaponDmgStrength:Number;        //< Сила оружия
         public var weaponClip:int;                  //< Объем магазина
         public var weaponReach:int;                 //< Радиус действия
         public var weaponTwoHanded:Boolean;         //< Признак того, что оружие двуручное
@@ -82,11 +82,11 @@ package vo
 			
             res.@id = weaponId;
             res.@resource = weaponResource;
-            res.@sharp = weaponSharp;
-            res.@spike = weaponSpike;
-            res.@blunt = weaponBlunt;
-            res.@fire = weaponFire;
-            res.@strength = weaponStrength;
+            res.@sharpDmg = weaponSharpDmg;
+            res.@spikeDmg = weaponSpikeDmg;
+            res.@bluntDmg = weaponBluntDmg;
+            res.@fireDmg = weaponFireDmg;
+            res.@dmgStrength = weaponDmgStrength;
             
             if (weaponClip > 0)
                 res.@clip = weaponClip;
@@ -108,11 +108,11 @@ package vo
 			
             weaponId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
             weaponResource = data.hasOwnProperty("@resource") ? data.@resource.toString() : "";
-            weaponSharp = data.hasOwnProperty("@sharp") ? Number(data.@sharp) : 0;
-            weaponSpike = data.hasOwnProperty("@spike") ? Number(data.@spike) : 0;
-            weaponBlunt = data.hasOwnProperty("@blunt") ? Number(data.@blunt) : 0;
-            weaponFire = data.hasOwnProperty("@fire") ? Number(data.@fire) : 0;
-            weaponStrength = data.hasOwnProperty("@strength") ? int(data.@strength) : 0;
+            weaponSharpDmg = data.hasOwnProperty("@sharpDmg") ? Number(data.@sharpDmg) : 0;
+            weaponSpikeDmg = data.hasOwnProperty("@spikeDmg") ? Number(data.@spikeDmg) : 0;
+            weaponBluntDmg = data.hasOwnProperty("@bluntDmg") ? Number(data.@bluntDmg) : 0;
+            weaponFireDmg = data.hasOwnProperty("@fireDmg") ? Number(data.@fireDmg) : 0;
+            weaponDmgStrength = data.hasOwnProperty("@dmgStrength") ? Number(data.@dmgStrength) : 0;
             weaponClip = data.hasOwnProperty("@clip") ? int(data.@clip) : 0;
             weaponReach = data.hasOwnProperty("@reach") ? int(data.@reach) : 1;
             weaponTwoHanded = data.hasOwnProperty("@twoHanded") ? data.@twoHanded.toString().toLowerCase() == "true" : false;

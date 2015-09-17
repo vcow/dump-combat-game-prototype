@@ -22,11 +22,11 @@ package vo
 		//--------------------------------------------------------------------------
 		
         public var armorId:String;                 //< Уникальный идентификатор
-        public var armorSharp:Number;              //< Режущий урон
-        public var armorSpike:Number;              //< Колющий урон
-        public var armorBlunt:Number;              //< Урон от удара
-        public var armorFire:Number;               //< Урон от огня
-        public var armorStrength:int;              //< Сила брони
+        public var armorSharpDef:Number;           //< Режущий урон
+        public var armorSpikeDef:Number;           //< Колющий урон
+        public var armorBluntDef:Number;           //< Урон от удара
+        public var armorFireDef:Number;            //< Урон от огня
+        public var armorDefStrength:Number;        //< Сила брони
 		
 		private var _armorResource:String;
         private var _data:Object = {};
@@ -79,11 +79,11 @@ package vo
 			
             res.@id = armorId;
             res.@resource = armorResource;
-            res.@sharp = armorSharp;
-            res.@spike = armorSpike;
-            res.@blunt = armorBlunt;
-            res.@fire = armorFire;
-            res.@strength = armorStrength;
+            res.@sharpDef = armorSharpDef;
+            res.@spikeDef = armorSpikeDef;
+            res.@bluntDef = armorBluntDef;
+            res.@fireDef = armorFireDef;
+            res.@defStrength = armorDefStrength;
 			
 			// /TODO
 			
@@ -96,11 +96,11 @@ package vo
 			
             armorId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
             armorResource = data.hasOwnProperty("@resource") ? data.@resource.toString() : "";
-            armorSharp = data.hasOwnProperty("@sharp") ? Number(data.@sharp) : 0;
-            armorSpike = data.hasOwnProperty("@spike") ? Number(data.@spike) : 0;
-            armorBlunt = data.hasOwnProperty("@blunt") ? Number(data.@blunt) : 0;
-            armorFire = data.hasOwnProperty("@fire") ? Number(data.@fire) : 0;
-            armorStrength = data.hasOwnProperty("@strength") ? int(data.@strength) : 0;
+            armorSharpDef = data.hasOwnProperty("@sharpDef") ? Number(data.@sharpDef) : 0;
+            armorSpikeDef = data.hasOwnProperty("@spikeDef") ? Number(data.@spikeDef) : 0;
+            armorBluntDef = data.hasOwnProperty("@bluntDef") ? Number(data.@bluntDef) : 0;
+            armorFireDef = data.hasOwnProperty("@fireDef") ? Number(data.@fireDef) : 0;
+            armorDefStrength = data.hasOwnProperty("@defStrength") ? Number(data.@defStrength) : 0;
             
             _data = parseAsObject(data);
 			
