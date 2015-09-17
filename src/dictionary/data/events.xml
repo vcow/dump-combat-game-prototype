@@ -13,7 +13,7 @@
 	<eventDesc id="5sec" interval="5s"/>
 	<!-- Минутный тик -->
 	<eventDesc id="min" interval="1m">
-		<!-- Раз в минуту с вероятностью 10% находим палку -->
+		<!-- Раз в минуту с определенной вероятностью находим палку -->
 		<!-- Действие отправки нотификации, инициирует нотификацию с именем, указанным в id
 		и содержимым раздела в качестве данных. Имеет следующие поля:
 		id={строковое значение} - имя инициируемой нотификации
@@ -21,7 +21,7 @@
 		Может содержать данные нотификации, которые будут преобразованы в иерархический объект с полями типа String,
 		если не указан иной тип (поддерживаемые типы: int, uint, float), и дополнительное условие инициации (поле
 		value может содержать несколько значений) -->
-		<notification id="artifactFinded" chance="0.1">
+		<notification id="artifactFinded" chance="0.3">
 			<condition>
 				<if>
 					<trigger>employeesCount</trigger>
@@ -33,8 +33,8 @@
 				<resourceId>cudgel</resourceId>
 			</data>
 		</notification>
-		<!-- Раз в минуту с вероятностью 15% находим гвоздь -->
-		<notification id="artifactFinded" chance="0.15">
+		<!-- Раз в минуту с определенной вероятностью находим гвоздь -->
+		<notification id="artifactFinded" chance="0.5">
 			<condition>
 				<if>
 					<trigger>employeesCount</trigger>
@@ -44,6 +44,32 @@
 			</condition>
 			<data>
 				<resourceId>nail</resourceId>
+			</data>
+		</notification>
+		<!-- Раз в минуту с определенной вероятностью находим картон -->
+		<notification id="artifactFinded" chance="0.4">
+			<condition>
+				<if>
+					<trigger>employeesCount</trigger>
+					<value>laborer</value>
+					<min type="int">1</min>
+				</if>
+			</condition>
+			<data>
+				<resourceId>cardboard</resourceId>
+			</data>
+		</notification>
+		<!-- Раз в минуту с определенной вероятностью находим веревку -->
+		<notification id="artifactFinded" chance="0.5">
+			<condition>
+				<if>
+					<trigger>employeesCount</trigger>
+					<value>laborer</value>
+					<min type="int">1</min>
+				</if>
+			</condition>
+			<data>
+				<resourceId>rope</resourceId>
 			</data>
 		</notification>
 	</eventDesc>

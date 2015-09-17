@@ -11,8 +11,10 @@
 		trigger={строковое значение} - идентификатор триггера, который увеличивается на 1 при нахождении ресурса.-->
 	<!-- Деньги -->
 	<resourceDesc id="cash" name="{cash.title}" descriiption="{cash.description}" size="0" price="1.0"/>
+	
 	<!-- Еда -->
 	<resourceDesc id="food" name="{food.title}" descriiption="{food.description}" size="1" price="0.001"/>
+	
 	<!-- Палка -->
 	<resourceDesc id="cudgel" name="{cudgel.title}" descriiption="{cudgel.description}" size="2" price="0.01" descriptionInvestigated="{cudgel.description.investigated}" trigger="foundCudgel">
 		<!-- Условие, при выполнении которого артефакт считается изученным -->
@@ -22,6 +24,7 @@
 			</if>
 		</complete>
 	</resourceDesc>
+	
 	<!-- Гвоздь -->
 	<resourceDesc id="nail" name="{nail.title}" descriiption="{nail.description}" size="0" price="0.005" descriptionInvestigated="{nail.description.investigated}" trigger="foundNail">
 		<complete>
@@ -30,6 +33,37 @@
 			</if>
 		</complete>
 	</resourceDesc>
+	
 	<!-- Булава -->
 	<resourceDesc id="mace" name="{mace.title}" description="{mace.description}" size="2" price="0.1"/>
+	
+	<!-- Картон -->
+	<resourceDesc id="cardboard" name="{cardboard.title}" description="{cardboard.description}" size="3" price="0.01" descriptionInvestigated="{cardboard.description.investigated}" trigger="foundCardboard">
+		<complete>
+			<if>
+				<trigger>cardboardResearchComplete</trigger>
+			</if>
+		</complete>
+	</resourceDesc>
+	
+	<!-- Картонная броня -->
+	<resourceDesc id="cardboardArmor" name="{cardboard.armor.title}" description="{cardboard.armor.description}" size="3" price="0.05"/>
+	
+	<!-- Веревка -->
+	<resourceDesc id="rope" name="{rope.title}" description="{rope.description}" size="1" price="0.03" descriptionInvestigated="{rope.description.investigated}" trigger="foundRope">
+		<complete>
+			<if>
+				<trigger>ropeResearchComplete</trigger>
+			</if>
+		</complete>
+	</resourceDesc>
+	
+	<!-- Боевой лук -->
+	<resourceDesc id="bow" name="{bow.title}" description="{bow.description}" size="3" price="0.2"/>
+	
+	<!-- Стрела -->
+	<resourceDesc id="arrow" name="{arrow.title}" description="{arrow.description}" size="1" price="0.02"/>
+	
+	<!-- Стрела с наконечником -->
+	<resourceDesc id="arrowTipped" name="{arrow.tipped.title}" description="{arrow.tipped.description}" size="1" price="0.06"/>
 </resourcesDict>

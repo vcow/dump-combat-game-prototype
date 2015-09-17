@@ -101,4 +101,137 @@
 			<trigger id="maceResearchComplete" value="1" type="set"/>
 		</result>
 	</researchDesc>
+	
+	<!-- Изучить картон -->
+	<researchDesc id="cardboardResearch" title="{cardboard.research.title}" resultTitle="{cardboard.result.title}" resultDescription="{cardboard.result.description}" price="{40}" event="research" requirements="{cardboard.research.requirements}">
+		<condition>
+			<if>
+				<trigger>resourcesCount</trigger>
+				<value>cardboard</value>
+				<min type="int">1</min>
+			</if>
+		</condition>
+		<visibility>
+			<if>
+				<trigger>resourcesCount</trigger>
+				<value>cardboard</value>
+				<min type="int">1</min>
+			</if>
+		</visibility>
+		<complete>
+			<if>
+				<trigger>cardboardResearchComplete</trigger>
+			</if>
+		</complete>
+		<result>
+			<trigger id="cardboardResearchComplete" value="1" type="set"/>
+		</result>
+	</researchDesc>
+	
+	<!-- Изучить веревку -->
+	<researchDesc id="ropeResearch" title="{rope.research.title}" resultTitle="{rope.result.title}" resultDescription="{rope.result.description}" price="40" event="research" requirements="{rope.research.requirements}">
+		<condition>
+			<if>
+				<trigger>resourcesCount</trigger>
+				<value>rope</value>
+				<min type="int">1</min>
+			</if>
+		</condition>
+		<visibility>
+			<if>
+				<trigger>resourcesCount</trigger>
+				<value>rope</value>
+				<min type="int">1</min>
+			</if>
+		</visibility>
+		<complete>
+			<if>
+				<trigger>ropeResearchComplete</trigger>
+			</if>
+		</complete>
+		<result>
+			<trigger id="ropeResearchComplete" value="1" type="set"/>
+		</result>
+	</researchDesc>
+	
+	<!-- Изучить лук -->
+	<researchDesc id="bowResearch" title="{bow.research.title}" resultTitle="{bow.result.title}" resultDescription="{bow.result.description}" price="40" event="research" requirements="{bow.research.requirements}">
+		<condition>
+			<and>
+				<if>
+					<trigger>cudgelResearchComplete</trigger>
+				</if>
+				<if>
+					<trigger>ropeResearchComplete</trigger>
+				</if>
+			</and>
+		</condition>
+		<visibility>
+			<or>
+				<if>
+					<trigger>cudgelResearchComplete</trigger>
+				</if>
+				<if>
+					<trigger>ropeResearchComplete</trigger>
+				</if>
+			</or>
+		</visibility>
+		<complete>
+			<if>
+				<trigger>bowResearchComplete</trigger>
+			</if>
+		</complete>
+		<result>
+			<trigger id="bowResearchComplete" value="1" type="set"/>
+		</result>
+	</researchDesc>
+	
+	<!-- Изучить стрелу -->
+	<researchDesc id="arrowResearch" title="{arrow.research.title}" resultTitle="{arrow.result.title}" resultDescription="{arrow.result.description}" price="10" event="research" requirements="{arrow.research.requirements}">
+		<condition>
+			<if>
+				<trigger>bowResearchComplete</trigger>
+			</if>
+		</condition>
+		<visibility>
+			<if>
+				<trigger>bowResearchComplete</trigger>
+			</if>
+		</visibility>
+		<complete>
+			<if>
+				<trigger>arrowResearchComplete</trigger>
+			</if>
+		</complete>
+		<result>
+			<trigger id="arrowResearchComplete" value="1" type="set"/>
+		</result>
+	</researchDesc>
+	
+	<!-- Изучить стрелу с железным наконечником -->
+	<researchDesc id="arrowTippedResearch" title="{arrow.tipped.research.title}" resultTitle="{arrow.tipped.result.title}" resultDescription="{arrow.tipped.result.description}" price="10" event="research" requirements="{arrow.tipped.research.requirements}">
+		<condition>
+			<and>
+				<if>
+					<trigger>arrowResearchComplete</trigger>
+				</if>
+				<if>
+					<trigger>nailResearchComplete</trigger>
+				</if>
+			</and>
+		</condition>
+		<visibility>
+			<if>
+				<trigger>arrowResearchComplete</trigger>
+			</if>
+		</visibility>
+		<complete>
+			<if>
+				<trigger>arrowTippedResearchComplete</trigger>
+			</if>
+		</complete>
+		<result>
+			<trigger id="arrowTippedResearchComplete" value="1" type="set"/>
+		</result>
+	</researchDesc>
 </investigationsDict>

@@ -22,8 +22,9 @@
 			Может содержать дополнительные параметры для нотификации -->
 		<leadTime time="30s" event="constructionCompleted"/>
 	</moduleDesc>
+	
 	<!-- Складской модуль -->
-	<moduleDesc id="store" name="{store.title}" description="{store.description}" space="500" chance="0.4">
+	<moduleDesc id="store" name="{store.title}" description="{store.description}" space="1000" chance="0.4">
 		<price details="price">
 			<resource id="food" count="150"/>
 		</price>
@@ -32,6 +33,7 @@
 		</price>
 		<leadTime time="10s" event="constructionCompleted"/>
 	</moduleDesc>
+	
 	<!-- Лаборатория -->
 	<moduleDesc id="lab" name="{lab.title}" description="{lab.description}" space="15" chance="0.1">
 		<price details="price">
@@ -42,6 +44,7 @@
 		</price>
 		<leadTime time="1m" event="constructionCompleted"/>
 	</moduleDesc>
+	
 	<!-- Мастерская -->
 	<moduleDesc id="workshop" name="{workshop.title}" description="{workshop.description}" space="10" chance="0.3">
 		<price details="price">

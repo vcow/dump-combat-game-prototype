@@ -24,4 +24,72 @@
 			<resource id="mace" count="1"/>
 		</result>
 	</productionDesc>
+	
+	<!-- Производство картонной брони -->
+	<productionDesc id="prodCardboardArmor" name="{production.cardboard.armor}" description="{description.cardboard.armor}" price="10" danger="0" event="product">
+		<condition>
+			<if>
+				<trigger>cardboardResearchComplete</trigger>
+			</if>
+		</condition>
+		<price>
+			<resource id="cardboard" count="1"/>
+		</price>
+		<result>
+			<resource id="cardboardArmor" count="1"/>
+		</result>
+	</productionDesc>
+	
+	<!-- Производство лука -->
+	<productionDesc id="prodBow" name="{production.bow}" description="{description.bow}" price="15" danger="0" event="product">
+		<condition>
+			<and>
+				<if>
+					<trigger>bowResearchComplete</trigger>
+				</if>
+			</and>
+		</condition>
+		<price>
+			<resource id="cudgel" count="1"/>
+			<resource id="rope" count="1"/>
+		</price>
+		<result>
+			<resource id="bow" count="1"/>
+		</result>
+	</productionDesc>
+	
+	<!-- Производство стрелы -->
+	<productionDesc id="prodArrow" name="{production.arrow}" description="{description.arrow}" price="4" danger="0" event="product">
+		<condition>
+			<and>
+				<if>
+					<trigger>arrowResearchComplete</trigger>
+				</if>
+			</and>
+		</condition>
+		<price>
+			<resource id="cudgel" count="1"/>
+		</price>
+		<result>
+			<resource id="arrow" count="4"/>
+		</result>
+	</productionDesc>
+	
+	<!-- Производство стрелы с наконечником -->
+	<productionDesc id="prodArrowTipped" name="{production.arrow.tipped}" description="{description.arrow.tipped}" price="8" danger="0" event="product">
+		<condition>
+			<and>
+				<if>
+					<trigger>arrowTippedResearchComplete</trigger>
+				</if>
+			</and>
+		</condition>
+		<price>
+			<resource id="cudgel" count="1"/>
+			<resource id="nail" count="4"/>
+		</price>
+		<result>
+			<resource id="arrowTipped" count="4"/>
+		</result>
+	</productionDesc>
 </productionDict>
