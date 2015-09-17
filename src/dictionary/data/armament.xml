@@ -31,7 +31,7 @@
 		reach={числовое значение} - радиус действия
 		port={список строковых значений, разделенных запятыми} - список оружия, для которого подходит этот снаряд, если
 			отсутствует, значит снаряд автономный, например, граната -->
-	<ammoDesc id="arrow" resource="arrow" port="bow" reach="6" sharp="0" spike="1" blunt="0" fire="0" strength="1"/>
+	<ammoDesc id="arrow" resource="arrow" port="bow, arbalet ,rifle , canon" reach="6" sharp="0" spike="1" blunt="0" fire="0" strength="1"/>
 	<!-- Стрела с наконечником -->
 	<ammoDesc id="arrowTipped" resource="arrowTipped" port="bow" reach="8" sharp="0" spike="1" blunt="0" fire="0" strength="3"/>
 	<!-- Картонная броня -->

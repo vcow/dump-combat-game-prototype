@@ -257,7 +257,10 @@ package vo
                     case WorkerVO.NAME: value = new WorkerVO(); break;
                     case ResearchVO.NAME: value = new ResearchVO(); break;
                     case ProductionsVO.NAME: value = new ProductionsVO(); break;
-                    case ProductionVO.NAME:value = new ProductionVO(); break;
+                    case ProductionVO.NAME: value = new ProductionVO(); break;
+                    case WeaponDescVO.NAME: value = new WeaponDescVO(); break;
+                    case AmmoDescVO.NAME: value = new AmmoDescVO(); break;
+                    case ArmorDescVO.NAME: value = new ArmorDescVO(); break;
 					
 					// /TODO
 					
