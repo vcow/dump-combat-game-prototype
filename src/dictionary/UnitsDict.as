@@ -39,6 +39,33 @@ package dictionary
 				_instance = new UnitsDict();
 			return _instance;
 		}
+        
+        /**
+         * Получить описание юнита по его идентификатору
+         * @param unitId идентификатор описания юнита
+         * @return описание юнита
+         */
+        public function getUnit(unitId:String):UnitDescVO
+        {
+            init();
+            
+            for each (var unit:UnitDescVO in _units)
+            {
+                if (unit.unitId == unitId)
+                    return unit;
+            }
+            return null;
+        }
+        
+        /**
+         * Список юнитов
+         */
+        public function get units():Vector.<UnitDescVO>
+        {
+            init();
+            
+            return _units;
+        }
 		
         //--------------------------------------------------------------------------
         // 

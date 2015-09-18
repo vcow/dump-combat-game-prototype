@@ -21,12 +21,13 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-        public var armorId:String;                 //< Уникальный идентификатор
-        public var armorSharpDef:Number;           //< Режущий урон
-        public var armorSpikeDef:Number;           //< Колющий урон
-        public var armorBluntDef:Number;           //< Урон от удара
-        public var armorFireDef:Number;            //< Урон от огня
-        public var armorDefStrength:Number;        //< Сила брони
+        public var armorId:String;                                      //< Уникальный идентификатор
+        public var armorSharpDef:Number;                                //< Режущий урон
+        public var armorSpikeDef:Number;                                //< Колющий урон
+        public var armorBluntDef:Number;                                //< Урон от удара
+        public var armorFireDef:Number;                                 //< Урон от огня
+        public var armorDefStrength:Number;                             //< Сила брони
+        public var armorUnit:Vector.<String> = new Vector.<String>();   //< Список юнитов, для которого годится броня
 		
 		private var _armorResource:String;
         private var _data:Object = {};
@@ -84,6 +85,9 @@ package vo
             res.@bluntDef = armorBluntDef;
             res.@fireDef = armorFireDef;
             res.@defStrength = armorDefStrength;
+            
+            if (armorUnit.length > 0)
+                res.@unit = armorUnit.join(",");
 			
 			// /TODO
 			
@@ -101,6 +105,11 @@ package vo
             armorBluntDef = data.hasOwnProperty("@bluntDef") ? Number(data.@bluntDef) : 0;
             armorFireDef = data.hasOwnProperty("@fireDef") ? Number(data.@fireDef) : 0;
             armorDefStrength = data.hasOwnProperty("@defStrength") ? Number(data.@defStrength) : 0;
+            
+            var unitList:Array = data.hasOwnProperty("@unit") ? data.@unit.toString().split(/\s*,\s*/) : [];
+            armorUnit.splice(0, armorUnit.length);
+            for each (var unit:String in unitList)
+                armorUnit.push(unit);
             
             _data = parseAsObject(data);
 			

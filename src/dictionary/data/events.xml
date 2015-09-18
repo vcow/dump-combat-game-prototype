@@ -73,6 +73,22 @@
 			</data>
 		</notification>
 	</eventDesc>
+	<!-- Трехминутный тик -->
+	<eventDesc id="3min" interval="3m">
+		<!-- Раз в три минуты с определенной вероятностью находим кожу -->
+		<notification id="artifactFinded" chance="0.3">
+			<condition>
+				<if>
+					<trigger>employeesCount</trigger>
+					<value>laborer</value>
+					<min type="int">1</min>
+				</if>
+			</condition>
+			<data>
+				<resourceId>skin</resourceId>
+			</data>
+		</notification>
+	</eventDesc>
 	<!-- Сбор ресурсов -->
 	<eventDesc id="gather" interval="20s"/>
 	<!-- Зарплата всем работникам -->

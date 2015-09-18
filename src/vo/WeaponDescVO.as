@@ -21,15 +21,16 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-        public var weaponId:String;                 //< Уникальный идентификатор
-        public var weaponSharpDmg:Number;           //< Режущий урон
-        public var weaponSpikeDmg:Number;           //< Колющий урон
-        public var weaponBluntDmg:Number;           //< Урон от удара
-        public var weaponFireDmg:Number;            //< Урон от огня
-        public var weaponDmgStrength:Number;        //< Сила оружия
-        public var weaponClip:int;                  //< Объем магазина
-        public var weaponReach:int;                 //< Радиус действия
-        public var weaponTwoHanded:Boolean;         //< Признак того, что оружие двуручное
+        public var weaponId:String;                                     //< Уникальный идентификатор
+        public var weaponSharpDmg:Number;                               //< Режущий урон
+        public var weaponSpikeDmg:Number;                               //< Колющий урон
+        public var weaponBluntDmg:Number;                               //< Урон от удара
+        public var weaponFireDmg:Number;                                //< Урон от огня
+        public var weaponDmgStrength:Number;                            //< Сила оружия
+        public var weaponClip:int;                                      //< Объем магазина
+        public var weaponReach:int;                                     //< Радиус действия
+        public var weaponTwoHanded:Boolean;                             //< Признак того, что оружие двуручное
+        public var weaponUnit:Vector.<String> = new Vector.<String>();  //< Список юнитов, для которого годится оружие
 		
 		private var _weaponResource:String;
         private var _data:Object = {};
@@ -96,6 +97,9 @@ package vo
             
             if (weaponTwoHanded)
                 res.@twoHanded = weaponTwoHanded;
+            
+            if (weaponUnit.length > 0)
+                res.@unit = weaponUnit.join(",");
 			
 			// /TODO
 			
@@ -116,6 +120,11 @@ package vo
             weaponClip = data.hasOwnProperty("@clip") ? int(data.@clip) : 0;
             weaponReach = data.hasOwnProperty("@reach") ? int(data.@reach) : 1;
             weaponTwoHanded = data.hasOwnProperty("@twoHanded") ? data.@twoHanded.toString().toLowerCase() == "true" : false;
+            
+            var unitList:Array = data.hasOwnProperty("@unit") ? data.@unit.toString().split(/\s*,\s*/) : [];
+            weaponUnit.splice(0, weaponUnit.length);
+            for each (var unit:String in unitList)
+                weaponUnit.push(unit);
             
             _data = parseAsObject(data);
 			

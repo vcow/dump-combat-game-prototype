@@ -92,4 +92,21 @@
 			<resource id="arrowTipped" count="4"/>
 		</result>
 	</productionDesc>
+	
+	<!-- Производство ремня -->
+	<productionDesc id="prodBelt" name="{production.belt}" description="{description.belt}" price="10" danger="0" event="product">
+		<condition>
+			<and>
+				<if>
+					<trigger>beltResearchComplete</trigger>
+				</if>
+			</and>
+		</condition>
+		<price>
+			<resource id="skin" count="1"/>
+		</price>
+		<result>
+			<resource id="belt" count="2"/>
+		</result>
+	</productionDesc>
 </productionDict>

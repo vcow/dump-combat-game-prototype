@@ -33,4 +33,10 @@
 	<triggerDesc id="arrowResearchComplete"/>
 	<!-- Исследование стрелы с железным наконечником завершено -->
 	<triggerDesc id="arrowTippedResearchComplete"/>
+	<!-- Найдена кожа -->
+	<triggerDesc id="foundSkin"/>
+	<!-- Исследование кожи завершено -->
+	<triggerDesc id="skinResearchComplete"/>
+	<!-- Исследование ремня -->
+	<triggerDesc id="beltResearchComplete"/>
 </triggersDict>

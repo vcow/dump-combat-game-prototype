@@ -66,4 +66,16 @@
 	
 	<!-- Стрела с наконечником -->
 	<resourceDesc id="arrowTipped" name="{arrow.tipped.title}" description="{arrow.tipped.description}" size="1" price="0.06"/>
+	
+	<!-- Кожа -->
+	<resourceDesc id="skin" name="{skin.title}" description="{skin.description}" size="1" price="0.5" descriptionInvestigated="{skin.description.investigated}" trigger="foundSkin">
+		<complete>
+			<if>
+				<trigger>skinResearchComplete</trigger>
+			</if>
+		</complete>
+	</resourceDesc>
+	
+	<!-- Ремень -->
+	<resourceDesc id="belt" name="{belt.title}" description="{belt.description}" size="1" price="0.4"/>
 </resourcesDict>

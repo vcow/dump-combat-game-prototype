@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Интерфейс экипировки боевого юнита -->
+
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+						   xmlns:s="library://ns.adobe.com/flex/spark"
+						   xmlns:ui="views.ui.*"
+                           xmlns:dropDownList="com.flextras.mobile.dropDownList.*"
+                           xmlns:mx="library://ns.adobe.com/flex/mx"
+                           filters="{proto.popUpShadow}"
+                           currentState="list"
+                           stateChangeComplete="stateChangeCompleteHandler(event)">
+    <s:states>
+        <s:State name="list"/>
+        <s:State name="unit"/>
+        <s:State name="woResource"/>
+        <s:State name="woCrew"/>
+    </s:states>
+    
+	<s:BorderContainer>
+		<s:layout>
+			<s:VerticalLayout gap="10" paddingBottom="1" paddingLeft="1" paddingRight="1"
+							  paddingTop="1"/>
+		</s:layout>
+		
+		<s:BorderContainer width="100%" minHeight="0" backgroundColor="gray" borderVisible="false">
+			<s:layout>
+				<s:VerticalLayout horizontalAlign="center" paddingBottom="5" paddingLeft="5"
+								  paddingRight="5" paddingTop="5"/>
+			</s:layout>
+			
+			<s:Label color="white" text.list="@Resource(key='army.equip.popup.title', bundle='common')"
+                     text="{_unitName}"/>
+		</s:BorderContainer>
+        
+        <s:VGroup width="100%" gap="10" horizontalAlign="center" paddingBottom="5" paddingLeft="5"
+                  paddingRight="5" paddingTop="5">
+            
+            <s:List includeIn="list" id="unitsListView" verticalScrollPolicy="on" horizontalScrollPolicy="off"
+                    width="100%" height="300" change="unitsListView_changeHandler(event)"
+                    dataProvider="{unitList}" labelField="unitName"/>
+            
+            <s:BorderContainer cornerRadius="4" excludeFrom="list,woCrew" minHeight="0">
+                <s:layout>
+                    <s:VerticalLayout paddingLeft="5" paddingRight="5" paddingTop="12" paddingBottom="0"/>
+                </s:layout>
+                
+                <s:TextArea id="crewTextArea" width="220" fontSize="14" editable="false" selectable="false" creationComplete="{updateCrewText();}"
+                            paddingTop="0" paddingBottom="0"/>
+            </s:BorderContainer>
+            
+            <s:HGroup width="266">
+                <s:Button width="50%" label="@Resource(key='army.equip.popup.equip', bundle='common')"
+                          click="{close(false, Const.OK);}" enabled.list="false" enabled="{crewComplete}"/>
+                
+                <s:Button width="50%" label="@Resource(key='alert.cancel', bundle='common')"
+                          click="{close(false, Const.CANCEL);}"/>
+            </s:HGroup>
+        </s:VGroup>
+	</s:BorderContainer>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+    
+    <fx:Metadata>
+        [ResourceBundle("common")]
+        [Event(name="equipUnitSelected", type="events.ArmyEvent")]
+    </fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+            import mx.collections.ArrayCollection;
+            import mx.events.FlexEvent;
+            import mx.managers.PopUpManager;
+            
+            import spark.components.supportClasses.StyleableTextField;
+            import spark.events.IndexChangeEvent;
+            
+            import dictionary.Const;
+            
+            import events.ArmyEvent;
+            
+            import vo.UnitDescVO;
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            private var _soldiers:String;
+            private var _unit:UnitDescVO;
+            private var _crewComplete:Boolean;
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            [Bindable]
+            public var unitList:ArrayCollection;
+            
+            [Bindable]
+            public var weaponList:ArrayCollection;
+            
+            [Bindable]
+            public var armorList:ArrayCollection;
+            
+            [Bindable]
+            private var _unitName:String;
+            
+            [Bindable (event="crewCompleteChanged")]
+            public function get crewComplete():Boolean
+            {
+                return _crewComplete;
+            }
+            
+            public function set soldierList(value:ArrayCollection):void
+            {
+                if (!_unit)
+                    return;
+                
+                if (!value && _unit.unitCrew > 0 || value && value.length < _unit.unitCrew)
+                {
+                    _soldiers = resourceManager.getString("common", "army.equip.popup.nocrew");
+                    
+                    if (_crewComplete)
+                    {
+                        _crewComplete = false;
+                        dispatchEvent(new Event("crewCompleteChanged"));
+                    }
+                }
+                else
+                {
+                    _soldiers = _unit.unitCrew > 1 ? resourceManager.getString("common", "army.equip.popup.crew") : "";
+                    for (var i:int = 0; i < _unit.unitCrew; i++)
+                        _soldiers += '<p>' + value[i].personName + '</p>';
+                    
+                    if (!_crewComplete)
+                    {
+                        _crewComplete = true;
+                        dispatchEvent(new Event("crewCompleteChanged"));
+                    }
+                }
+                
+                if (crewTextArea)
+                    updateCrewText();
+            }
+            
+            private function updateCrewText():void
+            {
+                var textDisplay:StyleableTextField = StyleableTextField(crewTextArea.textDisplay);
+                textDisplay.htmlText = _soldiers;
+                
+                var numLines:int = textDisplay.numLines;
+                var h:Number = crewTextArea.getStyle("paddingTop") + crewTextArea.getStyle("paddingBottom");
+                for (var i:int = 0; i < numLines; i++)
+                    h += textDisplay.getLineMetrics(i).height;
+                crewTextArea.height = h;
+            }
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            protected function stateChangeCompleteHandler(event:FlexEvent):void
+            {
+                PopUpManager.centerPopUp(this);
+            }
+            
+            protected function unitsListView_changeHandler(event:IndexChangeEvent):void
+            {
+                _unit = unitsListView.selectedItem as UnitDescVO;
+                if (_unit)
+                {
+                    dispatchEvent(new ArmyEvent(ArmyEvent.EQUIP_UNIT_SELECTED, _unit.unitId));
+                    
+                    _unitName = _unit.unitName;
+                    
+                    if (!_unit.unitResource)
+                        currentState = "woResource";
+                    else if (_unit.unitCrew <= 0)
+                        currentState = "woCrew";
+                    else
+                        currentState = "unit";
+                }
+            }
+            
+        ]]>
+	</fx:Script>
+</s:SkinnablePopUpContainer>

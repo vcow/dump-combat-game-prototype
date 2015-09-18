@@ -234,4 +234,52 @@
 			<trigger id="arrowTippedResearchComplete" value="1" type="set"/>
 		</result>
 	</researchDesc>
+	
+	<!-- Изучить кожу -->
+	<researchDesc id="skinResearch" title="{skin.research.title}" resultTitle="{skin.result.title}" resultDescription="{skin.result.description}" price="10" event="research" requirements="{skin.research.requirements}">
+		<condition>
+			<if>
+				<trigger>resourcesCount</trigger>
+				<value>skin</value>
+				<min type="int">1</min>
+			</if>
+		</condition>
+		<visibility>
+			<if>
+				<trigger>resourcesCount</trigger>
+				<value>skin</value>
+				<min type="int">1</min>
+			</if>
+		</visibility>
+		<complete>
+			<if>
+				<trigger>skinResearchComplete</trigger>
+			</if>
+		</complete>
+		<result>
+			<trigger id="skinResearchComplete" value="1" type="set"/>
+		</result>
+	</researchDesc>
+	
+	<!-- Изучить ремень -->
+	<researchDesc id="beltResearch" title="{belt.research.title}" resultTitle="{belt.result.title}" resultDescription="{belt.result.description}" price="25" event="research" requirements="{belt.research.requirements}">
+		<condition>
+			<if>
+				<trigger>skinResearchComplete</trigger>
+			</if>
+		</condition>
+		<visibility>
+			<if>
+				<trigger>skinResearchComplete</trigger>
+			</if>
+		</visibility>
+		<complete>
+			<if>
+				<trigger>beltResearchComplete</trigger>
+			</if>
+		</complete>
+		<result>
+			<trigger id="beltResearchComplete" value="1" type="set"/>
+		</result>
+	</researchDesc>
 </investigationsDict>

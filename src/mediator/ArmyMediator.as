@@ -2,12 +2,25 @@ package mediator
 {
     import mx.collections.ArrayCollection;
     
+    import dictionary.ArmamentDict;
+    import dictionary.UnitsDict;
+    
+    import helpers.PersonnelHelper;
+    import helpers.UnitsHelper;
+    
     import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.mediator.Mediator;
     
     import proxy.ArmyProxy;
     
     import views.protoArmyView;
+    
+    import vo.ArmorDescVO;
+    import vo.PersonVO;
+    import vo.ProfessionDescVO;
+    import vo.UnitDescVO;
+    import vo.UnitVO;
+    import vo.WeaponDescVO;
     
     [ResourceBundle("common")]
     
@@ -36,7 +49,71 @@ package mediator
          */
         public function getUnits():ArrayCollection
         {
-            return null;
+            var units:Array = [];
+            for each (var unit:UnitVO in armyProxy.armyVO.children)
+            {
+                
+            }
+            return new ArrayCollection(units);
+        }
+        
+        /**
+         * Получить список юнитов, которые в настоящий момент могут быть созданы
+         * @return список юнитов
+         */
+        public function getAvailableUnits():ArrayCollection
+        {
+            var units:Array = [];
+            var unitsDecor:UnitsHelper = new UnitsHelper();
+            
+            for each (var unit:UnitDescVO in UnitsDict.getInstance().units)
+            {
+                if (unitsDecor.unitResourceIsAvailable(unit.unitId))
+                {
+                    if (unit.unitResource || unitsDecor.unitCrewIsAvailable(unit.unitId))
+                        units.push(unit);
+                }
+            }
+            
+            return new ArrayCollection(units);
+        }
+        
+        /**
+         * Получить список оружия для указанного юнита
+         * @param unitId идентификатор юнита
+         * @return список оружия
+         */
+        public function getWeaponFor(unitId:String):ArrayCollection
+        {
+            var res:Array = [];
+            for each (var weapon:WeaponDescVO in ArmamentDict.getInstance().getWeaponForUnit(unitId))
+                res.push(weapon);
+            return new ArrayCollection(res);
+        }
+        
+        /**
+         * Получить список брони для указанного юнита
+         * @param unitId идентификатор юнита
+         * @return список брони
+         */
+        public function getArmorFor(unitId:String):ArrayCollection
+        {
+            var res:Array = [];
+            for each (var armor:ArmorDescVO in ArmamentDict.getInstance().getArmorForUnit(unitId))
+                res.push(armor);
+            return new ArrayCollection(res);
+        }
+        
+        /**
+         * Получить список солдат
+         * @return список солдат
+         */
+        public function getSoldiers():ArrayCollection
+        {
+            var res:Array = [];
+            for each (var person:PersonVO in (new PersonnelHelper()).getEmployees(ProfessionDescVO.SOLGIER))
+                res.push(person);
+            return new ArrayCollection(res);
         }
         
         protected function get armyView():protoArmyView
@@ -44,7 +121,7 @@ package mediator
             return viewComponent as protoArmyView;
         }
         
-        protected function get productionsProxy():ArmyProxy
+        protected function get armyProxy():ArmyProxy
         {
             if (!_armyProxy)
                 _armyProxy = ArmyProxy(this.facade.retrieveProxy(ArmyProxy.NAME));

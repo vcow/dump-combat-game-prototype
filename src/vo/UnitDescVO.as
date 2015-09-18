@@ -27,6 +27,7 @@ package vo
         public var unitId:String;                   //< Уникальный идентификатор
         public var unitName:String;                 //< Наименование юнита
         public var unitDescription:String;          //< Описание юнита
+        public var unitCrew:int;                    //< Количество солдат в экипаже
         public var unitSharpDmg:Number;             //< Режущий урон
         public var unitSpikeDmg:Number;             //< Колющий урон
         public var unitBluntDmg:Number;             //< Урон от удара
@@ -93,6 +94,7 @@ package vo
             res.@id = unitId;
             res.@name = unitName;
             res.@description = unitDescription;
+            res.@crew = unitCrew;
             res.@resource = unitResource;
             res.@sharpDmg = unitSharpDmg;
             res.@spikeDmg = unitSpikeDmg;
@@ -126,6 +128,7 @@ package vo
             unitId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
             unitName = data.hasOwnProperty("@name") ? VO.parseString(data.@name, "units") : Const.NO_TEXT;
             unitDescription = data.hasOwnProperty("@description") ? VO.parseString(data.@description, "units") : Const.NO_TEXT;
+            unitCrew = data.hasOwnProperty("@crew") ? int(data.@crew) : 0;
             unitResource = data.hasOwnProperty("@resource") ? data.@resource.toString() : "";
             unitSharpDmg = data.hasOwnProperty("@sharpDmg") ? Number(data.@sharpDmg) : 0;
             unitSpikeDmg = data.hasOwnProperty("@spikeDmg") ? Number(data.@spikeDmg) : 0;

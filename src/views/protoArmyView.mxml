@@ -33,15 +33,25 @@
 	
 	<fx:Script>
 		<![CDATA[
-            import views.ui.ProductionView;
             import mx.collections.ArrayCollection;
+            import mx.core.FlexGlobals;
             import mx.events.FlexEvent;
+            import mx.managers.PopUpManager;
             
             import spark.events.IndexChangeEvent;
+            import spark.events.PopUpEvent;
+            
+            import dictionary.ArmamentDict;
+            
+            import events.ArmyEvent;
             
             import facade.ProtoFacade;
             
             import mediator.ArmyMediator;
+            
+            import views.modal.AlertPopUp;
+            import views.modal.EquipUnitPopUp;
+            import views.ui.ProductionView;
             
 			//--------------------------------------------------------------------------
 			// 
@@ -56,6 +66,27 @@
 			// 
 			//--------------------------------------------------------------------------
 			
+            private function equipUnit_equipUnitSelectedHandler(event:ArmyEvent):void
+            {
+                var equipUnit:EquipUnitPopUp = EquipUnitPopUp(event.target);
+                
+                equipUnit.weaponList = _armyMediator.getWeaponFor(event.unitId);
+                equipUnit.armorList = _armyMediator.getArmorFor(event.unitId);
+                equipUnit.soldierList = _armyMediator.getSoldiers();
+            }
+            
+            private function equipUnit_closeHandler(event:PopUpEvent):void
+            {
+                var equipUnit:EquipUnitPopUp = EquipUnitPopUp(event.target);
+                
+                equipUnit.removeEventListener(ArmyEvent.EQUIP_UNIT_SELECTED, equipUnit_equipUnitSelectedHandler);
+                equipUnit.removeEventListener(PopUpEvent.CLOSE, equipUnit_closeHandler);
+            }
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
                 _armyMediator = ArmyMediator(ProtoFacade.getInstance().retrieveMediator(ArmyMediator.NAME));
@@ -78,6 +109,24 @@
 			
 			protected function createUnit_clickHandler(event:MouseEvent):void
 			{
+                var units:ArrayCollection = _armyMediator.getAvailableUnits();
+                
+                if (units.length > 0)
+                {
+                    var equipUnit:EquipUnitPopUp = new EquipUnitPopUp();
+                    equipUnit.addEventListener(ArmyEvent.EQUIP_UNIT_SELECTED, equipUnit_equipUnitSelectedHandler);
+                    equipUnit.addEventListener(PopUpEvent.CLOSE, equipUnit_closeHandler);
+                    equipUnit.unitList = units;
+                    equipUnit.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                    PopUpManager.centerPopUp(equipUnit);
+                }
+                else
+                {
+                    var alertPopUp:AlertPopUp = new AlertPopUp();
+                    alertPopUp.text = resourceManager.getString("common", "alert.nounits");
+                    alertPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                    PopUpManager.centerPopUp(alertPopUp);
+                }
 			}
 		]]>
 	</fx:Script>

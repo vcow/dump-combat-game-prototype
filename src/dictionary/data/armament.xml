@@ -31,7 +31,7 @@
 		dmgStrength={дробное значение} - сила снаряда
 		reach={числовое значение} - радиус действия
 		unit={список строковых значений, разделенных запятыми} - список оружия и/или юнитов, для которых подходит этот снаряд -->
-	<ammoDesc id="arrow" resource="arrow" unit="bow, arbalet ,rifle , canon" reach="6" sharpDmg="0" spikeDmg="1" bluntDmg="0" fireDmg="0" dmgStrength="1"/>
+	<ammoDesc id="arrow" resource="arrow" unit="bow" reach="6" sharpDmg="0" spikeDmg="1" bluntDmg="0" fireDmg="0" dmgStrength="1"/>
 	<!-- Стрела с наконечником -->
 	<ammoDesc id="arrowTipped" resource="arrowTipped" unit="bow" reach="8" sharpDmg="0" spikeDmg="1" bluntDmg="0" fireDmg="0" dmgStrength="3"/>
 	<!-- Картонная броня -->
@@ -46,7 +46,17 @@
 		defStrength={дробное значение} - сила защиты
 		В качестве дочерних элементов может содержать модификаторы характеристик бойца -->
 	<armorDesc id="cardboardArmor" resource="cardboardArmor" unit="infantry" sharpDef="0.05" spikeDef="0" bluntDef="0.95" fireDef="0" defStrength="2">
+		<!-- Снижает скорость перемещения -->
 		<speed>(-0.2)</speed>
 	</armorDesc>
-	<!--equipmentDesc id="sight"/-->
+	<!-- Ремень -->
+	<!-- Оборудование поддерживает следующие параметры:
+		id={строковое значение} - уникальный идентификатор оборудования
+		resource={строковое значение} - идентификатор ресурса, соответствующего оборудованию
+		unit={список строковых значений, разделенных запятыми} - список юнитов, которые могут оснащаться этой броней.
+		В качестве дочерних элементов может содержать модификаторы характеристик бойца -->
+	<equipmentDesc id="belt" resource="belt" unit="infantry">
+		<!-- Увеличивает вместительность -->
+		<capacity>(+5)</capacity>
+	</equipmentDesc>
 </armamentDict>
