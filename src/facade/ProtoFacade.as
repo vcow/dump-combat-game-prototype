@@ -7,6 +7,7 @@ package facade
 	import command.CompleteResearchCommand;
 	import command.CreateNewBaseCommand;
 	import command.CreateNewPersonCommand;
+	import command.EquipUnitCommand;
 	import command.GameEventCommand;
 	import command.MovePersonCommand;
 	import command.NewPersonCreatedCommand;
@@ -83,6 +84,7 @@ package facade
             registerCommand(Const.COMPLETE_PRODUCTION, CompleteProductionCommand);
             registerCommand(Const.REPLACE_PERSON, ReplacePersonCommand);
             registerCommand(Const.MOVE_PERSON, MovePersonCommand);
+            registerCommand(Const.EQUIP_UNIT, EquipUnitCommand);
 		}
 	}
 }

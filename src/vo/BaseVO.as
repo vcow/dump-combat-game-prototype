@@ -90,6 +90,19 @@ package vo
             }
             return null;
         }
+        
+        /**
+         * Гарнизон базы
+         */
+        public function get baseGarrison():GarrisonVO
+        {
+            for each (var value:IVO in children)
+            {
+                if (value.name == GarrisonVO.NAME)
+                    return value as GarrisonVO;
+            }
+            return null;
+        }
 		
 		//----------------------------------
 		//  VO

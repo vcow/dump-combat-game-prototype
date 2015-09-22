@@ -28,7 +28,7 @@
 	
 	<fx:Metadata>
 		[ResourceBundle("common")]
-        [Event(name="startProduction", type="events.ProductionEvent")]
+        [Event(name="equip", type="events.ArmyEvent")]
 	</fx:Metadata>
 	
 	<fx:Script>
@@ -41,17 +41,24 @@
             import spark.events.IndexChangeEvent;
             import spark.events.PopUpEvent;
             
-            import dictionary.ArmamentDict;
+            import dictionary.Const;
             
             import events.ArmyEvent;
             
             import facade.ProtoFacade;
             
+            import helpers.ModulesHelper;
+            import helpers.PersonnelHelper;
+            
             import mediator.ArmyMediator;
+            
+            import proxy.BasesListProxy;
             
             import views.modal.AlertPopUp;
             import views.modal.EquipUnitPopUp;
-            import views.ui.ProductionView;
+            
+            import vo.BaseVO;
+            import vo.ModuleDescVO;
             
 			//--------------------------------------------------------------------------
 			// 
@@ -70,9 +77,9 @@
             {
                 var equipUnit:EquipUnitPopUp = EquipUnitPopUp(event.target);
                 
-                equipUnit.weaponList = _armyMediator.getWeaponFor(event.unitId);
-                equipUnit.armorList = _armyMediator.getArmorFor(event.unitId);
                 equipUnit.soldierList = _armyMediator.getSoldiers();
+                equipUnit.basesList = _armyMediator.getBases();
+                equipUnit.unitName = _armyMediator.generateName(event.unitId);
             }
             
             private function equipUnit_closeHandler(event:PopUpEvent):void
@@ -81,6 +88,32 @@
                 
                 equipUnit.removeEventListener(ArmyEvent.EQUIP_UNIT_SELECTED, equipUnit_equipUnitSelectedHandler);
                 equipUnit.removeEventListener(PopUpEvent.CLOSE, equipUnit_closeHandler);
+                
+                if (event.data == Const.OK)
+                {
+                    var basesListProxy:BasesListProxy = BasesListProxy(ProtoFacade.getInstance().retrieveProxy(BasesListProxy.NAME));
+                    var personnelDecor:PersonnelHelper = new PersonnelHelper(basesListProxy);
+                    var sidePersons:Array = [];     // Персонажи, которые нанимаются на базу со стороны
+                    
+                    for each (var person:String in equipUnit.crew)
+                    {
+                        var base:BaseVO = personnelDecor.getEmployeePlace(person);
+                        if (!base || base.baseId != equipUnit.base)
+                            sidePersons.push(person);
+                    }
+                    
+                    if ((new ModulesHelper(basesListProxy)).getSpace(ModuleDescVO.HOUSING, basesListProxy.getBaseById(equipUnit.base) as BaseVO) < sidePersons.length)
+                    {
+                        // Не хватает жилья для экипажа
+                        var alertPopUp:AlertPopUp = new AlertPopUp();
+                        alertPopUp.text = resourceManager.getString("common", "alert.nospace.for.crew");
+                        alertPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                        PopUpManager.centerPopUp(alertPopUp);
+                        return;
+                    }
+                    
+                    dispatchEvent(new ArmyEvent(ArmyEvent.EQUIP, equipUnit.unitId, equipUnit.nameTextInput.text, equipUnit.crew, equipUnit.base));
+                }
             }
             
             //--------------------------------------------------------------------------
@@ -97,9 +130,9 @@
 			
 			protected function unitsListView_changeHandler(event:IndexChangeEvent):void
 			{
-                var production:Object = unitsList.getItemAt(event.newIndex);
-                if (production && production.hasOwnProperty("id"))
-                    navigator.pushView(ProductionView, production.id);
+//                var production:Object = unitsList.getItemAt(event.newIndex);
+//                if (production && production.hasOwnProperty("id"))
+//                    navigator.pushView(ProductionView, production.id);
 			}
             
             public function updateList():void

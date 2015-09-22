@@ -40,6 +40,8 @@
                     width="100%" height="300" change="unitsListView_changeHandler(event)"
                     dataProvider="{unitList}" labelField="unitName"/>
             
+            <s:TextInput excludeFrom="list" width="100%" id="nameTextInput" text="{unitName}"/>
+            
             <s:BorderContainer cornerRadius="4" excludeFrom="list,woCrew" minHeight="0">
                 <s:layout>
                     <s:VerticalLayout paddingLeft="5" paddingRight="5" paddingTop="12" paddingBottom="0"/>
@@ -48,6 +50,14 @@
                 <s:TextArea id="crewTextArea" width="220" fontSize="14" editable="false" selectable="false" creationComplete="{updateCrewText();}"
                             paddingTop="0" paddingBottom="0"/>
             </s:BorderContainer>
+            
+            <s:VGroup horizontalAlign="center" width="100%" excludeFrom="list">
+                
+                <s:Label text="@Resource(key='army.equip.popup.base', bundle='common')"/>
+                
+                <dropDownList:DropDownList id="baseSelector" width="100%" dataProvider="{basesList}"
+                                           labelField="baseName" creationComplete="{updateSelectedBase();}"/>
+            </s:VGroup>
             
             <s:HGroup width="266">
                 <s:Button width="50%" label="@Resource(key='army.equip.popup.equip', bundle='common')"
@@ -80,28 +90,32 @@
             
             import events.ArmyEvent;
             
+            import vo.BaseVO;
+            import vo.PersonVO;
             import vo.UnitDescVO;
             
             //--------------------------------------------------------------------------
             // 
             //--------------------------------------------------------------------------
             
+            private var _basesList:ArrayCollection;
+            private var _selectedBaseId:String;
+            
             private var _soldiers:String;
             private var _unit:UnitDescVO;
             private var _crewComplete:Boolean;
+            
+            private var _crew:Array;
             
             //--------------------------------------------------------------------------
             // 
             //--------------------------------------------------------------------------
             
             [Bindable]
+            public var unitName:String;
+            
+            [Bindable]
             public var unitList:ArrayCollection;
-            
-            [Bindable]
-            public var weaponList:ArrayCollection;
-            
-            [Bindable]
-            public var armorList:ArrayCollection;
             
             [Bindable]
             private var _unitName:String;
@@ -117,9 +131,11 @@
                 if (!_unit)
                     return;
                 
+                _crew = [];
+                
                 if (!value && _unit.unitCrew > 0 || value && value.length < _unit.unitCrew)
                 {
-                    _soldiers = resourceManager.getString("common", "army.equip.popup.nocrew");
+                    _soldiers = resourceManager.getString("common", "army.equip.popup.nocrew", [ _unit.unitCrew, value ? value.length : 0 ]);
                     
                     if (_crewComplete)
                     {
@@ -131,7 +147,11 @@
                 {
                     _soldiers = _unit.unitCrew > 1 ? resourceManager.getString("common", "army.equip.popup.crew") : "";
                     for (var i:int = 0; i < _unit.unitCrew; i++)
-                        _soldiers += '<p>' + value[i].personName + '</p>';
+                    {
+                        var person:PersonVO = PersonVO(value[i]);
+                        _soldiers += '<p>' + person.personName + '</p>';
+                        _crew.push(person.personId);
+                    }
                     
                     if (!_crewComplete)
                     {
@@ -156,9 +176,69 @@
                 crewTextArea.height = h;
             }
             
+            [Bindable (event="basesListChanged")]
+            public function get basesList():ArrayCollection
+            {
+                return _basesList;
+            }
+            
+            public function set basesList(value:ArrayCollection):void
+            {
+                if (value == _basesList)
+                    return;
+                
+                _basesList = value;
+                dispatchEvent(new Event("basesListChanged"));
+                
+                if (baseSelector)
+                    updateSelectedBase();
+            }
+            
+            private function updateSelectedBase():void
+            {
+                if (_basesList && _basesList.length > 0)
+                {
+                    if (!_selectedBaseId)
+                        _selectedBaseId = _basesList[0].baseId;
+                    
+                    for (var i:int = 0; i < _basesList.length; i++)
+                    {
+                        var base:BaseVO = BaseVO(_basesList[i]);
+                        if (base.baseId == _selectedBaseId)
+                        {
+                            baseSelector.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+            
             //--------------------------------------------------------------------------
             // 
             //--------------------------------------------------------------------------
+            
+            public function get crew():Array
+            {
+                return _crew;
+            }
+            
+            public function get unitId():String
+            {
+                return _unit ? _unit.unitId : "";
+            }
+            
+            public function get base():String
+            {
+                return baseSelector && baseSelector.selectedItem ? baseSelector.selectedItem.baseId : "";
+            }
+            
+            public function set selectedBase(value:String):void
+            {
+                _selectedBaseId = value;
+                
+                if (baseSelector)
+                    updateSelectedBase();
+            }
             
             protected function stateChangeCompleteHandler(event:FlexEvent):void
             {
@@ -182,7 +262,6 @@
                         currentState = "unit";
                 }
             }
-            
         ]]>
 	</fx:Script>
 </s:SkinnablePopUpContainer>

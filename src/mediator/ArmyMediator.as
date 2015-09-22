@@ -2,20 +2,31 @@ package mediator
 {
     import mx.collections.ArrayCollection;
     
+    import command.data.EquipUnitCmdData;
+    
     import dictionary.ArmamentDict;
+    import dictionary.Const;
     import dictionary.UnitsDict;
     
+    import events.ArmyEvent;
+    
+    import helpers.ArmyHelper;
+    import helpers.ModulesHelper;
     import helpers.PersonnelHelper;
-    import helpers.UnitsHelper;
     
     import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.mediator.Mediator;
     
+    import proxy.AppDataProxy;
     import proxy.ArmyProxy;
+    import proxy.BasesListProxy;
+    import proxy.PersonsProxy;
     
     import views.protoArmyView;
     
     import vo.ArmorDescVO;
+    import vo.BaseVO;
+    import vo.ModuleDescVO;
     import vo.PersonVO;
     import vo.ProfessionDescVO;
     import vo.UnitDescVO;
@@ -33,6 +44,10 @@ package mediator
         public static const NAME:String = "armyMediator";
         
         private var _armyProxy:ArmyProxy;
+        
+        private var _basesListProxy:BasesListProxy;
+        private var _personsProxy:PersonsProxy;
+        private var _appDataProxy:AppDataProxy;
         
         //--------------------------------------------------------------------------
         // 
@@ -52,8 +67,13 @@ package mediator
             var units:Array = [];
             for each (var unit:UnitVO in armyProxy.armyVO.children)
             {
-                
+                units.push({
+                    id: unit.unitId,
+                    label: unit.unitName
+                });
             }
+            
+            units.sortOn("label");
             return new ArrayCollection(units);
         }
         
@@ -64,7 +84,7 @@ package mediator
         public function getAvailableUnits():ArrayCollection
         {
             var units:Array = [];
-            var unitsDecor:UnitsHelper = new UnitsHelper();
+            var unitsDecor:ArmyHelper = new ArmyHelper(basesListProxy, appDataProxy, personsProxy, armyProxy);
             
             for each (var unit:UnitDescVO in UnitsDict.getInstance().units)
             {
@@ -76,6 +96,45 @@ package mediator
             }
             
             return new ArrayCollection(units);
+        }
+        
+        /**
+         * Список всех баз
+         */
+        public function getBases():ArrayCollection
+        {
+            var bases:Array = [];
+            var modulesHelper:ModulesHelper = new ModulesHelper(basesListProxy);
+            for each (var baseVO:BaseVO in basesListProxy.getBasesList())
+            {
+                if (modulesHelper.getSpace(ModuleDescVO.HOUSING, baseVO) > 0)
+                    bases.push(baseVO);
+            }
+            
+            bases.sortOn("baseName");
+            return new ArrayCollection(bases);
+        }
+        
+        /**
+         * Сгенерировать имя для юнита
+         * @param unitId идентификатор описания юнита
+         */
+        public function generateName(unitId:String):String
+        {
+            var unitDesc:UnitDescVO = UnitsDict.getInstance().getUnit(unitId);
+            if (!unitDesc)
+                return Const.NO_TEXT;
+            
+            if (unitDesc.unitCrew == 1)
+            {
+                var soldiers:ArrayCollection = getSoldiers();
+                return soldiers && soldiers.length > 0 ? unitDesc.unitName + " " + PersonVO(soldiers[0]).personName : unitDesc.unitName;
+            }
+            
+            var stuff:Object = AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME)).stuff;
+            var unitNum:int = int(stuff.unitCounter) + 1;
+            stuff.unitCounter = unitNum;
+            return unitDesc.unitName + " #" + unitNum;
         }
         
         /**
@@ -111,7 +170,7 @@ package mediator
         public function getSoldiers():ArrayCollection
         {
             var res:Array = [];
-            for each (var person:PersonVO in (new PersonnelHelper()).getEmployees(ProfessionDescVO.SOLGIER))
+            for each (var person:PersonVO in (new PersonnelHelper(basesListProxy, personsProxy)).getEmployees(ProfessionDescVO.SOLGIER))
                 res.push(person);
             return new ArrayCollection(res);
         }
@@ -138,6 +197,7 @@ package mediator
             
             // TODO: Удалить все обработчики событий, если таковые были установлены
             
+            armyView.removeEventListener(ArmyEvent.EQUIP, equipUnitHandler);
             
             // /TODO
         }
@@ -152,8 +212,46 @@ package mediator
             
             // TODO: Проинициализировать поля компонента актуальными значениями, устновить оброботчики событий, если нужно
             
+            armyView.addEventListener(ArmyEvent.EQUIP, equipUnitHandler);
             
             // /TODO
+        }
+        
+        protected function get basesListProxy():BasesListProxy
+        {
+            if (!_basesListProxy)
+                _basesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
+            
+            return _basesListProxy;
+        }
+        
+        protected function get appDataProxy():AppDataProxy
+        {
+            if (!_appDataProxy)
+                _appDataProxy = AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME));
+            
+            return _appDataProxy;
+        }
+        
+        protected function get personsProxy():PersonsProxy
+        {
+            if (!_personsProxy)
+                _personsProxy = PersonsProxy(this.facade.retrieveProxy(PersonsProxy.NAME));
+            
+            return _personsProxy;
+        }
+        
+        /**
+         * Экипировать юнит
+         * @param event событие
+         */
+        private function equipUnitHandler(event:ArmyEvent):void
+        {
+            var crew:Vector.<String> = new Vector.<String>();
+            for each (var id:String in event.crew)
+                crew.push(id);
+            
+            sendNotification(Const.EQUIP_UNIT, new EquipUnitCmdData(event.unitId, event.name, crew, event.baseId));
         }
         
         //----------------------------------
@@ -169,13 +267,19 @@ package mediator
         
         override public function listNotificationInterests():Array
         {
-            return [  ];
+            return [ Const.UNIT_IS_EQUIPPED ];
         }
         
         override public function handleNotification(notification:INotification):void
         {
             switch (notification.getName())
             {
+                case Const.UNIT_IS_EQUIPPED:
+                    if (armyView)
+                    {
+                        armyView.updateList();
+                    }
+                    break;
             }
         }
     }

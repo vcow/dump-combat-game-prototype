@@ -6,7 +6,13 @@
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:modal="views.modal.*"
         xmlns:ui="views.ui.*"
-        creationComplete="creationCompleteHandler(event)">
+        creationComplete="creationCompleteHandler(event)"
+        currentState="simple">
+    <s:states>
+        <s:State name="simple"/>
+        <s:State name="mercenary"/>
+    </s:states>
+    
 	<s:layout>
 		<s:VerticalLayout paddingLeft="5" paddingRight="5"/>
 	</s:layout>
@@ -40,10 +46,14 @@
         <s:Label text="{professionName}" fontSize="16" fontWeight="bold"/>
     </s:BorderContainer>
     
-    <s:HGroup width="100%" paddingTop="10" paddingLeft="15" paddingRight="15" paddingBottom="15">
+    <s:HGroup includeIn="simple" width="100%" paddingTop="10" paddingLeft="15" paddingRight="15" paddingBottom="15">
         <s:Button width="50%" label="@Resource(key='person.move', bundle='common')" click="move_clickHandler(event)"/>
         <s:Button width="50%" label="@Resource(key='person.fire', bundle='common')" click="fire_clickHandler(event)"/>
     </s:HGroup>
+    
+    <s:VGroup includeIn="mercenary" width="100%" paddingTop="10" paddingLeft="15" paddingRight="15" paddingBottom="15">
+        <s:Label text="@Resource(key='person.is.mercenary.label', bundle='common')" color="#6b0000" textAlign="center"/>
+    </s:VGroup>
     
 	<fx:Declarations>
 	</fx:Declarations>
@@ -69,6 +79,8 @@
             import events.PersonEvent;
             
             import facade.ProtoFacade;
+            
+            import helpers.ArmyHelper;
             
             import mediator.PersonMediator;
             
@@ -138,7 +150,8 @@
             {
                 if (_personMediator)
                 {
-                    _personMediator.personId = data.toString();
+                    var personId:String = data.toString();
+                    _personMediator.personId = personId;
                     
                     title = _personMediator.personName;
                     iconView.imageId = _personMediator.personAvatar;
@@ -146,6 +159,11 @@
                     baseName = base ? base.baseName : Const.NO_TEXT;
                     var profession:ProfessionDescVO = ProfessionsDict.getInstance().getProfession(_personMediator.personProfession);
                     professionName = profession ? profession.professionName : Const.NO_TEXT;
+                    
+                    if ((new ArmyHelper()).isDraftedIntoTheArmy(personId))
+                        currentState = "mercenary";
+                    else
+                        currentState = "simple";
                 }
             }
             

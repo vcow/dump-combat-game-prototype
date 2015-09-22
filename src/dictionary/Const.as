@@ -63,5 +63,7 @@ package dictionary
         public static const REPLACE_PERSON:String = "firePerson";                           //< Удалить персонажа
         public static const PERSON_IS_REPLACED:String = "personIsFired";                    //< Персонаж удален
         public static const MOVE_PERSON:String = "movePerson";                              //< Перевести сотрудника
+        public static const EQUIP_UNIT:String = "equipUnit";                                //< Экипировать боевой юнит
+        public static const UNIT_IS_EQUIPPED:String = "unitIsEquipped";                     //< Боевой юнит экипирован
 	}
 }

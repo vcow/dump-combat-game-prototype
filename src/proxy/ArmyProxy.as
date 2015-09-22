@@ -3,6 +3,7 @@ package proxy
     import org.puremvc.as3.patterns.proxy.Proxy;
     
     import vo.ArmyVO;
+    import vo.UnitVO;
     
     /**
      * 
@@ -31,6 +32,21 @@ package proxy
         public function get armyVO():ArmyVO
         {
             return getData() as ArmyVO;
+        }
+        
+        /**
+         * Получить юнит по его идентификатору
+         * @param unitId идентификатор юнита
+         * @return найденный юнит
+         */
+        public function getUnit(unitId:String):UnitVO
+        {
+            for each (var unit:UnitVO in armyVO.children)
+            {
+                if (unit.unitId == unitId)
+                    return unit;
+            }
+            return null;
         }
         
         //----------------------------------

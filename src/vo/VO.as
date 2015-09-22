@@ -259,6 +259,8 @@ package vo
                     case ProductionsVO.NAME: value = new ProductionsVO(); break;
                     case ProductionVO.NAME: value = new ProductionVO(); break;
                     case UnitVO.NAME: value = new UnitVO(); break;
+                    case GarrisonVO.NAME: value = new GarrisonVO(); break;
+                    case MercenaryVO.NAME: value = new MercenaryVO(); break;
 					
 					// /TODO
 					

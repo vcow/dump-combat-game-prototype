@@ -5,13 +5,17 @@ package helpers
     import facade.ProtoFacade;
     
     import proxy.AppDataProxy;
+    import proxy.ArmyProxy;
     import proxy.BasesListProxy;
     import proxy.PersonsProxy;
     
+    import vo.BaseVO;
+    import vo.MercenaryVO;
     import vo.PriceVO;
     import vo.ProfessionDescVO;
     import vo.ResourceVO;
     import vo.UnitDescVO;
+    import vo.UnitVO;
 
     /**
      * 
@@ -20,7 +24,7 @@ package helpers
      * 
      */
     
-    public class UnitsHelper
+    public class ArmyHelper
     {
         //--------------------------------------------------------------------------
         // 
@@ -29,16 +33,19 @@ package helpers
         private var _basesListProxy:BasesListProxy;
         private var _appDataProxy:AppDataProxy;
         private var _personsProxy:PersonsProxy;
+        private var _armyProxy:ArmyProxy;
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public function UnitsHelper(basesListProxy:BasesListProxy=null, appDataProxy:AppDataProxy=null, personsProxy:PersonsProxy=null)
+        public function ArmyHelper(basesListProxy:BasesListProxy=null, appDataProxy:AppDataProxy=null,
+                                    personsProxy:PersonsProxy=null, armyProxy:ArmyProxy=null)
         {
             _basesListProxy = basesListProxy;
             _appDataProxy = appDataProxy;
             _personsProxy = personsProxy;
+            _armyProxy = armyProxy;
         }
         
         private function get basesListProxy():BasesListProxy
@@ -60,6 +67,13 @@ package helpers
             if (!_personsProxy)
                 _personsProxy = PersonsProxy(ProtoFacade.getInstance().retrieveProxy(PersonsProxy.NAME));
             return _personsProxy;
+        }
+        
+        private function get armyProxy():ArmyProxy
+        {
+            if (!_armyProxy)
+                _armyProxy = ArmyProxy(ProtoFacade.getInstance().retrieveProxy(ArmyProxy.NAME));
+            return _armyProxy;
         }
         
         /**
@@ -95,6 +109,38 @@ package helpers
                 return true;
             
             return new PersonnelHelper(basesListProxy, personsProxy).getEmployees(ProfessionDescVO.SOLGIER).length >= unit.unitCrew;
+        }
+        
+        /**
+         * Проверяет, является ли персонаж призванным солдатом
+         * @param personId идентификатор персонажа
+         * @param baseId идентификатор базы, в гарнизоне которой ищется персонаж, если null, ищется во всех базах
+         * @return true, если персонаж состоит в экипаже боевого юнита
+         */
+        public function isDraftedIntoTheArmy(personId:String, baseId:String=null):Boolean
+        {
+            for each (var base:BaseVO in basesListProxy.getBasesList())
+            {
+                if (!baseId || baseId && base.baseId == baseId)
+                {
+                    for each (var mercenary:MercenaryVO in base.baseGarrison.children)
+                    {
+                        var unit:UnitVO = armyProxy.getUnit(mercenary.mercenaryUnitId);
+                        if (unit)
+                        {
+                            for each (var soldier:String in unit.unitCrew)
+                            {
+                                if (soldier == personId)
+                                    return true;
+                            }
+                        }
+                    }
+                    
+                    if (baseId)
+                        break;
+                }
+            }
+            return false;
         }
     }
 }

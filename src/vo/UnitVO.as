@@ -1,5 +1,8 @@
 package vo
 {
+    import dictionary.Const;
+    import dictionary.UnitsDict;
+
 	/**
 	 * 
 	 * @author jvirkovskiy
@@ -19,7 +22,14 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
+        public var unitId:String;                                       //< Уникальный идентификатор юнита
+        public var unitName:String;                                     //< Имя юнита
+        public var unitCrew:Vector.<String> = new Vector.<String>();    //< Список идентификаторов солдат в команде
+        public var unitDamage:Number;                                   //< Процент повреждения юнита
 		
+        private var _unitUnitId:String;
+        private var _unitDesc:UnitDescVO;
+        
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
@@ -28,6 +38,31 @@ package vo
 		{
 			super(NAME);
 		}
+        
+        /**
+         * Идентификатор описания юнита
+         */
+        public function set unitUnitId(value:String):void
+        {
+            if (value == _unitUnitId)
+                return;
+            
+            _unitUnitId = value;
+            _unitDesc = UnitsDict.getInstance().getUnit(_unitUnitId);
+        }
+        
+        public function get unitUnitId():String
+        {
+            return _unitUnitId;
+        }
+        
+        /**
+         * Описание юнита
+         */
+        public function get unitDesc():UnitDescVO
+        {
+            return _unitDesc;
+        }
 		
 		//----------------------------------
 		//  VO
@@ -39,6 +74,13 @@ package vo
 			
 			// TODO: Сериализовать специфичные поля
 			
+            res.@id = unitId || VO.createGUID();
+            res.@name = unitName;
+            res.@unit = unitUnitId;
+            res.@damage = isNaN(unitDamage) ? 0 : unitDamage;
+            
+            if (unitCrew && unitCrew.length > 0)
+                res.@crew = unitCrew.join(",");
 			
 			// /TODO
 			
@@ -51,7 +93,16 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
+            unitId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
+            unitName = data.hasOwnProperty("@name") ? data.@name.toString() : "";
+            unitUnitId = data.hasOwnProperty("@unit") ? data.@unit.toString() : "";
+            unitDamage = data.hasOwnProperty("@damage") ? Number(data.@damage) : 0;
 			
+            var crewList:Array = data.hasOwnProperty("@crew") ? data.@crew.toString().split(/\s*,\s*/) : [];
+            unitCrew.splice(0, unitCrew.length);
+            for each (var soldier:String in crewList)
+                unitCrew.push(soldier);
+            
 			// /TODO
 			
 			return true;

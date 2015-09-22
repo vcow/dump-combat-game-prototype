@@ -5,6 +5,7 @@ package command
     import dictionary.Const;
     import dictionary.ProfessionsDict;
     
+    import helpers.ArmyHelper;
     import helpers.ModulesHelper;
     import helpers.ResourcesHelper;
     
@@ -47,6 +48,10 @@ package command
             if (data)
             {
                 var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
+                
+                if ((new ArmyHelper(basesListProxy)).isDraftedIntoTheArmy(data.personId))
+                    return;     // Это солдат, состоящий в команде боевого юнита
+                
                 var personEmployee:EmployeeVO;
                 
                 for each (var base:BaseVO in basesListProxy.basesListVO.children)
