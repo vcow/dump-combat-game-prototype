@@ -102,7 +102,7 @@
                             sidePersons.push(person);
                     }
                     
-                    if ((new ModulesHelper(basesListProxy)).getSpace(ModuleDescVO.HOUSING, basesListProxy.getBaseById(equipUnit.base) as BaseVO) < sidePersons.length)
+                    if ((new ModulesHelper(basesListProxy)).getSpace(ModuleDescVO.HOUSING, basesListProxy.getBase(equipUnit.base) as BaseVO) < sidePersons.length)
                     {
                         // Не хватает жилья для экипажа
                         var alertPopUp:AlertPopUp = new AlertPopUp();

@@ -215,7 +215,7 @@ package mediator
          */
         private function placeEmployeeHandler(event:EmployeeListEvent):void
         {
-            var person:PersonVO = personsProxy.getPersonById(event.employeeId);
+            var person:PersonVO = personsProxy.getPerson(event.employeeId);
             if (person)
                 sendNotification(Const.PLACE_EMPLOYEE, new HirePersonCmdData(person, event.baseId, event.professionId));
         }

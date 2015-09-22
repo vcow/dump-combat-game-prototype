@@ -14,12 +14,14 @@ package command
     
     import proxy.ArmyProxy;
     import proxy.BasesListProxy;
+    import proxy.PersonsProxy;
     
     import vo.BaseVO;
     import vo.EmployeeVO;
     import vo.GarrisonVO;
     import vo.MercenaryVO;
     import vo.ModuleDescVO;
+    import vo.PersonVO;
     import vo.PriceVO;
     import vo.ProfessionDescVO;
     import vo.ResourceVO;
@@ -78,24 +80,28 @@ package command
                     }
                 }
                 
+                var personsProxy:PersonsProxy = PersonsProxy(this.facade.retrieveProxy(PersonsProxy.NAME));
+                
                 var rawCrew:Vector.<String> = data.crew.slice();
-                var sideEmployes:Vector.<EmployeeVO> = new Vector.<EmployeeVO>();
+                var sideEmployes:Vector.<PersonVO> = new Vector.<PersonVO>();
                 
                 var crew:Vector.<EmployeeVO> = new Vector.<EmployeeVO>();
                 for each (var base:BaseVO in basesListProxy.getBasesList())
                 {
                     for each (var employee:EmployeeVO in base.basePersonnel.children)
                     {
+                        var person:PersonVO = personsProxy.getPerson(employee.employeePersonId);
+                        
                         for (var i:int = 0; i < rawCrew.length; i++)
                         {
                             if (rawCrew[i] == employee.employeePersonId)
                             {
-                                if (employee.employeeProfessionId == ProfessionDescVO.SOLGIER)
+                                if (person.personProfessionId == ProfessionDescVO.SOLGIER)
                                 {
                                     crew.push(employee);
                                     
                                     if (base.baseId != data.baseId)
-                                        sideEmployes.push(employee);
+                                        sideEmployes.push(person);
                                 }
                                 
                                 rawCrew.splice(i, 1);
@@ -118,7 +124,7 @@ package command
                     return;
                 }
                 
-                base = basesListProxy.getBaseById(data.baseId) as BaseVO;
+                base = basesListProxy.getBase(data.baseId) as BaseVO;
                 
                 if (!base)
                     return;
@@ -134,8 +140,8 @@ package command
                         return;
                     }
                     
-                    for each (employee in sideEmployes)
-                        sendNotification(Const.MOVE_PERSON, new MovePersonCmdData(employee.employeePersonId, base.baseId, employee.employeeProfessionId));
+                    for each (person in sideEmployes)
+                        sendNotification(Const.MOVE_PERSON, new MovePersonCmdData(person.personId, base.baseId, person.personProfessionId));
                 }
                 
                 if (price.children.length > 0)

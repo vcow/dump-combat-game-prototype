@@ -11,6 +11,7 @@ package helpers
     
     import vo.BaseVO;
     import vo.MercenaryVO;
+    import vo.PersonVO;
     import vo.PriceVO;
     import vo.ProfessionDescVO;
     import vo.ResourceVO;
@@ -76,6 +77,24 @@ package helpers
             return _armyProxy;
         }
         
+        public function getFreeSoldiers():Vector.<PersonVO>
+        {
+            var personnel:Vector.<PersonVO> = armyProxy.getCalledUpSoldiers();
+            var soldiers:Vector.<PersonVO> = (new PersonnelHelper()).getEmployees(ProfessionDescVO.SOLGIER);
+            for each (var employee:PersonVO in personnel)
+            {
+                for (var i:int = 0; i < soldiers.length; i++)
+                {
+                    if (soldiers[i].personId == employee.personId)
+                    {
+                        soldiers.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+            return soldiers;
+        }
+        
         /**
          * Возвращает наличие необходимого ресурса для создания юнита
          * @param unitId идентификатор юнита
@@ -108,7 +127,7 @@ package helpers
             if (unit.unitCrew <= 0)
                 return true;
             
-            return new PersonnelHelper(basesListProxy, personsProxy).getEmployees(ProfessionDescVO.SOLGIER).length >= unit.unitCrew;
+            return new ArmyHelper(basesListProxy, appDataProxy, personsProxy, armyProxy).getFreeSoldiers().length >= unit.unitCrew;
         }
         
         /**

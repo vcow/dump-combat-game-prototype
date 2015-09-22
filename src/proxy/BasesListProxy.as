@@ -91,7 +91,7 @@ package proxy
 		 * @param baseId идентификатор запрашиваемого объекта
 		 * @return база, вражеская база или руины, соответстсвующие идентификатору
 		 */
-		public function getBaseById(baseId:String):IVO
+		public function getBase(baseId:String):IVO
 		{
 			for each (var baseVO:BaseVO in getBasesList())
 			{

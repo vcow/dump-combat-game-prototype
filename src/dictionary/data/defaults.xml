@@ -10,4 +10,10 @@
 	<basesDef>
 		<ruinDef id="38AA7031-A150-4BF2-A87F-0695C5EAF3B7"/>
 	</basesDef>
+	
+	<!-- Ресурсы, на которые не распространяется блокировка складов за неуплату -->
+	<unlocked>
+		<resource id="cash"/>
+		<resource id="food"/>
+	</unlocked>
 </defaultsDict>

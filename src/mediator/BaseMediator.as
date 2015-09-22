@@ -238,7 +238,7 @@ package mediator
             releaseViewComponent();
             
             _base = viewComponent ?
-                BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)).getBaseById(viewComponent.baseId) as BaseVO : null;
+                BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)).getBase(viewComponent.baseId) as BaseVO : null;
             
             super.setViewComponent(viewComponent);
             applyViewComponent();

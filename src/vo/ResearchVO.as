@@ -92,7 +92,7 @@ package vo
                 {
                     if (researchDesc.researchPrice > 0)
                     {
-                        var numEmployedScientists:Number = investigationsProxy.getEmployedScientists(researchId).children.length;
+                        var numEmployedScientists:Number = investigationsProxy.getEmployedScientists(researchId).length;
                         var delta:Number = numEmployedScientists / Number(researchDesc.researchPrice);
                         researchPercent += delta;
                     }

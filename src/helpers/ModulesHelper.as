@@ -11,7 +11,6 @@ package helpers
 	import vo.BaseVO;
 	import vo.ModuleDescVO;
 	import vo.ModuleVO;
-	import vo.PersonnelVO;
 	import vo.ResourceVO;
 	import vo.StoreVO;
 
@@ -82,16 +81,13 @@ package helpers
                         }
                         break;
                     case ModuleDescVO.HOUSING:
-                        var personnel:PersonnelVO = base.basePersonnel;
-                        space -= personnel.children.length;
+                        space -= base.basePersonnel.children.length;
                         break;
                     case ModuleDescVO.LAB:
-                        personnel = investigationsProxy.getEmployedScientists(null, base.baseId);
-                        space -= personnel.children.length;
+                        space -= investigationsProxy.getEmployedScientists(null, base.baseId).length;
                         break;
                     case ModuleDescVO.WORKSHOP:
-                        personnel = productionsProxy.getEmployedEngineers(null, base.baseId);
-                        space -= personnel.children.length;
+                        space -= productionsProxy.getEmployedEngineers(null, base.baseId).length;
                         break;
                 }
 				

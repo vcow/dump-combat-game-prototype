@@ -40,7 +40,7 @@ package proxy
          * @param personId идентификатор персонажа
          * @return персонаж
          */
-        public function getPersonById(personId:String):PersonVO
+        public function getPerson(personId:String):PersonVO
         {
             for each (var value:PersonVO in personsVO.children)
             {

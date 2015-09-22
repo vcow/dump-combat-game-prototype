@@ -45,7 +45,7 @@ package mediator
          */
         public function getEmployedScientists(researchId:String):int
         {
-            return investigationsProxy.getEmployedScientists(researchId).children.length;
+            return investigationsProxy.getEmployedScientists(researchId).length;
         }
         
         /**

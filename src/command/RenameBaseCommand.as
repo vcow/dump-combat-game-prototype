@@ -32,7 +32,7 @@ package command
             if (data)
             {
                 var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
-                var base:BaseVO = basesListProxy.getBaseById(data.renamedObjectId) as BaseVO;
+                var base:BaseVO = basesListProxy.getBase(data.renamedObjectId) as BaseVO;
                 if (base && base.baseName != data.newObjectName)
                 {
                     base.baseName = data.newObjectName;

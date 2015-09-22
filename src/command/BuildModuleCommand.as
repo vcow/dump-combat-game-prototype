@@ -48,7 +48,7 @@ import command.data.BuildModuleCmdData;
             if (data)
             {
                 var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
-                var base:BaseVO = basesListProxy.getBaseById(data.baseId) as BaseVO;
+                var base:BaseVO = basesListProxy.getBase(data.baseId) as BaseVO;
                 if (base)
                 {
                     var moduleDesc:ModuleDescVO = ModulesDict.getInstance().getModule(data.moduleTypeId);

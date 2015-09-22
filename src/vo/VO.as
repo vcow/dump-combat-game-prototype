@@ -235,6 +235,7 @@ package vo
 					case RuinTemplVO.NAME: value = new RuinTemplVO(); break;
 					case RuinDefVO.NAME: value = new RuinDefVO(); break;
 					case StoreVO.NAME: value = new StoreVO(); break;
+                    case UnlockedVO.NAME: value = new UnlockedVO(); break;
 					case PersonnelVO.NAME: value = new PersonnelVO(); break;
                     case PersonVO.NAME: value = new PersonVO(); break;
                     case EmployeeVO.NAME: value = new EmployeeVO(); break;

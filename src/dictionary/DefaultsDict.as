@@ -3,6 +3,7 @@ package dictionary
 	import vo.BasesDefVO;
 	import vo.BasesVO;
 	import vo.StoreVO;
+	import vo.UnlockedVO;
 	
 	/**
 	 * 
@@ -23,6 +24,7 @@ package dictionary
 		private static var _instance:DefaultsDict;
 		private static var _resourcesList:StoreVO;
 		private static var _basesList:BasesVO;
+        private static var _unlockedResourcesList:UnlockedVO;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -47,8 +49,7 @@ package dictionary
 		 */
 		public function get resourcesList():StoreVO
 		{
-			if (!_resourcesList)
-				parseSource();
+			init();
 			return _resourcesList;
 		}
 		
@@ -57,36 +58,53 @@ package dictionary
 		 */
 		public function get basesList():BasesVO
 		{
-			if (!_basesList)
-				parseSource();
+			init();
 			return _basesList;
 		}
+        
+        /**
+         * Ресурсы, не блокируемые при поступлении на склад, отключенный за неуплату
+         */
+        public function get unlockedResourcesList():UnlockedVO
+        {
+            init();
+            return _unlockedResourcesList;
+        }
 		
 		/**
 		 * Парсинг значений по умолчанию
 		 */
-		private function parseSource():void
+		private function init():void
 		{
-			var src:XML = XML(new source());
-			
-			// ресурсы по умолчанию
-			_resourcesList = new StoreVO();
-			var lst:XMLList = src.child(StoreVO.NAME);
-			if (lst.length() > 0)
-				_resourcesList.deserialize(lst[0]);
-			
-			// базы по умолчанию
-			lst = src.child(BasesDefVO.NAME);
-			if (lst.length() > 0)
-			{
-				var basesDef:BasesDefVO = new BasesDefVO();
-				basesDef.deserialize(lst[0]);
-				_basesList = basesDef.getDefaultBases();
-			}
-			else
-			{
-				_basesList = new BasesVO();
-			}
+            if (!_resourcesList && !_basesList && !_unlockedResourcesList)
+            {
+                var src:XML = XML(new source());
+                
+                // ресурсы по умолчанию
+                _resourcesList = new StoreVO();
+                var lst:XMLList = src.child(StoreVO.NAME);
+                if (lst.length() > 0)
+                    _resourcesList.deserialize(lst[0]);
+                
+                // базы по умолчанию
+                lst = src.child(BasesDefVO.NAME);
+                if (lst.length() > 0)
+                {
+                    var basesDef:BasesDefVO = new BasesDefVO();
+                    basesDef.deserialize(lst[0]);
+                    _basesList = basesDef.getDefaultBases();
+                }
+                else
+                {
+                    _basesList = new BasesVO();
+                }
+                
+                // Ресурсы, не блокируемые при поступлении на склад, отключенный за неуплату
+                _unlockedResourcesList = new UnlockedVO();
+                lst = src.child(UnlockedVO.NAME);
+                if (lst.length() > 0)
+                    _unlockedResourcesList.deserialize(lst[0]);
+            }
 		}
 	}
 }

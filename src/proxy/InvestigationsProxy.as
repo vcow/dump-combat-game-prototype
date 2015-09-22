@@ -7,6 +7,7 @@ package proxy
     import vo.BaseVO;
     import vo.EmployeeVO;
     import vo.InvestigationsVO;
+    import vo.PersonVO;
     import vo.PersonnelVO;
     import vo.ResearchVO;
     import vo.WorkerVO;
@@ -59,12 +60,13 @@ package proxy
          * Получить сотрудников из указанной базы, задействованных в указаном исследовании
          * @param researchId идентификатор исследования, если null, возвращается для всех исследований
          * @param baseId идентификатор базы, если null, возвращается для всех баз
-         * @return список сотрудников в виде персонала базы
+         * @return список сотрудников
          */
-        public function getEmployedScientists(researchId:String=null, baseId:String=null):PersonnelVO
+        public function getEmployedScientists(researchId:String=null, baseId:String=null):Vector.<PersonVO>
         {
-            var personnel:PersonnelVO = new PersonnelVO;
-            var personnelDecor:PersonnelHelper = new PersonnelHelper();
+            var persons:Vector.<PersonVO> = new Vector.<PersonVO>();
+            var personsProxy:PersonsProxy = PersonsProxy(this.facade.retrieveProxy(PersonsProxy.NAME));
+            var personnelDecor:PersonnelHelper = new PersonnelHelper(null, personsProxy);
             
             for each (var research:ResearchVO in armyVO.children)
             {
@@ -81,14 +83,14 @@ package proxy
                     {
                         if (employee.employeePersonId == worker.workerPersonId)
                         {
-                            personnel.children.push(employee);
+                            persons.push(personsProxy.getPerson(worker.workerPersonId));
                             break;
                         }
                     }
                 }
             }
             
-            return personnel;
+            return persons;
         }
         
         //----------------------------------

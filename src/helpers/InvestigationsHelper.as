@@ -4,9 +4,7 @@ package helpers
     
     import proxy.InvestigationsProxy;
     
-    import vo.EmployeeVO;
     import vo.PersonVO;
-    import vo.PersonnelVO;
     import vo.ProfessionDescVO;
 
     /**
@@ -39,13 +37,13 @@ package helpers
          */
         public function getFreeScientists():Vector.<PersonVO>
         {
-            var personnel:PersonnelVO = _investigationsProxy.getEmployedScientists();
+            var personnel:Vector.<PersonVO> = _investigationsProxy.getEmployedScientists();
             var scientists:Vector.<PersonVO> = (new PersonnelHelper()).getEmployees(ProfessionDescVO.SCIENTIST);
-            for each (var employee:EmployeeVO in personnel.children)
+            for each (var employee:PersonVO in personnel)
             {
                 for (var i:int = 0; i < scientists.length; i++)
                 {
-                    if (scientists[i].personId == employee.employeePersonId)
+                    if (scientists[i].personId == employee.personId)
                     {
                         scientists.splice(i, 1);
                         break;

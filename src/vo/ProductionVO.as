@@ -98,7 +98,7 @@ package vo
                 {
                     if (productionDesc.productionPrice > 0)
                     {
-                        var numEmployedEngineers:Number = productionsProxy.getEmployedEngineers(productionId).children.length;
+                        var numEmployedEngineers:Number = productionsProxy.getEmployedEngineers(productionId).length;
                         var delta:Number = numEmployedEngineers / Number(productionDesc.productionPrice);
                         productionPercent += delta;
                     }

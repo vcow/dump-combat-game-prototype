@@ -13,10 +13,12 @@ package command
     import org.puremvc.as3.patterns.command.SimpleCommand;
     
     import proxy.BasesListProxy;
+    import proxy.PersonsProxy;
     
     import vo.BaseVO;
     import vo.EmployeeVO;
     import vo.ModuleDescVO;
+    import vo.PersonVO;
     import vo.PriceVO;
     import vo.ProfessionDescVO;
     
@@ -52,8 +54,7 @@ package command
                 if ((new ArmyHelper(basesListProxy)).isDraftedIntoTheArmy(data.personId))
                     return;     // Это солдат, состоящий в команде боевого юнита
                 
-                var personEmployee:EmployeeVO;
-                
+                var movePersonComplete:Boolean = false;
                 for each (var base:BaseVO in basesListProxy.basesListVO.children)
                 {
                     for (var i:int = 0; i < base.basePersonnel.children.length; i++)
@@ -61,17 +62,15 @@ package command
                         var employee:EmployeeVO = EmployeeVO(base.basePersonnel.children[i]);
                         if (employee.employeePersonId == data.personId)
                         {
-                            personEmployee = employee;
-                            
                             if (base.baseId != data.baseId)
                             {
                                 // Персонаж перемещается на другую базу
-                                var newBase:BaseVO = basesListProxy.getBaseById(data.baseId) as BaseVO;
+                                var newBase:BaseVO = basesListProxy.getBase(data.baseId) as BaseVO;
                                 if (newBase && (new ModulesHelper(basesListProxy)).getSpace(ModuleDescVO.HOUSING, newBase) > 0)
                                 {
                                     base.basePersonnel.children.splice(i, 1);
-                                    newBase.basePersonnel.children.push(personEmployee);
-                                    sendNotification(Const.EMPLOYEE_IS_PLACED, personEmployee);
+                                    newBase.basePersonnel.children.push(employee);
+                                    sendNotification(Const.EMPLOYEE_IS_PLACED, employee);
                                 }
                                 else
                                 {
@@ -81,18 +80,26 @@ package command
                                 }
                             }
                             
+                            movePersonComplete = true;
                             break;
                         }
                     }
                     
-                    if (personEmployee)
+                    if (movePersonComplete)
                         break;
                 }
                 
-                if (personEmployee && personEmployee.employeeProfessionId != data.professionId)
+                if (!movePersonComplete)
+                {
+                    // Не найден такой персонаж ни на одной базе
+                    return;
+                }
+                
+                var person:PersonVO = PersonsProxy(this.facade.retrieveProxy(PersonsProxy.NAME)).getPerson(data.personId);
+                if (person && person.personProfessionId != data.professionId)
                 {
                     // Персонаж переводится на другую должность
-                    var oldProf:ProfessionDescVO = ProfessionsDict.getInstance().getProfession(personEmployee.employeeProfessionId);
+                    var oldProf:ProfessionDescVO = ProfessionsDict.getInstance().getProfession(person.personProfessionId);
                     var newProf:ProfessionDescVO = ProfessionsDict.getInstance().getProfession(data.professionId);
                     if (oldProf && newProf)
                     {
@@ -115,8 +122,8 @@ package command
                             resourcesDecor.pay(price);
                         }
                         
-                        personEmployee.employeeProfessionId = newProf.professionId;
-                        sendNotification(Const.EMPLOYEE_PROF_IS_CHANGED, personEmployee);
+                        person.personProfessionId = newProf.professionId;
+                        sendNotification(Const.EMPLOYEE_PROF_IS_CHANGED, person.personId);
                     }
                 }
             }

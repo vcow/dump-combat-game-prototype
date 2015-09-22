@@ -131,8 +131,8 @@ package helpers
          */
         public function hireEmployee(personId:String, baseId:String, professionId:String):EmployeeVO
         {
-            var base:BaseVO = basesListProxy.getBaseById(baseId) as BaseVO;
-            var person:PersonVO = personsProxy.getPersonById(personId);
+            var base:BaseVO = basesListProxy.getBase(baseId) as BaseVO;
+            var person:PersonVO = personsProxy.getPerson(personId);
             
             if (base && person)
             {
@@ -142,6 +142,8 @@ package helpers
                     personnel = new PersonnelVO();
                     base.children.push(personnel);
                 }
+                
+                person.personProfessionId = professionId;
                 
                 for each (var employee:EmployeeVO in personnel.children)
                 {
@@ -154,7 +156,6 @@ package helpers
                 
                 employee = new EmployeeVO();
                 employee.employeePersonId = person.personId;
-                employee.employeeProfessionId = professionId;
                 
                 personnel.children.push(employee);
                 return employee;
@@ -205,8 +206,9 @@ package helpers
 				
 				for each (var employee:EmployeeVO in personnel.children)
 				{
-					if (!professionId || employee.employeeProfessionId == professionId)
-						employees.push(personsProxy.getPersonById(employee.employeePersonId));
+                    var person:PersonVO = personsProxy.getPerson(employee.employeePersonId);
+					if (!professionId || person.personProfessionId == professionId)
+						employees.push(person);
 				}
 			}
 			return employees;

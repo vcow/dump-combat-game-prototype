@@ -1,17 +1,6 @@
 package vo
 {
-	import mx.resources.ResourceManager;
-	
-	import command.data.GameEventCmdData;
-	
-	import dictionary.ProfessionsDict;
 	import dictionary.Const;
-	
-	import facade.ProtoFacade;
-	
-	import helpers.ResourcesHelper;
-	
-	import proxy.PersonsProxy;
 	
 	/**
 	 * 
@@ -33,12 +22,6 @@ package vo
 		//--------------------------------------------------------------------------
 		
 		public var employeePersonId:String;				//< Уникальный идентификатор персонажа
-        public var employeeInactive:uint;               //< Количество ходов, которое сотрудник пребывает в неактивном состоянии
-		
-		private var _employeeProfessionId:String;			//< Идентификатор профессии персонажа
-		
-		private var _professionDesc:ProfessionDescVO;
-		private var _salaryEventId:String;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -49,74 +32,9 @@ package vo
 			super(NAME);
 		}
 		
-		public function set employeeProfessionId(value:String):void
-		{
-			if (value == _employeeProfessionId)
-				return;
-			
-			_employeeProfessionId = value;
-			
-			_professionDesc = ProfessionsDict.getInstance().getProfession(_employeeProfessionId);
-            var salary:PriceVO = _professionDesc.professionSalary;
-            _salaryEventId = salary ? salary.priceEventId : "";
-		}
-		
-		public function get employeeProfessionId():String
-		{
-			return _employeeProfessionId;
-		}
-		
-		public function get professionDesc():ProfessionDescVO
-		{
-			return _professionDesc;
-		}
-		
 		//----------------------------------
 		//  VO
 		//----------------------------------
-		
-		override public function event(eventId:String, data:Object=null, out:GameEventCmdData=null):void
-		{
-			if (_salaryEventId && eventId == _salaryEventId)
-			{
-				// Событие, по которому выплачивается зарплата для сотрудника
-				if (out)
-				{
-					var outData:Array = out.commonOut[Const.CHANGE_RESOURCES] as Array;
-					var resourcesDecor:ResourcesHelper = new ResourcesHelper();
-					
-					var commonFee:PriceVO;
-					if (outData)
-						commonFee = resourcesDecor.joinPrice(resourcesDecor.joinPrice.apply(this, outData),
-                            resourcesDecor.invertPrice(professionDesc.professionSalary));
-					else
-						commonFee = resourcesDecor.invertPrice(professionDesc.professionSalary);
-					
-					if (resourcesDecor.isEnoughResources(resourcesDecor.separatePrice(commonFee, true)[1]))
-					{
-						out.commonOut[Const.CHANGE_RESOURCES] = [ commonFee ];
-                        
-                        // Сейчас реализовано так, что сотрудник просто возобновляет деятельность,
-                        // как вариант, можно предусмотреть выплатить ему долг по зарплате
-                        employeeInactive = 0;
-					}
-					else
-					{
-						// Сократить сотрудника, или отправить в неоплачиваемый отпуск
-                        employeeInactive += 1;
-                        
-                        var person:PersonVO = PersonsProxy(ProtoFacade.getInstance().retrieveProxy(PersonsProxy.NAME)).getPersonById(employeePersonId);
-                        var message:String = ResourceManager.getInstance().getString("messages", "idle.worker",
-                            [ professionDesc.professionName, person.personName ]);
-                        sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
-					}
-				}
-			}
-			else
-			{
-				super.event(eventId, data, out);
-			}
-		}
 		
 		override protected function getSelfXMLObject():XML
 		{
@@ -125,10 +43,6 @@ package vo
 			// TODO: Сериализовать специфичные поля
 			
 			res.@id = employeePersonId;
-			res.@profession = employeeProfessionId;
-			
-            if (employeeInactive)
-                res.@inactive = employeeInactive;
             
 			// /TODO
 			
@@ -142,8 +56,6 @@ package vo
 			// TODO: десериализовать специфичные поля
 			
 			employeePersonId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
-			employeeProfessionId = data.hasOwnProperty("@profession") ? data.@profession.toString() : "";
-            employeeInactive = data.hasOwnProperty("@inactive") ? uint(data.@inactive) : 0;
 			
 			// /TODO
 			

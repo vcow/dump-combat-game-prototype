@@ -58,7 +58,7 @@ package mediator
             if (_person && _person.personId == value)
                 return;
             
-            _person = personsProxy.getPersonById(value);
+            _person = personsProxy.getPerson(value);
         }
         
         /**
@@ -90,19 +90,7 @@ package mediator
          */
         public function get personProfession():String
         {
-            if (_person)
-            {
-                var base:BaseVO = (new PersonnelHelper(basesListProxy, personsProxy)).getEmployeePlace(_person.personId);
-                if (base)
-                {
-                    for each (var employee:EmployeeVO in base.basePersonnel.children)
-                    {
-                        if (employee.employeePersonId == _person.personId)
-                            return employee.employeeProfessionId;
-                    }
-                }
-            }
-            return "";
+            return _person ? _person.personProfessionId : "";
         }
         
         /**
@@ -226,12 +214,12 @@ package mediator
                     }
                     break;
                 case Const.EMPLOYEE_PROF_IS_CHANGED:
-                    var employee:EmployeeVO = notification.getBody() as EmployeeVO;
-                    if (employee && personView && employee.employeePersonId == personView.personId)
+                    var personId:String = notification.getBody().toString();
+                    if (personView && personId == personView.personId)
                         personView.updateProfession();
                     break;
                 case Const.EMPLOYEE_IS_PLACED:
-                    employee = notification.getBody() as EmployeeVO;
+                    var employee:EmployeeVO = notification.getBody() as EmployeeVO;
                     if (employee && personView && employee.employeePersonId == personView.personId)
                         personView.updateBase();
                     break;

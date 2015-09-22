@@ -45,7 +45,7 @@ package command
             {
                 var baseListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
                 
-                var base:BaseVO = baseListProxy.getBaseById(data.baseId) as BaseVO;
+                var base:BaseVO = baseListProxy.getBase(data.baseId) as BaseVO;
                 if (data.person && data.person.personId && data.person.personId != Const.NO_GUID && base)
                 {
                     var personnel:PersonnelVO = base.basePersonnel;

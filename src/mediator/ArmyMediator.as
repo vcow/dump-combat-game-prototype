@@ -170,7 +170,7 @@ package mediator
         public function getSoldiers():ArrayCollection
         {
             var res:Array = [];
-            for each (var person:PersonVO in (new PersonnelHelper(basesListProxy, personsProxy)).getEmployees(ProfessionDescVO.SOLGIER))
+            for each (var person:PersonVO in (new ArmyHelper(basesListProxy, appDataProxy, personsProxy, armyProxy)).getFreeSoldiers())
                 res.push(person);
             return new ArrayCollection(res);
         }
