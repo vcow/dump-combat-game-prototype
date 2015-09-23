@@ -45,6 +45,7 @@
             </s:VGroup>
             
             <s:VGroup gap="3" horizontalAlign="center" includeIn="withPrice">
+                
                 <s:Label text="@Resource(key='move.person.popup.surcharge', bundle='common')"/>
                 
                 <ui:PriceView width="100%" price="{price}"/>

@@ -95,18 +95,28 @@ package vo
                     {
                         out.commonOut[Const.CHANGE_RESOURCES] = [ commonFee ];
                         
-                        // Сейчас реализовано так, что персонаж просто возобновляет деятельность,
-                        // как вариант, можно предусмотреть выплатить ему долг по зарплате
-                        personInactive = 0;
+                        if (personInactive > 0)
+                        {
+                            // Сейчас реализовано так, что персонаж просто возобновляет деятельность,
+                            // как вариант, можно предусмотреть выплатить ему долг по зарплате
+                            personInactive = 0;
+                            
+                            var message:String = ResourceManager.getInstance().getString("messages", "worker.resumed",
+                                [ professionDesc.professionName, personName ]);
+                            sendNotification(Const.SEND_GAME_MESSAGE, message, Const.MESSAGE);
+                        }
                     }
                     else
                     {
                         // Сократить персонаж, или отправить в неоплачиваемый отпуск
-                        personInactive += 1;
+                        if (personInactive == 0)
+                        {
+                            message = ResourceManager.getInstance().getString("messages", "idle.worker",
+                                [ professionDesc.professionName, personName ]);
+                            sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
+                        }
                         
-                        var message:String = ResourceManager.getInstance().getString("messages", "idle.worker",
-                            [ professionDesc.professionName, personName ]);
-                        sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
+                        personInactive += 1;
                     }
                 }
             }

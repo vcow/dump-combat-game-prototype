@@ -13,7 +13,6 @@
 	
 	<!-- Ресурсы, на которые не распространяется блокировка складов за неуплату -->
 	<unlocked>
-		<resource id="cash"/>
 		<resource id="food"/>
 	</unlocked>
 </defaultsDict>

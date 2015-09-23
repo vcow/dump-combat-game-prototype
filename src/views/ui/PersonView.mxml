@@ -51,8 +51,8 @@
         <s:Button width="50%" label="@Resource(key='person.fire', bundle='common')" click="fire_clickHandler(event)"/>
     </s:HGroup>
     
-    <s:VGroup includeIn="mercenary" width="100%" paddingTop="10" paddingLeft="15" paddingRight="15" paddingBottom="15">
-        <s:Label text="@Resource(key='person.is.mercenary.label', bundle='common')" color="#6b0000" textAlign="center"/>
+    <s:VGroup includeIn="mercenary" width="100%" paddingTop="10" paddingBottom="15" horizontalAlign="center">
+        <s:Label text="@Resource(key='person.is.mercenary.label', bundle='common')" color="#6b0000" textAlign="center" width="280"/>
     </s:VGroup>
     
 	<fx:Declarations>

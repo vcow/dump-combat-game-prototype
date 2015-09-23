@@ -9,10 +9,12 @@ package command
     
     import proxy.BasesListProxy;
     import proxy.InvestigationsProxy;
+    import proxy.PersonsProxy;
     import proxy.ProductionsProxy;
     
     import vo.BaseVO;
     import vo.InvestigationsVO;
+    import vo.PersonsVO;
     import vo.ProductionsVO;
     
     /**
@@ -66,6 +68,10 @@ package command
 				
 				out.reset();
             }
+            
+            // Прокинуть евент по всем сотрудникам
+            var persons:PersonsVO = PersonsProxy(this.facade.retrieveProxy(PersonsProxy.NAME)).personsVO;
+            persons.event(notification.getType(), notification.getBody(), out);
             
             // Прокинуть евент по всем исследованиям
             var investigations:InvestigationsVO = InvestigationsProxy(this.facade.retrieveProxy(InvestigationsProxy.NAME)).armyVO;

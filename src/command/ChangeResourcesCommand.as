@@ -50,12 +50,24 @@ package command
 				{
 					var rest:int = resourcesDecor.addResource(resource.resourceId, resource.resourceCount);
                     resourcesChanged ||= rest != 0;
-					if (rest < resource.resourceCount)
-					{
-						// Не хватает места на складах под этот ресурс
-                        var message:String = ResourceManager.getInstance().getString("messages", "full.store", [ resource.resourceDesc.resourceName ]);
-                        sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
-					}
+                    do {
+    					if (rest < resource.resourceCount)
+    					{
+    						// Не хватает места на складах под этот ресурс
+                            if (resourcesDecor.isUnlockable(resource.resourceId))
+                            {
+                                // На случай, если склады заблокированы за неуплату, проверяем ресурс,
+                                // если он неблокируемый, производим зачисление
+                                rest = resourcesDecor.addResource(resource.resourceId, resource.resourceCount, true);
+                                
+                                if (rest == resource.resourceCount)
+                                    break;
+                            }
+                            
+                            var message:String = ResourceManager.getInstance().getString("messages", "full.store", [ resource.resourceDesc.resourceName ]);
+                            sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
+    					}
+                    } while (false);
                     
                     if (resource.resourceDesc.resourceTrigger)
                     {

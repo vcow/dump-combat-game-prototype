@@ -47,9 +47,10 @@ package helpers
 		 * Получить незанятое пространство в модулях указанного типа
 		 * @param moduleId идентификатор модуля
 		 * @param base база, для которой определяется загрузка модуля, если null, загрузка определяется для всех баз
+         * @param includeInactive включать в результат некативные модули
 		 * @return незанятое пространство (может быть отрицательным, если модули переполнены)
 		 */
-		public function getSpace(moduleId:String, base:BaseVO=null):int
+		public function getSpace(moduleId:String, base:BaseVO=null, includeInactive:Boolean=false):int
 		{
 			var res:int = 0;
 			
@@ -67,7 +68,7 @@ package helpers
 			var moduleDesc:ModuleDescVO = ModulesDict.getInstance().getModule(ModuleDescVO.STORE);
 			for each (base in bases)
 			{
-				var modules:Vector.<ModuleVO> = base.getModules(moduleId);
+				var modules:Vector.<ModuleVO> = base.getModules(moduleId, includeInactive);
 				var space:int = modules.length * moduleDesc.moduleSpace;
 				
                 switch (moduleId)
@@ -77,7 +78,7 @@ package helpers
                         if (store)
                         {
                             for each (var resource:ResourceVO in store.children)
-                            space -= resource.resourceCount * resource.resourceDesc.resourceSize;
+                                space -= resource.resourceCount * resource.resourceDesc.resourceSize;
                         }
                         break;
                     case ModuleDescVO.HOUSING:

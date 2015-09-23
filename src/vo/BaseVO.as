@@ -48,9 +48,10 @@ package vo
 		/**
 		 * Получить список модулей базы указанного типа
 		 * @param moduleId идентификатор типа модуля
+         * @param includeInactive включать в результат некативные модули
 		 * @return список модулей базы
 		 */
-		public function getModules(moduleId:String):Vector.<ModuleVO>
+		public function getModules(moduleId:String, includeInactive:Boolean=false):Vector.<ModuleVO>
 		{
 			var modules:Vector.<ModuleVO> = new Vector.<ModuleVO>();
             var allModules:ModulesVO = baseModules;
@@ -58,7 +59,7 @@ package vo
             {
 				for each (var module:ModuleVO in allModules.children)
 				{
-					if (module.moduleId == moduleId && !module.moduleInactive && !module.moduleBuildTimer)
+					if (module.moduleId == moduleId && (includeInactive || !module.moduleInactive) && !module.moduleBuildTimer)
 						modules.push(module);
 				}
 			}

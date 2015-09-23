@@ -107,18 +107,23 @@ package vo
                         {
                             moduleInactive = 0;
                             out.privateOut[Const.MODULES_CHANGED] = [];
+                            
+                            var message:String = ResourceManager.getInstance().getString("messages", "module.resumed", [ moduleDesc.moduleName ]);
+                            sendNotification(Const.SEND_GAME_MESSAGE, message, Const.MESSAGE);
                         }
 					}
 	                else
 	                {
 	                    // Отключить модуль за неуплату
                         if (moduleInactive == 0)
+                        {
                             out.privateOut[Const.MODULES_CHANGED] = [];
+                            
+                            message = ResourceManager.getInstance().getString("messages", "disconnected.for.non.payment", [ moduleDesc.moduleName ]);
+                            sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
+                        }
                         
                         moduleInactive += 1;
-                        
-                        var message:String = ResourceManager.getInstance().getString("messages", "disconnected.for.non.payment", [ moduleDesc.moduleName ]);
-                        sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
 	                }
 				}
             }
