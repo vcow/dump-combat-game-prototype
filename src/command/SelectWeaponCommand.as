@@ -40,14 +40,13 @@ package command
         override public function execute(notification:INotification):void
         {
             var data:SelectWeaponCmdData = notification.getBody() as SelectWeaponCmdData;
-            if (data)
+            if (data && data.weaponSlot.length > 0)
             {
                 var unit:UnitVO = ArmyProxy(this.facade.retrieveProxy(ArmyProxy.NAME)).getUnit(data.unitId);
                 if (!unit)
                     return;
                 
                 var resourcesDecor:ResourcesHelper = new ResourcesHelper();
-                var newWeaponIsTwoHanded:Boolean = false;
                 
                 var newWeapon:WeaponVO = new WeaponVO();
                 newWeapon.weaponId = data.weaponId;
@@ -61,32 +60,59 @@ package command
                         return;
                     }
                     
-                    newWeaponIsTwoHanded = newWeapon.weaponDesc.weaponTwoHanded;
+                    if (newWeapon.weaponDesc.weaponSlot.length > 0)
+                    {
+                        var compareNum:int = data.weaponSlot.length;
+                        for each (var slot:int in newWeapon.weaponDesc.weaponSlot)
+                        {
+                            if (data.weaponSlot.indexOf(slot) >= 0)
+                                compareNum--;
+                        }
+                        
+                        if (compareNum != 0)
+                        {
+                            // Слоты, куда помещается оружие, не соответствуют слотам, куда оно может быть помещено
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        if (data.weaponSlot.length > 1)
+                        {
+                            // Оружие кладется в несколько слотов, хотя занимает только один
+                            return;
+                        }
+                    }
                 }
                 else
                 {
                     newWeapon = null;
                 }
                 
-                for (var i:int = 0; i < unit.children.length; i++)
+                for (var i:int = unit.children.length - 1; i >= 0; i--)
                 {
                     if (unit.children[i].name == WeaponVO.NAME)
                     {
                         var weapon:WeaponVO = WeaponVO(unit.children[i]);
-                        if (weapon.weaponSlot == data.weaponSlot || newWeaponIsTwoHanded)
+                        
+                        compareNum = weapon.weaponSlot.length;
+                        for each (slot in weapon.weaponSlot)
+                        {
+                            if (data.weaponSlot.indexOf(slot) >= 0)
+                                compareNum--;
+                        }
+                        
+                        if ( compareNum < weapon.weaponSlot.length)
                         {
                             // В этом слоте уже есть оружие
                             
-                            if (weapon.weaponId == data.weaponId && (!newWeaponIsTwoHanded || weapon.weaponSlot == data.weaponSlot))
+                            if (weapon.weaponId == data.weaponId && compareNum == 0)
                                 return;     // Это то же самое оружие, ничего не меняем
                             
                             // Разрядить и убрать на склад текущее оружие
-                            sendNotification(Const.RELOAD_WEAPON, new ReloadCmdData(data.unitId, data.weaponSlot, null));
+                            sendNotification(Const.RELOAD_WEAPON, new ReloadCmdData(data.unitId, weapon.weaponSlot, null));
                             sendNotification(Const.CHANGE_RESOURCES, resourcesDecor.joinResource(weapon.weaponDesc.weaponResource, 1));
                             unit.children.splice(i, 1);
-                            
-                            if (!newWeaponIsTwoHanded)
-                                break;
                         }
                     }
                 }

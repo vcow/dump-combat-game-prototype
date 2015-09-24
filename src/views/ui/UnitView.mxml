@@ -134,17 +134,16 @@
 	
 	<fx:Script>
 		<![CDATA[
+            import dictionary.ArmamentDict;
+            import vo.WeaponDescVO;
+            import vo.WeaponVO;
             import events.UnitEvent;
             import mx.collections.ArrayCollection;
             import mx.events.FlexEvent;
             
-            import dictionary.ArmamentDict;
-            
             import facade.ProtoFacade;
             
             import mediator.UnitMediator;
-            
-            import vo.WeaponDescVO;
             
 			//--------------------------------------------------------------------------
 			// 
@@ -152,8 +151,6 @@
 			
             private var _unitMediator:UnitMediator;
             
-            private var _currentWeapon:ArrayCollection;
-            private var _weaponsList:ArrayCollection;
             private var _weaponData:ArrayCollection;
             
 			//--------------------------------------------------------------------------
@@ -164,17 +161,6 @@
             private function get weaponData():ArrayCollection
             {
                 return _weaponData;
-            }
-            
-            public function set weaponsList(value:ArrayCollection):void
-            {
-                if (value == _weaponsList)
-                    return;
-                
-                _weaponsList = value;
-                updateWeapons();
-                
-                dispatchEvent(new Event("weaponListChanged"));
             }
             
             //--------------------------------------------------------------------------
@@ -191,15 +177,6 @@
                 return data.toString();
             }
             
-            public function set currentWeapon(value:ArrayCollection):void
-            {
-                if (value == _currentWeapon)
-                    return;
-                
-                _currentWeapon = value;
-                updateWeapons();
-            }
-            
             public function updateUnit():void
             {
                 if (initialized)
@@ -211,8 +188,6 @@
                         currentState = _unitMediator.isSoldier ? "soldier" : "unit";
                         title = _unitMediator.unitName;
                         
-                        _weaponsList = _unitMediator.getWeapon();
-                        _currentWeapon = _unitMediator.currentWeapon;
                         updateWeapons();
                     }
                 }
@@ -221,70 +196,25 @@
             private function updateWeapons():void
             {
                 var data:Array = [];
-                if (_currentWeapon && _weaponsList)
+                
+                if (_unitMediator && _unitMediator.unitDesc)
                 {
-                    var twoHanded:String;
-                    for (var i:int = 0; i < _currentWeapon.length; i++)
+                    for (var i:int = 0; i < _unitMediator.unitDesc.unitWeaponSlots; i++)
                     {
-                        var weapon:WeaponDescVO = ArmamentDict.getInstance().getWeapon(_currentWeapon[i]);
-                        var weaponsList:Array = _weaponsList.source.slice();
+                        var weapon:WeaponVO = _unitMediator.getWeapon(i);
+                        var list:ArrayCollection = _unitMediator.getAvailableWeaponFor(i);
                         
-                        if (weapon)
-                        {
-                            var inList:Boolean = false;
-                            for each (var item:Object in weaponsList)
-                            {
-                                if (item.id == weapon.weaponId)
-                                {
-                                    inList = true;
-                                    break;
-                                }
-                            }
-                            
-                            if (!inList)
-                            {
-                                weaponsList.push({
-                                    id: weapon.weaponId,
-                                    label: weapon.resourceDesc.resourceName,
-                                    loadable: weapon.weaponClip > 0
-                                });
-                            }
-                            
-                            if (weapon && weapon.weaponTwoHanded)
-                            {
-                                
-                            }
-                        }
-                        
-                        weaponsList.sortOn("label");
-                        weaponsList.unshift({
+                        list.addItemAt({
                             id: "",
                             label: resourceManager.getString("common", _unitMediator.isSoldier ? "army.unit.soldier.notarmed" : "army.unit.notarmed"),
                             loadable: false
-                        });
+                        }, 0);
                         
                         data.push({
                             selected: weapon ? weapon.weaponId : "",
-                            list: new ArrayCollection(weaponsList),
+                            list: list,
                             number: i
                         });
-                        
-                        if (weapon && weapon.weaponTwoHanded)
-                            twoHanded = weapon.resourceDesc.name;
-                    }
-                    
-                    if (twoHanded)
-                    {
-                        // Есть двуручное оружие, выкинуть все остальное
-                        for each (item in data)
-                        {
-                            if (item.number == twoHanded)
-                                continue;
-                            
-                            item.selected = "";
-                            item.list = new ArrayCollection();
-                            item.proxy = twoHanded;
-                        }
                     }
                 }
                 
@@ -297,7 +227,12 @@
                 event.stopPropagation();
                 var data:Object = event.target.data;
                 
-                dispatchEvent(new UnitEvent(UnitEvent.SELECT_WEAPON, data.selected, 1, data.number, data.selected));
+                var weapon:WeaponDescVO = ArmamentDict.getInstance().getWeapon(data.selected);
+                var slot:Vector.<int> = weapon ? weapon.weaponSlot.slice() : new Vector.<int>();
+                if (slot.length == 0)
+                    slot.push(data.number);
+                
+                dispatchEvent(new UnitEvent(UnitEvent.SELECT_WEAPON, data.selected, 1, slot, data.selected));
             }
             
             //----------------------------------

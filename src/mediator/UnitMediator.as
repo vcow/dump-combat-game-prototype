@@ -22,6 +22,7 @@ package mediator
     import views.ui.UnitView;
     
     import vo.ArmorDescVO;
+    import vo.UnitDescVO;
     import vo.UnitVO;
     import vo.WeaponDescVO;
     import vo.WeaponVO;
@@ -83,10 +84,19 @@ package mediator
         }
         
         /**
+         * Описание юнита
+         */
+        public function get unitDesc():UnitDescVO
+        {
+            return _unit ? _unit.unitDesc : null;
+        }
+        
+        /**
          * Получить список оружия
+         * @param slot слдот, для которого получается оружие
          * @return список оружия
          */
-        public function getWeapon():ArrayCollection
+        public function getAvailableWeaponFor(slot:int):ArrayCollection
         {
             var res:Array = [];
             var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy, appDataProxy);
@@ -98,12 +108,16 @@ package mediator
                     if (!resourcesDecor.isEnoughResources(resourcesDecor.joinResource(weapon.weaponResource, 1)))
                         continue;   // Такого оружия нет на складах
                     
+                    if (weapon.weaponSlot.length > 0 && weapon.weaponSlot.indexOf(slot) == -1)
+                        continue;   // Не подходит для этого слота
+                    
                     res.push({
                         id: weapon.weaponId,
                         label: weapon.resourceDesc.resourceName,
                         loadable: weapon.weaponClip > 0
                     });
                 }
+                res.sortOn("label");
             }
             
             return new ArrayCollection(res);
@@ -112,23 +126,20 @@ package mediator
         /**
          * Текущее оружие на юните
          */
-        public function get currentWeapon():ArrayCollection
+        public function getWeapon(slot:int):WeaponVO
         {
-            if (!_unit)
-                return new ArrayCollection();
-            
-            var j:int = 0;
-            var res:Array = [];
-            var weapon:Vector.<WeaponVO> = _unit.unitWeapon;
-            for (var i:int = 0; i < _unit.unitDesc.unitWeaponSlots; i++)
+            if (_unit)
             {
-                if (j < weapon.length && i == weapon[j].weaponSlot)
-                    res.push(weapon[j++].weaponId);
-                else
-                    res.push(null);
+                for each (var weapon:WeaponVO in _unit.unitWeapon)
+                {
+                    for each (var s:int in weapon.weaponSlot)
+                    {
+                        if (s == slot)
+                            return weapon;
+                    }
+                }
             }
-            
-            return new ArrayCollection(res);
+            return null;
         }
         
         /**

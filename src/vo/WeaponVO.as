@@ -21,7 +21,7 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
         
-        public var weaponSlot:int;                  //< Номер слота оружия
+        public var weaponSlot:Vector.<int> = new Vector.<int>();    //< Номер слота оружия
 		
         private var _weaponId:String;
         private var _weaponDesc:WeaponDescVO;
@@ -68,7 +68,7 @@ package vo
 			// TODO: Сериализовать специфичные поля
 			
             res.@id = weaponId;
-            res.@slot = weaponSlot;
+            res.@slot = weaponSlot.join(",");
             
 			// /TODO
 			
@@ -82,7 +82,14 @@ package vo
 			// TODO: десериализовать специфичные поля
 			
             weaponId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
-            weaponSlot = data.hasOwnProperty("@slot") ? int(data.@slot) : 0;
+            
+            var slotList:Array = data.hasOwnProperty("@slot") ? data.@slot.toString().split(/\s*,\s*/) : [];
+            weaponSlot.splice(0, weaponSlot.length);
+            for each (var slot:String in slotList)
+            {
+                if (!isNaN(parseInt(slot)))
+                    weaponSlot.push(slot);
+            }
 			
 			// /TODO
 			

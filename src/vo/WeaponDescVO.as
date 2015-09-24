@@ -29,8 +29,8 @@ package vo
         public var weaponDmgStrength:Number;                            //< Сила оружия
         public var weaponClip:int;                                      //< Объем магазина
         public var weaponReach:int;                                     //< Радиус действия
-        public var weaponTwoHanded:Boolean;                             //< Признак того, что оружие двуручное
         public var weaponUnit:Vector.<String> = new Vector.<String>();  //< Список юнитов, для которого годится оружие
+        public var weaponSlot:Vector.<int> = new Vector.<int>();        //< Список слотов, в которые помещается оружие
 		
 		private var _weaponResource:String;
         private var _data:Object = {};
@@ -95,8 +95,8 @@ package vo
             if (weaponReach != 1)
                 res.@reach = weaponReach;
             
-            if (weaponTwoHanded)
-                res.@twoHanded = weaponTwoHanded;
+            if (weaponSlot.length > 0)
+                res.@slot = weaponSlot.join(",");
             
             if (weaponUnit.length > 0)
                 res.@unit = weaponUnit.join(",");
@@ -119,12 +119,19 @@ package vo
             weaponDmgStrength = data.hasOwnProperty("@dmgStrength") ? Number(data.@dmgStrength) : 0;
             weaponClip = data.hasOwnProperty("@clip") ? int(data.@clip) : 0;
             weaponReach = data.hasOwnProperty("@reach") ? int(data.@reach) : 1;
-            weaponTwoHanded = data.hasOwnProperty("@twoHanded") ? data.@twoHanded.toString().toLowerCase() == "true" : false;
             
-            var unitList:Array = data.hasOwnProperty("@unit") ? data.@unit.toString().split(/\s*,\s*/) : [];
+            var itemList:Array = data.hasOwnProperty("@slot") ? data.@slot.toString().split(/\s*,\s*/) : [];
+            weaponSlot.splice(0, weaponSlot.length);
+            for each (var item:String in itemList)
+            {
+                if (!isNaN(parseInt(item)))
+                    weaponSlot.push(int(item));
+            }
+            
+            itemList = data.hasOwnProperty("@unit") ? data.@unit.toString().split(/\s*,\s*/) : [];
             weaponUnit.splice(0, weaponUnit.length);
-            for each (var unit:String in unitList)
-                weaponUnit.push(unit);
+            for each (item in itemList)
+                weaponUnit.push(item);
             
             _data = parseAsObject(data);
 			

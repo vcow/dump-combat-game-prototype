@@ -13,13 +13,13 @@
 		dmgStrength={дробное значение} - сила оружия
 		clip={числовое значение} - вместительность магазина
 		reach={числовое значение} - радиус действия, по умолчанию 1, если 0, оружие не может использоваться в ближнем бою
-		twoHanded=["true","false"] - флаг, указывающий на то, что оружие двуручное
+		slot={список числовых значений, разделенных запятыми} - список слотов, занимаемых оружием, если отсутствует, оружие может занимать один любой слот
 		В качестве дочерних элементов может содержать модификаторы характеристик бойца -->
 	<weaponDesc id="cudgel" resource="cudgel" unit="infantry" sharpDmg="0" spikeDmg="0" bluntDmg="1" fireDmg="0" dmgStrength="2"/>
 	<!-- Булава с шипами -->
-	<weaponDesc id="mace" resource="mace" unit="infantry" sharpDmg="0.05" spikeDmg="0.25" bluntDmg="0.7" fireDmg="0" dmgStrength="3"/>
+	<weaponDesc id="mace" resource="mace" unit="infantry" sharpDmg="0.05" spikeDmg="0.25" bluntDmg="0.7" fireDmg="0" dmgStrength="3" slot="0"/>
 	<!-- Лук -->
-	<weaponDesc id="bow" resource="bow" unit="infantry" sharpDmg="0" spikeDmg="0" bluntDmg="0" fireDmg="0" dmgStrength="0" clip="10" reach="0" twoHanded="true"/>
+	<weaponDesc id="bow" resource="bow" unit="infantry" sharpDmg="0" spikeDmg="0" bluntDmg="0" fireDmg="0" dmgStrength="0" clip="10" reach="0" slot="0,1"/>
 	<!-- Стрела -->
 	<!-- Для снарядов поддерживаются следующие параметры:
 		id={строковое значение} - уникальный идентификатор снаряда
@@ -44,6 +44,7 @@
 		bluntDef={дробное значение от 0 до 1.0} - защита от удара
 		fireDef={дробное значение от 0 до 1.0} - защита от огня (в сумме защита должна составлять 1.0)
 		defStrength={дробное значение} - сила защиты
+		slot={список числовых значений, разделенных запятыми} - список слотов, занимаемых броней, если отсутствует, броня может занимать один любой слот
 		В качестве дочерних элементов может содержать модификаторы характеристик бойца -->
 	<armorDesc id="cardboardArmor" resource="cardboardArmor" unit="infantry" sharpDef="0.05" spikeDef="0" bluntDef="0.95" fireDef="0" defStrength="2">
 		<!-- Снижает скорость перемещения -->

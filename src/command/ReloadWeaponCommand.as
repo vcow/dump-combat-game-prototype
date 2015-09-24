@@ -52,7 +52,15 @@ package command
                     if (unit.children[i].name == WeaponVO.NAME)
                     {
                         var weapon:WeaponVO = WeaponVO(unit.children[i]);
-                        if (weapon.weaponSlot == data.slot)
+                        
+                        var compareNum:int = data.slot.length;
+                        for each (var slot:int in weapon.weaponSlot)
+                        {
+                            if (data.slot.indexOf(slot) >= 0)
+                                compareNum--;
+                        }
+                        
+                        if (compareNum == 0)
                         {
                             if (!data.ammo || data.ammo.children.length == 0)
                             {
@@ -76,6 +84,7 @@ package command
                                 sendNotification(Const.WEAPON_RELOADED, data.unitId);
                                 return;
                             }
+                            
                             
                             
                             

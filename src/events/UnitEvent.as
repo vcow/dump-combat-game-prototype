@@ -24,7 +24,7 @@ package events
         //--------------------------------------------------------------------------
         
         public var weaponId:String;
-        public var slotNum:int;
+        public var slotNum:Vector.<int>;
         public var itemId:String;
         public var itemsCount:int;
         
@@ -32,7 +32,7 @@ package events
         // 
         //--------------------------------------------------------------------------
         
-        public function UnitEvent(type:String, itemId:String, itemsCount:int, slotNum:int, weaponId:String,
+        public function UnitEvent(type:String, itemId:String, itemsCount:int, slotNum:Vector.<int>, weaponId:String,
                                   bubbles:Boolean=false, cancelable:Boolean=false)
         {
             super(type, bubbles, cancelable);

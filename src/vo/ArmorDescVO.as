@@ -28,6 +28,7 @@ package vo
         public var armorFireDef:Number;                                 //< Урон от огня
         public var armorDefStrength:Number;                             //< Сила брони
         public var armorUnit:Vector.<String> = new Vector.<String>();   //< Список юнитов, для которого годится броня
+        public var armorSlot:Vector.<int> = new Vector.<int>();         //< Список слотов, в которые помещается броня
 		
 		private var _armorResource:String;
         private var _data:Object = {};
@@ -86,6 +87,9 @@ package vo
             res.@fireDef = armorFireDef;
             res.@defStrength = armorDefStrength;
             
+            if (armorSlot.length > 0)
+                res.@slot = armorSlot.join(",");
+            
             if (armorUnit.length > 0)
                 res.@unit = armorUnit.join(",");
 			
@@ -106,10 +110,18 @@ package vo
             armorFireDef = data.hasOwnProperty("@fireDef") ? Number(data.@fireDef) : 0;
             armorDefStrength = data.hasOwnProperty("@defStrength") ? Number(data.@defStrength) : 0;
             
-            var unitList:Array = data.hasOwnProperty("@unit") ? data.@unit.toString().split(/\s*,\s*/) : [];
+            var itemList:Array = data.hasOwnProperty("@slot") ? data.@slot.toString().split(/\s*,\s*/) : [];
+            armorSlot.splice(0, armorSlot.length);
+            for each (var item:String in itemList)
+            {
+                if (!isNaN(parseInt(item)))
+                    armorSlot.push(int(item));
+            }
+            
+            itemList = data.hasOwnProperty("@unit") ? data.@unit.toString().split(/\s*,\s*/) : [];
             armorUnit.splice(0, armorUnit.length);
-            for each (var unit:String in unitList)
-                armorUnit.push(unit);
+            for each (item in itemList)
+                armorUnit.push(item);
             
             _data = parseAsObject(data);
 			
