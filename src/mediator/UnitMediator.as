@@ -10,6 +10,7 @@ package mediator
     
     import events.UnitEvent;
     
+    import helpers.ConditionHelper;
     import helpers.ResourcesHelper;
     
     import org.puremvc.as3.interfaces.INotification;
@@ -18,6 +19,7 @@ package mediator
     import proxy.AppDataProxy;
     import proxy.ArmyProxy;
     import proxy.BasesListProxy;
+    import proxy.TriggersProxy;
     
     import views.ui.UnitView;
     
@@ -46,6 +48,7 @@ package mediator
         private var _armyProxy:ArmyProxy;
         private var _basesListProxy:BasesListProxy;
         private var _appDataProxy:AppDataProxy;
+        private var _triggersProxy:TriggersProxy;
         
         //--------------------------------------------------------------------------
         // 
@@ -100,6 +103,9 @@ package mediator
         {
             var res:Array = [];
             var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy, appDataProxy);
+            var conditionDecor:ConditionHelper = new ConditionHelper(triggersProxy);
+            var selected:WeaponVO = getWeapon(slot);
+            var weaponFound:Boolean = !selected;
             
             if (_unit)
             {
@@ -111,12 +117,29 @@ package mediator
                     if (weapon.weaponSlot.length > 0 && weapon.weaponSlot.indexOf(slot) == -1)
                         continue;   // Не подходит для этого слота
                     
+                    if (!conditionDecor.parseCondition(weapon.weaponCondition))
+                        continue;   // Не выполняется условие использования оружия
+                    
                     res.push({
                         id: weapon.weaponId,
                         label: weapon.resourceDesc.resourceName,
                         loadable: weapon.weaponClip > 0
                     });
+                    
+                    if (!weaponFound)
+                        weaponFound ||= selected.weaponId == weapon.weaponId;
                 }
+                
+                if (!weaponFound)
+                {
+                    // Добавить в список то оружие, которое сейчас лежит в слоте
+                    res.push({
+                        id: selected.weaponDesc.weaponId,
+                        label: selected.weaponDesc.resourceDesc.resourceName,
+                        loadable: selected.weaponDesc.weaponClip > 0
+                    });
+                }
+                
                 res.sortOn("label");
             }
             
@@ -193,6 +216,13 @@ package mediator
             if (!_armyProxy)
                 _armyProxy = ArmyProxy(this.facade.retrieveProxy(ArmyProxy.NAME));
             return _armyProxy;
+        }
+        
+        protected function get triggersProxy():TriggersProxy
+        {
+            if (!_triggersProxy)
+                _triggersProxy = TriggersProxy(this.facade.retrieveProxy(TriggersProxy.NAME));
+            return _triggersProxy;
         }
         
         protected function get unitView():UnitView

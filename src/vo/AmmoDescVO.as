@@ -68,6 +68,19 @@ package vo
 		{
 			return _resourceDesc;
 		}
+        
+        /**
+         * Условие, при котором снаряд может быть использован
+         */
+        public function get ammoCondition():Object
+        {
+            for each (var item:IVO in children)
+            {
+                if (item.name == ConditionVO.NAME)
+                    return ConditionVO(item).conditionData;
+            }
+            return null;
+        }
 		
 		//----------------------------------
 		//  VO

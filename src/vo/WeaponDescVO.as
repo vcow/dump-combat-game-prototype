@@ -70,6 +70,19 @@ package vo
 		{
 			return _resourceDesc;
 		}
+        
+        /**
+         * Условие, при котором оружие может быть использовано
+         */
+        public function get weaponCondition():Object
+        {
+            for each (var item:IVO in children)
+            {
+                if (item.name == ConditionVO.NAME)
+                    return ConditionVO(item).conditionData;
+            }
+            return null;
+        }
 		
 		//----------------------------------
 		//  VO
@@ -132,6 +145,14 @@ package vo
             weaponUnit.splice(0, weaponUnit.length);
             for each (item in itemList)
                 weaponUnit.push(item);
+            
+            for each (var sub:XML in data.child(ConditionVO.NAME))
+            {
+                var condition:ConditionVO = new ConditionVO();
+                condition.deserialize(sub);
+                children.push(condition);
+            }
+            delete data[ConditionVO.NAME];
             
             _data = parseAsObject(data);
 			

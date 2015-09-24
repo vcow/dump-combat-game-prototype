@@ -68,6 +68,19 @@ package vo
 		{
 			return _resourceDesc;
 		}
+        
+        /**
+         * Условие, при котором броня может быть использована
+         */
+        public function get armorCondition():Object
+        {
+            for each (var item:IVO in children)
+            {
+                if (item.name == ConditionVO.NAME)
+                    return ConditionVO(item).conditionData;
+            }
+            return null;
+        }
 		
 		//----------------------------------
 		//  VO
@@ -122,6 +135,14 @@ package vo
             armorUnit.splice(0, armorUnit.length);
             for each (item in itemList)
                 armorUnit.push(item);
+            
+            for each (var sub:XML in data.child(ConditionVO.NAME))
+            {
+                var condition:ConditionVO = new ConditionVO();
+                condition.deserialize(sub);
+                children.push(condition);
+            }
+            delete data[ConditionVO.NAME];
             
             _data = parseAsObject(data);
 			

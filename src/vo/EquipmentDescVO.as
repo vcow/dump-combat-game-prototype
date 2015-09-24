@@ -62,6 +62,19 @@ package vo
 		{
 			return _resourceDesc;
 		}
+        
+        /**
+         * Условие, при котором оборудование может быть использовано
+         */
+        public function get equipmentCondition():Object
+        {
+            for each (var item:IVO in children)
+            {
+                if (item.name == ConditionVO.NAME)
+                    return ConditionVO(item).conditionData;
+            }
+            return null;
+        }
 		
 		//----------------------------------
 		//  VO
@@ -95,6 +108,14 @@ package vo
             equipmentUnit.splice(0, equipmentUnit.length);
             for each (var unit:String in unitList)
                 equipmentUnit.push(unit);
+            
+            for each (var sub:XML in data.child(ConditionVO.NAME))
+            {
+                var condition:ConditionVO = new ConditionVO();
+                condition.deserialize(sub);
+                children.push(condition);
+            }
+            delete data[ConditionVO.NAME];
             
             _data = parseAsObject(data);
 			

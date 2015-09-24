@@ -5,6 +5,7 @@ package command
     
     import dictionary.Const;
     
+    import helpers.ConditionHelper;
     import helpers.ResourcesHelper;
     
     import org.puremvc.as3.interfaces.INotification;
@@ -54,6 +55,12 @@ package command
                 
                 if (newWeapon.weaponDesc)
                 {
+                    if (!(new ConditionHelper()).parseCondition(newWeapon.weaponDesc.weaponCondition))
+                    {
+                        // Не выполняется условие использования оружия
+                        return;
+                    }
+                    
                     if (!resourcesDecor.isEnoughResources(resourcesDecor.joinResource(newWeapon.weaponDesc.weaponResource, 1)))
                     {
                         // Выбранного оружия нет на складе
