@@ -137,6 +137,35 @@ package helpers
 			}
 			return dc;
 		}
+        
+        /**
+         * Добавить указанный ресурс в цену
+         * @param resourceId идентификатор добавляемого ресурса
+         * @param resourceCount количество добавляемого ресурса
+         * @param price цена, в которую нужно добавить ресурс, если null, создается новая
+         * @return цена с добавленным ресурсом
+         */
+        public function joinResource(resourceId:String, resourceCount:int, price:PriceVO=null):PriceVO
+        {
+            if (!price)
+                price = new PriceVO();
+            
+            for each (var resource:ResourceVO in price.children)
+            {
+                if (resource.resourceId == resourceId)
+                {
+                    resource.resourceCount += resourceCount;
+                    return price;
+                }
+            }
+            
+            resource = new ResourceVO();
+            resource.resourceId = resourceId;
+            resource.resourceCount = resourceCount;
+            
+            price.children.push(resource);
+            return price;
+        }
 		
 		/**
 		 * Объединить несколько цен в одну

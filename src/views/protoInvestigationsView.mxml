@@ -53,7 +53,7 @@
                                     }
                                     else
                                     {
-                                        var numScientists:int = InvestigationsProxy(ProtoFacade.getInstance().retrieveProxy(InvestigationsProxy.NAME)).getEmployedScientists(data.id).children.length;
+                                        var numScientists:int = InvestigationsProxy(ProtoFacade.getInstance().retrieveProxy(InvestigationsProxy.NAME)).getEmployedScientists(data.id).length;
                                         setStyle("alternatingItemColors", numScientists > 0 ? 0xa3d39c : 0xff7777);
                                         setStyle("color", numScientists > 0 ? 0x005e20 : 0x6b0000);
                                     }

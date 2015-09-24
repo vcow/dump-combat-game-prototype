@@ -24,7 +24,7 @@ package dictionary
 		private static var _instance:ArmamentDict;
         
         private var _weapons:Vector.<WeaponDescVO>;
-        private var _ammos:Vector.<AmmoDescVO>;
+        private var _ammo:Vector.<AmmoDescVO>;
         private var _armors:Vector.<ArmorDescVO>;
         private var _equipments:Vector.<EquipmentDescVO>;
 		
@@ -71,6 +71,42 @@ package dictionary
         }
         
         /**
+         * Получить оружие по его идентификатору
+         * @param weaponId идентификатор оружия
+         * @return описание оружия
+         */
+        public function getWeapon(weaponId:String):WeaponDescVO
+        {
+            init();
+            
+            for each (var weapon:WeaponDescVO in _weapons)
+            {
+                if (weapon.weaponId == weaponId)
+                    return weapon;
+            }
+            
+            return null;
+        }
+        
+        /**
+         * Получить снаряд по его идентификатору
+         * @param ammoId идентификатор снаряда
+         * @return описание снаряда
+         */
+        public function getAmmo(ammoId:String):AmmoDescVO
+        {
+            init();
+            
+            for each (var ammo:AmmoDescVO in _ammo)
+            {
+                if (ammo.ammoId == ammoId)
+                    return ammo;
+            }
+            
+            return null;
+        }
+        
+        /**
          * Получить всю броню, совместимую с указанным юнитом
          * @param unitId идентификатор юнита
          * @return список брони
@@ -99,12 +135,12 @@ package dictionary
          * @param unitId идентификатор юнита
          * @return список снарядов
          */
-        public function getAmmosForUnit(unitId:String):Vector.<AmmoDescVO>
+        public function getAmmoForUnit(unitId:String):Vector.<AmmoDescVO>
         {
             init();
             
             var res:Vector.<AmmoDescVO> = new Vector.<AmmoDescVO>();
-            for each (var ammo:AmmoDescVO in _ammos)
+            for each (var ammo:AmmoDescVO in _ammo)
             {
                 for each (var id:String in ammo.ammoUnit)
                 {
@@ -148,10 +184,10 @@ package dictionary
         
         private function init():void
         {
-			if (!_weapons && !_ammos && !_armors && !_equipments)
+			if (!_weapons && !_ammo && !_armors && !_equipments)
 			{
                 _weapons = new Vector.<WeaponDescVO>();
-                _ammos = new Vector.<AmmoDescVO>();
+                _ammo = new Vector.<AmmoDescVO>();
                 _armors = new Vector.<ArmorDescVO>();
                 _equipments = new Vector.<EquipmentDescVO>();
 				
@@ -170,7 +206,7 @@ package dictionary
                 {
                     var ammo:AmmoDescVO = new AmmoDescVO();
                     ammo.deserialize(item);
-                    _ammos.push(ammo);
+                    _ammo.push(ammo);
                 }
                 
                 items = src.child(ArmorDescVO.NAME);

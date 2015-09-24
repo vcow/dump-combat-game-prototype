@@ -56,6 +56,7 @@
             
             import views.modal.AlertPopUp;
             import views.modal.EquipUnitPopUp;
+            import views.ui.UnitView;
             
             import vo.BaseVO;
             import vo.ModuleDescVO;
@@ -130,14 +131,19 @@
 			
 			protected function unitsListView_changeHandler(event:IndexChangeEvent):void
 			{
-//                var production:Object = unitsList.getItemAt(event.newIndex);
-//                if (production && production.hasOwnProperty("id"))
-//                    navigator.pushView(ProductionView, production.id);
+                var unit:Object = unitsList.getItemAt(event.newIndex);
+                if (unit && unit.hasOwnProperty("id"))
+                    selectUnit(unit.id);
 			}
             
             public function updateList():void
             {
                 unitsList = _armyMediator.getUnits();
+            }
+            
+            public function selectUnit(unitId:String):void
+            {
+                navigator.pushView(UnitView, unitId);
             }
 			
 			protected function createUnit_clickHandler(event:MouseEvent):void

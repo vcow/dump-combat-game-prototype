@@ -63,6 +63,28 @@ package vo
         {
             return _unitDesc;
         }
+        
+        /**
+         * Оружие на юните
+         */
+        public function get unitWeapon():Vector.<WeaponVO>
+        {
+            var res:Vector.<WeaponVO> = new Vector.<WeaponVO>();
+            for each (var item:IVO in children)
+            {
+                if (item.name == WeaponVO.NAME)
+                    res.push(WeaponVO(item));
+            }
+            res.sort(sortWeapon);
+            return res;
+        }
+        
+        private function sortWeapon(a:WeaponVO, b:WeaponVO):Number
+        {
+            if (a.weaponSlot > b.weaponSlot) return 1;
+            if (a.weaponSlot < b.weaponSlot) return -1;
+            return 0;
+        }
 		
 		//----------------------------------
 		//  VO

@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- UI юнита -->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:modal="views.modal.*"
+        xmlns:ui="views.ui.*"
+        xmlns:dropDownList="com.flextras.mobile.dropDownList.*"
+        creationComplete="creationCompleteHandler(event)"
+        currentState="soldier">
+    <s:states>
+        <s:State name="soldier"/>
+        <s:State name="unit"/>
+    </s:states>
+    
+	<s:layout>
+		<s:VerticalLayout paddingLeft="10" paddingRight="10" paddingTop="15" paddingBottom="15" horizontalAlign="center"/>
+	</s:layout>
+    
+    <s:navigationContent>
+        <s:Button label="&lt;" click="{goBack();}"/>
+    </s:navigationContent>
+    
+    <s:BorderContainer width="100%" cornerRadius="4">
+        <s:layout>
+            <s:VerticalLayout paddingLeft="10" paddingRight="10" paddingTop="5" paddingBottom="10" horizontalAlign="center" gap="7"/>
+        </s:layout>
+        
+        <s:Label text="@Resource(key='army.unit.soldier.weapon', bundle='common')" text.unit="@Resource(key='army.unit.weapon', bundle='common')"/>
+        
+        <s:DataGroup width="100%" dataProvider="{weaponData}">
+            <s:layout>
+                <s:VerticalLayout gap="6"/>
+            </s:layout>
+            <s:itemRenderer>
+                <fx:Component>
+                    <s:DataRenderer creationComplete="creationCompleteHandler(event)" width="100%">
+                        <s:layout>
+                            <s:VerticalLayout horizontalAlign="center" gap="3"/>
+                        </s:layout>
+                        <dropDownList:DropDownList id="weaponSelector" width="100%" dataProvider="{_list}" change="changeHandler(event)" enabled="{!_isProxy}"/>
+                        <s:Button label="@Resource(key='army.unit.reload', bundle='common')" enabled="{_reloadable &amp;&amp; !_isProxy}" width="150"/>
+                        <fx:Script>
+                            <![CDATA[
+                                import mx.collections.ArrayCollection;
+                                import mx.events.FlexEvent;
+                                
+                                import spark.events.IndexChangeEvent;
+                                
+                                [Bindable]
+                                private var _list:ArrayCollection;
+                                
+                                [Bindable]
+                                private var _reloadable:Boolean;
+                                
+                                [Bindable]
+                                private var _isProxy:Boolean;
+                                
+                                override public function set data(value:Object):void
+                                {
+                                    super.data = value;
+                                    
+                                    _list = data ? data.list : null;
+                                    _isProxy = data ? data.hasOwnProperty("proxy") : false;
+                                    
+                                    if (initialized)
+                                        updateWeapon();
+                                }
+                                
+                                protected function creationCompleteHandler(event:FlexEvent):void
+                                {
+                                    updateWeapon();
+                                }
+                                
+                                private function updateWeapon():void
+                                {
+                                    if (data && data.list)
+                                    {
+                                        if (_isProxy)
+                                        {
+                                            weaponSelector.label = data.proxy;
+                                        }
+                                        else
+                                        {
+                                            for (var i:int = 0; i < data.list.length; i++)
+                                            {
+                                                if (data.selected == data.list[i].id)
+                                                {
+                                                    weaponSelector.selectedIndex = i;
+                                                    weaponSelector.label = data.list[i].label;
+                                                    
+                                                    _reloadable = data.list[i].loadable;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        weaponSelector.label = "";
+                                    }
+                                }
+                                
+                                protected function changeHandler(event:IndexChangeEvent):void
+                                {
+                                    _reloadable = weaponSelector.selectedItem.loadable;
+                                    data.selected = weaponSelector.selectedItem.id;
+                                    dispatchEvent(new Event("weaponSelectChanged", true));
+                                }
+                                
+                            ]]>
+                        </fx:Script>
+                    </s:DataRenderer>
+                </fx:Component>
+            </s:itemRenderer>
+        </s:DataGroup>
+    </s:BorderContainer>
+    
+    <s:VGroup horizontalAlign="center" width="100%">
+        
+    </s:VGroup>
+    
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Metadata>
+		[ResourceBundle("common")]
+        
+        [Event(name="selectWeapon", type="events.UnitEvent")]
+        [Event(name="selectArmor", type="events.UnitEvent")]
+        [Event(name="chargeWeapon", type="events.UnitEvent")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+            import events.UnitEvent;
+            import mx.collections.ArrayCollection;
+            import mx.events.FlexEvent;
+            
+            import dictionary.ArmamentDict;
+            
+            import facade.ProtoFacade;
+            
+            import mediator.UnitMediator;
+            
+            import vo.WeaponDescVO;
+            
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+            private var _unitMediator:UnitMediator;
+            
+            private var _currentWeapon:ArrayCollection;
+            private var _weaponsList:ArrayCollection;
+            private var _weaponData:ArrayCollection;
+            
+			//--------------------------------------------------------------------------
+			// 
+			//--------------------------------------------------------------------------
+			
+            [Bindable (event="weaponDataChanged")]
+            private function get weaponData():ArrayCollection
+            {
+                return _weaponData;
+            }
+            
+            public function set weaponsList(value:ArrayCollection):void
+            {
+                if (value == _weaponsList)
+                    return;
+                
+                _weaponsList = value;
+                updateWeapons();
+                
+                dispatchEvent(new Event("weaponListChanged"));
+            }
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
+            public function goBack():void
+            {
+                navigator.popView();
+            }
+            
+            public function get unitId():String
+            {
+                return data.toString();
+            }
+            
+            public function set currentWeapon(value:ArrayCollection):void
+            {
+                if (value == _currentWeapon)
+                    return;
+                
+                _currentWeapon = value;
+                updateWeapons();
+            }
+            
+            public function updateUnit():void
+            {
+                if (initialized)
+                {
+                    if (_unitMediator)
+                    {
+                        _unitMediator.unitId = unitId;
+                        
+                        currentState = _unitMediator.isSoldier ? "soldier" : "unit";
+                        title = _unitMediator.unitName;
+                        
+                        _weaponsList = _unitMediator.getWeapon();
+                        _currentWeapon = _unitMediator.currentWeapon;
+                        updateWeapons();
+                    }
+                }
+            }
+            
+            private function updateWeapons():void
+            {
+                var data:Array = [];
+                if (_currentWeapon && _weaponsList)
+                {
+                    var twoHanded:String;
+                    for (var i:int = 0; i < _currentWeapon.length; i++)
+                    {
+                        var weapon:WeaponDescVO = ArmamentDict.getInstance().getWeapon(_currentWeapon[i]);
+                        var weaponsList:Array = _weaponsList.source.slice();
+                        
+                        if (weapon)
+                        {
+                            var inList:Boolean = false;
+                            for each (var item:Object in weaponsList)
+                            {
+                                if (item.id == weapon.weaponId)
+                                {
+                                    inList = true;
+                                    break;
+                                }
+                            }
+                            
+                            if (!inList)
+                            {
+                                weaponsList.push({
+                                    id: weapon.weaponId,
+                                    label: weapon.resourceDesc.resourceName,
+                                    loadable: weapon.weaponClip > 0
+                                });
+                            }
+                            
+                            if (weapon && weapon.weaponTwoHanded)
+                            {
+                                
+                            }
+                        }
+                        
+                        weaponsList.sortOn("label");
+                        weaponsList.unshift({
+                            id: "",
+                            label: resourceManager.getString("common", _unitMediator.isSoldier ? "army.unit.soldier.notarmed" : "army.unit.notarmed"),
+                            loadable: false
+                        });
+                        
+                        data.push({
+                            selected: weapon ? weapon.weaponId : "",
+                            list: new ArrayCollection(weaponsList),
+                            number: i
+                        });
+                        
+                        if (weapon && weapon.weaponTwoHanded)
+                            twoHanded = weapon.resourceDesc.name;
+                    }
+                    
+                    if (twoHanded)
+                    {
+                        // Есть двуручное оружие, выкинуть все остальное
+                        for each (item in data)
+                        {
+                            if (item.number == twoHanded)
+                                continue;
+                            
+                            item.selected = "";
+                            item.list = new ArrayCollection();
+                            item.proxy = twoHanded;
+                        }
+                    }
+                }
+                
+                _weaponData = new ArrayCollection(data);
+                dispatchEvent(new Event("weaponDataChanged"));
+            }
+            
+            private function weaponSelectChangedHandler(event:Event):void
+            {
+                event.stopPropagation();
+                var data:Object = event.target.data;
+                
+                dispatchEvent(new UnitEvent(UnitEvent.SELECT_WEAPON, data.selected, 1, data.number, data.selected));
+            }
+            
+            //----------------------------------
+            //  View
+            //----------------------------------
+			
+            override public function set data(value:Object):void
+            {
+                super.data = value;
+                
+                updateUnit();
+            }
+            
+            protected function creationCompleteHandler(event:FlexEvent):void
+            {
+                addEventListener("weaponSelectChanged", weaponSelectChangedHandler, false, 0, true);
+                
+                _unitMediator = UnitMediator(ProtoFacade.getInstance().retrieveMediator(UnitMediator.NAME));
+                _unitMediator.setViewComponent(this);
+                
+                updateUnit();
+            }
+            
+        ]]>
+	</fx:Script>
+</s:View>

@@ -43,7 +43,7 @@
                                     }
                                     else
                                     {
-                                        var numEngineers:int = ProductionsProxy(ProtoFacade.getInstance().retrieveProxy(ProductionsProxy.NAME)).getEmployedEngineers(data.id).children.length;
+                                        var numEngineers:int = ProductionsProxy(ProtoFacade.getInstance().retrieveProxy(ProductionsProxy.NAME)).getEmployedEngineers(data.id).length;
                                         setStyle("alternatingItemColors", numEngineers > 0 ? 0xa3d39c : 0xff7777);
                                         setStyle("color", numEngineers > 0 ? 0x005e20 : 0x6b0000);
                                     }

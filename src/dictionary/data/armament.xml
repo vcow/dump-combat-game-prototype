@@ -19,7 +19,7 @@
 	<!-- Булава с шипами -->
 	<weaponDesc id="mace" resource="mace" unit="infantry" sharpDmg="0.05" spikeDmg="0.25" bluntDmg="0.7" fireDmg="0" dmgStrength="3"/>
 	<!-- Лук -->
-	<weaponDesc id="bow" resource="bow" unit="infantry" sharpDmg="0" spikeDmg="0" bluntDmg="0" fireDmg="0" dmgStrength="0" clip="10" reach="0"/>
+	<weaponDesc id="bow" resource="bow" unit="infantry" sharpDmg="0" spikeDmg="0" bluntDmg="0" fireDmg="0" dmgStrength="0" clip="10" reach="0" twoHanded="true"/>
 	<!-- Стрела -->
 	<!-- Для снарядов поддерживаются следующие параметры:
 		id={строковое значение} - уникальный идентификатор снаряда

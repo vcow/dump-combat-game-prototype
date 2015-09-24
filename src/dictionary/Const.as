@@ -65,5 +65,9 @@ package dictionary
         public static const MOVE_PERSON:String = "movePerson";                              //< Перевести сотрудника
         public static const EQUIP_UNIT:String = "equipUnit";                                //< Экипировать боевой юнит
         public static const UNIT_IS_EQUIPPED:String = "unitIsEquipped";                     //< Боевой юнит экипирован
+        public static const SELECT_WEAPON:String = "selectWeapon";                          //< Выбрать оружие для боевого юнита
+        public static const WEAPON_SELECTED:String = "weaponSelected";                      //< Выбрано оружие для боевого юнита
+        public static const RELOAD_WEAPON:String = "reloadWeapon";                          //< Перезарядить оружие
+        public static const WEAPON_RELOADED:String = "weaponReloaded";                      //< Оружие перезаряжено
 	}
 }

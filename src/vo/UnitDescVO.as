@@ -41,6 +41,8 @@ package vo
         public var unitClip:int;                    //< Объем магазина
         public var unitReach:int;                   //< Радиус действия
         public var unitSelfDestruct:int;            //< Количество атак до самоуничтожения юнита
+        public var unitWeaponSlots:int;             //< Слотов под оружие
+        public var unitArmorSlots:int;              //< Слотов под броню
 		
 		private var _unitResource:String;
         private var _data:Object = {};
@@ -106,6 +108,8 @@ package vo
             res.@bluntDef = unitBluntDef;
             res.@fireDef = unitFireDef;
             res.@defStrength = unitDefStrength;
+            res.@weaponSlots = unitWeaponSlots;
+            res.@armorSlots = unitArmorSlots;
             
             if (unitClip > 0)
                 res.@clip = unitClip;
@@ -143,6 +147,8 @@ package vo
             unitClip = data.hasOwnProperty("@clip") ? int(data.@clip) : 0;
             unitReach = data.hasOwnProperty("@reach") ? int(data.@reach) : 1;
             unitSelfDestruct = data.hasOwnProperty("@selfDestruct") ? int(data.@selfDestruct) : 0;
+            unitWeaponSlots = data.hasOwnProperty("@weaponSlots") ? int(data.@weaponSlots) : 0;
+            unitArmorSlots = data.hasOwnProperty("@armorSlots") ? int(data.@armorSlots) : 0;
             
             _data = parseAsObject(data);
 			

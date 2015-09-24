@@ -262,6 +262,8 @@ package vo
                     case UnitVO.NAME: value = new UnitVO(); break;
                     case GarrisonVO.NAME: value = new GarrisonVO(); break;
                     case MercenaryVO.NAME: value = new MercenaryVO(); break;
+                    case WeaponVO.NAME: value = new WeaponVO(); break;
+                    case AmmoVO.NAME: value = new AmmoVO(); break;
 					
 					// /TODO
 					

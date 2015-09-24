@@ -4,7 +4,6 @@ package mediator
     
     import command.data.EquipUnitCmdData;
     
-    import dictionary.ArmamentDict;
     import dictionary.Const;
     import dictionary.UnitsDict;
     
@@ -12,7 +11,6 @@ package mediator
     
     import helpers.ArmyHelper;
     import helpers.ModulesHelper;
-    import helpers.PersonnelHelper;
     
     import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.mediator.Mediator;
@@ -24,14 +22,11 @@ package mediator
     
     import views.protoArmyView;
     
-    import vo.ArmorDescVO;
     import vo.BaseVO;
     import vo.ModuleDescVO;
     import vo.PersonVO;
-    import vo.ProfessionDescVO;
     import vo.UnitDescVO;
     import vo.UnitVO;
-    import vo.WeaponDescVO;
     
     [ResourceBundle("common")]
     
@@ -135,32 +130,6 @@ package mediator
             var unitNum:int = int(stuff.unitCounter) + 1;
             stuff.unitCounter = unitNum;
             return unitDesc.unitName + " #" + unitNum;
-        }
-        
-        /**
-         * Получить список оружия для указанного юнита
-         * @param unitId идентификатор юнита
-         * @return список оружия
-         */
-        public function getWeaponFor(unitId:String):ArrayCollection
-        {
-            var res:Array = [];
-            for each (var weapon:WeaponDescVO in ArmamentDict.getInstance().getWeaponForUnit(unitId))
-                res.push(weapon);
-            return new ArrayCollection(res);
-        }
-        
-        /**
-         * Получить список брони для указанного юнита
-         * @param unitId идентификатор юнита
-         * @return список брони
-         */
-        public function getArmorFor(unitId:String):ArrayCollection
-        {
-            var res:Array = [];
-            for each (var armor:ArmorDescVO in ArmamentDict.getInstance().getArmorForUnit(unitId))
-                res.push(armor);
-            return new ArrayCollection(res);
         }
         
         /**
@@ -278,6 +247,7 @@ package mediator
                     if (armyView)
                     {
                         armyView.updateList();
+                        armyView.selectUnit(notification.getBody().toString());
                     }
                     break;
             }

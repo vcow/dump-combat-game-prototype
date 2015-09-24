@@ -12,10 +12,12 @@ package facade
 	import command.MovePersonCommand;
 	import command.NewPersonCreatedCommand;
 	import command.PlaceEmployeeCommand;
+	import command.ReloadWeaponCommand;
 	import command.RemoveModuleCommand;
 	import command.RenameBaseCommand;
 	import command.ReplacePersonCommand;
 	import command.ResourcesChangedCommand;
+	import command.SelectWeaponCommand;
 	import command.SendGameMessageCommand;
 	import command.StartUpCommand;
 	import command.UpdateProductionCommand;
@@ -85,6 +87,8 @@ package facade
             registerCommand(Const.REPLACE_PERSON, ReplacePersonCommand);
             registerCommand(Const.MOVE_PERSON, MovePersonCommand);
             registerCommand(Const.EQUIP_UNIT, EquipUnitCommand);
+            registerCommand(Const.SELECT_WEAPON, SelectWeaponCommand);
+            registerCommand(Const.RELOAD_WEAPON, ReloadWeaponCommand);
 		}
 	}
 }

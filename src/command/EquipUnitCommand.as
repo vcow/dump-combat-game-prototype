@@ -22,9 +22,7 @@ package command
     import vo.MercenaryVO;
     import vo.ModuleDescVO;
     import vo.PersonVO;
-    import vo.PriceVO;
     import vo.ProfessionDescVO;
-    import vo.ResourceVO;
     import vo.UnitDescVO;
     import vo.UnitVO;
     import vo.VO;
@@ -63,15 +61,9 @@ package command
                 var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
                 var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy);
                 
-                var price:PriceVO = new PriceVO();
                 if (unitDesc.unitResource)
                 {
-                    var resource:ResourceVO = new ResourceVO();
-                    resource.resourceId = unitDesc.unitResource;
-                    resource.resourceCount = 1;
-                    
-                    price.children.push(resource);
-                    if (!resourcesDecor.isEnoughResources(price))
+                    if (!resourcesDecor.isEnoughResources(resourcesDecor.joinResource(unitDesc.unitResource, 1)))
                     {
                         // Нет в наличии ресурса юнита
                         // TODO: отправить на докупку ресурсов
@@ -144,8 +136,8 @@ package command
                         sendNotification(Const.MOVE_PERSON, new MovePersonCmdData(person.personId, base.baseId, person.personProfessionId));
                 }
                 
-                if (price.children.length > 0)
-                    resourcesDecor.pay(price);      // Забрать со склада боевую машину
+                if (unitDesc.unitResource)
+                    resourcesDecor.pay(resourcesDecor.joinResource(unitDesc.unitResource, 1));  // Забрать со склада боевую машину
                 
                 var unit:UnitVO = new UnitVO();
                 unit.unitId = VO.createGUID();

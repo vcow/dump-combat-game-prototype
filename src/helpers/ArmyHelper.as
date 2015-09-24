@@ -12,9 +12,7 @@ package helpers
     import vo.BaseVO;
     import vo.MercenaryVO;
     import vo.PersonVO;
-    import vo.PriceVO;
     import vo.ProfessionDescVO;
-    import vo.ResourceVO;
     import vo.UnitDescVO;
     import vo.UnitVO;
 
@@ -106,14 +104,8 @@ package helpers
             if (!unit.unitResource)
                 return true;
             
-            var resource:ResourceVO = new ResourceVO();
-            resource.resourceId = unit.unitResource;
-            resource.resourceCount = 1;
-            
-            var price:PriceVO = new PriceVO();
-            price.children.push(resource);
-            
-            return new ResourcesHelper(basesListProxy, appDataProxy).isEnoughResources(price);
+            var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy, appDataProxy);
+            return resourcesDecor.isEnoughResources(resourcesDecor.joinResource(unit.unitResource, 1));
         }
         
         /**

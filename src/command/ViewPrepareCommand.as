@@ -12,6 +12,7 @@ package command
 	import mediator.ProfListMediator;
 	import mediator.ResearchMediator;
 	import mediator.SimpleResourcesMediator;
+	import mediator.UnitMediator;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
@@ -53,6 +54,7 @@ package command
             this.facade.registerMediator(new ProductionMediator());
             this.facade.registerMediator(new PersonMediator());
             this.facade.registerMediator(new ArmyMediator());
+            this.facade.registerMediator(new UnitMediator());
 		}
 	}
 }

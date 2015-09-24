@@ -150,7 +150,6 @@
             {
                 if (_personMediator)
                 {
-                    var personId:String = data.toString();
                     _personMediator.personId = personId;
                     
                     title = _personMediator.personName;
