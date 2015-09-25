@@ -282,4 +282,36 @@
 			<trigger id="beltResearchComplete" value="1" type="set"/>
 		</result>
 	</researchDesc>
+	
+	<!-- Изучить колчан -->
+	<researchDesc id="quiverResearch" title="{quiver.research.title}" resultTitle="{quiver.result.title}" resultDescription="{quiver.result.description}" price="25" event="research" requirements="{quiver.research.requirements}">
+		<condition>
+			<and>
+				<if>
+					<trigger>skinResearchComplete</trigger>
+				</if>
+				<if>
+					<trigger>arrowResearchComplete</trigger>
+				</if>
+			</and>
+		</condition>
+		<visibility>
+			<and>
+				<if>
+					<trigger>skinResearchComplete</trigger>
+				</if>
+				<if>
+					<trigger>arrowResearchComplete</trigger>
+				</if>
+			</and>
+		</visibility>
+		<complete>
+			<if>
+				<trigger>quiverResearchComplete</trigger>
+			</if>
+		</complete>
+		<result>
+			<trigger id="quiverResearchComplete" value="1" type="set"/>
+		</result>
+	</researchDesc>
 </investigationsDict>

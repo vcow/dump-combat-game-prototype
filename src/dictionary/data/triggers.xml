@@ -39,4 +39,6 @@
 	<triggerDesc id="skinResearchComplete"/>
 	<!-- Исследование ремня -->
 	<triggerDesc id="beltResearchComplete"/>
+	<!-- Исследование колчана -->
+	<triggerDesc id="quiverResearchComplete"/>
 </triggersDict>

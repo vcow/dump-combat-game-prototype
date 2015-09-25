@@ -39,10 +39,13 @@
                         <s:layout>
                             <s:VerticalLayout horizontalAlign="center" gap="3"/>
                         </s:layout>
-                        <dropDownList:DropDownList id="weaponSelector" width="100%" dataProvider="{_list}"
-                                                   change="changeHandler(event)" enabled="{!_isProxy}"/>
-                        <s:Button label="@Resource(key='army.unit.reload', bundle='common')" enabled="{_reloadable &amp;&amp; !_isProxy}"
-                                  width="150" click="reload_clickHandler(event)"/>
+                        <dropDownList:DropDownList id="weaponSelector" width="100%" dataProvider="{_list}" change="changeHandler(event)"/>
+                        <s:HGroup width="100%">
+                            <s:Button label="@Resource(key='army.unit.reload', bundle='common')" enabled="{_reloadable}"
+                                      width="50%" click="reload_clickHandler(event)"/>
+                            <s:Button label="@Resource(key='army.unit.improve', bundle='common')" enabled="{_improvable}"
+                                      width="50%" click="impove_clickHandler(event)"/>
+                        </s:HGroup>
                         <fx:Script>
                             <![CDATA[
                                 import mx.collections.ArrayCollection;
@@ -57,14 +60,13 @@
                                 private var _reloadable:Boolean;
                                 
                                 [Bindable]
-                                private var _isProxy:Boolean;
+                                private var _improvable:Boolean;
                                 
                                 override public function set data(value:Object):void
                                 {
                                     super.data = value;
                                     
                                     _list = data ? data.list : null;
-                                    _isProxy = data ? data.hasOwnProperty("proxy") : false;
                                     
                                     if (initialized)
                                         updateWeapon();
@@ -79,22 +81,16 @@
                                 {
                                     if (data && data.list)
                                     {
-                                        if (_isProxy)
+                                        for (var i:int = 0; i < data.list.length; i++)
                                         {
-                                            weaponSelector.label = data.proxy;
-                                        }
-                                        else
-                                        {
-                                            for (var i:int = 0; i < data.list.length; i++)
+                                            if (data.selected == data.list[i].id)
                                             {
-                                                if (data.selected == data.list[i].id)
-                                                {
-                                                    weaponSelector.selectedIndex = i;
-                                                    weaponSelector.label = data.list[i].label;
-                                                    
-                                                    _reloadable = data.list[i].loadable;
-                                                    break;
-                                                }
+                                                weaponSelector.selectedIndex = i;
+                                                weaponSelector.label = data.list[i].label;
+                                                
+                                                _reloadable = data.list[i].loadable;
+                                                _improvable = data.list[i].improvable;
+                                                break;
                                             }
                                         }
                                     }
@@ -107,6 +103,7 @@
                                 protected function changeHandler(event:IndexChangeEvent):void
                                 {
                                     _reloadable = weaponSelector.selectedItem.loadable;
+                                    _improvable = weaponSelector.selectedItem.improvable;
                                     data.selected = weaponSelector.selectedItem.id;
                                     dispatchEvent(new Event("weaponSelectChanged", true));
                                 }
@@ -116,6 +113,10 @@
                                     dispatchEvent(new Event("weaponReload", true));
                                 }
                                 
+                                protected function impove_clickHandler(event:MouseEvent):void
+                                {
+                                    dispatchEvent(new Event("weaponImprove", true));
+                                }
                             ]]>
                         </fx:Script>
                     </s:DataRenderer>
@@ -141,6 +142,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+            import views.modal.EquipItemPopUp;
             import spark.events.PopUpEvent;
             import mx.managers.PopUpManager;
             import mx.core.FlexGlobals;
@@ -219,7 +221,8 @@
                         list.addItemAt({
                             id: "",
                             label: resourceManager.getString("common", _unitMediator.isSoldier ? "army.unit.soldier.notarmed" : "army.unit.notarmed"),
-                            loadable: false
+                            loadable: false,
+                            improvable: false
                         }, 0);
                         
                         data.push({
@@ -266,10 +269,40 @@
                 PopUpManager.centerPopUp(chargeWeaponPopUp);
             }
             
+            private function weaponImproveHandler(event:Event):void
+            {
+                event.stopPropagation();
+                var data:Object = event.target.data;
+                
+                var weapon:WeaponDescVO = ArmamentDict.getInstance().getWeapon(data.selected);
+                
+                if (!weapon)
+                    return;
+                
+                var equipItemPopUp:EquipItemPopUp = new EquipItemPopUp();
+                equipItemPopUp.addEventListener(PopUpEvent.CLOSE, equipPopUp_closeHandler);
+                
+                equipItemPopUp.itemName = weapon.resourceDesc ? weapon.resourceDesc.resourceName : Const.NO_TEXT;
+                
+                equipItemPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                PopUpManager.centerPopUp(equipItemPopUp);
+            }
+            
             private function chargePopUp_closeHandler(event:PopUpEvent):void
             {
                 var chargeWeaponPopUp:ChargeWeaponPopUp = ChargeWeaponPopUp(event.target);
                 chargeWeaponPopUp.removeEventListener(PopUpEvent.CLOSE, chargePopUp_closeHandler);
+                
+                if (event.data == Const.OK)
+                {
+                    
+                }
+            }
+            
+            private function equipPopUp_closeHandler(event:PopUpEvent):void
+            {
+                var equipItemPopUp:EquipItemPopUp = EquipItemPopUp(event.target);
+                equipItemPopUp.removeEventListener(PopUpEvent.CLOSE, equipPopUp_closeHandler);
                 
                 if (event.data == Const.OK)
                 {
@@ -292,6 +325,7 @@
             {
                 addEventListener("weaponSelectChanged", weaponSelectChangedHandler, false, 0, true);
                 addEventListener("weaponReload", weaponReloadHandler, false, 0, true);
+                addEventListener("weaponImprove", weaponImproveHandler, false, 0, true);
                 
                 _unitMediator = UnitMediator(ProtoFacade.getInstance().retrieveMediator(UnitMediator.NAME));
                 _unitMediator.setViewComponent(this);

@@ -109,4 +109,21 @@
 			<resource id="belt" count="2"/>
 		</result>
 	</productionDesc>
+	
+	<!-- Производство колчана -->
+	<productionDesc id="prodQuiver" name="{production.quiver}" description="{description.quiver}" price="10" danger="0" event="product">
+		<condition>
+			<and>
+				<if>
+					<trigger>quiverResearchComplete</trigger>
+				</if>
+			</and>
+		</condition>
+		<price>
+			<resource id="skin" count="1"/>
+		</price>
+		<result>
+			<resource id="quiver" count="1"/>
+		</result>
+	</productionDesc>
 </productionDict>

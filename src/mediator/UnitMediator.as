@@ -120,10 +120,12 @@ package mediator
                     if (!conditionDecor.parseCondition(weapon.weaponCondition))
                         continue;   // Не выполняется условие использования оружия
                     
+                    var unique:Boolean = weapon.weaponSlot.length <= 1 || weapon.weaponSlot[weapon.weaponSlot.length - 1] == slot;
                     res.push({
                         id: weapon.weaponId,
                         label: weapon.resourceDesc.resourceName,
-                        loadable: weapon.weaponHasClip && (weapon.weaponSlot.length <= 1 || weapon.weaponSlot[weapon.weaponSlot.length - 1] == slot)
+                        loadable: weapon.weaponHasClip && unique,
+                        improvable: weapon.weaponEquipmentSlots > 0 && unique
                     });
                     
                     if (!weaponFound)
@@ -133,10 +135,12 @@ package mediator
                 if (!weaponFound)
                 {
                     // Добавить в список то оружие, которое сейчас лежит в слоте
+                    unique = selected.weaponDesc.weaponSlot.length <= 1 || selected.weaponDesc.weaponSlot[selected.weaponDesc.weaponSlot.length - 1] == slot;
                     res.push({
                         id: selected.weaponDesc.weaponId,
                         label: selected.weaponDesc.resourceDesc.resourceName,
-                        loadable: selected.weaponDesc.weaponHasClip
+                        loadable: selected.weaponDesc.weaponHasClip && unique,
+                        improvable: selected.weaponDesc.weaponEquipmentSlots > 0 && unique
                     });
                 }
                 

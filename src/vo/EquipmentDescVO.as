@@ -23,6 +23,7 @@ package vo
 		
         public var equipmentId:String;                                      //< Уникальный идентификатор
         public var equipmentUnit:Vector.<String> = new Vector.<String>();   //< Список юнитов, для которого годится оборудование
+        public var equipmentSlot:Vector.<int> = new Vector.<int>();         //< Список слотов, в которые помещается оборудование
 		
 		private var _equipmentResource:String;
         private var _data:Object = {};
@@ -89,6 +90,9 @@ package vo
             res.@id = equipmentId;
             res.@resource = equipmentResource;
             
+            if (equipmentSlot.length > 0)
+                res.@slot = equipmentSlot.join(",");
+            
             if (equipmentUnit.length > 0)
                 res.@unit = equipmentUnit.join(",");
 			
@@ -99,26 +103,26 @@ package vo
 		
 		override public function deserialize(data:XML):Boolean
 		{
+            super.deserialize(data);
+            
 			// TODO: десериализовать специфичные поля
 			
             equipmentId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
             equipmentResource = data.hasOwnProperty("@resource") ? data.@resource.toString() : "";
             
-            var unitList:Array = data.hasOwnProperty("@unit") ? data.@unit.toString().split(/\s*,\s*/) : [];
-            equipmentUnit.splice(0, equipmentUnit.length);
-            for each (var unit:String in unitList)
-                equipmentUnit.push(unit);
-            
-            for each (var sub:XML in data.child(ConditionVO.NAME))
+            var itemList:Array = data.hasOwnProperty("@slot") ? data.@slot.toString().split(/\s*,\s*/) : [];
+            equipmentSlot.splice(0, equipmentSlot.length);
+            for each (var item:String in itemList)
             {
-                var condition:ConditionVO = new ConditionVO();
-                condition.deserialize(sub);
-                children.push(condition);
+                if (!isNaN(parseInt(item)))
+                    equipmentSlot.push(int(item));
             }
-            delete data[ConditionVO.NAME];
             
-            _data = parseAsObject(data);
-			
+            itemList = data.hasOwnProperty("@unit") ? data.@unit.toString().split(/\s*,\s*/) : [];
+            equipmentUnit.splice(0, equipmentUnit.length);
+            for each (item in itemList)
+                equipmentUnit.push(item);
+            
 			// /TODO
 			
 			return true;
