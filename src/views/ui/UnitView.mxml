@@ -39,8 +39,10 @@
                         <s:layout>
                             <s:VerticalLayout horizontalAlign="center" gap="3"/>
                         </s:layout>
-                        <dropDownList:DropDownList id="weaponSelector" width="100%" dataProvider="{_list}" change="changeHandler(event)" enabled="{!_isProxy}"/>
-                        <s:Button label="@Resource(key='army.unit.reload', bundle='common')" enabled="{_reloadable &amp;&amp; !_isProxy}" width="150"/>
+                        <dropDownList:DropDownList id="weaponSelector" width="100%" dataProvider="{_list}"
+                                                   change="changeHandler(event)" enabled="{!_isProxy}"/>
+                        <s:Button label="@Resource(key='army.unit.reload', bundle='common')" enabled="{_reloadable &amp;&amp; !_isProxy}"
+                                  width="150" click="reload_clickHandler(event)"/>
                         <fx:Script>
                             <![CDATA[
                                 import mx.collections.ArrayCollection;
@@ -109,6 +111,11 @@
                                     dispatchEvent(new Event("weaponSelectChanged", true));
                                 }
                                 
+                                protected function reload_clickHandler(event:MouseEvent):void
+                                {
+                                    dispatchEvent(new Event("weaponReload", true));
+                                }
+                                
                             ]]>
                         </fx:Script>
                     </s:DataRenderer>
@@ -134,6 +141,11 @@
 	
 	<fx:Script>
 		<![CDATA[
+            import spark.events.PopUpEvent;
+            import mx.managers.PopUpManager;
+            import mx.core.FlexGlobals;
+            import dictionary.Const;
+            import views.modal.ChargeWeaponPopUp;
             import dictionary.ArmamentDict;
             import vo.WeaponDescVO;
             import vo.WeaponVO;
@@ -235,6 +247,36 @@
                 dispatchEvent(new UnitEvent(UnitEvent.SELECT_WEAPON, data.selected, 1, slot, data.selected));
             }
             
+            private function weaponReloadHandler(event:Event):void
+            {
+                event.stopPropagation();
+                var data:Object = event.target.data;
+                
+                var weapon:WeaponDescVO = ArmamentDict.getInstance().getWeapon(data.selected);
+                
+                if (!weapon)
+                    return;
+                
+                var chargeWeaponPopUp:ChargeWeaponPopUp = new ChargeWeaponPopUp();
+                chargeWeaponPopUp.addEventListener(PopUpEvent.CLOSE, chargePopUp_closeHandler);
+                
+                chargeWeaponPopUp.weaponName = weapon.resourceDesc ? weapon.resourceDesc.resourceName : Const.NO_TEXT;
+                
+                chargeWeaponPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                PopUpManager.centerPopUp(chargeWeaponPopUp);
+            }
+            
+            private function chargePopUp_closeHandler(event:PopUpEvent):void
+            {
+                var chargeWeaponPopUp:ChargeWeaponPopUp = ChargeWeaponPopUp(event.target);
+                chargeWeaponPopUp.removeEventListener(PopUpEvent.CLOSE, chargePopUp_closeHandler);
+                
+                if (event.data == Const.OK)
+                {
+                    
+                }
+            }
+            
             //----------------------------------
             //  View
             //----------------------------------
@@ -249,6 +291,7 @@
             protected function creationCompleteHandler(event:FlexEvent):void
             {
                 addEventListener("weaponSelectChanged", weaponSelectChangedHandler, false, 0, true);
+                addEventListener("weaponReload", weaponReloadHandler, false, 0, true);
                 
                 _unitMediator = UnitMediator(ProtoFacade.getInstance().retrieveMediator(UnitMediator.NAME));
                 _unitMediator.setViewComponent(this);

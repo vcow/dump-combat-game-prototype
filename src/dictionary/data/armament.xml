@@ -6,56 +6,86 @@
 		id={строковое значение} - уникальный идентификатор оружия
 		resource={строковое значение} - идентификатор ресурса, соответствующего этому оружию
 		unit={список строковых значений, разделенных запятыми} - список юнитов, которые могут оснащаться этим оружием
-		sharpDmg={дробное значение от 0 до 1.0} - режущий урон
-		spikeDmg={дробное значение от 0 до 1.0} - колющий урон
-		bluntDmg={дробное значение от 0 до 1.0} - урон от удара
-		fireDmg={дробное значение от 0 до 1.0} - урон от огня (сумма уронов должна составлять 1.0)
-		dmgStrength={дробное значение} - сила оружия
-		clip={числовое значение} - вместительность магазина
-		reach={числовое значение} - радиус действия, по умолчанию 1, если 0, оружие не может использоваться в ближнем бою
+		equipmentSlots={числовое значение} - количество дополнительного оборудования, которое может быть установлено на оружие
 		slot={список числовых значений, разделенных запятыми} - список слотов, занимаемых оружием, если отсутствует, оружие может занимать один любой слот
 		В качестве дочерних элементов может содержать модификаторы характеристик бойца и условие, ограничивающее возможность использования оружия -->
-	<weaponDesc id="cudgel" resource="cudgel" unit="infantry" sharpDmg="0" spikeDmg="0" bluntDmg="1" fireDmg="0" dmgStrength="2">
+	<weaponDesc id="cudgel" resource="cudgel" unit="infantry">
 		<condition>
 			<if>
 				<trigger>cudgelResearchComplete</trigger>
 			</if>
 		</condition>
+		<!-- Список модификаторов, содержит в качестве дочерних объектов модификаторы характеристик -->
+		<modifiers>
+			<!-- Режущий урон - дробное значение от 0 до 1 -->
+			<sharpDmg>0</sharpDmg>
+			<!-- Колющий урон - дробное значение от 0 до 1 -->
+			<spikeDmg>0</spikeDmg>
+			<!-- Урон от удара - дробное значение от 0 до 1 -->
+			<bluntDmg>(+1)</bluntDmg>
+			<!-- Урон от огня - дробное значение от 0 до 1 -->
+			<fireDmg>0</fireDmg>
+			<!-- Сила оружия -->
+			<dmgStrength>(+1)</dmgStrength>
+		</modifiers>
 	</weaponDesc>
 	<!-- Булава с шипами -->
-	<weaponDesc id="mace" resource="mace" unit="infantry" sharpDmg="0.05" spikeDmg="0.25" bluntDmg="0.7" fireDmg="0" dmgStrength="3"/>
+	<weaponDesc id="mace" resource="mace" unit="infantry">
+		<modifiers>
+			<sharpDmg>(+0.05)</sharpDmg>
+			<spikeDmg>(+0.25)</spikeDmg>
+			<bluntDmg>(+0.7)</bluntDmg>
+			<fireDmg>0</fireDmg>
+			<dmgStrength>(+3)</dmgStrength>
+		</modifiers>
+	</weaponDesc>
 	<!-- Лук -->
-	<weaponDesc id="bow" resource="bow" unit="infantry" sharpDmg="0" spikeDmg="0" bluntDmg="0" fireDmg="0" dmgStrength="0" clip="10" reach="0" slot="0,1"/>
+	<weaponDesc id="bow" resource="bow" unit="infantry" slot="0,1" equipmentSlots="1">
+		<modifiers>
+			<!-- Объем магазина -->
+			<clip>10</clip>
+			<reach>6</reach>
+		</modifiers>
+	</weaponDesc>
 	<!-- Стрела -->
 	<!-- Для снарядов поддерживаются следующие параметры:
 		id={строковое значение} - уникальный идентификатор снаряда
 		resource={строковое значение} - идентификатор ресурса, соответствующего этому снаряду
-		sharpDmg={дробное значение от 0 до 1.0} - режущий урон
-		spikeDmg={дробное значение от 0 до 1.0} - колющий урон
-		bluntDmg={дробное значение от 0 до 1.0} - урон от удара
-		fireDmg={дробное значение от 0 до 1.0} - урон от огня (сумма уронов должна составлять 1.0)
-		dmgStrength={дробное значение} - сила снаряда
-		reach={числовое значение} - радиус действия
 		unit={список строковых значений, разделенных запятыми} - список оружия и/или юнитов, для которых подходит этот снаряд.
-		В качестве дочернего элемента может содержать условие, ограничивающее возможность использования снаряда -->
-	<ammoDesc id="arrow" resource="arrow" unit="bow" reach="6" sharpDmg="0" spikeDmg="1" bluntDmg="0" fireDmg="0" dmgStrength="1"/>
+		В качестве дочернего элемента может содержать условие, ограничивающее возможность использования снаряда и модификаторы характеристик бойца -->
+	<ammoDesc id="arrow" resource="arrow" unit="bow">
+		<modifiers>
+			<spikeDmg>1</spikeDmg>
+			<dmgStrength>1</dmgStrength>
+		</modifiers>
+	</ammoDesc>
 	<!-- Стрела с наконечником -->
-	<ammoDesc id="arrowTipped" resource="arrowTipped" unit="bow" reach="8" sharpDmg="0" spikeDmg="1" bluntDmg="0" fireDmg="0" dmgStrength="3"/>
+	<ammoDesc id="arrowTipped" resource="arrowTipped" unit="bow">
+		<modifiers>
+			<reach>(+2)</reach>
+			<spikeDmg>1</spikeDmg>
+			<dmgStrength>3</dmgStrength>
+		</modifiers>
+	</ammoDesc>
 	<!-- Картонная броня -->
 	<!-- Для брони поддерживаются следующие параметры:
 		id={строковое значение} - уникальный идентификатор брони
 		resource={строковое значение} - идентификатор ресурса, соответствующего этой броне
 		unit={список строковых значений, разделенных запятыми} - список юнитов, которые могут оснащаться этой броней
-		sharpDef={дробное значение от 0 до 1.0} - защита от режущего урона
-		spikeDef={дробное значение от 0 до 1.0} - защита от колющего урона
-		bluntDef={дробное значение от 0 до 1.0} - защита от удара
-		fireDef={дробное значение от 0 до 1.0} - защита от огня (в сумме защита должна составлять 1.0)
-		defStrength={дробное значение} - сила защиты
+		equipmentSlots={числовое значение} - количество дополнительного оборудования, которое может быть установлено на оружие
 		slot={список числовых значений, разделенных запятыми} - список слотов, занимаемых броней, если отсутствует, броня может занимать один любой слот
 		В качестве дочерних элементов может содержать модификаторы характеристик бойца и условие, ограничивающее возможность использования брони -->
-	<armorDesc id="cardboardArmor" resource="cardboardArmor" unit="infantry" sharpDef="0.05" spikeDef="0" bluntDef="0.95" fireDef="0" defStrength="2">
-		<!-- Снижает скорость перемещения -->
-		<speed>(-0.2)</speed>
+	<armorDesc id="cardboardArmor" resource="cardboardArmor" unit="infantry">
+		<modifiers>
+			<!-- Защита от порезов -->
+			<sharpDef>(+0.05)</sharpDef>
+			<!-- Защита от ударов -->
+			<bluntDef>(+0.95)</bluntDef>
+			<!-- Сила защиты -->
+			<defStrength>(+2)</defStrength>
+			<!-- Снижает скорость перемещения -->
+			<speed>(-0.2)</speed>
+		</modifiers>
 	</armorDesc>
 	<!-- Ремень -->
 	<!-- Оборудование поддерживает следующие параметры:
@@ -64,7 +94,8 @@
 		unit={список строковых значений, разделенных запятыми} - список юнитов, которые могут оснащаться этой броней.
 		В качестве дочерних элементов может содержать модификаторы характеристик бойца и условие, ограничивающее возможность использования оборудования -->
 	<equipmentDesc id="belt" resource="belt" unit="infantry">
-		<!-- Увеличивает вместительность -->
-		<capacity>(+5)</capacity>
+		<modifiers>
+			<clip>(+5)</clip>
+		</modifiers>
 	</equipmentDesc>
 </armamentDict>

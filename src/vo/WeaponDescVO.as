@@ -22,13 +22,7 @@ package vo
 		//--------------------------------------------------------------------------
 		
         public var weaponId:String;                                     //< Уникальный идентификатор
-        public var weaponSharpDmg:Number;                               //< Режущий урон
-        public var weaponSpikeDmg:Number;                               //< Колющий урон
-        public var weaponBluntDmg:Number;                               //< Урон от удара
-        public var weaponFireDmg:Number;                                //< Урон от огня
-        public var weaponDmgStrength:Number;                            //< Сила оружия
-        public var weaponClip:int;                                      //< Объем магазина
-        public var weaponReach:int;                                     //< Радиус действия
+        public var weaponEquipmentSlots:int;                            //< Количество единиц доп оборудования, которое может быть установлено на оружие
         public var weaponUnit:Vector.<String> = new Vector.<String>();  //< Список юнитов, для которого годится оружие
         public var weaponSlot:Vector.<int> = new Vector.<int>();        //< Список слотов, в которые помещается оружие
 		
@@ -83,6 +77,28 @@ package vo
             }
             return null;
         }
+        
+        /**
+         * Модификаторы
+         */
+        public function get weaponModifiers():ModifiersVO
+        {
+            for each (var item:IVO in children)
+            {
+                if (item.name == ModifiersVO.NAME)
+                    return item as ModifiersVO;
+            }
+            return null;
+        }
+        
+        /**
+         * Флаг, указывающий наличие у оружия магазина для зарядов
+         */
+        public function get weaponHasClip():Boolean
+        {
+            var clip:Number = weaponModifiers.getFieldValue(ModifiersVO.CLIP);
+            return !isNaN(clip) && clip > 0;
+        }
 		
 		//----------------------------------
 		//  VO
@@ -96,17 +112,7 @@ package vo
 			
             res.@id = weaponId;
             res.@resource = weaponResource;
-            res.@sharpDmg = weaponSharpDmg;
-            res.@spikeDmg = weaponSpikeDmg;
-            res.@bluntDmg = weaponBluntDmg;
-            res.@fireDmg = weaponFireDmg;
-            res.@dmgStrength = weaponDmgStrength;
-            
-            if (weaponClip > 0)
-                res.@clip = weaponClip;
-            
-            if (weaponReach != 1)
-                res.@reach = weaponReach;
+            res.@equipmentSlots = weaponEquipmentSlots;
             
             if (weaponSlot.length > 0)
                 res.@slot = weaponSlot.join(",");
@@ -121,17 +127,13 @@ package vo
 		
 		override public function deserialize(data:XML):Boolean
 		{
+            super.deserialize(data);
+            
 			// TODO: десериализовать специфичные поля
 			
             weaponId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
             weaponResource = data.hasOwnProperty("@resource") ? data.@resource.toString() : "";
-            weaponSharpDmg = data.hasOwnProperty("@sharpDmg") ? Number(data.@sharpDmg) : 0;
-            weaponSpikeDmg = data.hasOwnProperty("@spikeDmg") ? Number(data.@spikeDmg) : 0;
-            weaponBluntDmg = data.hasOwnProperty("@bluntDmg") ? Number(data.@bluntDmg) : 0;
-            weaponFireDmg = data.hasOwnProperty("@fireDmg") ? Number(data.@fireDmg) : 0;
-            weaponDmgStrength = data.hasOwnProperty("@dmgStrength") ? Number(data.@dmgStrength) : 0;
-            weaponClip = data.hasOwnProperty("@clip") ? int(data.@clip) : 0;
-            weaponReach = data.hasOwnProperty("@reach") ? int(data.@reach) : 1;
+            weaponEquipmentSlots = data.hasOwnProperty("@equipmentSlots") ? int(data.@equipmentSlots) : 0;
             
             var itemList:Array = data.hasOwnProperty("@slot") ? data.@slot.toString().split(/\s*,\s*/) : [];
             weaponSlot.splice(0, weaponSlot.length);
@@ -145,16 +147,6 @@ package vo
             weaponUnit.splice(0, weaponUnit.length);
             for each (item in itemList)
                 weaponUnit.push(item);
-            
-            for each (var sub:XML in data.child(ConditionVO.NAME))
-            {
-                var condition:ConditionVO = new ConditionVO();
-                condition.deserialize(sub);
-                children.push(condition);
-            }
-            delete data[ConditionVO.NAME];
-            
-            _data = parseAsObject(data);
 			
 			// /TODO
 			

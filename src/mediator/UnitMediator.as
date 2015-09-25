@@ -123,7 +123,7 @@ package mediator
                     res.push({
                         id: weapon.weaponId,
                         label: weapon.resourceDesc.resourceName,
-                        loadable: weapon.weaponClip > 0
+                        loadable: weapon.weaponHasClip && (weapon.weaponSlot.length <= 1 || weapon.weaponSlot[weapon.weaponSlot.length - 1] == slot)
                     });
                     
                     if (!weaponFound)
@@ -136,7 +136,7 @@ package mediator
                     res.push({
                         id: selected.weaponDesc.weaponId,
                         label: selected.weaponDesc.resourceDesc.resourceName,
-                        loadable: selected.weaponDesc.weaponClip > 0
+                        loadable: selected.weaponDesc.weaponHasClip
                     });
                 }
                 

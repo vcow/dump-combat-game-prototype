@@ -8,6 +8,7 @@ package helpers
     import proxy.ArmyProxy;
     import proxy.BasesListProxy;
     import proxy.PersonsProxy;
+    import proxy.TriggersProxy;
     
     import vo.BaseVO;
     import vo.MercenaryVO;
@@ -116,6 +117,7 @@ package helpers
         public function unitCrewIsAvailable(unitId:String):Boolean
         {
             var unit:UnitDescVO = UnitsDict.getInstance().getUnit(unitId);
+            
             if (unit.unitCrew <= 0)
                 return true;
             

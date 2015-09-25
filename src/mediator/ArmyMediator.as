@@ -10,6 +10,7 @@ package mediator
     import events.ArmyEvent;
     
     import helpers.ArmyHelper;
+    import helpers.ConditionHelper;
     import helpers.ModulesHelper;
     
     import org.puremvc.as3.interfaces.INotification;
@@ -19,6 +20,7 @@ package mediator
     import proxy.ArmyProxy;
     import proxy.BasesListProxy;
     import proxy.PersonsProxy;
+    import proxy.TriggersProxy;
     
     import views.protoArmyView;
     
@@ -39,10 +41,10 @@ package mediator
         public static const NAME:String = "armyMediator";
         
         private var _armyProxy:ArmyProxy;
-        
         private var _basesListProxy:BasesListProxy;
         private var _personsProxy:PersonsProxy;
         private var _appDataProxy:AppDataProxy;
+        private var _triggersProxy:TriggersProxy;
         
         //--------------------------------------------------------------------------
         // 
@@ -80,13 +82,17 @@ package mediator
         {
             var units:Array = [];
             var unitsDecor:ArmyHelper = new ArmyHelper(basesListProxy, appDataProxy, personsProxy, armyProxy);
+            var conditionDecor:ConditionHelper = new ConditionHelper(triggersProxy);
             
             for each (var unit:UnitDescVO in UnitsDict.getInstance().units)
             {
                 if (unitsDecor.unitResourceIsAvailable(unit.unitId))
                 {
-                    if (unit.unitResource || unitsDecor.unitCrewIsAvailable(unit.unitId))
+                    if (conditionDecor.parseCondition(unit.unitCondition) &&
+                        (unit.unitResource || unitsDecor.unitCrewIsAvailable(unit.unitId)))
+                    {
                         units.push(unit);
+                    }
                 }
             }
             
@@ -200,6 +206,13 @@ package mediator
                 _appDataProxy = AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME));
             
             return _appDataProxy;
+        }
+        
+        private function get triggersProxy():TriggersProxy
+        {
+            if (!_triggersProxy)
+                _triggersProxy = TriggersProxy(this.facade.retrieveProxy(TriggersProxy.NAME));
+            return _triggersProxy;
         }
         
         protected function get personsProxy():PersonsProxy

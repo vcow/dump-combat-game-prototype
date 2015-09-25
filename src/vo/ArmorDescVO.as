@@ -22,11 +22,7 @@ package vo
 		//--------------------------------------------------------------------------
 		
         public var armorId:String;                                      //< Уникальный идентификатор
-        public var armorSharpDef:Number;                                //< Режущий урон
-        public var armorSpikeDef:Number;                                //< Колющий урон
-        public var armorBluntDef:Number;                                //< Урон от удара
-        public var armorFireDef:Number;                                 //< Урон от огня
-        public var armorDefStrength:Number;                             //< Сила брони
+        public var armorEquipmentSlots:int;                             //< Количество единиц доп оборудования, которое можно установить на броню
         public var armorUnit:Vector.<String> = new Vector.<String>();   //< Список юнитов, для которого годится броня
         public var armorSlot:Vector.<int> = new Vector.<int>();         //< Список слотов, в которые помещается броня
 		
@@ -94,11 +90,7 @@ package vo
 			
             res.@id = armorId;
             res.@resource = armorResource;
-            res.@sharpDef = armorSharpDef;
-            res.@spikeDef = armorSpikeDef;
-            res.@bluntDef = armorBluntDef;
-            res.@fireDef = armorFireDef;
-            res.@defStrength = armorDefStrength;
+            res.@equipmentSlots = armorEquipmentSlots;
             
             if (armorSlot.length > 0)
                 res.@slot = armorSlot.join(",");
@@ -113,15 +105,13 @@ package vo
 		
 		override public function deserialize(data:XML):Boolean
 		{
+            super.deserialize(data);
+            
 			// TODO: десериализовать специфичные поля
 			
             armorId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
             armorResource = data.hasOwnProperty("@resource") ? data.@resource.toString() : "";
-            armorSharpDef = data.hasOwnProperty("@sharpDef") ? Number(data.@sharpDef) : 0;
-            armorSpikeDef = data.hasOwnProperty("@spikeDef") ? Number(data.@spikeDef) : 0;
-            armorBluntDef = data.hasOwnProperty("@bluntDef") ? Number(data.@bluntDef) : 0;
-            armorFireDef = data.hasOwnProperty("@fireDef") ? Number(data.@fireDef) : 0;
-            armorDefStrength = data.hasOwnProperty("@defStrength") ? Number(data.@defStrength) : 0;
+            armorEquipmentSlots = data.hasOwnProperty("@equipmentSlots") ? int(data.@equipmentSlots) : 0;
             
             var itemList:Array = data.hasOwnProperty("@slot") ? data.@slot.toString().split(/\s*,\s*/) : [];
             armorSlot.splice(0, armorSlot.length);
@@ -135,16 +125,6 @@ package vo
             armorUnit.splice(0, armorUnit.length);
             for each (item in itemList)
                 armorUnit.push(item);
-            
-            for each (var sub:XML in data.child(ConditionVO.NAME))
-            {
-                var condition:ConditionVO = new ConditionVO();
-                condition.deserialize(sub);
-                children.push(condition);
-            }
-            delete data[ConditionVO.NAME];
-            
-            _data = parseAsObject(data);
 			
 			// /TODO
 			

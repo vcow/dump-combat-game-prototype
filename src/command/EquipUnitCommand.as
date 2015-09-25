@@ -6,6 +6,7 @@ package command
     import dictionary.Const;
     import dictionary.UnitsDict;
     
+    import helpers.ConditionHelper;
     import helpers.ModulesHelper;
     import helpers.ResourcesHelper;
     
@@ -57,6 +58,12 @@ package command
                 var unitDesc:UnitDescVO = UnitsDict.getInstance().getUnit(data.unitId);
                 if (!unitDesc)
                     return;
+                
+                if (!(new ConditionHelper()).parseCondition(unitDesc.unitCondition))
+                {
+                    // Не выполняется условие, при котором юнит может быть создан
+                    return;
+                }
                 
                 var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
                 var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy);

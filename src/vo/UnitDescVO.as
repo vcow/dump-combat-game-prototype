@@ -28,21 +28,10 @@ package vo
         public var unitName:String;                 //< Наименование юнита
         public var unitDescription:String;          //< Описание юнита
         public var unitCrew:int;                    //< Количество солдат в экипаже
-        public var unitSharpDmg:Number;             //< Режущий урон
-        public var unitSpikeDmg:Number;             //< Колющий урон
-        public var unitBluntDmg:Number;             //< Урон от удара
-        public var unitFireDmg:Number;              //< Урон от огня
-        public var unitDmgStrength:Number;          //< Сила оружия
-        public var unitSharpDef:Number;             //< Режущий урон
-        public var unitSpikeDef:Number;             //< Колющий урон
-        public var unitBluntDef:Number;             //< Урон от удара
-        public var unitFireDef:Number;              //< Урон от огня
-        public var unitDefStrength:Number;          //< Сила брони
-        public var unitClip:int;                    //< Объем магазина
-        public var unitReach:int;                   //< Радиус действия
         public var unitSelfDestruct:int;            //< Количество атак до самоуничтожения юнита
         public var unitWeaponSlots:int;             //< Слотов под оружие
         public var unitArmorSlots:int;              //< Слотов под броню
+        public var unitEquipmentSlots:int;          //< Слотов под доп оборудование
 		
 		private var _unitResource:String;
         private var _data:Object = {};
@@ -82,6 +71,19 @@ package vo
 		{
 			return _resourceDesc;
 		}
+        
+        /**
+         * Условие, при котором юнит может быть создан
+         */
+        public function get unitCondition():Object
+        {
+            for each (var item:IVO in children)
+            {
+                if (item.name == ConditionVO.NAME)
+                    return ConditionVO(item).conditionData;
+            }
+            return null;
+        }
 		
 		//----------------------------------
 		//  VO
@@ -98,24 +100,9 @@ package vo
             res.@description = unitDescription;
             res.@crew = unitCrew;
             res.@resource = unitResource;
-            res.@sharpDmg = unitSharpDmg;
-            res.@spikeDmg = unitSpikeDmg;
-            res.@bluntDmg = unitBluntDmg;
-            res.@fireDmg = unitFireDmg;
-            res.@dmgStrength = unitDmgStrength;
-            res.@sharpDef = unitSharpDef;
-            res.@spikeDef = unitSpikeDef;
-            res.@bluntDef = unitBluntDef;
-            res.@fireDef = unitFireDef;
-            res.@defStrength = unitDefStrength;
+            res.@equipmentSlots = unitEquipmentSlots;
             res.@weaponSlots = unitWeaponSlots;
             res.@armorSlots = unitArmorSlots;
-            
-            if (unitClip > 0)
-                res.@clip = unitClip;
-            
-            if (unitReach != 1)
-                res.@reach = unitReach;
             
             if (unitSelfDestruct > 0)
                 res.@selfDestruct = unitSelfDestruct;
@@ -127,6 +114,8 @@ package vo
 		
 		override public function deserialize(data:XML):Boolean
 		{
+            super.deserialize(data);
+            
 			// TODO: десериализовать специфичные поля
 			
             unitId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
@@ -134,23 +123,10 @@ package vo
             unitDescription = data.hasOwnProperty("@description") ? VO.parseString(data.@description, "units") : Const.NO_TEXT;
             unitCrew = data.hasOwnProperty("@crew") ? int(data.@crew) : 0;
             unitResource = data.hasOwnProperty("@resource") ? data.@resource.toString() : "";
-            unitSharpDmg = data.hasOwnProperty("@sharpDmg") ? Number(data.@sharpDmg) : 0;
-            unitSpikeDmg = data.hasOwnProperty("@spikeDmg") ? Number(data.@spikeDmg) : 0;
-            unitBluntDmg = data.hasOwnProperty("@bluntDmg") ? Number(data.@bluntDmg) : 0;
-            unitFireDmg = data.hasOwnProperty("@fireDmg") ? Number(data.@fireDmg) : 0;
-            unitDmgStrength = data.hasOwnProperty("@dmgStrength") ? Number(data.@dmgStrength) : 0;
-            unitSharpDef = data.hasOwnProperty("@sharpDef") ? Number(data.@sharpDef) : 0;
-            unitSpikeDef = data.hasOwnProperty("@spikeDef") ? Number(data.@spikeDef) : 0;
-            unitBluntDef = data.hasOwnProperty("@bluntDef") ? Number(data.@bluntDef) : 0;
-            unitFireDef = data.hasOwnProperty("@fireDef") ? Number(data.@fireDef) : 0;
-            unitDefStrength = data.hasOwnProperty("@defStrength") ? Number(data.@defStrength) : 0;
-            unitClip = data.hasOwnProperty("@clip") ? int(data.@clip) : 0;
-            unitReach = data.hasOwnProperty("@reach") ? int(data.@reach) : 1;
+            unitEquipmentSlots = data.hasOwnProperty("@equipmentSlots") ? int(data.@equipmentSlots) : 0;
             unitSelfDestruct = data.hasOwnProperty("@selfDestruct") ? int(data.@selfDestruct) : 0;
             unitWeaponSlots = data.hasOwnProperty("@weaponSlots") ? int(data.@weaponSlots) : 0;
             unitArmorSlots = data.hasOwnProperty("@armorSlots") ? int(data.@armorSlots) : 0;
-            
-            _data = parseAsObject(data);
 			
 			// /TODO
 			

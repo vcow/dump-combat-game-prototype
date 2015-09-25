@@ -264,10 +264,11 @@ package vo
                     case MercenaryVO.NAME: value = new MercenaryVO(); break;
                     case WeaponVO.NAME: value = new WeaponVO(); break;
                     case AmmoVO.NAME: value = new AmmoVO(); break;
+                    case ModifiersVO.NAME: value = new ModifiersVO(); break;
 					
 					// /TODO
 					
-					default: throw Error("Undefined item (" + child.localName().toString() + ").");
+					default: throw Error("Undefined item <" + child.localName().toString() + "/>.");
 				}
 				
 				value.deserialize(child);
