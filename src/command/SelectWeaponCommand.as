@@ -1,6 +1,6 @@
 package command
 {
-    import command.data.ReloadCmdData;
+    import command.data.ReloadWeaponCmdData;
     import command.data.SelectWeaponCmdData;
     
     import dictionary.Const;
@@ -117,7 +117,7 @@ package command
                                 return;     // Это то же самое оружие, ничего не меняем
                             
                             // Разрядить и убрать на склад текущее оружие
-                            sendNotification(Const.RELOAD_WEAPON, new ReloadCmdData(data.unitId, weapon.weaponSlot, null));
+                            sendNotification(Const.RELOAD_WEAPON, new ReloadWeaponCmdData(data.unitId, weapon.weaponSlot, null));
                             sendNotification(Const.CHANGE_RESOURCES, resourcesDecor.joinResource(weapon.weaponDesc.weaponResource, 1));
                             unit.children.splice(i, 1);
                         }

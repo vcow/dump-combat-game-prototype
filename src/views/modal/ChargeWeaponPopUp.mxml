@@ -40,14 +40,53 @@
 	
 	<fx:Script>
 		<![CDATA[
+            import mx.collections.ArrayCollection;
+            
             import dictionary.Const;
 			
 			//--------------------------------------------------------------------------
 			// 
 			//--------------------------------------------------------------------------
 			
+            private var _ammoList:ArrayCollection;
+            private var _clip:int;
+            
+            //--------------------------------------------------------------------------
+            // 
+            //--------------------------------------------------------------------------
+            
             [Bindable]
             public var weaponName:String;
+            
+            [Bindable (event="clipIsChanged")]
+            public function get clip():int
+            {
+                return _clip;
+            }
+            
+            public function set clip(value:int):void
+            {
+                if (value == _clip)
+                    return;
+                
+                _clip = value;
+                dispatchEvent(new Event("clipIsChanged"));
+            }
+            
+            [Bindable (event="ammoListIsChanged")]
+            public function get ammoList():ArrayCollection
+            {
+                return _ammoList;
+            }
+            
+            public function set ammoList(value:ArrayCollection):void
+            {
+                if (value == _ammoList)
+                    return;
+                
+                _ammoList = value;
+                dispatchEvent(new Event("ammoListIsChanged"));
+            }
 			
 			//--------------------------------------------------------------------------
 			// 

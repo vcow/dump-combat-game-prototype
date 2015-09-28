@@ -22,9 +22,9 @@ package vo
 		//--------------------------------------------------------------------------
 		
         public var weaponId:String;                                     //< Уникальный идентификатор
-        public var weaponEquipmentSlots:int;                            //< Количество единиц доп оборудования, которое может быть установлено на оружие
         public var weaponUnit:Vector.<String> = new Vector.<String>();  //< Список юнитов, для которого годится оружие
         public var weaponSlot:Vector.<int> = new Vector.<int>();        //< Список слотов, в которые помещается оружие
+        public var weaponClip:int;                                      //< Количество зарядов в обойме
 		
 		private var _weaponResource:String;
         private var _data:Object = {};
@@ -91,15 +91,6 @@ package vo
             return null;
         }
         
-        /**
-         * Флаг, указывающий наличие у оружия магазина для зарядов
-         */
-        public function get weaponHasClip():Boolean
-        {
-            var clip:Number = weaponModifiers.getFieldValue(ModifiersVO.CLIP);
-            return !isNaN(clip) && clip > 0;
-        }
-		
 		//----------------------------------
 		//  VO
 		//----------------------------------
@@ -112,13 +103,15 @@ package vo
 			
             res.@id = weaponId;
             res.@resource = weaponResource;
-            res.@equipmentSlots = weaponEquipmentSlots;
             
             if (weaponSlot.length > 0)
                 res.@slot = weaponSlot.join(",");
             
             if (weaponUnit.length > 0)
                 res.@unit = weaponUnit.join(",");
+            
+            if (weaponClip)
+                res.@clip = weaponClip;
 			
 			// /TODO
 			
@@ -133,7 +126,7 @@ package vo
 			
             weaponId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
             weaponResource = data.hasOwnProperty("@resource") ? data.@resource.toString() : "";
-            weaponEquipmentSlots = data.hasOwnProperty("@equipmentSlots") ? int(data.@equipmentSlots) : 0;
+            weaponClip = data.hasOwnProperty("@clip") ? int(data.@clip) : 0;
             
             var itemList:Array = data.hasOwnProperty("@slot") ? data.@slot.toString().split(/\s*,\s*/) : [];
             weaponSlot.splice(0, weaponSlot.length);

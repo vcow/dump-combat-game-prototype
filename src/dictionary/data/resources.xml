@@ -75,10 +75,4 @@
 			</if>
 		</complete>
 	</resourceDesc>
-	
-	<!-- Ремень -->
-	<resourceDesc id="belt" name="{belt.title}" description="{belt.description}" size="1" price="0.4"/>
-	
-	<!-- Quiver -->
-	<resourceDesc id="quiver" name="{quiver.title}" description="{quiver.description}" size="2" price="0.4"/>
 </resourcesDict>

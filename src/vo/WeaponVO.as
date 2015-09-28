@@ -56,7 +56,7 @@ package vo
         {
             return _weaponDesc;
         }
-		
+        
 		//----------------------------------
 		//  VO
 		//----------------------------------
@@ -88,7 +88,7 @@ package vo
             for each (var slot:String in slotList)
             {
                 if (!isNaN(parseInt(slot)))
-                    weaponSlot.push(slot);
+                    weaponSlot.push(int(slot));
             }
 			
 			// /TODO

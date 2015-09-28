@@ -23,6 +23,8 @@ package mediator
     
     import views.ui.UnitView;
     
+    import vo.AmmoDescVO;
+    import vo.AmmoVO;
     import vo.ArmorDescVO;
     import vo.UnitDescVO;
     import vo.UnitVO;
@@ -124,8 +126,7 @@ package mediator
                     res.push({
                         id: weapon.weaponId,
                         label: weapon.resourceDesc.resourceName,
-                        loadable: weapon.weaponHasClip && unique,
-                        improvable: weapon.weaponEquipmentSlots > 0 && unique
+                        loadable: weapon.weaponClip > 0 && unique
                     });
                     
                     if (!weaponFound)
@@ -139,14 +140,49 @@ package mediator
                     res.push({
                         id: selected.weaponDesc.weaponId,
                         label: selected.weaponDesc.resourceDesc.resourceName,
-                        loadable: selected.weaponDesc.weaponHasClip && unique,
-                        improvable: selected.weaponDesc.weaponEquipmentSlots > 0 && unique
+                        loadable: selected.weaponDesc.weaponClip > 0 && unique
                     });
                 }
                 
                 res.sortOn("label");
             }
             
+            return new ArrayCollection(res);
+        }
+        
+        /**
+         * Получить боеприпасы для указанного оружия
+         * @param slot слот, в котором лежит оружие
+         * @return список боеприпасов, заряженных и доступных
+         */
+        public function getAmmoFor(slot:int):ArrayCollection
+        {
+            var res:Array = [];
+            var weapon:WeaponVO = getWeapon(slot);
+            if (weapon)
+            {
+                var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy, appDataProxy);
+                for each (var ammoDesc:AmmoDescVO in ArmamentDict.getInstance().getAmmoForUnit(weapon.weaponId))
+                {
+                    var rest:int = resourcesDecor.getResource(ammoDesc.ammoResource);
+                    var loaded:int = 0;
+                    for each (var ammo:AmmoVO in weapon.children)
+                    {
+                        if (ammo.ammoDesc.ammoResource == ammoDesc.ammoResource)
+                            loaded++;
+                    }
+                    
+                    if (rest || loaded)
+                    {
+                        res.push({
+                            id: ammoDesc.ammoId,
+                            label: ammoDesc.resourceDesc.resourceName,
+                            loaded: loaded,
+                            rest: rest
+                        });
+                    }
+                }
+            }
             return new ArrayCollection(res);
         }
         

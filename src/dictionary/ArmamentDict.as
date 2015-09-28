@@ -2,7 +2,6 @@ package dictionary
 {
 	import vo.AmmoDescVO;
 	import vo.ArmorDescVO;
-	import vo.EquipmentDescVO;
 	import vo.WeaponDescVO;
 	
 	/**
@@ -26,7 +25,6 @@ package dictionary
         private var _weapons:Vector.<WeaponDescVO>;
         private var _ammo:Vector.<AmmoDescVO>;
         private var _armors:Vector.<ArmorDescVO>;
-        private var _equipments:Vector.<EquipmentDescVO>;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -154,42 +152,17 @@ package dictionary
             return res;
         }
         
-        /**
-         * Получить все оборудование, совместимое с указанным юнитом
-         * @param unitId идентификатор юнита
-         * @return список оборудования
-         */
-        public function getEquipmentForUnit(unitId:String):Vector.<EquipmentDescVO>
-        {
-            init();
-            
-            var res:Vector.<EquipmentDescVO> = new Vector.<EquipmentDescVO>();
-            for each (var equipment:EquipmentDescVO in _equipments)
-            {
-                for each (var id:String in equipment.equipmentUnit)
-                {
-                    if (id == unitId)
-                    {
-                        res.push(equipment);
-                        break;
-                    }
-                }
-            }
-            return res;
-        }
-		
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
         private function init():void
         {
-			if (!_weapons && !_ammo && !_armors && !_equipments)
+			if (!_weapons && !_ammo && !_armors)
 			{
                 _weapons = new Vector.<WeaponDescVO>();
                 _ammo = new Vector.<AmmoDescVO>();
                 _armors = new Vector.<ArmorDescVO>();
-                _equipments = new Vector.<EquipmentDescVO>();
 				
 				var src:XML = XML(new source());
                 
@@ -215,14 +188,6 @@ package dictionary
                     var armor:ArmorDescVO = new ArmorDescVO();
                     armor.deserialize(item);
                     _armors.push(armor);
-                }
-                
-                items = src.child(EquipmentDescVO.NAME);
-                for each (item in items)
-                {
-                    var equipment:EquipmentDescVO = new EquipmentDescVO();
-                    equipment.deserialize(item);
-                    _equipments.push(equipment);
                 }
 			}
 		}

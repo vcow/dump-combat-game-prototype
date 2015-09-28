@@ -2,7 +2,7 @@ package mediator
 {
     import mx.collections.ArrayCollection;
     
-    import command.data.EquipUnitCmdData;
+    import command.data.MobilizeUnitCmdData;
     
     import dictionary.Const;
     import dictionary.UnitsDict;
@@ -233,7 +233,7 @@ package mediator
             for each (var id:String in event.crew)
                 crew.push(id);
             
-            sendNotification(Const.EQUIP_UNIT, new EquipUnitCmdData(event.unitId, event.name, crew, event.baseId));
+            sendNotification(Const.MOBILIZE_UNIT, new MobilizeUnitCmdData(event.unitId, event.name, crew, event.baseId));
         }
         
         //----------------------------------
@@ -249,14 +249,14 @@ package mediator
         
         override public function listNotificationInterests():Array
         {
-            return [ Const.UNIT_IS_EQUIPPED ];
+            return [ Const.UNIT_IS_MOBILIZED ];
         }
         
         override public function handleNotification(notification:INotification):void
         {
             switch (notification.getName())
             {
-                case Const.UNIT_IS_EQUIPPED:
+                case Const.UNIT_IS_MOBILIZED:
                     if (armyView)
                     {
                         armyView.updateList();

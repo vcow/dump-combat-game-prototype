@@ -1,6 +1,6 @@
 package command
 {
-    import command.data.ReloadCmdData;
+    import command.data.ReloadWeaponCmdData;
     
     import dictionary.Const;
     
@@ -40,7 +40,7 @@ package command
         
         override public function execute(notification:INotification):void
         {
-            var data:ReloadCmdData = notification.getBody() as ReloadCmdData;
+            var data:ReloadWeaponCmdData = notification.getBody() as ReloadWeaponCmdData;
             if (data)
             {
                 var unit:UnitVO = ArmyProxy(this.facade.retrieveProxy(ArmyProxy.NAME)).getUnit(data.unitId);
@@ -68,15 +68,10 @@ package command
                                 var resourcesDecor:ResourcesHelper = new ResourcesHelper();
                                 var price:PriceVO = new PriceVO();
                                 
-                                for (i = weapon.children.length - 1; i >= 0; i--)
-                                {
-                                    if (weapon.children[i].name == AmmoVO.NAME)
-                                    {
-                                        var ammo:AmmoVO = AmmoVO(weapon.children[i]);
-                                        resourcesDecor.joinResource(ammo.ammoDesc.ammoResource, 1, price);
-                                        weapon.children.splice(i, 1);
-                                    }
-                                }
+                                for each (var ammo:AmmoVO in weapon.children)
+                                    resourcesDecor.joinResource(ammo.ammoDesc.ammoResource, 1, price);
+                                
+                                weapon.children.splice(0, weapon.children.length);
                                 
                                 if (price.children.length > 0)
                                     sendNotification(Const.CHANGE_RESOURCES, price);    // Вернуть заряды на склад

@@ -1,6 +1,6 @@
 package command
 {
-    import command.data.EquipUnitCmdData;
+    import command.data.MobilizeUnitCmdData;
     import command.data.MovePersonCmdData;
     
     import dictionary.Const;
@@ -35,13 +35,13 @@ package command
      * 
      */
     
-    public class EquipUnitCommand extends SimpleCommand
+    public class MobilizeUnitCommand extends SimpleCommand
     {
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public function EquipUnitCommand()
+        public function MobilizeUnitCommand()
         {
             super();
         }
@@ -52,7 +52,7 @@ package command
         
         override public function execute(notification:INotification):void
         {
-            var data:EquipUnitCmdData = notification.getBody() as EquipUnitCmdData;
+            var data:MobilizeUnitCmdData = notification.getBody() as MobilizeUnitCmdData;
             if (data)
             {
                 var unitDesc:UnitDescVO = UnitsDict.getInstance().getUnit(data.unitId);
@@ -168,7 +168,7 @@ package command
                 
                 garrison.children.push(mercenary);
                 
-                sendNotification(Const.UNIT_IS_EQUIPPED, unit.unitId);
+                sendNotification(Const.UNIT_IS_MOBILIZED, unit.unitId);
             }
         }
     }

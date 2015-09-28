@@ -22,7 +22,6 @@ package vo
 		//--------------------------------------------------------------------------
 		
         public var armorId:String;                                      //< Уникальный идентификатор
-        public var armorEquipmentSlots:int;                             //< Количество единиц доп оборудования, которое можно установить на броню
         public var armorUnit:Vector.<String> = new Vector.<String>();   //< Список юнитов, для которого годится броня
         public var armorSlot:Vector.<int> = new Vector.<int>();         //< Список слотов, в которые помещается броня
 		
@@ -90,7 +89,6 @@ package vo
 			
             res.@id = armorId;
             res.@resource = armorResource;
-            res.@equipmentSlots = armorEquipmentSlots;
             
             if (armorSlot.length > 0)
                 res.@slot = armorSlot.join(",");
@@ -111,7 +109,6 @@ package vo
 			
             armorId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
             armorResource = data.hasOwnProperty("@resource") ? data.@resource.toString() : "";
-            armorEquipmentSlots = data.hasOwnProperty("@equipmentSlots") ? int(data.@equipmentSlots) : 0;
             
             var itemList:Array = data.hasOwnProperty("@slot") ? data.@slot.toString().split(/\s*,\s*/) : [];
             armorSlot.splice(0, armorSlot.length);

@@ -31,7 +31,6 @@ package vo
         public var unitSelfDestruct:int;            //< Количество атак до самоуничтожения юнита
         public var unitWeaponSlots:int;             //< Слотов под оружие
         public var unitArmorSlots:int;              //< Слотов под броню
-        public var unitEquipmentSlots:int;          //< Слотов под доп оборудование
 		
 		private var _unitResource:String;
         private var _data:Object = {};
@@ -100,7 +99,6 @@ package vo
             res.@description = unitDescription;
             res.@crew = unitCrew;
             res.@resource = unitResource;
-            res.@equipmentSlots = unitEquipmentSlots;
             res.@weaponSlots = unitWeaponSlots;
             res.@armorSlots = unitArmorSlots;
             
@@ -123,7 +121,6 @@ package vo
             unitDescription = data.hasOwnProperty("@description") ? VO.parseString(data.@description, "units") : Const.NO_TEXT;
             unitCrew = data.hasOwnProperty("@crew") ? int(data.@crew) : 0;
             unitResource = data.hasOwnProperty("@resource") ? data.@resource.toString() : "";
-            unitEquipmentSlots = data.hasOwnProperty("@equipmentSlots") ? int(data.@equipmentSlots) : 0;
             unitSelfDestruct = data.hasOwnProperty("@selfDestruct") ? int(data.@selfDestruct) : 0;
             unitWeaponSlots = data.hasOwnProperty("@weaponSlots") ? int(data.@weaponSlots) : 0;
             unitArmorSlots = data.hasOwnProperty("@armorSlots") ? int(data.@armorSlots) : 0;

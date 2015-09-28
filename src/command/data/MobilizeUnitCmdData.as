@@ -7,14 +7,14 @@ package command.data
      * 
      */
     
-    public class EquipUnitCmdData
+    public class MobilizeUnitCmdData
     {
         public var unitId:String;           //< Идентификатор юнита
         public var name:String;             //< Имя юнита
         public var crew:Vector.<String>;    //< Список идентификаторов членов команды
         public var baseId:String;           //< Идентификатор базы приписки
         
-        public function EquipUnitCmdData(unitId:String, name:String, crew:Vector.<String>, baseId:String)
+        public function MobilizeUnitCmdData(unitId:String, name:String, crew:Vector.<String>, baseId:String)
         {
             this.unitId = unitId;
             this.name = name;
