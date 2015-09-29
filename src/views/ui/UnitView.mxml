@@ -236,7 +236,7 @@
                 if (slot.length == 0)
                     slot.push(data.number);
                 
-                dispatchEvent(new UnitEvent(UnitEvent.SELECT_WEAPON, data.selected, 1, slot, data.selected));
+                dispatchEvent(new UnitEvent(UnitEvent.SELECT_WEAPON, data.selected, null, slot));
             }
             
             private function weaponReloadHandler(event:Event):void
@@ -253,6 +253,8 @@
                 chargeWeaponPopUp.addEventListener(PopUpEvent.CLOSE, chargePopUp_closeHandler);
                 
                 chargeWeaponPopUp.weaponName = weapon.resourceDesc ? weapon.resourceDesc.resourceName : Const.NO_TEXT;
+                chargeWeaponPopUp.weaponId = data.selected;
+                chargeWeaponPopUp.slot = data.number;
                 chargeWeaponPopUp.clip = weapon.weaponClip;
                 chargeWeaponPopUp.ammoList = _unitMediator.getAmmoFor(data.selected);
                 
@@ -265,10 +267,13 @@
                 var chargeWeaponPopUp:ChargeWeaponPopUp = ChargeWeaponPopUp(event.target);
                 chargeWeaponPopUp.removeEventListener(PopUpEvent.CLOSE, chargePopUp_closeHandler);
                 
-                if (event.data == Const.OK)
-                {
-                    
-                }
+                var weapon:WeaponDescVO = ArmamentDict.getInstance().getWeapon(chargeWeaponPopUp.weaponId);
+                var slot:Vector.<int> = weapon ? weapon.weaponSlot.slice() : new Vector.<int>();
+                if (slot.length == 0)
+                    slot.push(data.number);
+                
+                if (event.data == Const.OK && chargeWeaponPopUp.ammoList)
+                    dispatchEvent(new UnitEvent(UnitEvent.CHARGE_WEAPON, chargeWeaponPopUp.weaponId, chargeWeaponPopUp.ammoList.source, slot));
             }
             
             //----------------------------------

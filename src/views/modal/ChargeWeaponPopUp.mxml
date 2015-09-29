@@ -3,8 +3,11 @@
 <!-- Интерфейс для зарядки оружия или юнита -->
 
 <s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
-			   xmlns:s="library://ns.adobe.com/flex/spark"
-               filters="{proto.popUpShadow}">
+                           xmlns:s="library://ns.adobe.com/flex/spark"
+                           xmlns:ui="views.ui.*"
+                           creationComplete="creationCompleteHandler(event)"
+                           width="312" maxHeight="350"
+                           filters="{proto.popUpShadow}">
 	
 	<s:BorderContainer>
 		<s:layout>
@@ -19,8 +22,57 @@
 			<s:Label text="{weaponName}" color="white"/>
 		</s:BorderContainer>
 		
-		<s:VGroup gap="7" paddingLeft="5" paddingRight="5" paddingTop="0" paddingBottom="5">
-			
+		<s:VGroup gap="7" paddingLeft="5" paddingRight="5" paddingTop="0" paddingBottom="5" horizontalAlign="center">
+            
+            <s:Scroller width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="on">
+                
+                <s:DataGroup width="100%" dataProvider="{ammoList}">
+                    <s:layout>
+                        <s:VerticalLayout paddingRight="5" gap="4"/>
+                    </s:layout>
+                    <s:itemRenderer>
+                        <fx:Component>
+                            <s:DataRenderer width="100%">
+                                <s:layout>
+                                    <s:HorizontalLayout verticalAlign="middle"/>
+                                </s:layout>
+                                <s:Label text="{label}" width="100%"/>
+                                <ui:NumericStepper min="0" max="{free}" value="{current}" change="stepperChange(event)"/>
+                                <fx:Script>
+                                    <![CDATA[
+                                        [Bindable]
+                                        private var label:String;
+                                        
+                                        [Bindable]
+                                        private var free:int;
+                                        
+                                        [Bindable]
+                                        private var current:int;
+                                        
+                                        override public function set data(value:Object):void
+                                        {
+                                            super.data = value;
+                                            
+                                            current = int(data.loaded);
+                                            free = Math.min(int(data.free) + current, data.rest);
+                                            label = data.label;
+                                        }
+                                        
+                                        private function stepperChange(event:Event):void
+                                        {
+                                            data.loaded = NumericStepper(event.target).value;
+                                            dispatchEvent(new Event("ammoLoadedNumChanged", true));
+                                        }
+                                    ]]>
+                                </fx:Script>
+                            </s:DataRenderer>
+                        </fx:Component>
+                    </s:itemRenderer>
+                </s:DataGroup>
+            </s:Scroller>
+            
+			<s:Label text="{freeClipTitle}"/>
+            
 			<s:HGroup width="100%">
 				<s:Button label="@Resource(key='army.reload.popup.carge', bundle='common')" width="50%"
 						  click="{close(false, Const.OK);}"/>
@@ -41,6 +93,7 @@
 	<fx:Script>
 		<![CDATA[
             import mx.collections.ArrayCollection;
+            import mx.events.FlexEvent;
             
             import dictionary.Const;
 			
@@ -50,10 +103,14 @@
 			
             private var _ammoList:ArrayCollection;
             private var _clip:int;
+            private var _free:int;
             
             //--------------------------------------------------------------------------
             // 
             //--------------------------------------------------------------------------
+            
+            public var weaponId:String;
+            public var slot:int;
             
             [Bindable]
             public var weaponName:String;
@@ -64,13 +121,20 @@
                 return _clip;
             }
             
+            [Bindable (event="freeClipTitleIsChanged")]
+            public function get freeClipTitle():String
+            {
+                return resourceManager.getString("common", "army.reload.popup.free", [_free, _clip]);
+            }
+            
             public function set clip(value:int):void
             {
                 if (value == _clip)
                     return;
                 
                 _clip = value;
-                dispatchEvent(new Event("clipIsChanged"));
+                
+                updateFreeLabel();
             }
             
             [Bindable (event="ammoListIsChanged")]
@@ -86,11 +150,47 @@
                 
                 _ammoList = value;
                 dispatchEvent(new Event("ammoListIsChanged"));
+                
+                updateFreeLabel();
             }
 			
 			//--------------------------------------------------------------------------
 			// 
 			//--------------------------------------------------------------------------
-		]]>
+            
+            private function updateFreeLabel():void
+            {
+                var free:int = _clip;
+                if (free > 0)
+                {
+                    for each (var item:Object in _ammoList)
+                        free -= int(item.loaded);
+                }
+                
+                _free = free < 0 ? 0 : free;
+                for each (item in _ammoList)
+                {
+                    if (item.free != _free)
+                    {
+                        item.free = _free;
+                        _ammoList.itemUpdated(item, "free");
+                    }
+                }
+                
+                dispatchEvent(new Event("freeClipTitleIsChanged"));
+            }
+            
+            private function ammoLoadedNumChangedHandler(event:Event):void
+            {
+                event.stopPropagation();
+                updateFreeLabel();
+            }
+            
+            protected function creationCompleteHandler(event:FlexEvent):void
+            {
+                addEventListener("ammoLoadedNumChanged", ammoLoadedNumChangedHandler, false, 0, true);
+            }
+            
+        ]]>
 	</fx:Script>
 </s:SkinnablePopUpContainer>

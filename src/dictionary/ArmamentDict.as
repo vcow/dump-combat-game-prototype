@@ -105,6 +105,24 @@ package dictionary
         }
         
         /**
+         * Получить снаряд по идентификатору его ресурса
+         * @param resourceId идентификатор ресурса
+         * @return описание снаряда
+         */
+        public function getAmmoByResource(resourceId:String):AmmoDescVO
+        {
+            init();
+            
+            for each (var ammo:AmmoDescVO in _ammo)
+            {
+                if (ammo.ammoResource == resourceId)
+                    return ammo;
+            }
+            
+            return null;
+        }
+        
+        /**
          * Получить всю броню, совместимую с указанным юнитом
          * @param unitId идентификатор юнита
          * @return список брони

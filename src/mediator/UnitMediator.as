@@ -3,6 +3,7 @@ package mediator
     import mx.collections.ArrayCollection;
     import mx.resources.ResourceManager;
     
+    import command.data.ReloadWeaponCmdData;
     import command.data.SelectWeaponCmdData;
     
     import dictionary.ArmamentDict;
@@ -26,6 +27,8 @@ package mediator
     import vo.AmmoDescVO;
     import vo.AmmoVO;
     import vo.ArmorDescVO;
+    import vo.PriceVO;
+    import vo.ResourceVO;
     import vo.UnitDescVO;
     import vo.UnitVO;
     import vo.WeaponDescVO;
@@ -280,7 +283,32 @@ package mediator
                 return;
             
             var weapon:WeaponDescVO = ArmamentDict.getInstance().getWeapon(event.itemId);
-            sendNotification(Const.SELECT_WEAPON, new SelectWeaponCmdData(_unit.unitId, event.slotNum, weapon ? weapon.weaponId : ""));
+            sendNotification(Const.SELECT_WEAPON, new SelectWeaponCmdData(_unit.unitId, event.slot, weapon ? weapon.weaponId : ""));
+        }
+        
+        /**
+         * Оружие перезаряжается
+         * @param event событие
+         */
+        private function chargeWeaponHandler(event:UnitEvent):void
+        {
+            if (!_unit)
+                return;
+            
+            var ammo:PriceVO = new PriceVO();
+            for each (var item:Object in event.ammo)
+            {
+                var ammoDesc:AmmoDescVO = ArmamentDict.getInstance().getAmmo(item.id);
+                if (!ammoDesc)
+                    continue;
+                
+                var resource:ResourceVO = new ResourceVO();
+                resource.resourceId = ammoDesc.ammoResource;
+                resource.resourceCount = item.loaded;
+                ammo.children.push(resource);
+            }
+            
+            sendNotification(Const.RELOAD_WEAPON, new ReloadWeaponCmdData(_unit.unitId, event.slot, ammo));
         }
         
         //--------------------------------------------------------------------------
@@ -298,6 +326,7 @@ package mediator
             // TODO: Удалить все обработчики событий, если таковые были установлены
             
             unitView.removeEventListener(UnitEvent.SELECT_WEAPON, selectWeaponHandler);
+            unitView.removeEventListener(UnitEvent.CHARGE_WEAPON, chargeWeaponHandler);
             
             // /TODO
         }
@@ -313,6 +342,7 @@ package mediator
             // TODO: Проинициализировать поля компонента актуальными значениями, устновить оброботчики событий, если нужно
             
             unitView.addEventListener(UnitEvent.SELECT_WEAPON, selectWeaponHandler);
+            unitView.addEventListener(UnitEvent.CHARGE_WEAPON, chargeWeaponHandler);
             
             // /TODO
         }

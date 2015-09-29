@@ -23,29 +23,26 @@ package events
         // 
         //--------------------------------------------------------------------------
         
-        public var weaponId:String;
-        public var slotNum:Vector.<int>;
+        public var slot:Vector.<int>;
         public var itemId:String;
-        public var itemsCount:int;
+        public var ammo:Array;
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public function UnitEvent(type:String, itemId:String, itemsCount:int, slotNum:Vector.<int>, weaponId:String,
-                                  bubbles:Boolean=false, cancelable:Boolean=false)
+        public function UnitEvent(type:String, itemId:String, ammo:Array, slot:Vector.<int>, bubbles:Boolean=false, cancelable:Boolean=false)
         {
             super(type, bubbles, cancelable);
             
-            this.weaponId = weaponId;
-            this.slotNum = slotNum;
+            this.slot = slot;
             this.itemId = itemId;
-            this.itemsCount = itemsCount;
+            this.ammo = ammo;
         }
         
         override public function clone():Event
         {
-            return new UnitEvent(type, itemId, itemsCount, slotNum, weaponId, bubbles, cancelable);
+            return new UnitEvent(type, itemId, ammo, slot, bubbles, cancelable);
         }
     }
 }

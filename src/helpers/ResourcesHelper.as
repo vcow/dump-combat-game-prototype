@@ -200,6 +200,13 @@ package helpers
 						price.children.push(srcRes.clone());
 				}
 			}
+            
+            for (var i:int = price.children.length - 1; i >= 0; i--)
+            {
+                if (ResourceVO(price.children[i]).resourceCount == 0)
+                    price.children.splice(i, 1);
+            }
+            
 			return price;
 		}
 		

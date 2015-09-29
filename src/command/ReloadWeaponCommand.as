@@ -2,6 +2,7 @@ package command
 {
     import command.data.ReloadWeaponCmdData;
     
+    import dictionary.ArmamentDict;
     import dictionary.Const;
     
     import helpers.ResourcesHelper;
@@ -11,8 +12,10 @@ package command
     
     import proxy.ArmyProxy;
     
+    import vo.AmmoDescVO;
     import vo.AmmoVO;
     import vo.PriceVO;
+    import vo.ResourceVO;
     import vo.UnitVO;
     import vo.WeaponVO;
     
@@ -62,27 +65,57 @@ package command
                         
                         if (compareNum == 0)
                         {
+                            var resourcesDecor:ResourcesHelper = new ResourcesHelper();
+                            var currentLoadedAmmo:PriceVO = new PriceVO();
+                            
+                            for each (var ammo:AmmoVO in weapon.children)
+                                resourcesDecor.joinResource(ammo.ammoDesc.ammoResource, 1, currentLoadedAmmo);
+                            
                             if (!data.ammo || data.ammo.children.length == 0)
                             {
                                 // Оружие полностью разряжается
-                                var resourcesDecor:ResourcesHelper = new ResourcesHelper();
-                                var price:PriceVO = new PriceVO();
-                                
-                                for each (var ammo:AmmoVO in weapon.children)
-                                    resourcesDecor.joinResource(ammo.ammoDesc.ammoResource, 1, price);
-                                
                                 weapon.children.splice(0, weapon.children.length);
                                 
-                                if (price.children.length > 0)
-                                    sendNotification(Const.CHANGE_RESOURCES, price);    // Вернуть заряды на склад
+                                if (currentLoadedAmmo.children.length > 0)
+                                    sendNotification(Const.CHANGE_RESOURCES, currentLoadedAmmo);    // Вернуть заряды на склад
                                 
                                 sendNotification(Const.WEAPON_RELOADED, data.unitId);
                                 return;
                             }
                             
+                            var newAmmo:PriceVO = resourcesDecor.joinPrice(data.ammo, resourcesDecor.invertPrice(currentLoadedAmmo));
                             
+                            if (newAmmo.children.length == 0)
+                            {
+                                // Количество и состав боеприпасов не изменился
+                                return;
+                            }
                             
+                            if (!resourcesDecor.isEnoughResources(resourcesDecor.separatePrice(newAmmo)[0]))
+                            {
+                                // Не хватает ресурсов для зарядки оружия
+                                return;
+                            }
                             
+                            sendNotification(Const.CHANGE_RESOURCES, resourcesDecor.invertPrice(newAmmo));
+                            
+                            weapon.children.splice(0, weapon.children.length);
+                            
+                            for each (var resource:ResourceVO in data.ammo.children)
+                            {
+                                var ammoDesc:AmmoDescVO = ArmamentDict.getInstance().getAmmoByResource(resource.resourceId);
+                                if (!ammoDesc)
+                                    continue;
+                                
+                                for (i = 0; i < resource.resourceCount; i++)
+                                {
+                                    ammo = new AmmoVO();
+                                    ammo.ammoId = ammoDesc.ammoId;
+                                    weapon.children.push(ammo);
+                                }
+                            }
+                            
+                            sendNotification(Const.WEAPON_RELOADED, data.unitId);
                             break;
                         }
                     }
