@@ -1,6 +1,5 @@
 package command
 {
-    import command.data.ReloadItemCmdData;
     import command.data.SelectArmamentCmdData;
     
     import dictionary.Const;
@@ -13,23 +12,23 @@ package command
     
     import proxy.ArmyProxy;
     
+    import vo.ArmorVO;
     import vo.UnitVO;
-    import vo.WeaponVO;
     
     /**
      * 
      * @author y.vircowskiy
-     * Команда на выбор оружия для юнита
+     * Команда на выбор брони для юнита
      * 
      */
     
-    public class SelectWeaponCommand extends SimpleCommand
+    public class SelectArmorCommand extends SimpleCommand
     {
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public function SelectWeaponCommand()
+        public function SelectArmorCommand()
         {
             super();
         }
@@ -49,28 +48,28 @@ package command
                 
                 var resourcesDecor:ResourcesHelper = new ResourcesHelper();
                 
-                var newWeapon:WeaponVO = new WeaponVO();
-                newWeapon.weaponId = data.armamentId;
-                newWeapon.weaponSlot = data.armamentSlot;
+                var newArmor:ArmorVO = new ArmorVO();
+                newArmor.armorId = data.armamentId;
+                newArmor.armorSlot = data.armamentSlot;
                 
-                if (newWeapon.weaponDesc)
+                if (newArmor.armorDesc)
                 {
-                    if (!(new ConditionHelper()).parseCondition(newWeapon.weaponDesc.weaponCondition))
+                    if (!(new ConditionHelper()).parseCondition(newArmor.armorDesc.armorCondition))
                     {
                         // Не выполняется условие использования оружия
                         return;
                     }
                     
-                    if (!resourcesDecor.isEnoughResources(resourcesDecor.joinResource(newWeapon.weaponDesc.weaponResource, 1)))
+                    if (!resourcesDecor.isEnoughResources(resourcesDecor.joinResource(newArmor.armorDesc.armorResource, 1)))
                     {
                         // Выбранного оружия нет на складе
                         return;
                     }
                     
-                    if (newWeapon.weaponDesc.weaponSlot.length > 0)
+                    if (newArmor.armorDesc.armorSlot.length > 0)
                     {
                         var compareNum:int = data.armamentSlot.length;
-                        for each (var slot:int in newWeapon.weaponDesc.weaponSlot)
+                        for each (var slot:int in newArmor.armorDesc.armorSlot)
                         {
                             if (data.armamentSlot.indexOf(slot) >= 0)
                                 compareNum--;
@@ -78,7 +77,7 @@ package command
                         
                         if (compareNum != 0)
                         {
-                            // Слоты, куда помещается оружие, не соответствуют слотам, куда оно может быть помещено
+                            // Слоты, куда помещается броня, не соответствуют слотам, куда она может быть помещена
                             return;
                         }
                     }
@@ -86,51 +85,50 @@ package command
                     {
                         if (data.armamentSlot.length > 1)
                         {
-                            // Оружие кладется в несколько слотов, хотя занимает только один
+                            // Броня кладется в несколько слотов, хотя занимает только один
                             return;
                         }
                     }
                 }
                 else
                 {
-                    newWeapon = null;
+                    newArmor = null;
                 }
                 
                 for (var i:int = unit.children.length - 1; i >= 0; i--)
                 {
-                    if (unit.children[i].name == WeaponVO.NAME)
+                    if (unit.children[i].name == ArmorVO.NAME)
                     {
-                        var weapon:WeaponVO = WeaponVO(unit.children[i]);
+                        var armor:ArmorVO = ArmorVO(unit.children[i]);
                         
-                        compareNum = weapon.weaponSlot.length;
-                        for each (slot in weapon.weaponSlot)
+                        compareNum = armor.armorSlot.length;
+                        for each (slot in armor.armorSlot)
                         {
                             if (data.armamentSlot.indexOf(slot) >= 0)
                                 compareNum--;
                         }
                         
-                        if ( compareNum < weapon.weaponSlot.length)
+                        if ( compareNum < armor.armorSlot.length)
                         {
-                            // В этом слоте уже есть оружие
+                            // В этом слоте уже есть броня
                             
-                            if (weapon.weaponId == data.armamentId && compareNum == 0)
-                                return;     // Это то же самое оружие, ничего не меняем
+                            if (armor.armorId == data.armamentId && compareNum == 0)
+                                return;     // Это та же самая броня, ничего не меняем
                             
-                            // Разрядить и убрать на склад текущее оружие
-                            sendNotification(Const.RELOAD_WEAPON, new ReloadItemCmdData(data.unitId, null, weapon.weaponSlot));
-                            sendNotification(Const.CHANGE_RESOURCES, resourcesDecor.joinResource(weapon.weaponDesc.weaponResource, 1));
+                            // Убрать на склад текущую броню
+                            sendNotification(Const.CHANGE_RESOURCES, resourcesDecor.joinResource(armor.armorDesc.armorResource, 1));
                             unit.children.splice(i, 1);
                         }
                     }
                 }
                 
-                if (newWeapon)
+                if (newArmor)
                 {
-                    sendNotification(Const.CHANGE_RESOURCES, resourcesDecor.joinResource(newWeapon.weaponDesc.weaponResource, -1));
-                    unit.children.push(newWeapon);
+                    sendNotification(Const.CHANGE_RESOURCES, resourcesDecor.joinResource(newArmor.armorDesc.armorResource, -1));
+                    unit.children.push(newArmor);
                 }
                 
-                sendNotification(Const.WEAPON_SELECTED, data.unitId);
+                sendNotification(Const.ARMOR_SELECTED, data.unitId);
             }
         }
     }

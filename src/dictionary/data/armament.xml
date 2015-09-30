@@ -22,11 +22,11 @@
 			<!-- Колющий урон - дробное значение от 0 до 1 -->
 			<spikeDmg>0</spikeDmg>
 			<!-- Урон от удара - дробное значение от 0 до 1 -->
-			<bluntDmg>(+1)</bluntDmg>
+			<bluntDmg>1+</bluntDmg>
 			<!-- Урон от огня - дробное значение от 0 до 1 -->
 			<fireDmg>0</fireDmg>
 			<!-- Сила оружия -->
-			<dmgStrength>(+1)</dmgStrength>
+			<dmgStrength>1+</dmgStrength>
 		</modifiers>
 	</weaponDesc>
 	
@@ -35,9 +35,9 @@
 		<modifiers>
 			<sharpDmg>0.05</sharpDmg>
 			<spikeDmg>0.25</spikeDmg>
-			<bluntDmg>(+0.7)</bluntDmg>
+			<bluntDmg>0.7+</bluntDmg>
 			<fireDmg>0</fireDmg>
-			<dmgStrength>(+3)</dmgStrength>
+			<dmgStrength>3+</dmgStrength>
 		</modifiers>
 	</weaponDesc>
 	<!-- Лук -->
@@ -63,7 +63,7 @@
 	<!-- Стрела с наконечником -->
 	<ammoDesc id="arrowTipped" resource="arrowTipped" unit="bow">
 		<modifiers>
-			<reach>(+2)</reach>
+			<reach>2+</reach>
 			<spikeDmg>1</spikeDmg>
 			<dmgStrength>3</dmgStrength>
 		</modifiers>
@@ -79,13 +79,13 @@
 	<armorDesc id="cardboardArmor" resource="cardboardArmor" unit="infantry">
 		<modifiers>
 			<!-- Защита от порезов -->
-			<sharpDef>(+0.05)</sharpDef>
+			<sharpDef>0.05+</sharpDef>
 			<!-- Защита от ударов -->
-			<bluntDef>(+0.95)</bluntDef>
+			<bluntDef>0.95+</bluntDef>
 			<!-- Сила защиты -->
-			<defStrength>(+2)</defStrength>
+			<defStrength>2+</defStrength>
 			<!-- Снижает скорость перемещения -->
-			<speed>(-0.2)</speed>
+			<speed>0.2-</speed>
 		</modifiers>
 	</armorDesc>
 </armamentDict>

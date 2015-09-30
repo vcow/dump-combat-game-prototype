@@ -69,7 +69,9 @@ package dictionary
         public static const WEAPON_SELECTED:String = "weaponSelected";                      //< Выбрано оружие для боевого юнита
         public static const RELOAD_WEAPON:String = "reloadWeapon";                          //< Перезарядить оружие
         public static const WEAPON_RELOADED:String = "weaponReloaded";                      //< Оружие перезаряжено
-        public static const EQUIP_WEAPON:String = "equipWeapon";                            //< Снарядить оружие
-        public static const WEAPON_EQUIPPED:String = "weaponEquipped";                      //< Оружие снаряжено
+        public static const SELECT_ARMOR:String = "selectArmor";                            //< Выбрать броню
+        public static const ARMOR_SELECTED:String = "armorSelected";                        //< Броня выбрана
+        public static const RELOAD_UNIT:String = "reloadUnit";                              //< Перезарядить юнит
+        public static const UNIT_RELOADED:String = "unitReloaded";                          //< Юнит перезаряжен
 	}
 }

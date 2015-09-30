@@ -83,35 +83,40 @@ package vo
                 return NaN;
             
             var raw:String = value.toString();
-            if (raw.search(/^\(>[0-9\.]+\)$/) == 0)
+            if (raw.search(/^[0-9\.]+>$/) == 0)
             {
-                var res:Number = parseFloat(raw.replace(/^\(>([0-9\.]+)\)$/, "$1"));
+                var res:Number = parseFloat(raw.replace(/^\([0-9\.]+)>$/, "$1"));
                 res = isNaN(baseValue) || res > baseValue ? res : baseValue;
             }
-            else if (raw.search(/^\(<[0-9\.]+\)$/) == 0)
+            else if (raw.search(/^[0-9\.]+<$/) == 0)
             {
-                res = parseFloat(raw.replace(/^\(<([0-9\.]+)\)$/, "$1"));
+                res = parseFloat(raw.replace(/^([0-9\.]+)<$/, "$1"));
                 res = isNaN(baseValue) || res < baseValue ? res : baseValue;
             }
-            else if (raw.search(/^\(\+[0-9\.]+\)$/) == 0)
+            else if (raw.search(/^\[0-9\.]+\+$/) == 0)
             {
-                res = parseFloat(raw.replace(/^\(\+([0-9\.]+)\)$/, "$1"));
+                res = parseFloat(raw.replace(/^([0-9\.]+)\+$/, "$1"));
                 res = isNaN(baseValue) ? res : baseValue + res;
             }
-            else if (raw.search(/^\(\-[0-9\.]+\)$/) == 0)
+            else if (raw.search(/^[0-9\.]+\-$/) == 0)
             {
-                res = parseFloat(raw.replace(/^\(\-([0-9\.]+)\)$/, "$1"));
+                res = parseFloat(raw.replace(/^([0-9\.]+)\-$/, "$1"));
                 res = isNaN(baseValue) ? res : baseValue - res;
+            }
+            else if (raw.search(/^[0-9\.]+%\+$/) == 0)
+            {
+                res = parseFloat(raw.replace(/^([0-9\.]+)%\+$/, "$1"));
+                res = isNaN(baseValue) ? NaN : baseValue + (baseValue / 100.0 * res);
+            }
+            else if (raw.search(/^[0-9\.]+%\-$/) == 0)
+            {
+                res = parseFloat(raw.replace(/^([0-9\.]+)%\-$/, "$1"));
+                res = isNaN(baseValue) ? NaN : baseValue - (baseValue / 100.0 * res);
             }
             else if (raw.search(/^[0-9\.]+%$/) == 0)
             {
                 res = parseFloat(raw.replace(/^([0-9\.]+)%$/, "$1"));
-                res = isNaN(baseValue) ? NaN : baseValue + (baseValue / 100.0 * res);
-            }
-            else if (raw.search(/^\-[0-9\.]+%$/) == 0)
-            {
-                res = parseFloat(raw.replace(/^\-([0-9\.]+)%$/, "$1"));
-                res = isNaN(baseValue) ? NaN : baseValue - (baseValue / 100.0 * res);
+                res = isNaN(baseValue) ? NaN : baseValue / 100.0 * res;
             }
             else
             {

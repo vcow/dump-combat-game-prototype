@@ -18,6 +18,7 @@ package events
         public static const SELECT_WEAPON:String = "selectWeapon";
         public static const SELECT_ARMOR:String = "selectArmor";
         public static const CHARGE_WEAPON:String = "chargeWeapon";
+        public static const CHARGE_UNIT:String = "chargeUnit";
         
         //--------------------------------------------------------------------------
         // 

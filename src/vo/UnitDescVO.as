@@ -31,6 +31,8 @@ package vo
         public var unitSelfDestruct:int;            //< Количество атак до самоуничтожения юнита
         public var unitWeaponSlots:int;             //< Слотов под оружие
         public var unitArmorSlots:int;              //< Слотов под броню
+        public var unitClip:int;                    //< Количество заряжаемых снарядов
+        public var unitRecoveryEvent:String;        //< Событие, по которому происходит восстановление поврежденного юнита
 		
 		private var _unitResource:String;
         private var _data:Object = {};
@@ -101,6 +103,8 @@ package vo
             res.@resource = unitResource;
             res.@weaponSlots = unitWeaponSlots;
             res.@armorSlots = unitArmorSlots;
+            res.@recoveryEvent = unitRecoveryEvent;
+            res.@clip = unitClip;
             
             if (unitSelfDestruct > 0)
                 res.@selfDestruct = unitSelfDestruct;
@@ -124,6 +128,8 @@ package vo
             unitSelfDestruct = data.hasOwnProperty("@selfDestruct") ? int(data.@selfDestruct) : 0;
             unitWeaponSlots = data.hasOwnProperty("@weaponSlots") ? int(data.@weaponSlots) : 0;
             unitArmorSlots = data.hasOwnProperty("@armorSlots") ? int(data.@armorSlots) : 0;
+            unitRecoveryEvent = data.hasOwnProperty("@recoveryEvent") ? data.@recoveryEvent.toString() : EventDescVO.DEFAULT_RECOVER_EVENT;
+            unitClip = data.hasOwnProperty("@clip") ? int(data.@clip) : 0;
 			
 			// /TODO
 			

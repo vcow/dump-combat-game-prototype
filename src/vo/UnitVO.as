@@ -81,8 +81,30 @@ package vo
         
         private function sortWeapon(a:WeaponVO, b:WeaponVO):Number
         {
-            if (a.weaponSlot > b.weaponSlot) return 1;
-            if (a.weaponSlot < b.weaponSlot) return -1;
+            if (a.weaponSlot[0] > b.weaponSlot[0]) return 1;
+            if (a.weaponSlot[0] < b.weaponSlot[0]) return -1;
+            return 0;
+        }
+        
+        /**
+         * Броня на юните
+         */
+        public function get unitArmor():Vector.<ArmorVO>
+        {
+            var res:Vector.<ArmorVO> = new Vector.<ArmorVO>();
+            for each (var item:IVO in children)
+            {
+                if (item.name == ArmorVO.NAME)
+                    res.push(ArmorVO(item));
+            }
+            res.sort(sortArmor);
+            return res;
+        }
+        
+        private function sortArmor(a:ArmorVO, b:ArmorVO):Number
+        {
+            if (a.armorSlot[0] > b.armorSlot[0]) return 1;
+            if (a.armorSlot[0] < b.armorSlot[0]) return -1;
             return 0;
         }
 		

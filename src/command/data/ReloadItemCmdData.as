@@ -9,13 +9,13 @@ package command.data
      * 
      */
     
-    public class ReloadWeaponCmdData
+    public class ReloadItemCmdData
     {
         public var unitId:String;               //< Идентификатор юнита
         public var slot:Vector.<int>;           //< Слоты перезаряжаемого оружия
         public var ammo:PriceVO;                //< Заряды
         
-        public function ReloadWeaponCmdData(unitId:String, slot:Vector.<int>, ammo:PriceVO)
+        public function ReloadItemCmdData(unitId:String, ammo:PriceVO, slot:Vector.<int>=null)
         {
             this.unitId = unitId;
             this.slot = slot;

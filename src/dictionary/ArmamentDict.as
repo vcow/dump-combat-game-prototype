@@ -87,6 +87,24 @@ package dictionary
         }
         
         /**
+         * Получить броню по ее идентификатору
+         * @param weaponId идентификатор брони
+         * @return описание брони
+         */
+        public function getArmor(armorId:String):ArmorDescVO
+        {
+            init();
+            
+            for each (var armor:ArmorDescVO in _armors)
+            {
+                if (armor.armorId == armorId)
+                    return armor;
+            }
+            
+            return null;
+        }
+        
+        /**
          * Получить снаряд по его идентификатору
          * @param ammoId идентификатор снаряда
          * @return описание снаряда

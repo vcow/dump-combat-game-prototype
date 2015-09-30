@@ -20,6 +20,7 @@ package vo
         public static const DEFAULT_PAY_EVENT:String = "payDay";
         public static const DEFAULT_RESEARCH_EVENT:String = "research";
         public static const DEFAULT_PRODUCT_EVENT:String = "product";
+        public static const DEFAULT_RECOVER_EVENT:String = "recover";
         
 		//--------------------------------------------------------------------------
 		// 

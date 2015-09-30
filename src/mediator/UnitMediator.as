@@ -1,10 +1,9 @@
 package mediator
 {
     import mx.collections.ArrayCollection;
-    import mx.resources.ResourceManager;
     
-    import command.data.ReloadWeaponCmdData;
-    import command.data.SelectWeaponCmdData;
+    import command.data.ReloadItemCmdData;
+    import command.data.SelectArmamentCmdData;
     
     import dictionary.ArmamentDict;
     import dictionary.Const;
@@ -27,6 +26,8 @@ package mediator
     import vo.AmmoDescVO;
     import vo.AmmoVO;
     import vo.ArmorDescVO;
+    import vo.ArmorVO;
+    import vo.IVO;
     import vo.PriceVO;
     import vo.ResourceVO;
     import vo.UnitDescVO;
@@ -101,7 +102,7 @@ package mediator
         
         /**
          * Получить список оружия
-         * @param slot слдот, для которого получается оружие
+         * @param slot слот, для которого получается оружие
          * @return список оружия
          */
         public function getAvailableWeaponFor(slot:int):ArrayCollection
@@ -190,6 +191,44 @@ package mediator
         }
         
         /**
+         * Получить боеприпасы для юнита
+         * @return список боеприпасов, заряженных и доступных
+         */
+        public function getAmmoForUnit():ArrayCollection
+        {
+            var res:Array = [];
+            if (_unit)
+            {
+                var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy, appDataProxy);
+                for each (var ammoDesc:AmmoDescVO in ArmamentDict.getInstance().getAmmoForUnit(_unit.unitUnitId))
+                {
+                    var rest:int = resourcesDecor.getResource(ammoDesc.ammoResource);
+                    var loaded:int = 0;
+                    for each (var item:IVO in _unit.children)
+                    {
+                        if (item.name == AmmoVO.NAME)
+                        {
+                            var ammo:AmmoVO = AmmoVO(item);
+                            if (ammo.ammoDesc.ammoResource == ammoDesc.ammoResource)
+                                loaded++;
+                        }
+                    }
+                    
+                    if (rest || loaded)
+                    {
+                        res.push({
+                            id: ammoDesc.ammoId,
+                            label: ammoDesc.resourceDesc.resourceName,
+                            loaded: loaded,
+                            rest: rest
+                        });
+                    }
+                }
+            }
+            return new ArrayCollection(res);
+        }
+        
+        /**
          * Текущее оружие на юните
          */
         public function getWeapon(slot:int):WeaponVO
@@ -210,16 +249,16 @@ package mediator
         
         /**
          * Получить список брони
+         * @param slot слот, для которого получается броня
          * @return список брони
          */
-        public function getArmor():ArrayCollection
+        public function getAvailableArmorFor(slot:int):ArrayCollection
         {
-            var res:Array = [ {
-                id: "",
-                label: ResourceManager.getInstance().getString("common", isSoldier ? "army.unit.soldier.notarmored" : "army.unit.notarmored")
-            } ];
-            
+            var res:Array = [];
             var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy, appDataProxy);
+            var conditionDecor:ConditionHelper = new ConditionHelper(triggersProxy);
+            var selected:ArmorVO = getArmor(slot);
+            var armorFound:Boolean = !selected;
             
             if (_unit)
             {
@@ -228,14 +267,55 @@ package mediator
                     if (!resourcesDecor.isEnoughResources(resourcesDecor.joinResource(armor.armorResource, 1)))
                         continue;   // Такой брони нет на складах
                     
+                    if (armor.armorSlot.length > 0 && armor.armorSlot.indexOf(slot) == -1)
+                        continue;   // Не подходит для этого слота
+                    
+                    if (!conditionDecor.parseCondition(armor.armorCondition))
+                        continue;   // Не выполняется условие использования оружия
+                    
+                    var unique:Boolean = armor.armorSlot.length <= 1 || armor.armorSlot[armor.armorSlot.length - 1] == slot;
                     res.push({
                         id: armor.armorId,
                         label: armor.resourceDesc.resourceName
                     });
+                    
+                    if (!armorFound)
+                        armorFound ||= selected.armorId == armor.armorId;
                 }
+                
+                if (!armorFound)
+                {
+                    // Добавить в список то оружие, которое сейчас лежит в слоте
+                    res.push({
+                        id: selected.armorDesc.armorId,
+                        label: selected.armorDesc.resourceDesc.resourceName
+                    });
+                }
+                
+                res.sortOn("label");
             }
             
             return new ArrayCollection(res);
+        }
+        
+        /**
+         * Получить список брони
+         * @return список брони
+         */
+        public function getArmor(slot:int):ArmorVO
+        {
+            if (_unit)
+            {
+                for each (var armor:ArmorVO in _unit.unitArmor)
+                {
+                    for each (var s:int in armor.armorSlot)
+                    {
+                        if (s == slot)
+                            return armor;
+                    }
+                }
+            }
+            return null;
         }
         
         protected function get basesListProxy():BasesListProxy
@@ -283,7 +363,7 @@ package mediator
                 return;
             
             var weapon:WeaponDescVO = ArmamentDict.getInstance().getWeapon(event.itemId);
-            sendNotification(Const.SELECT_WEAPON, new SelectWeaponCmdData(_unit.unitId, event.slot, weapon ? weapon.weaponId : ""));
+            sendNotification(Const.SELECT_WEAPON, new SelectArmamentCmdData(_unit.unitId, event.slot, weapon ? weapon.weaponId : ""));
         }
         
         /**
@@ -299,7 +379,7 @@ package mediator
             for each (var item:Object in event.ammo)
             {
                 var ammoDesc:AmmoDescVO = ArmamentDict.getInstance().getAmmo(item.id);
-                if (!ammoDesc)
+                if (!ammoDesc || item.loaded == 0)
                     continue;
                 
                 var resource:ResourceVO = new ResourceVO();
@@ -308,7 +388,45 @@ package mediator
                 ammo.children.push(resource);
             }
             
-            sendNotification(Const.RELOAD_WEAPON, new ReloadWeaponCmdData(_unit.unitId, event.slot, ammo));
+            sendNotification(Const.RELOAD_WEAPON, new ReloadItemCmdData(_unit.unitId, ammo, event.slot));
+        }
+        
+        /**
+         * Выбрана броня
+         * @param event событие
+         */
+        private function selectArmorHandler(event:UnitEvent):void
+        {
+            if (!_unit)
+                return;
+            
+            var armor:ArmorDescVO = ArmamentDict.getInstance().getArmor(event.itemId);
+            sendNotification(Const.SELECT_ARMOR, new SelectArmamentCmdData(_unit.unitId, event.slot, armor ? armor.armorId : ""));
+        }
+        
+        /**
+         * Заряжается юнит
+         * @param event событие
+         */
+        private function chargeUnitHandler(event:UnitEvent):void
+        {
+            if (!_unit)
+                return;
+            
+            var ammo:PriceVO = new PriceVO();
+            for each (var item:Object in event.ammo)
+            {
+                var ammoDesc:AmmoDescVO = ArmamentDict.getInstance().getAmmo(item.id);
+                if (!ammoDesc || item.loaded == 0)
+                    continue;
+                
+                var resource:ResourceVO = new ResourceVO();
+                resource.resourceId = ammoDesc.ammoResource;
+                resource.resourceCount = item.loaded;
+                ammo.children.push(resource);
+            }
+            
+            sendNotification(Const.RELOAD_UNIT, new ReloadItemCmdData(_unit.unitId, ammo));
         }
         
         //--------------------------------------------------------------------------
@@ -327,6 +445,8 @@ package mediator
             
             unitView.removeEventListener(UnitEvent.SELECT_WEAPON, selectWeaponHandler);
             unitView.removeEventListener(UnitEvent.CHARGE_WEAPON, chargeWeaponHandler);
+            unitView.removeEventListener(UnitEvent.SELECT_ARMOR, selectArmorHandler);
+            unitView.removeEventListener(UnitEvent.CHARGE_UNIT, chargeUnitHandler);
             
             // /TODO
         }
@@ -343,6 +463,8 @@ package mediator
             
             unitView.addEventListener(UnitEvent.SELECT_WEAPON, selectWeaponHandler);
             unitView.addEventListener(UnitEvent.CHARGE_WEAPON, chargeWeaponHandler);
+            unitView.addEventListener(UnitEvent.SELECT_ARMOR, selectArmorHandler);
+            unitView.addEventListener(UnitEvent.CHARGE_UNIT, chargeUnitHandler);
             
             // /TODO
         }
@@ -360,7 +482,7 @@ package mediator
         
         override public function listNotificationInterests():Array
         {
-            return [ Const.WEAPON_SELECTED ];
+            return [ Const.WEAPON_SELECTED, Const.ARMOR_SELECTED, Const.UNIT_RELOADED ];
         }
         
         override public function handleNotification(notification:INotification):void
@@ -368,8 +490,11 @@ package mediator
             switch (notification.getName())
             {
                 case Const.WEAPON_SELECTED:
+                case Const.ARMOR_SELECTED:
                     if (unitView && unitView.unitId == notification.getBody().toString())
                         unitView.updateUnit();
+                    break;
+                case Const.UNIT_RELOADED:
                     break;
             }
         }

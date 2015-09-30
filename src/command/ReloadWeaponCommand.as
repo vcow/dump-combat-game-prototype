@@ -1,6 +1,6 @@
 package command
 {
-    import command.data.ReloadWeaponCmdData;
+    import command.data.ReloadItemCmdData;
     
     import dictionary.ArmamentDict;
     import dictionary.Const;
@@ -43,7 +43,7 @@ package command
         
         override public function execute(notification:INotification):void
         {
-            var data:ReloadWeaponCmdData = notification.getBody() as ReloadWeaponCmdData;
+            var data:ReloadItemCmdData = notification.getBody() as ReloadItemCmdData;
             if (data)
             {
                 var unit:UnitVO = ArmyProxy(this.facade.retrieveProxy(ArmyProxy.NAME)).getUnit(data.unitId);

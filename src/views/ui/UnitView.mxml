@@ -22,103 +22,187 @@
         <s:Button label="&lt;" click="{goBack();}"/>
     </s:navigationContent>
     
-    <s:BorderContainer width="100%" cornerRadius="4">
-        <s:layout>
-            <s:VerticalLayout paddingLeft="10" paddingRight="10" paddingTop="5" paddingBottom="10" horizontalAlign="center" gap="7"/>
-        </s:layout>
+    <s:Scroller width="100%" height="100%" horizontalScrollPolicy="off">
         
-        <s:Label text="@Resource(key='army.unit.soldier.weapon', bundle='common')" text.unit="@Resource(key='army.unit.weapon', bundle='common')"/>
-        
-        <s:DataGroup width="100%" dataProvider="{weaponData}">
-            <s:layout>
-                <s:VerticalLayout gap="6"/>
-            </s:layout>
-            <s:itemRenderer>
-                <fx:Component>
-                    <s:DataRenderer creationComplete="creationCompleteHandler(event)" width="100%">
-                        <s:layout>
-                            <s:VerticalLayout horizontalAlign="center" gap="3"/>
-                        </s:layout>
-                        <dropDownList:DropDownList id="weaponSelector" width="100%" dataProvider="{_list}" change="changeHandler(event)"/>
-                        <s:Button label="@Resource(key='army.unit.reload', bundle='common')" enabled="{_reloadable}"
-                                  width="150" click="reload_clickHandler(event)"/>
-                        <fx:Script>
-                            <![CDATA[
-                                import mx.collections.ArrayCollection;
-                                import mx.events.FlexEvent;
-                                
-                                import spark.events.IndexChangeEvent;
-                                
-                                [Bindable]
-                                private var _list:ArrayCollection;
-                                
-                                [Bindable]
-                                private var _reloadable:Boolean;
-                                
-                                override public function set data(value:Object):void
-                                {
-                                    super.data = value;
-                                    
-                                    _list = data ? data.list : null;
-                                    
-                                    if (initialized)
-                                        updateWeapon();
-                                }
-                                
-                                protected function creationCompleteHandler(event:FlexEvent):void
-                                {
-                                    updateWeapon();
-                                }
-                                
-                                private function updateWeapon():void
-                                {
-                                    if (data && data.list)
-                                    {
-                                        for (var i:int = 0; i < data.list.length; i++)
+        <s:VGroup width="100%">
+            
+            <s:BorderContainer width="100%" cornerRadius="4">
+                <s:layout>
+                    <s:VerticalLayout paddingLeft="10" paddingRight="10" paddingTop="5" paddingBottom="10" horizontalAlign="center" gap="7"/>
+                </s:layout>
+                
+                <s:Label text="@Resource(key='army.unit.soldier.weapon', bundle='common')" text.unit="@Resource(key='army.unit.weapon', bundle='common')"/>
+                
+                <s:DataGroup width="100%" dataProvider="{weaponData}">
+                    <s:layout>
+                        <s:VerticalLayout gap="6"/>
+                    </s:layout>
+                    <s:itemRenderer>
+                        <fx:Component>
+                            <s:DataRenderer creationComplete="creationCompleteHandler(event)" width="100%">
+                                <s:layout>
+                                    <s:VerticalLayout horizontalAlign="center" gap="3"/>
+                                </s:layout>
+                                <dropDownList:DropDownList id="weaponSelector" width="100%" dataProvider="{_list}" change="changeHandler(event)"/>
+                                <s:Button label="@Resource(key='army.unit.reload', bundle='common')" enabled="{_reloadable}"
+                                          width="150" click="reload_clickHandler(event)"/>
+                                <fx:Script>
+                                    <![CDATA[
+                                        import mx.collections.ArrayCollection;
+                                        import mx.events.FlexEvent;
+                                        
+                                        import spark.events.IndexChangeEvent;
+                                        
+                                        [Bindable]
+                                        private var _list:ArrayCollection;
+                                        
+                                        [Bindable]
+                                        private var _reloadable:Boolean;
+                                        
+                                        override public function set data(value:Object):void
                                         {
-                                            if (data.selected == data.list[i].id)
+                                            super.data = value;
+                                            
+                                            _list = data ? data.list : null;
+                                            
+                                            if (initialized)
+                                                updateWeapon();
+                                        }
+                                        
+                                        protected function creationCompleteHandler(event:FlexEvent):void
+                                        {
+                                            updateWeapon();
+                                        }
+                                        
+                                        private function updateWeapon():void
+                                        {
+                                            if (data && data.list)
                                             {
-                                                weaponSelector.selectedIndex = i;
-                                                weaponSelector.label = data.list[i].label;
-                                                
-                                                _reloadable = data.list[i].loadable;
-                                                break;
+                                                for (var i:int = 0; i < data.list.length; i++)
+                                                {
+                                                    if (data.selected == data.list[i].id)
+                                                    {
+                                                        weaponSelector.selectedIndex = i;
+                                                        weaponSelector.label = data.list[i].label;
+                                                        
+                                                        _reloadable = data.list[i].loadable;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                weaponSelector.label = "";
                                             }
                                         }
-                                    }
-                                    else
-                                    {
-                                        weaponSelector.label = "";
-                                    }
-                                }
-                                
-                                protected function changeHandler(event:IndexChangeEvent):void
-                                {
-                                    _reloadable = weaponSelector.selectedItem.loadable;
-                                    data.selected = weaponSelector.selectedItem.id;
-                                    dispatchEvent(new Event("weaponSelectChanged", true));
-                                }
-                                
-                                protected function reload_clickHandler(event:MouseEvent):void
-                                {
-                                    dispatchEvent(new Event("weaponReload", true));
-                                }
-                                
-                                protected function impove_clickHandler(event:MouseEvent):void
-                                {
-                                    dispatchEvent(new Event("weaponImprove", true));
-                                }
-                            ]]>
-                        </fx:Script>
-                    </s:DataRenderer>
-                </fx:Component>
-            </s:itemRenderer>
-        </s:DataGroup>
-    </s:BorderContainer>
+                                        
+                                        protected function changeHandler(event:IndexChangeEvent):void
+                                        {
+                                            _reloadable = weaponSelector.selectedItem.loadable;
+                                            data.selected = weaponSelector.selectedItem.id;
+                                            dispatchEvent(new Event("weaponSelectChanged", true));
+                                        }
+                                        
+                                        protected function reload_clickHandler(event:MouseEvent):void
+                                        {
+                                            dispatchEvent(new Event("weaponReload", true));
+                                        }
+                                    ]]>
+                                </fx:Script>
+                            </s:DataRenderer>
+                        </fx:Component>
+                    </s:itemRenderer>
+                </s:DataGroup>
+            </s:BorderContainer>
+            
+            <s:BorderContainer width="100%" cornerRadius="4">
+                <s:layout>
+                    <s:VerticalLayout paddingLeft="10" paddingRight="10" paddingTop="5" paddingBottom="10" horizontalAlign="center" gap="7"/>
+                </s:layout>
+                
+                <s:Label text="@Resource(key='army.unit.soldier.armor', bundle='common')" text.unit="@Resource(key='army.unit.armor', bundle='common')"/>
+                
+                <s:DataGroup width="100%" dataProvider="{armorData}">
+                    <s:layout>
+                        <s:VerticalLayout gap="6"/>
+                    </s:layout>
+                    <s:itemRenderer>
+                        <fx:Component>
+                            <s:DataRenderer creationComplete="creationCompleteHandler(event)" width="100%">
+                                <dropDownList:DropDownList id="armorSelector" width="100%" dataProvider="{_list}" change="changeHandler(event)"/>
+                                <fx:Script>
+                                    <![CDATA[
+                                        import mx.collections.ArrayCollection;
+                                        import mx.events.FlexEvent;
+                                        
+                                        import spark.events.IndexChangeEvent;
+                                        
+                                        [Bindable]
+                                        private var _list:ArrayCollection;
+                                        
+                                        override public function set data(value:Object):void
+                                        {
+                                            super.data = value;
+                                            
+                                            _list = data ? data.list : null;
+                                            
+                                            if (initialized)
+                                                updateArmor();
+                                        }
+                                        
+                                        protected function creationCompleteHandler(event:FlexEvent):void
+                                        {
+                                            updateArmor();
+                                        }
+                                        
+                                        protected function changeHandler(event:IndexChangeEvent):void
+                                        {
+                                            data.selected = armorSelector.selectedItem.id;
+                                            dispatchEvent(new Event("armorSelectChanged", true));
+                                        }
+                                        
+                                        private function updateArmor():void
+                                        {
+                                            if (data && data.list)
+                                            {
+                                                for (var i:int = 0; i < data.list.length; i++)
+                                                {
+                                                    if (data.selected == data.list[i].id)
+                                                    {
+                                                        armorSelector.selectedIndex = i;
+                                                        armorSelector.label = data.list[i].label;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                armorSelector.label = "";
+                                            }
+                                        }
+                                    ]]>
+                                </fx:Script>
+                            </s:DataRenderer>
+                        </fx:Component>
+                    </s:itemRenderer>
+                </s:DataGroup>
+            </s:BorderContainer>
+            
+            <s:BorderContainer width="100%" cornerRadius="4">
+                <s:layout>
+                    <s:VerticalLayout paddingLeft="10" paddingRight="10" paddingTop="5" paddingBottom="10" horizontalAlign="center" gap="7"/>
+                </s:layout>
+                
+                <s:Button label="@Resource(key='army.unit.soldier.equip', bundle='common')" label.unit="@Resource(key='army.unit.equip', bundle='common')"
+                          enabled="{clipAvailable}" click="equip_clickHandler(event)" width="150"/>
+            </s:BorderContainer>
+        </s:VGroup>
+    </s:Scroller>
     
-    <s:VGroup horizontalAlign="center" width="100%">
-        
-    </s:VGroup>
+    <s:HGroup>
+        <s:Button label="@Resource(key='army.unit.move', bundle='common')" width="50%" click="move_clickHandler(event)"/>
+        <s:Button label="@Resource(key='army.unit.destroy', bundle='common')" width="50%" click="destroy_clickHandler(event)"/>
+    </s:HGroup>
     
 	<fx:Declarations>
 	</fx:Declarations>
@@ -129,10 +213,13 @@
         [Event(name="selectWeapon", type="events.UnitEvent")]
         [Event(name="selectArmor", type="events.UnitEvent")]
         [Event(name="chargeWeapon", type="events.UnitEvent")]
+        [Event(name="chargeUnit", type="events.UnitEvent")]
 	</fx:Metadata>
 	
 	<fx:Script>
 		<![CDATA[
+            import vo.ArmorDescVO;
+            import vo.ArmorVO;
             import spark.events.PopUpEvent;
             import mx.managers.PopUpManager;
             import mx.core.FlexGlobals;
@@ -156,15 +243,25 @@
             private var _unitMediator:UnitMediator;
             
             private var _weaponData:ArrayCollection;
+            private var _armorData:ArrayCollection;
             
 			//--------------------------------------------------------------------------
 			// 
 			//--------------------------------------------------------------------------
 			
+            [Bindable]
+            private var clipAvailable:Boolean;
+            
             [Bindable (event="weaponDataChanged")]
             private function get weaponData():ArrayCollection
             {
                 return _weaponData;
+            }
+            
+            [Bindable (event="armorDataChanged")]
+            private function get armorData():ArrayCollection
+            {
+                return _armorData;
             }
             
             //--------------------------------------------------------------------------
@@ -191,8 +288,10 @@
                         
                         currentState = _unitMediator.isSoldier ? "soldier" : "unit";
                         title = _unitMediator.unitName;
+                        clipAvailable = _unitMediator.unitDesc ? _unitMediator.unitDesc.unitClip > 0 : false;
                         
                         updateWeapons();
+                        updateArmor();
                     }
                 }
             }
@@ -226,6 +325,34 @@
                 dispatchEvent(new Event("weaponDataChanged"));
             }
             
+            private function updateArmor():void
+            {
+                var data:Array = [];
+                
+                if (_unitMediator && _unitMediator.unitDesc)
+                {
+                    for (var i:int = 0; i < _unitMediator.unitDesc.unitArmorSlots; i++)
+                    {
+                        var armor:ArmorVO = _unitMediator.getArmor(i);
+                        var list:ArrayCollection = _unitMediator.getAvailableArmorFor(i);
+                        
+                        list.addItemAt({
+                            id: "",
+                            label: resourceManager.getString("common", _unitMediator.isSoldier ? "army.unit.soldier.notarmored" : "army.unit.notarmored")
+                        }, 0);
+                        
+                        data.push({
+                            selected: armor ? armor.armorId : "",
+                            list: list,
+                            number: i
+                        });
+                    }
+                }
+                
+                _armorData = new ArrayCollection(data);
+                dispatchEvent(new Event("armorDataChanged"));
+            }
+            
             private function weaponSelectChangedHandler(event:Event):void
             {
                 event.stopPropagation();
@@ -239,6 +366,19 @@
                 dispatchEvent(new UnitEvent(UnitEvent.SELECT_WEAPON, data.selected, null, slot));
             }
             
+            public function armorSelectChangedHandler(event:Event):void
+            {
+                event.stopPropagation();
+                var data:Object = event.target.data;
+                
+                var armor:ArmorDescVO = ArmamentDict.getInstance().getArmor(data.selected);
+                var slot:Vector.<int> = armor ? armor.armorSlot.slice() : new Vector.<int>();
+                if (slot.length == 0)
+                    slot.push(data.number);
+                
+                dispatchEvent(new UnitEvent(UnitEvent.SELECT_ARMOR, data.selected, null, slot));
+            }
+            
             private function weaponReloadHandler(event:Event):void
             {
                 event.stopPropagation();
@@ -250,7 +390,7 @@
                     return;
                 
                 var chargeWeaponPopUp:ChargeWeaponPopUp = new ChargeWeaponPopUp();
-                chargeWeaponPopUp.addEventListener(PopUpEvent.CLOSE, chargePopUp_closeHandler);
+                chargeWeaponPopUp.addEventListener(PopUpEvent.CLOSE, chargeWeapon_closeHandler);
                 
                 chargeWeaponPopUp.weaponName = weapon.resourceDesc ? weapon.resourceDesc.resourceName : Const.NO_TEXT;
                 chargeWeaponPopUp.weaponId = data.selected;
@@ -262,10 +402,10 @@
                 PopUpManager.centerPopUp(chargeWeaponPopUp);
             }
             
-            private function chargePopUp_closeHandler(event:PopUpEvent):void
+            private function chargeWeapon_closeHandler(event:PopUpEvent):void
             {
                 var chargeWeaponPopUp:ChargeWeaponPopUp = ChargeWeaponPopUp(event.target);
-                chargeWeaponPopUp.removeEventListener(PopUpEvent.CLOSE, chargePopUp_closeHandler);
+                chargeWeaponPopUp.removeEventListener(PopUpEvent.CLOSE, chargeWeapon_closeHandler);
                 
                 var weapon:WeaponDescVO = ArmamentDict.getInstance().getWeapon(chargeWeaponPopUp.weaponId);
                 var slot:Vector.<int> = weapon ? weapon.weaponSlot.slice() : new Vector.<int>();
@@ -274,6 +414,16 @@
                 
                 if (event.data == Const.OK && chargeWeaponPopUp.ammoList)
                     dispatchEvent(new UnitEvent(UnitEvent.CHARGE_WEAPON, chargeWeaponPopUp.weaponId, chargeWeaponPopUp.ammoList.source, slot));
+            }
+            
+            
+            private function chargeUnit_closeHandler(event:PopUpEvent):void
+            {
+                var chargeWeaponPopUp:ChargeWeaponPopUp = ChargeWeaponPopUp(event.target);
+                chargeWeaponPopUp.removeEventListener(PopUpEvent.CLOSE, chargeUnit_closeHandler);
+                
+                if (event.data == Const.OK && chargeWeaponPopUp.ammoList)
+                    dispatchEvent(new UnitEvent(UnitEvent.CHARGE_UNIT, null, chargeWeaponPopUp.ammoList.source, null));
             }
             
             //----------------------------------
@@ -290,12 +440,40 @@
             protected function creationCompleteHandler(event:FlexEvent):void
             {
                 addEventListener("weaponSelectChanged", weaponSelectChangedHandler, false, 0, true);
+                addEventListener("armorSelectChanged", armorSelectChangedHandler, false, 0, true);
                 addEventListener("weaponReload", weaponReloadHandler, false, 0, true);
                 
                 _unitMediator = UnitMediator(ProtoFacade.getInstance().retrieveMediator(UnitMediator.NAME));
                 _unitMediator.setViewComponent(this);
                 
                 updateUnit();
+            }
+            
+            protected function equip_clickHandler(event:MouseEvent):void
+            {
+                if (!_unitMediator || !_unitMediator.unitDesc)
+                    return;
+                
+                var chargeWeaponPopUp:ChargeWeaponPopUp = new ChargeWeaponPopUp();
+                chargeWeaponPopUp.addEventListener(PopUpEvent.CLOSE, chargeUnit_closeHandler);
+                
+                chargeWeaponPopUp.weaponName = _unitMediator.unitName;
+                chargeWeaponPopUp.clip = _unitMediator.unitDesc.unitClip;
+                chargeWeaponPopUp.ammoList = _unitMediator.getAmmoForUnit();
+                
+                chargeWeaponPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                PopUpManager.centerPopUp(chargeWeaponPopUp);
+            }
+            
+            protected function move_clickHandler(event:MouseEvent):void
+            {
+                
+            }
+            
+            protected function destroy_clickHandler(event:MouseEvent):void
+            {
+                // TODO Auto-generated method stub
+                
             }
             
         ]]>
