@@ -249,7 +249,7 @@ package mediator
         
         override public function listNotificationInterests():Array
         {
-            return [ Const.UNIT_IS_MOBILIZED ];
+            return [ Const.UNIT_IS_MOBILIZED, Const.DESTROY_UNIT ];
         }
         
         override public function handleNotification(notification:INotification):void
@@ -262,6 +262,10 @@ package mediator
                         armyView.updateList();
                         armyView.selectUnit(notification.getBody().toString());
                     }
+                    break;
+                case Const.DESTROY_UNIT:
+                    if (armyView)
+                        armyView.updateList();
                     break;
             }
         }

@@ -36,7 +36,6 @@
             dataProvider="{_employeeList}"/>
 	
 	<fx:Declarations>
-        <modal:PlaceEmployeePopUp id="placeEmployeePopUp" close="placeEmployeePopUp_closeHandler(event)"/>
 		<s:RadioButtonGroup id="categoryRadioGroup" change="categoryRadioGroup_changeHandler(event)"/>
 	</fx:Declarations>
 	
@@ -67,6 +66,7 @@
             
             import views.modal.AlertPopUp;
             import views.modal.HireEmployePopUp;
+            import views.modal.PlaceEmployeePopUp;
             import views.ui.PersonView;
             
             import vo.ProfessionDescVO;
@@ -94,6 +94,9 @@
             
             public function moveEmployee(employeePersonId:String):void
             {
+                var placeEmployeePopUp:PlaceEmployeePopUp = new PlaceEmployeePopUp();
+                placeEmployeePopUp.addEventListener(PopUpEvent.CLOSE, placeEmployeePopUp_closeHandler);
+                
                 placeEmployeePopUp.selectedBase = _profListMediator.getEmployeePlace(employeePersonId);
                 placeEmployeePopUp.basesList = _profListMediator.basesDataProvider;
                 placeEmployeePopUp.employeeId = employeePersonId;
@@ -158,6 +161,9 @@
             
             private function placeEmployeePopUp_closeHandler(event:PopUpEvent):void
             {
+                var placeEmployeePopUp:PlaceEmployeePopUp = PlaceEmployeePopUp(event.target);
+                placeEmployeePopUp.removeEventListener(PopUpEvent.CLOSE, placeEmployeePopUp_closeHandler);
+                
                 var employeeId:String = placeEmployeePopUp.employeeId ? placeEmployeePopUp.employeeId : Const.NO_GUID;
                 var baseId:String = placeEmployeePopUp.baseSelector.selectedItem ? placeEmployeePopUp.baseSelector.selectedItem.baseId : Const.NO_GUID;
                 

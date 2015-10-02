@@ -199,7 +199,7 @@
         </s:VGroup>
     </s:Scroller>
     
-    <s:HGroup>
+    <s:HGroup width="100%">
         <s:Button label="@Resource(key='army.unit.move', bundle='common')" width="50%" click="move_clickHandler(event)"/>
         <s:Button label="@Resource(key='army.unit.destroy', bundle='common')" width="50%" click="destroy_clickHandler(event)"/>
     </s:HGroup>
@@ -214,27 +214,36 @@
         [Event(name="selectArmor", type="events.UnitEvent")]
         [Event(name="chargeWeapon", type="events.UnitEvent")]
         [Event(name="chargeUnit", type="events.UnitEvent")]
+        [Event(name="moveUnit", type="events.UnitEvent")]
+        [Event(name="destroyUnit", type="events.UnitEvent")]
 	</fx:Metadata>
 	
 	<fx:Script>
 		<![CDATA[
-            import vo.ArmorDescVO;
-            import vo.ArmorVO;
-            import spark.events.PopUpEvent;
-            import mx.managers.PopUpManager;
-            import mx.core.FlexGlobals;
-            import dictionary.Const;
-            import views.modal.ChargeWeaponPopUp;
-            import dictionary.ArmamentDict;
-            import vo.WeaponDescVO;
-            import vo.WeaponVO;
-            import events.UnitEvent;
             import mx.collections.ArrayCollection;
+            import mx.core.FlexGlobals;
             import mx.events.FlexEvent;
+            import mx.managers.PopUpManager;
+            
+            import spark.events.PopUpEvent;
+            
+            import dictionary.ArmamentDict;
+            import dictionary.Const;
+            
+            import events.UnitEvent;
             
             import facade.ProtoFacade;
             
             import mediator.UnitMediator;
+            
+            import views.modal.AlertPopUp;
+            import views.modal.ChargeWeaponPopUp;
+            import views.modal.PlaceEmployeePopUp;
+            
+            import vo.ArmorDescVO;
+            import vo.ArmorVO;
+            import vo.WeaponDescVO;
+            import vo.WeaponVO;
             
 			//--------------------------------------------------------------------------
 			// 
@@ -426,6 +435,15 @@
                     dispatchEvent(new UnitEvent(UnitEvent.CHARGE_UNIT, null, chargeWeaponPopUp.ammoList.source, null));
             }
             
+            private function placeEmployeePopUp_closeHandler(event:PopUpEvent):void
+            {
+                var placeEmployeePopUp:PlaceEmployeePopUp = PlaceEmployeePopUp(event.target);
+                placeEmployeePopUp.removeEventListener(PopUpEvent.CLOSE, placeEmployeePopUp_closeHandler);
+                
+                var baseId:String = placeEmployeePopUp.baseSelector.selectedItem ? placeEmployeePopUp.baseSelector.selectedItem.baseId : Const.NO_GUID;
+                dispatchEvent(new UnitEvent(UnitEvent.MOVE_UNIT, null, null, null, baseId));
+            }
+            
             //----------------------------------
             //  View
             //----------------------------------
@@ -467,13 +485,27 @@
             
             protected function move_clickHandler(event:MouseEvent):void
             {
+                var placeEmployeePopUp:PlaceEmployeePopUp = new PlaceEmployeePopUp();
+                placeEmployeePopUp.addEventListener(PopUpEvent.CLOSE, placeEmployeePopUp_closeHandler);
                 
+                placeEmployeePopUp.selectedBase = _unitMediator.getUnitPlace();
+                placeEmployeePopUp.basesList = _unitMediator.basesDataProvider;
+                placeEmployeePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                PopUpManager.centerPopUp(placeEmployeePopUp);
             }
             
             protected function destroy_clickHandler(event:MouseEvent):void
             {
-                // TODO Auto-generated method stub
+                var alertPopUp:AlertPopUp = new AlertPopUp();
+                alertPopUp.text = resourceManager.getString("common", "army.unit.popup.destroy", [ _unitMediator.unitName ]);
+                alertPopUp.buttonFlags = Const.YES | Const.NO;
+                alertPopUp.addEventListener(PopUpEvent.CLOSE, function(event:PopUpEvent):void {
+                    if (event.data == Const.YES)
+                        dispatchEvent(new UnitEvent(UnitEvent.DESTROY_UNIT, null, null, null));
+                });
                 
+                alertPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                PopUpManager.centerPopUp(alertPopUp);
             }
             
         ]]>

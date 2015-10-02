@@ -76,6 +76,28 @@ package helpers
             return _armyProxy;
         }
         
+        /**
+         * Найти базу приписки юнита
+         * @param unitId идентификатор юнита
+         * @return база приписки
+         */
+        public function getUnitPlace(unitId:String):BaseVO
+        {
+            for each (var base:BaseVO in basesListProxy.getBasesList())
+            {
+                for each (var mercenary:MercenaryVO in base.baseGarrison.children)
+                {
+                    if (mercenary.mercenaryUnitId == unitId)
+                        return base;
+                }
+            }
+            return null;
+        }
+        
+        /**
+         * Получить список немобилизованных солдат
+         * @return список немобилизованных солдат
+         */
         public function getFreeSoldiers():Vector.<PersonVO>
         {
             var personnel:Vector.<PersonVO> = armyProxy.getCalledUpSoldiers();

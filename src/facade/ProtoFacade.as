@@ -7,9 +7,11 @@ package facade
 	import command.CompleteResearchCommand;
 	import command.CreateNewBaseCommand;
 	import command.CreateNewPersonCommand;
+	import command.DestroyUnitCommand;
 	import command.GameEventCommand;
 	import command.MobilizeUnitCommand;
 	import command.MovePersonCommand;
+	import command.MoveUnitCommand;
 	import command.NewPersonCreatedCommand;
 	import command.PlaceEmployeeCommand;
 	import command.ReloadUnitCommand;
@@ -93,6 +95,8 @@ package facade
             registerCommand(Const.RELOAD_WEAPON, ReloadWeaponCommand);
             registerCommand(Const.SELECT_ARMOR, SelectArmorCommand);
             registerCommand(Const.RELOAD_UNIT, ReloadUnitCommand);
+            registerCommand(Const.DESTROY_UNIT, DestroyUnitCommand);
+            registerCommand(Const.MOVE_UNIT, MoveUnitCommand);
 		}
 	}
 }

@@ -13,7 +13,7 @@ package command.data
         public var baseId:String;
         public var professionId:String;
         
-        public function MovePersonCmdData(personId:String, baseId:String, professionId:String)
+        public function MovePersonCmdData(personId:String, baseId:String, professionId:String=null)
         {
             this.personId = personId;
             this.baseId = baseId;

@@ -73,5 +73,8 @@ package dictionary
         public static const ARMOR_SELECTED:String = "armorSelected";                        //< Броня выбрана
         public static const RELOAD_UNIT:String = "reloadUnit";                              //< Перезарядить юнит
         public static const UNIT_RELOADED:String = "unitReloaded";                          //< Юнит перезаряжен
+        public static const DESTROY_UNIT:String = "destroyUnit";                            //< Расформировать юнит
+        public static const UNIT_DESTROYED:String = "untiDestroyed";                        //< Юнит расформирован
+        public static const MOVE_UNIT:String = "moveUnit";                                  //< Перевести юнит на другую базу
 	}
 }

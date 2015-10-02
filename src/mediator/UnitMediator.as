@@ -1,7 +1,15 @@
 package mediator
 {
-    import mx.collections.ArrayCollection;
+    import flash.display.DisplayObjectContainer;
     
+    import mx.collections.ArrayCollection;
+    import mx.core.FlexGlobals;
+    import mx.managers.PopUpManager;
+    import mx.resources.ResourceManager;
+    
+    import spark.events.PopUpEvent;
+    
+    import command.data.MovePersonCmdData;
     import command.data.ReloadItemCmdData;
     import command.data.SelectArmamentCmdData;
     
@@ -10,7 +18,9 @@ package mediator
     
     import events.UnitEvent;
     
+    import helpers.ArmyHelper;
     import helpers.ConditionHelper;
+    import helpers.ModulesHelper;
     import helpers.ResourcesHelper;
     
     import org.puremvc.as3.interfaces.INotification;
@@ -21,13 +31,16 @@ package mediator
     import proxy.BasesListProxy;
     import proxy.TriggersProxy;
     
+    import views.modal.AlertPopUp;
     import views.ui.UnitView;
     
     import vo.AmmoDescVO;
     import vo.AmmoVO;
     import vo.ArmorDescVO;
     import vo.ArmorVO;
+    import vo.BaseVO;
     import vo.IVO;
+    import vo.ModuleDescVO;
     import vo.PriceVO;
     import vo.ResourceVO;
     import vo.UnitDescVO;
@@ -318,6 +331,36 @@ package mediator
             return null;
         }
         
+        /**
+         * Источник данных для списка баз
+         */
+        public function get basesDataProvider():ArrayCollection
+        {
+            var bases:Array = [];
+            var modulesHelper:ModulesHelper = new ModulesHelper(basesListProxy);
+            for each (var baseVO:BaseVO in basesListProxy.getBasesList())
+            {
+                if (modulesHelper.getSpace(ModuleDescVO.HOUSING, baseVO) > 0)
+                    bases.push(baseVO);
+            }
+            
+            bases.sortOn("baseName");
+            return new ArrayCollection(bases);
+        }
+        
+        /**
+         * Получить идентификатор базы приписки для юнита
+         * @return идентификатор базы приписки
+         */
+        public function getUnitPlace():String
+        {
+            if (!_unit)
+                return null;
+            
+            var base:BaseVO = new ArmyHelper(basesListProxy, appDataProxy, null, armyProxy).getUnitPlace(_unit.unitId);
+            return base ? base.baseId : null;
+        }
+        
         protected function get basesListProxy():BasesListProxy
         {
             if (!_basesListProxy)
@@ -429,6 +472,83 @@ package mediator
             sendNotification(Const.RELOAD_UNIT, new ReloadItemCmdData(_unit.unitId, ammo));
         }
         
+        /**
+         * Перевести юнит на другую базу
+         * @param event событие
+         */
+        private function moveUnitHandler(event:UnitEvent):void
+        {
+            if (!_unit)
+                return;
+            
+            var base:BaseVO = BaseVO(basesListProxy.getBase(event.baseId));
+            if ((new ModulesHelper(basesListProxy)).getSpace(ModuleDescVO.HOUSING, base) < _unit.unitDesc.unitCrew)
+            {
+                var alertPopUp:AlertPopUp = new AlertPopUp();
+                alertPopUp.text = ResourceManager.getInstance().getString("common", "army.unit.move.noroom", [ base.baseName ]);
+                alertPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                PopUpManager.centerPopUp(alertPopUp);
+                return;
+            }
+            
+            sendNotification(Const.MOVE_UNIT, new MovePersonCmdData(_unit.unitId, event.baseId));
+        }
+        
+        /**
+         * Расформировать юнит
+         * @param event событие
+         */
+        private function destroyUnitHandler(event:UnitEvent):void
+        {
+            if (!_unit)
+                return;
+            
+            if (_unit.unitDamage > 0)
+            {
+                var alertPopUp:AlertPopUp = new AlertPopUp();
+                alertPopUp.text = ResourceManager.getInstance().getString("common", "army.unit.unrepaired", [ _unit.unitName ]);
+                alertPopUp.buttonFlags = Const.YES | Const.NO;
+                alertPopUp.addEventListener(PopUpEvent.CLOSE, function(event:PopUpEvent):void {
+                    if (event.data == Const.YES)
+                        destroyUnit(true);
+                });
+                
+                alertPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                PopUpManager.centerPopUp(alertPopUp);
+            }
+            else
+            {
+                destroyUnit();
+            }
+        }
+        
+        private function destroyUnit(destroyAnyway:Boolean=false):void
+        {
+            if (!destroyAnyway && _unit.unitDesc.unitResource)
+            {
+                var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy, appDataProxy);
+                if (!resourcesDecor.isEnouchSpace(resourcesDecor.joinResource(_unit.unitDesc.unitResource, 1)))
+                {
+                    // Не хватает места на складах под технику
+                    var alertPopUp:AlertPopUp = new AlertPopUp();
+                    alertPopUp.text = ResourceManager.getInstance().getString("common", "army.unit.lotofspace", [ _unit.unitDesc.resourceDesc.name ]);
+                    alertPopUp.buttonFlags = Const.YES | Const.NO;
+                    alertPopUp.addEventListener(PopUpEvent.CLOSE, function(event:PopUpEvent):void {
+                        if (event.data == Const.YES)
+                            destroyUnit(true);
+                    });
+                    
+                    alertPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                    PopUpManager.centerPopUp(alertPopUp);
+                }
+            }
+            else
+            {
+                unitView.goBack();
+                sendNotification(Const.DESTROY_UNIT, _unit.unitId);
+            }
+        }
+        
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
@@ -447,6 +567,8 @@ package mediator
             unitView.removeEventListener(UnitEvent.CHARGE_WEAPON, chargeWeaponHandler);
             unitView.removeEventListener(UnitEvent.SELECT_ARMOR, selectArmorHandler);
             unitView.removeEventListener(UnitEvent.CHARGE_UNIT, chargeUnitHandler);
+            unitView.removeEventListener(UnitEvent.MOVE_UNIT, moveUnitHandler);
+            unitView.removeEventListener(UnitEvent.DESTROY_UNIT, destroyUnitHandler);
             
             // /TODO
         }
@@ -465,6 +587,8 @@ package mediator
             unitView.addEventListener(UnitEvent.CHARGE_WEAPON, chargeWeaponHandler);
             unitView.addEventListener(UnitEvent.SELECT_ARMOR, selectArmorHandler);
             unitView.addEventListener(UnitEvent.CHARGE_UNIT, chargeUnitHandler);
+            unitView.addEventListener(UnitEvent.MOVE_UNIT, moveUnitHandler);
+            unitView.addEventListener(UnitEvent.DESTROY_UNIT, destroyUnitHandler);
             
             // /TODO
         }
