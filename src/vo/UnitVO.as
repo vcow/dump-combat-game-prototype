@@ -107,6 +107,20 @@ package vo
             if (a.armorSlot[0] < b.armorSlot[0]) return -1;
             return 0;
         }
+        
+        /**
+         * Заряженные снаряды
+         */
+        public function get unitAmmo():Vector.<AmmoVO>
+        {
+            var res:Vector.<AmmoVO> = new Vector.<AmmoVO>();
+            for each (var item:IVO in children)
+            {
+                if (item.name == AmmoVO.NAME)
+                    res.push(AmmoVO(item));
+            }
+            return res;
+        }
 		
 		//----------------------------------
 		//  VO

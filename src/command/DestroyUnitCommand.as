@@ -58,8 +58,10 @@ package command
                 // Разрядить юнит
                 sendNotification(Const.RELOAD_UNIT, new ReloadItemCmdData(unit.unitId, null));
                 
-                for each (var item:IVO in unit.children)
+                for (var i:int = unit.children.length - 1; i >= 0; i--)
                 {
+                    var item:IVO = unit.children[i];
+                    
                     if (item.name == WeaponVO.NAME)
                     {
                         var weapon:WeaponVO = WeaponVO(item);
@@ -100,7 +102,7 @@ package command
                 // Удалить юнит с базы
                 var base:BaseVO = (new ArmyHelper(basesListProxy, appDataProxy, null, armyProxy)).getUnitPlace(unit.unitId);
                 var garrison:GarrisonVO = base ? base.baseGarrison : new GarrisonVO();
-                for (var i:int = 0; i < garrison.children.length; i++)
+                for (i = 0; i < garrison.children.length; i++)
                 {
                     if (MercenaryVO(garrison.children[i]).mercenaryUnitId == unit.unitId)
                     {

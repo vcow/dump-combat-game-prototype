@@ -7,9 +7,14 @@
                            xmlns:ui="views.ui.*"
                            creationComplete="creationCompleteHandler(event)"
                            width="312" maxHeight="350"
-                           filters="{proto.popUpShadow}">
-	
-	<s:BorderContainer>
+                           filters="{proto.popUpShadow}"
+                           currentState="normal">
+	<s:states>
+        <s:State name="normal"/>
+        <s:State name="empty"/>
+    </s:states>
+    
+	<s:BorderContainer width="100%">
 		<s:layout>
 			<s:VerticalLayout paddingLeft="1" paddingRight="1" paddingTop="1" paddingBottom="1" gap="10"/>
 		</s:layout>
@@ -22,9 +27,12 @@
 			<s:Label text="{weaponName}" color="white"/>
 		</s:BorderContainer>
 		
-		<s:VGroup gap="7" paddingLeft="5" paddingRight="5" paddingTop="0" paddingBottom="5" horizontalAlign="center">
+		<s:VGroup gap="7" paddingLeft="5" paddingRight="5" paddingTop="0" paddingBottom="5" horizontalAlign="center" width="100%">
             
-            <s:Scroller width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="on">
+            <s:Label text="@Resource(key='army.unit.popup.equip.empty', bundle='common')" width="250" includeIn="empty"
+                     fontSize="21" paddingBottom="15" textAlign="center"/>
+            
+            <s:Scroller width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="on" includeIn="normal">
                 
                 <s:DataGroup width="100%" dataProvider="{ammoList}">
                     <s:layout>
@@ -75,7 +83,7 @@
             
 			<s:HGroup width="100%">
 				<s:Button label="@Resource(key='army.reload.popup.carge', bundle='common')" width="50%"
-						  click="{close(false, Const.OK);}"/>
+						  click="{close(false, Const.OK);}" enabled.empty="false"/>
 				
 				<s:Button label="@Resource(key='alert.cancel', bundle='common')" width="50%"
 						  click="{close(false, Const.CANCEL);}"/>
@@ -147,6 +155,8 @@
             {
                 if (value == _ammoList)
                     return;
+                
+                currentState = value && value.length > 0 ? "normal" : "empty";
                 
                 _ammoList = value;
                 dispatchEvent(new Event("ammoListIsChanged"));

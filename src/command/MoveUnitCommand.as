@@ -2,6 +2,8 @@ package command
 {
     import command.data.MovePersonCmdData;
     
+    import dictionary.Const;
+    
     import helpers.ArmyHelper;
     import helpers.ModulesHelper;
     
@@ -12,7 +14,11 @@ package command
     import proxy.BasesListProxy;
     
     import vo.BaseVO;
+    import vo.EmployeeVO;
+    import vo.GarrisonVO;
+    import vo.MercenaryVO;
     import vo.ModuleDescVO;
+    import vo.PersonnelVO;
     import vo.UnitVO;
     
     /**
@@ -59,14 +65,51 @@ package command
                 if (!srcBase)
                     return;     // База пребывания не найдена
                 
-                if ((new ModulesHelper(basesListProxy)).getSpace(ModuleDescVO.HOUSING, dstBase) < unit.unitDesc.unitCrew)
+                if (unit.unitDesc.unitCrew > 0)
                 {
-                    // На базе назначения отсутствует свободное место для размещения солдат
-                    return;
+                    if ((new ModulesHelper(basesListProxy)).getSpace(ModuleDescVO.HOUSING, dstBase) < unit.unitDesc.unitCrew)
+                    {
+                        // На базе назначения отсутствует свободное место для размещения солдат
+                        return;
+                    }
+                    
+                    var personnel:PersonnelVO = srcBase.basePersonnel;
+                    var soldiers:Vector.<EmployeeVO> = new Vector.<EmployeeVO>();
+                    for (var i:int = personnel.children.length - 1; i >= 0; i--)
+                    {
+                        var employee:EmployeeVO = EmployeeVO(personnel.children[i]);
+                        for each (var soldierId:String in unit.unitCrew)
+                        {
+                            if (employee.employeePersonId == soldierId)
+                            {
+                                soldiers.push(employee);
+                                personnel.children.splice(i, 1);
+                                break;
+                            }
+                        }
+                        
+                        if (soldiers.length == unit.unitCrew.length)
+                            break;
+                    }
+                    
+                    personnel = dstBase.basePersonnel;
+                    for each (employee in soldiers)
+                        personnel.children.push(employee);
                 }
                 
+                var garrison:GarrisonVO = srcBase.baseGarrison;
+                for (i = 0; i < garrison.children.length; i++)
+                {
+                    var mercenary:MercenaryVO = MercenaryVO(garrison.children[i]);
+                    if (mercenary.mercenaryUnitId == data.personId)
+                    {
+                        garrison.children.splice(i, 1);
+                        dstBase.baseGarrison.children.push(mercenary);
+                        break;
+                    }
+                }
                 
-                
+                sendNotification(Const.UNIT_IS_PLACED, unit);
             }
         }
     }

@@ -76,5 +76,6 @@ package dictionary
         public static const DESTROY_UNIT:String = "destroyUnit";                            //< Расформировать юнит
         public static const UNIT_DESTROYED:String = "untiDestroyed";                        //< Юнит расформирован
         public static const MOVE_UNIT:String = "moveUnit";                                  //< Перевести юнит на другую базу
+        public static const UNIT_IS_PLACED:String = "unitIsPlaced";                         //< Юнит помещен на базу
 	}
 }

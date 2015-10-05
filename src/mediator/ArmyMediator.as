@@ -29,6 +29,7 @@ package mediator
     import vo.PersonVO;
     import vo.UnitDescVO;
     import vo.UnitVO;
+    import vo.WeaponVO;
     
     [ResourceBundle("common")]
     
@@ -64,9 +65,25 @@ package mediator
             var units:Array = [];
             for each (var unit:UnitVO in armyProxy.armyVO.children)
             {
+                var chargeLevelPercent:Number = 1;
+                if (unit.unitDesc.resourceDesc)
+                {
+                    if (unit.unitDesc.unitClip > 0)
+                        chargeLevelPercent = Number(unit.unitAmmo.length) / Number(unit.unitDesc.unitClip);
+                }
+                else
+                {
+                    for each (var weapon:WeaponVO in unit.unitWeapon)
+                    {
+                        if (weapon.weaponDesc.weaponClip > 0)
+                            chargeLevelPercent = Math.min(chargeLevelPercent, Number(weapon.children.length) / Number(weapon.weaponDesc.weaponClip));
+                    }
+                }
+                
                 units.push({
                     id: unit.unitId,
-                    label: unit.unitName
+                    label: unit.unitName,
+                    charge: chargeLevelPercent
                 });
             }
             
@@ -249,7 +266,7 @@ package mediator
         
         override public function listNotificationInterests():Array
         {
-            return [ Const.UNIT_IS_MOBILIZED, Const.DESTROY_UNIT ];
+            return [ Const.UNIT_IS_MOBILIZED, Const.DESTROY_UNIT, Const.UNIT_RELOADED ];
         }
         
         override public function handleNotification(notification:INotification):void
@@ -264,6 +281,7 @@ package mediator
                     }
                     break;
                 case Const.DESTROY_UNIT:
+                case Const.UNIT_RELOADED:
                     if (armyView)
                         armyView.updateList();
                     break;
