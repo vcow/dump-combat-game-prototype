@@ -1,24 +1,25 @@
 package command
 {
 import command.data.BuildModuleCmdData;
-    
-    import dictionary.Const;
-    import dictionary.ModulesDict;
-    
-    import helpers.ResourcesHelper;
-    
-    import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
-    
-    import proxy.BasesListProxy;
-    import proxy.TimersProxy;
-    
-    import vo.BaseVO;
-    import vo.LeadTimeVO;
-    import vo.ModuleDescVO;
-    import vo.ModuleVO;
-    import vo.ModulesVO;
-    import vo.PriceVO;
+
+import dictionary.Const;
+import dictionary.ModulesDict;
+
+import helpers.ResourcesHelper;
+
+import org.puremvc.as3.interfaces.INotification;
+import org.puremvc.as3.patterns.command.SimpleCommand;
+
+import proxy.BasesListProxy;
+import proxy.TimersProxy;
+
+import vo.BaseVO;
+import vo.LeadTimeVO;
+import vo.ModuleDescVO;
+import vo.ModuleVO;
+import vo.ModulesVO;
+import vo.PriceVO;
+import vo.VO;
     
     /**
      * 
@@ -75,8 +76,8 @@ import command.data.BuildModuleCmdData;
                     if (modules)
                     {
                         var module:ModuleVO = new ModuleVO();
-                        module.moduleId = data.moduleTypeId;
-                        module.moduleIndex = modules.nextIndex;
+                        module.moduleModuleId = data.moduleTypeId;
+                        module.moduleId = VO.createGUID();
                         
                         var leadTime:LeadTimeVO = moduleDesc.moduleLeadTime;
                         if (leadTime && leadTime.leadTimeTime)

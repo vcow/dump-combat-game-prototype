@@ -2,8 +2,6 @@ package vo
 {
 	import mx.resources.ResourceManager;
 	
-	import command.data.GameEventCmdData;
-	
 	import dictionary.Const;
 	import dictionary.ProfessionsDict;
 	
@@ -38,6 +36,9 @@ package vo
         
         private var _professionDesc:ProfessionDescVO;
         private var _salaryEventId:String;
+        
+        private var _fee:PriceVO;
+        private var _invFee:PriceVO;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -69,60 +70,63 @@ package vo
         {
             return _professionDesc;
         }
+        
+        private function get invFee():PriceVO
+        {
+            if (!_invFee)
+                _invFee = (new ResourcesHelper()).invertPrice(professionDesc.professionSalary);
+            return _invFee;
+        }
+        
+        private function get fee():PriceVO
+        {
+            if (!_fee)
+                _fee = (new ResourcesHelper()).separatePrice(invFee, true)[1];
+            return _fee;
+        }
 		
 		//----------------------------------
 		//  VO
 		//----------------------------------
         
-        override public function event(eventId:String, data:Object=null, out:GameEventCmdData=null):void
+        override public function event(eventId:String, data:Object=null):void
         {
             if (_salaryEventId && eventId == _salaryEventId)
             {
                 // Событие, по которому выплачивается зарплата для персонажа
-                if (out)
+                var resourcesDecor:ResourcesHelper = new ResourcesHelper();
+                
+                if (resourcesDecor.isEnoughResources(fee))
                 {
-                    var outData:Array = out.commonOut[Const.CHANGE_RESOURCES] as Array;
-                    var resourcesDecor:ResourcesHelper = new ResourcesHelper();
+                    sendNotification(Const.CHANGE_RESOURCES, invFee);
                     
-                    var commonFee:PriceVO;
-                    if (outData)
-                        commonFee = resourcesDecor.joinPrice(resourcesDecor.joinPrice.apply(this, outData),
-                            resourcesDecor.invertPrice(professionDesc.professionSalary));
-                    else
-                        commonFee = resourcesDecor.invertPrice(professionDesc.professionSalary);
+                    if (personInactive > 0)
+                    {
+                        // Сейчас реализовано так, что персонаж просто возобновляет деятельность,
+                        // как вариант, можно предусмотреть выплатить ему долг по зарплате
+                        personInactive = 0;
+                        
+                        var message:String = ResourceManager.getInstance().getString("messages", "worker.resumed",
+                            [ professionDesc.professionName, personName ]);
+                        sendNotification(Const.SEND_GAME_MESSAGE, message, Const.MESSAGE);
+                    }
+                }
+                else
+                {
+                    // Сократить персонаж, или отправить в неоплачиваемый отпуск
+                    if (personInactive == 0)
+                    {
+                        message = ResourceManager.getInstance().getString("messages", "idle.worker",
+                            [ professionDesc.professionName, personName ]);
+                        sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
+                    }
                     
-                    if (resourcesDecor.isEnoughResources(resourcesDecor.separatePrice(commonFee, true)[1]))
-                    {
-                        out.commonOut[Const.CHANGE_RESOURCES] = [ commonFee ];
-                        
-                        if (personInactive > 0)
-                        {
-                            // Сейчас реализовано так, что персонаж просто возобновляет деятельность,
-                            // как вариант, можно предусмотреть выплатить ему долг по зарплате
-                            personInactive = 0;
-                            
-                            var message:String = ResourceManager.getInstance().getString("messages", "worker.resumed",
-                                [ professionDesc.professionName, personName ]);
-                            sendNotification(Const.SEND_GAME_MESSAGE, message, Const.MESSAGE);
-                        }
-                    }
-                    else
-                    {
-                        // Сократить персонаж, или отправить в неоплачиваемый отпуск
-                        if (personInactive == 0)
-                        {
-                            message = ResourceManager.getInstance().getString("messages", "idle.worker",
-                                [ professionDesc.professionName, personName ]);
-                            sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
-                        }
-                        
-                        personInactive += 1;
-                    }
+                    personInactive += 1;
                 }
             }
             else
             {
-                super.event(eventId, data, out);
+                super.event(eventId, data);
             }
         }
 		

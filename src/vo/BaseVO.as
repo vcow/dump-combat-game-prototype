@@ -59,7 +59,7 @@ package vo
             {
 				for each (var module:ModuleVO in allModules.children)
 				{
-					if (module.moduleId == moduleId && (includeInactive || !module.moduleInactive) && !module.moduleBuildTimer)
+					if (module.moduleModuleId == moduleId && (includeInactive || !module.moduleInactive) && !module.moduleBuildTimer)
 						modules.push(module);
 				}
 			}

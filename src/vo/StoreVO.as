@@ -1,7 +1,5 @@
 package vo
 {
-	import command.data.GameEventCmdData;
-
 	/**
 	 * 
 	 * @author jvirkovskiy
@@ -59,7 +57,7 @@ package vo
 		//  VO
 		//----------------------------------
 		
-        override public function event(eventId:String, data:Object=null, out:GameEventCmdData=null):void
+        override public function event(eventId:String, data:Object=null):void
         {
             // Отсекаем ивенты для дочерних элементов за ненадобностью
         }

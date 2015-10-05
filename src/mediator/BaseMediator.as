@@ -3,7 +3,6 @@ package mediator
     import mx.collections.ArrayCollection;
     
     import command.data.BuildModuleCmdData;
-    import command.data.RemoveModuleCmdData;
     import command.data.RenameCmdData;
     
     import dictionary.Const;
@@ -79,9 +78,9 @@ package mediator
                 for each (var module:ModuleVO in allModules.children)
                 {
                     modules.push({
-                        id: module.moduleId,
-                        index: module.moduleIndex,
-                        label: ModulesDict.getInstance().getModule(module.moduleId).moduleName,
+                        id: module.moduleModuleId,
+                        index: module.moduleId,
+                        label: ModulesDict.getInstance().getModule(module.moduleModuleId).moduleName,
                         inactive: module.moduleInactive,
                         under_construct: Boolean(module.moduleBuildTimer)
                     });
@@ -219,9 +218,9 @@ package mediator
                 {
                     for each (var module:ModuleVO in modules.children)
                     {
-                        if (module.moduleIndex == event.data)
+                        if (module.moduleId == event.data)
                         {
-                            sendNotification(Const.REMOVE_MODULE, new RemoveModuleCmdData(_base.baseId, module.moduleId, module.moduleIndex));
+                            sendNotification(Const.REMOVE_MODULE, module.moduleId);
                             return;
                         }
                     }

@@ -2,8 +2,6 @@ package vo
 {
 	import mx.resources.ResourceManager;
 	
-	import command.data.GameEventCmdData;
-	
 	import facade.ProtoFacade;
 	
 	/**
@@ -58,10 +56,10 @@ package vo
          * @param data данные события
          * @param out объект, в котором могут быть возвращены дополнительные параметры из дочерних элементов
          */
-        public function event(eventId:String, data:Object=null, out:GameEventCmdData=null):void
+        public function event(eventId:String, data:Object=null):void
         {
             for each (var value:VO in _children)
-                value.event(eventId, data, out);
+                value.event(eventId, data);
         }
         
         /**

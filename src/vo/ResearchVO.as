@@ -1,7 +1,5 @@
 package vo
 {
-    import command.data.GameEventCmdData;
-    
     import dictionary.Const;
     import dictionary.InvestigationsDict;
     
@@ -82,38 +80,32 @@ package vo
 		//  VO
 		//----------------------------------
 		
-        override public function event(eventId:String, data:Object=null, out:GameEventCmdData=null):void
+        override public function event(eventId:String, data:Object=null):void
         {
             if (_researchEvent && eventId == _researchEvent)
             {
                 // Событие, по которому происходит пересчет процента завершенности исследования
                 
-                if (out)
+                if (researchDesc.researchPrice > 0)
                 {
-                    if (researchDesc.researchPrice > 0)
-                    {
-                        var numEmployedScientists:Number = investigationsProxy.getEmployedScientists(researchId).length;
-                        var delta:Number = numEmployedScientists / Number(researchDesc.researchPrice);
-                        researchPercent += delta;
-                    }
-                    else
-                    {
-                        researchPercent = 1.0;
-                    }
-                    
-                    if (researchPercent >= 1.0)
-                    {
-                        // Исследование завершено
-                        var outData:Array = out.commonOut[Const.COMPLETE_RESEARCH] as Array;
-                        if (!outData)
-                            out.commonOut[Const.COMPLETE_RESEARCH] = outData = [];
-                        outData.push(researchId);
-                    }
+                    var numEmployedScientists:Number = investigationsProxy.getEmployedScientists(researchId).length;
+                    var delta:Number = numEmployedScientists / Number(researchDesc.researchPrice);
+                    researchPercent += delta;
+                }
+                else
+                {
+                    researchPercent = 1.0;
+                }
+                
+                if (researchPercent >= 1.0)
+                {
+                    // Исследование завершено
+                    sendNotification(Const.COMPLETE_RESEARCH, researchId);
                 }
             }
             else
             {
-                super.event(eventId, data, out);
+                super.event(eventId, data);
             }
         }
         

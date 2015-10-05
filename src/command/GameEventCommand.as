@@ -1,7 +1,5 @@
 package command
 {
-    import command.data.GameEventCmdData;
-    
     import managers.EventsManager;
     
     import org.puremvc.as3.interfaces.INotification;
@@ -12,7 +10,7 @@ package command
     import proxy.PersonsProxy;
     import proxy.ProductionsProxy;
     
-    import vo.BaseVO;
+    import vo.BasesVO;
     import vo.InvestigationsVO;
     import vo.PersonsVO;
     import vo.ProductionsVO;
@@ -44,56 +42,21 @@ package command
             if (!EventsManager.getInstance().isEventActive(notification.getType()))
                 throw Error("Inactive game event (" + notification.getType() + ").");
             
-            var bases:Vector.<BaseVO> = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)).getBasesList();
-			var out:GameEventCmdData = new GameEventCmdData();
-			
 			// Прокинуть евент по всем базам, отправить нотфикации, которые вернут value object-ы
-            for each (var base:BaseVO in bases)
-            {
-                base.event(notification.getType(), notification.getBody(), out);
-                
-				for (var key:String in out.privateOut)
-				{
-					var data:Array = out.privateOut[key] as Array;
-					if (data && data.length > 0)
-					{
-						for each (var body:Object in data)
-							sendNotification(key, body, base.baseId);
-					}
-					else
-					{
-						sendNotification(key, base);
-					}
-				}
-				
-				out.reset();
-            }
+            var bases:BasesVO = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)).basesListVO;
+            bases.event(notification.getType(), notification.getBody());
             
             // Прокинуть евент по всем сотрудникам
             var persons:PersonsVO = PersonsProxy(this.facade.retrieveProxy(PersonsProxy.NAME)).personsVO;
-            persons.event(notification.getType(), notification.getBody(), out);
+            persons.event(notification.getType(), notification.getBody());
             
             // Прокинуть евент по всем исследованиям
             var investigations:InvestigationsVO = InvestigationsProxy(this.facade.retrieveProxy(InvestigationsProxy.NAME)).armyVO;
-            investigations.event(notification.getType(), notification.getBody(), out);
+            investigations.event(notification.getType(), notification.getBody());
             
             // Прокинуть евент по производствам
             var productions:ProductionsVO = ProductionsProxy(this.facade.retrieveProxy(ProductionsProxy.NAME)).productionsVO;
-            productions.event(notification.getType(), notification.getBody(), out);
-			
-			for (key in out.commonOut)
-			{
-				data = out.commonOut[key] as Array;
-				if (data && data.length > 0)
-				{
-					for each (body in data)
-                        sendNotification(key, body);
-				}
-				else
-				{
-					sendNotification(key);
-				}
-			}
+            productions.event(notification.getType(), notification.getBody());
         }
     }
 }

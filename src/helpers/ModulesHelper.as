@@ -99,6 +99,42 @@ package helpers
 		}
         
         /**
+         * Получить базу, которой принадлежит указанный модуль
+         * @param moduleId идентификатор модуля
+         * @return база
+         */
+        public function getModulePlace(moduleId:String):BaseVO
+        {
+            for each (var base:BaseVO in basesListProxy.getBasesList())
+            {
+                for each (var module:ModuleVO in base.baseModules.children)
+                {
+                    if (module.moduleId == moduleId)
+                        return base;
+                }
+            }
+            return null;
+        }
+        
+        /**
+         * Получить модуль по его идентификатору
+         * @param moduleId идентификатор модуля
+         * @return модуль
+         */
+        public function getModule(moduleId:String):ModuleVO
+        {
+            for each (var base:BaseVO in basesListProxy.getBasesList())
+            {
+                for each (var module:ModuleVO in base.baseModules.children)
+                {
+                    if (module.moduleId == moduleId)
+                        return module;
+                }
+            }
+            return null;
+        }
+        
+        /**
          * Получить количество модулей указанного типа для указанной базы
          * @param moduleId идентификатор типа модулей, если 0, считаются все модули
          * @param baseId идентификатор базы, если null, считаются все базы
@@ -115,7 +151,7 @@ package helpers
                     {
                         for each (var module:ModuleVO in base.baseModules.children)
                         {
-                            if (!moduleId || module.moduleId == moduleId)
+                            if (!moduleId || module.moduleModuleId == moduleId)
                                 ctr++;
                         }
                         break;
@@ -125,7 +161,7 @@ package helpers
                 {
                     for each (module in base.baseModules.children)
                     {
-                        if (!moduleId || module.moduleId == moduleId)
+                        if (!moduleId || module.moduleModuleId == moduleId)
                             ctr++;
                     }
                 }

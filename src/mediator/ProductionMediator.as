@@ -132,7 +132,7 @@ package mediator
         
         override public function listNotificationInterests():Array
         {
-            return [ Const.PRODUCTION_COMPLETED, Const.PRODUCTION_UPDATED, Const.PRODUCT_UNIT_COMPLETED ];
+            return [ Const.PRODUCTION_COMPLETED, Const.PRODUCTION_UPDATED, Const.PRODUCT_ITEM_COMPLETED ];
         }
         
         override public function handleNotification(notification:INotification):void
@@ -159,7 +159,7 @@ package mediator
                         }
                     }
                     break;
-                case Const.PRODUCT_UNIT_COMPLETED:
+                case Const.PRODUCT_ITEM_COMPLETED:
                     if (productionView)
                     {
                         if (notification.getBody().toString() == productionView.productionId)

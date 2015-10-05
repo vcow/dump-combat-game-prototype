@@ -59,7 +59,7 @@ package dictionary
         public static const PRODUCTION_UPDATED:String = "productionUpdated";                //< Изменились параметры производства
         public static const PRODUCTION_STARTED:String = "productionStarted";                //< Производство начато
         public static const PRODUCTION_COMPLETED:String = "productionCompleted";            //< Производство завершено
-        public static const PRODUCT_UNIT_COMPLETED:String = "productUnitCompleted";         //< Завершено производство единицы продукции
+        public static const PRODUCT_ITEM_COMPLETED:String = "productItemCompleted";         //< Завершено производство единицы продукции
         public static const REPLACE_PERSON:String = "firePerson";                           //< Удалить персонажа
         public static const PERSON_IS_REPLACED:String = "personIsFired";                    //< Персонаж удален
         public static const MOVE_PERSON:String = "movePerson";                              //< Перевести сотрудника

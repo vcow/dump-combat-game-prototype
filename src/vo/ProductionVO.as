@@ -2,8 +2,6 @@ package vo
 {
     import mx.resources.ResourceManager;
     
-    import command.data.GameEventCmdData;
-    
     import dictionary.Const;
     import dictionary.ProductionsDict;
     
@@ -88,77 +86,65 @@ package vo
 		//  VO
 		//----------------------------------
 		
-        override public function event(eventId:String, data:Object=null, out:GameEventCmdData=null):void
+        override public function event(eventId:String, data:Object=null):void
         {
             if (_productionEvent && eventId == _productionEvent)
             {
                 // Событие, по которому происходит пересчет процента завершения производства единицы продукции
                 
-                if (out)
+                if (productionDesc.productionPrice > 0)
                 {
-                    if (productionDesc.productionPrice > 0)
+                    var numEmployedEngineers:Number = productionsProxy.getEmployedEngineers(productionId).length;
+                    var delta:Number = numEmployedEngineers / Number(productionDesc.productionPrice);
+                    productionPercent += delta;
+                }
+                else
+                {
+                    productionPercent = 1.0;
+                }
+                
+                if (productionPercent >= 1.0)
+                {
+                    if (productionRest > 0)
                     {
-                        var numEmployedEngineers:Number = productionsProxy.getEmployedEngineers(productionId).length;
-                        var delta:Number = numEmployedEngineers / Number(productionDesc.productionPrice);
-                        productionPercent += delta;
-                    }
-                    else
-                    {
-                        productionPercent = 1.0;
-                    }
-                    
-                    if (productionPercent >= 1.0)
-                    {
+                        // Завершено изготовление единицы продукции
+                        var resourcesDecor:ResourcesHelper = new ResourcesHelper();
+                        
+                        (new ResultHelper(null, resourcesDecor)).applyResult(productionDesc.productionResult);
+                        
+                        productionRest--;
+                        sendNotification(Const.PRODUCT_ITEM_COMPLETED, productionId);
+                        
                         if (productionRest > 0)
                         {
-                            // Завершено изготовление единицы продукции
-                            var resourcesDecor:ResourcesHelper = new ResourcesHelper();
-                            
-                            (new ResultHelper(null, resourcesDecor)).applyResult(productionDesc.productionResult);
-                            productionRest--;
-                            sendNotification(Const.PRODUCT_UNIT_COMPLETED, productionId);
-                            
-                            if (productionRest > 0)
+                            // Запустить в производство очередную единицу продукции
+                            var invPrice:PriceVO = resourcesDecor.invertPrice(productionDesc.productionStartPrice);
+                            if (resourcesDecor.isEnoughResources(resourcesDecor.separatePrice(invPrice, true)[1]))
                             {
-                                // Запустить в производство очередную единицу продукции
-                                var outData:Array = out.commonOut[Const.CHANGE_RESOURCES] as Array;
-                                var commonPrice:PriceVO;
-                                if (outData)
-                                    commonPrice = resourcesDecor.joinPrice(resourcesDecor.joinPrice.apply(this, outData),
-                                        resourcesDecor.invertPrice(productionDesc.productionStartPrice));
-                                else
-                                    commonPrice = resourcesDecor.invertPrice(productionDesc.productionStartPrice);
+                                productionPercent = 0;
+                                sendNotification(Const.CHANGE_RESOURCES, invPrice);
+                            }
+                            else
+                            {
+                                // Не хватает ресурсов для производства
+                                var message:String = ResourceManager.getInstance().getString("messages", "terminate.production", [ productionDesc.productionName ]);
+                                sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
                                 
-                                if (resourcesDecor.isEnoughResources(resourcesDecor.separatePrice(commonPrice, true)[1]))
-                                {
-                                    productionPercent = 0;
-                                    out.commonOut[Const.CHANGE_RESOURCES] = [ commonPrice ];
-                                }
-                                else
-                                {
-                                    // Не хватает ресурсов для производства
-                                    var message:String = ResourceManager.getInstance().getString("messages", "terminate.production", [ productionDesc.productionName ]);
-                                    sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
-                                    
-                                    productionRest = 0;
-                                }
+                                productionRest = 0;
                             }
                         }
-                        
-                        if (productionRest <= 0)
-                        {
-                            // Производство завершено
-                            outData = out.commonOut[Const.COMPLETE_PRODUCTION] as Array;
-                            if (!outData)
-                                out.commonOut[Const.COMPLETE_PRODUCTION] = outData = [];
-                            outData.push(productionId);
-                        }
+                    }
+                    
+                    if (productionRest <= 0)
+                    {
+                        // Производство завершено
+                        sendNotification(Const.COMPLETE_PRODUCTION, productionId);
                     }
                 }
             }
             else
             {
-                super.event(eventId, data, out);
+                super.event(eventId, data);
             }
         }
         
