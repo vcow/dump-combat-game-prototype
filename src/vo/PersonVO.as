@@ -5,6 +5,7 @@ package vo
 	import dictionary.Const;
 	import dictionary.ProfessionsDict;
 	
+	import helpers.ArmyHelper;
 	import helpers.ResourcesHelper;
 	
 	/**
@@ -108,6 +109,14 @@ package vo
                         
                         var message:String = ResourceManager.getInstance().getString("messages", "worker.resumed",
                             [ professionDesc.professionName, personName ]);
+                        
+                        if (personProfessionId == ProfessionDescVO.SOLGIER)
+                        {
+                            var unit:UnitVO = (new ArmyHelper()).getUnitBySoldier(personId);
+                            if (unit)
+                                message = ResourceManager.getInstance().getString("messages", "unit.resumed", [ unit.unitName ]);
+                        }
+                        
                         sendNotification(Const.SEND_GAME_MESSAGE, message, Const.MESSAGE);
                     }
                 }
@@ -118,6 +127,14 @@ package vo
                     {
                         message = ResourceManager.getInstance().getString("messages", "idle.worker",
                             [ professionDesc.professionName, personName ]);
+                        
+                        if (personProfessionId == ProfessionDescVO.SOLGIER)
+                        {
+                            unit = (new ArmyHelper()).getUnitBySoldier(personId);
+                            if (unit)
+                                message = ResourceManager.getInstance().getString("messages", "idle.unit", [ unit.unitName ]);
+                        }
+                        
                         sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
                     }
                     

@@ -28,5 +28,13 @@ package vo
 		//  VO
 		//----------------------------------
 		
+        override public function event(eventId:String, data:Object=null):void
+        {
+            for each (var value:VO in _children)
+            {
+                if (value.name == BaseVO.NAME)
+                    value.event(eventId, data);
+            }
+        }
 	}
 }

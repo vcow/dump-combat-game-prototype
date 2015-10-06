@@ -8,9 +8,9 @@ package helpers
     import proxy.ArmyProxy;
     import proxy.BasesListProxy;
     import proxy.PersonsProxy;
-    import proxy.TriggersProxy;
     
     import vo.BaseVO;
+    import vo.GarrisonVO;
     import vo.MercenaryVO;
     import vo.PersonVO;
     import vo.ProfessionDescVO;
@@ -74,6 +74,24 @@ package helpers
             if (!_armyProxy)
                 _armyProxy = ArmyProxy(ProtoFacade.getInstance().retrieveProxy(ArmyProxy.NAME));
             return _armyProxy;
+        }
+        
+        /**
+         * Получить юнит указанного солдата
+         * @param personId идентификатор солдата
+         * @return юнит, в экипаже которого состоит солдат
+         */
+        public function getUnitBySoldier(personId:String):UnitVO
+        {
+            for each (var unit:UnitVO in armyProxy.armyVO.children)
+            {
+                for each (var soldierId:String in unit.unitCrew)
+                {
+                    if (soldierId == personId)
+                        return unit;
+                }
+            }
+            return null;
         }
         
         /**
@@ -158,7 +176,12 @@ package helpers
             {
                 if (!baseId || baseId && base.baseId == baseId)
                 {
-                    for each (var mercenary:MercenaryVO in base.baseGarrison.children)
+                    var garrison:GarrisonVO = base.baseGarrison;
+                    
+                    if (!garrison)
+                        continue;
+                    
+                    for each (var mercenary:MercenaryVO in garrison.children)
                     {
                         var unit:UnitVO = armyProxy.getUnit(mercenary.mercenaryUnitId);
                         if (unit)
