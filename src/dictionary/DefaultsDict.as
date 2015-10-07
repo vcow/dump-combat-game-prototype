@@ -1,8 +1,6 @@
 package dictionary
 {
-	import vo.BasesDefVO;
-	import vo.BasesVO;
-	import vo.StoreVO;
+	import vo.QuestDefVO;
 	import vo.UnlockedVO;
 	
 	/**
@@ -22,9 +20,9 @@ package dictionary
 		private static const source:Class;
 		
 		private static var _instance:DefaultsDict;
-		private static var _resourcesList:StoreVO;
-		private static var _basesList:BasesVO;
-        private static var _unlockedResourcesList:UnlockedVO;
+        
+        private var _unlockedResourcesList:UnlockedVO;
+        private var _startQuestId:String;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -45,21 +43,12 @@ package dictionary
 		}
 		
 		/**
-		 * Ресурсы игрока по умолчанию
-		 */
-		public function get resourcesList():StoreVO
-		{
-			init();
-			return _resourcesList;
-		}
-		
-		/**
 		 * Базы игрока по умолчанию
 		 */
-		public function get basesList():BasesVO
+		public function get startQuestId():String
 		{
 			init();
-			return _basesList;
+			return _startQuestId;
 		}
         
         /**
@@ -76,34 +65,26 @@ package dictionary
 		 */
 		private function init():void
 		{
-            if (!_resourcesList && !_basesList && !_unlockedResourcesList)
+            if (!_startQuestId && !_unlockedResourcesList)
             {
                 var src:XML = XML(new source());
                 
-                // ресурсы по умолчанию
-                _resourcesList = new StoreVO();
-                var lst:XMLList = src.child(StoreVO.NAME);
-                if (lst.length() > 0)
-                    _resourcesList.deserialize(lst[0]);
-                
-                // базы по умолчанию
-                lst = src.child(BasesDefVO.NAME);
+                // Стартовый квест
+                var lst:XMLList = src.child(QuestDefVO.NAME);
                 if (lst.length() > 0)
                 {
-                    var basesDef:BasesDefVO = new BasesDefVO();
-                    basesDef.deserialize(lst[0]);
-                    _basesList = basesDef.getDefaultBases();
-                }
-                else
-                {
-                    _basesList = new BasesVO();
+                    var questDef:QuestDefVO = new QuestDefVO();
+                    questDef.deserialize(lst[0]);
+                    _startQuestId = questDef.questDefId;
                 }
                 
                 // Ресурсы, не блокируемые при поступлении на склад, отключенный за неуплату
                 _unlockedResourcesList = new UnlockedVO();
                 lst = src.child(UnlockedVO.NAME);
                 if (lst.length() > 0)
+                {
                     _unlockedResourcesList.deserialize(lst[0]);
+                }
             }
 		}
 	}

@@ -1,5 +1,7 @@
 package helpers
 {
+    import dictionary.Const;
+    
     import facade.ProtoFacade;
     
     import proxy.TriggersProxy;
@@ -24,16 +26,14 @@ package helpers
         //--------------------------------------------------------------------------
         
         private var _triggersProxy:TriggersProxy;
-        private var _resourceHelper:ResourcesHelper;
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public function ResultHelper(triggersProxy:TriggersProxy=null, resourceHelper:ResourcesHelper=null)
+        public function ResultHelper(triggersProxy:TriggersProxy=null)
         {
             _triggersProxy = triggersProxy || TriggersProxy(ProtoFacade.getInstance().retrieveProxy(TriggersProxy.NAME));
-            _resourceHelper = resourceHelper;
         }
         
         /**
@@ -55,24 +55,16 @@ package helpers
                         _triggersProxy.setTriggerValue(trigger.triggerId, trigger.triggerValue, trigger.triggerValueType);
                         break;
                     case PriceVO.NAME:
-                        var price:PriceVO = PriceVO(item);
-                        resourceHelper.pay(resourceHelper.invertPrice(price));
+                        ProtoFacade.getInstance().sendNotification(Const.CHANGE_RESOURCES, PriceVO(item));
                         break;
                     case ResourceVO.NAME:
-                        price = new PriceVO();
+                        var price:PriceVO = new PriceVO();
                         price.children.push(ResourceVO(item));
-                        resourceHelper.pay(resourceHelper.invertPrice(price));
+                        ProtoFacade.getInstance().sendNotification(Const.CHANGE_RESOURCES, price);
                         break;
                 }
             }
             return true;
-        }
-        
-        private function get resourceHelper():ResourcesHelper
-        {
-            if (!_resourceHelper)
-                _resourceHelper = new ResourcesHelper();
-            return _resourceHelper;
         }
     }
 }

@@ -240,7 +240,6 @@
             
             protected function ok_clickHandler(event:MouseEvent):void
             {
-                PersonTemplatesManager.getInstance().select(employeeNameInput.text, _icon);
                 close(false, Const.OK);
             }
             

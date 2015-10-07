@@ -75,4 +75,13 @@
 			</if>
 		</complete>
 	</resourceDesc>
+	
+	<!-- Бутылка -->
+	<resourceDesc id="bottle" name="{bottle.title}" description="{bottle.description}" size="1" price="0.7" descriptionInvestigated="{bottle.description.investigated}" trigger="foundBottle">
+		<complete>
+			<if>
+				<trigger>bottleResearchComplete</trigger>
+			</if>
+		</complete>
+	</resourceDesc>
 </resourcesDict>

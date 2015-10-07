@@ -231,7 +231,6 @@ package vo
 					case ModulesVO.NAME: value = new ModulesVO(); break;
 					case ModuleVO.NAME: value = new ModuleVO(); break;
 					case RuinTemplVO.NAME: value = new RuinTemplVO(); break;
-					case RuinDefVO.NAME: value = new RuinDefVO(); break;
 					case StoreVO.NAME: value = new StoreVO(); break;
                     case UnlockedVO.NAME: value = new UnlockedVO(); break;
 					case PersonnelVO.NAME: value = new PersonnelVO(); break;
@@ -264,6 +263,12 @@ package vo
                     case AmmoVO.NAME: value = new AmmoVO(); break;
                     case ArmorVO.NAME: value = new ArmorVO(); break;
                     case ModifiersVO.NAME: value = new ModifiersVO(); break;
+                    case QuestDescVO.NAME: value = new QuestDescVO(); break;
+                    case QuestDefVO.NAME: value = new QuestDefVO(); break;
+                    case QuestsVO.NAME: value = new QuestsVO(); break;
+                    case QuestVO.NAME: value = new QuestVO(); break;
+                    case StepVO.NAME: value = new StepVO(); break;
+                    case GiveBaseVO.NAME: value = new GiveBaseVO(); break;
 					
 					// /TODO
 					

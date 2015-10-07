@@ -1,33 +1,37 @@
 package vo
 {
 	import dictionary.Const;
-
+	
+	[ResourceBundle("quests")]
+	
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object развалин из списка баз по умолчанию BasesDefVO
+	 * Value Object квеста
 	 * 
 	 */
 	
-	public class RuinDefVO extends VO
+	public class QuestDescVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "ruinDef";
+		public static const NAME:String = "questDesc";
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public var baseId:String;					//< Идентификатор базы, которой принадлежат руины
+		public var questId:String;				//< Идентификатор квеста
+		public var questName:String;			//< Название квеста
+		public var questDescription:String; 	//< Описание квеста
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function RuinDefVO()
+		public function QuestDescVO()
 		{
 			super(NAME);
 		}
@@ -42,7 +46,9 @@ package vo
 			
 			// TODO: Сериализовать специфичные поля
 			
-			res.@id = baseId;
+			res.@id = questId;
+			res.@name = questName;
+			res.@description = questDescription;
 			
 			// /TODO
 			
@@ -55,7 +61,9 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-			baseId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
+			questId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
+			questName = data.hasOwnProperty("@name") ? VO.parseString(data.@name, "quests") : Const.NO_TEXT;
+			questDescription = data.hasOwnProperty("@description") ? VO.parseString(data.@description, "quests") : Const.NO_TEXT;
 			
 			// /TODO
 			

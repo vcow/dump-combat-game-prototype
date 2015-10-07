@@ -1,8 +1,5 @@
 package proxy
 {
-	
-	import dictionary.DefaultsDict;
-	
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
 	import vo.BaseVO;
@@ -126,11 +123,16 @@ package proxy
 				var value:BasesVO = appDataProxy.getChildByName(BasesVO.NAME) as BasesVO;
 				
 				if (!value)
-					value = DefaultsDict.getInstance().basesList;
-				
-				setData(value);
-                
-                appDataProxy.updateChild(basesListVO);
+                {
+					value = new BasesVO();
+                    setData(value);
+                    
+                    appDataProxy.updateChild(basesListVO);
+                }
+                else
+                {
+				    setData(value);
+                }
 			}
 			
 			return data;

@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <defaultsDict>
-	<!-- Ресурсы игрока по умолчанию -->
-	<store>
-		<resource id="cash" count="10"/>
-		<resource id="food" count="500"/>
-	</store>
-	
-	<!-- Базы игрока по умолчанию -->
-	<basesDef>
-		<ruinDef id="4C3AC134-B7EF-4360-9915-39A6FB231071"/>
-	</basesDef>
+	<!-- Стартовый квест -->
+	<questDef id="507AE97E-9816-4820-8303-225A0F86A340"/>
 	
 	<!-- Ресурсы, на которые не распространяется блокировка складов за неуплату -->
 	<unlocked>

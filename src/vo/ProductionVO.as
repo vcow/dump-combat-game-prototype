@@ -110,7 +110,7 @@ package vo
                         // Завершено изготовление единицы продукции
                         var resourcesDecor:ResourcesHelper = new ResourcesHelper();
                         
-                        (new ResultHelper(null, resourcesDecor)).applyResult(productionDesc.productionResult);
+                        (new ResultHelper()).applyResult(productionDesc.productionResult);
                         
                         productionRest--;
                         sendNotification(Const.PRODUCT_ITEM_COMPLETED, productionId);

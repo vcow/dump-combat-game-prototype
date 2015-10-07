@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <names>
-	<nameTempl id="1" name="Лето" gender="f"/>
-	<nameTempl id="2" name="Глот" gender="m"/>
-	<nameTempl id="3" name="Обои" gender="m"/>
-	<nameTempl id="4" name="Союз" gender="m"/>
-	<nameTempl id="5" name="Лира" gender="f"/>
-	<nameTempl id="6" name="Ларь" gender="m"/>
-	<nameTempl id="7" name="Сток" gender="m"/>
-	<nameTempl id="8" name="Вира" gender="f"/>
-	<nameTempl id="9" name="Ряса" gender="f"/>
-	<nameTempl id="10" name="Иглу" gender="m"/>
-	<nameTempl id="11" name="Кндр" gender="m"/>
-	<nameTempl id="12" name="Авто" gender="f"/>
-	<nameTempl id="13" name="Блин" gender="m"/>
-	<nameTempl id="14" name="Стул" gender="m"/>
-	<nameTempl id="15" name="Золь" gender="f"/>
-	<nameTempl id="16" name="Брод" gender="m"/>
-	<nameTempl id="17" name="Блиц" gender="m"/>
-	<nameTempl id="18" name="Глаз" gender="m"/>
-	<nameTempl id="19" name="Тула" gender="f"/>
-	<nameTempl id="20" name="Часы" gender="m"/>
+	<nameTempl name="Лето" gender="f"/>
+	<nameTempl name="Глот" gender="m"/>
+	<nameTempl name="Обои" gender="m"/>
+	<nameTempl name="Союз" gender="m"/>
+	<nameTempl name="Лира" gender="f"/>
+	<nameTempl name="Ларь" gender="m"/>
+	<nameTempl name="Сток" gender="m"/>
+	<nameTempl name="Вира" gender="f"/>
+	<nameTempl name="Ряса" gender="f"/>
+	<nameTempl name="Иглу" gender="m"/>
+	<nameTempl name="Кндр" gender="m"/>
+	<nameTempl name="Авто" gender="f"/>
+	<nameTempl name="Блин" gender="m"/>
+	<nameTempl name="Стул" gender="m"/>
+	<nameTempl name="Золь" gender="f"/>
+	<nameTempl name="Брод" gender="m"/>
+	<nameTempl name="Блиц" gender="m"/>
+	<nameTempl name="Глаз" gender="m"/>
+	<nameTempl name="Тула" gender="f"/>
+	<nameTempl name="Часы" gender="m"/>
 </names>

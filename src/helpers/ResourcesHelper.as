@@ -68,8 +68,7 @@ package helpers
             if (!price || price.children.length == 0)
                 return true;
             
-			var store:StoreVO = getAllResources() || getAllResources(true);
-			
+			var store:StoreVO = getAllResources();
 			for each (var requiredRes:ResourceVO in price.children)
 			{
 				var resourceNotFound:Boolean = true;
@@ -291,7 +290,7 @@ package helpers
 		 */
 		public function getResource(resourceId:String):int
 		{
-			var store:StoreVO = getAllResources() || getAllResources(true);
+			var store:StoreVO = getAllResources();
 			for each (var value:ResourceVO in store.children)
 			{
 				if (value.resourceId == resourceId)
@@ -455,27 +454,18 @@ package helpers
 		
 		/**
 		 * Получить список всех доступных ресурсов
-		 * @param getDefaults возвратить список ресурсов по умолчанию 
 		 * @return список всех доступных ресурсов
 		 */
-		private function getAllResources(getDefaults:Boolean=false):StoreVO
+		private function getAllResources():StoreVO
 		{
 			var store:StoreVO;
 			
-			if (getDefaults)
+			var bases:Vector.<BaseVO> = basesListProxy.getBasesList();
+			if (bases.length > 0)
 			{
 				store = new StoreVO();
-				store.append(DefaultsDict.getInstance().resourcesList);
-			}
-			else
-			{
-				var bases:Vector.<BaseVO> = basesListProxy.getBasesList();
-				if (bases.length > 0)
-				{
-					store = new StoreVO();
-					for each (var base:BaseVO in bases)
-						store.append(base.baseStore);
-				}
+				for each (var base:BaseVO in bases)
+					store.append(base.baseStore);
 			}
 			
 			return store;

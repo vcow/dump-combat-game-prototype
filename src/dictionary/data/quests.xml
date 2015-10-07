@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<questsDict>
+	<!-- Стартовый квест -->
+	<questDesc id="507AE97E-9816-4820-8303-225A0F86A340" name="{start.quest.title}" description="{start.quest.description}">
+	
+		<!-- Шаг квеста имеет следующие параметры:
+			label={строковое значение} - уникальный идентификатор метки, служит для создания условных переходов и циклов в сценарии
+		Шаг содержит действия, выполняемые на этом этапе, условия завершения и награду, которая выдается по завершении шага -->
+		<step>
+			<!-- Выдать юзеру начальную базу в виде руин -->
+			<result>
+				<giveBase id="4C3AC134-B7EF-4360-9915-39A6FB231071" asRuin="true"/>
+			</result>
+			<!-- Шаг завершится, как только будет создана хоть одна база -->
+			<condition>
+				<if>
+					<trigger>basesCount</trigger>
+					<min type="int">1</min>
+				</if>
+			</condition>
+		</step>
+		
+		<step>
+			<!-- Стартовая награда игрока -->
+			<result>
+				<!-- Начальное содержимое складов -->
+				<price>
+					<resource id="cash" count="10"/>
+					<resource id="food" count="500"/>
+				</price>
+				<!-- Захвачена одна (начальная) база -->
+				<trigger id="capturedBases" value="1" type="set"/>
+				<!-- Считать начальную базу захваченой -->
+				<trigger id="centralTaken" value="1" type="set"/>
+			</result>
+		</step>
+	</questDesc>
+</questsDict>

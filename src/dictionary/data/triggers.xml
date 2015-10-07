@@ -9,6 +9,12 @@
 	<triggerDesc id="employeesCount" computable="true"/>
 	<!-- Количество ресурсов указанного типа, количество всех ресурсов, если тип не указан -->
 	<triggerDesc id="resourcesCount" computable="true"/>
+	<!-- Количество баз у игрока -->
+	<triggerDesc id="basesCount" computable="true"/>
+	<!-- Баз захвачено -->
+	<triggerDesc id="capturedBases"/>
+	<!-- Баз потеряно -->
+	<triggerDesc id="lostBases"/>
 	<!-- Исследование палки завершено -->
 	<triggerDesc id="cudgelResearchComplete"/>
 	<!-- Исследование гвоздя завершено -->
@@ -37,8 +43,8 @@
 	<triggerDesc id="foundSkin"/>
 	<!-- Исследование кожи завершено -->
 	<triggerDesc id="skinResearchComplete"/>
-	<!-- Исследование ремня -->
-	<triggerDesc id="beltResearchComplete"/>
-	<!-- Исследование колчана -->
-	<triggerDesc id="quiverResearchComplete"/>
+	<!-- Найдена бутылка -->
+	<triggerDesc id="foundBottle"/>
+	<!-- Исследование бутылки завершено -->
+	<triggerDesc id="bottleResearchComplete"/>
 </triggersDict>

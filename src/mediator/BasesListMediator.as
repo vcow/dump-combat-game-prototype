@@ -121,7 +121,7 @@ package mediator
 		{
 			var ruinVO:RuinVO = event.valueObject as RuinVO;
 			if (ruinVO)
-				sendNotification(Const.CREATE_NEW_BASE, ruinVO);
+				sendNotification(Const.CREATE_NEW_BASE, ruinVO.ruinId);
 		}
 		
 		/**
