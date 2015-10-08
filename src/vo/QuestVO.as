@@ -1,6 +1,7 @@
 package vo
 {
     import dictionary.Const;
+    import dictionary.QuestsDict;
 
 	/**
 	 * 
@@ -21,8 +22,10 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-        public var questId:String;                  //< Идентификатор квеста
         public var questStep:int;                   //< Текущий шаг квеста
+        
+        private var _questId:String;
+        private var _questDesc:QuestDescVO;
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -32,6 +35,31 @@ package vo
 		{
 			super(NAME);
 		}
+        
+        /**
+         * Идентификатор квеста
+         */
+        public function set questId(value:String):void
+        {
+            if (value == _questId)
+                return;
+            
+            _questId = value;
+            _questDesc = QuestsDict.getInstance().getQuest(_questId);
+        }
+        
+        public function get questId():String
+        {
+            return _questId;
+        }
+        
+        /**
+         * Описание квеста
+         */
+        public function get questDecs():QuestDescVO
+        {
+            return _questDesc;
+        }
 		
 		//----------------------------------
 		//  VO

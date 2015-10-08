@@ -215,8 +215,13 @@ package vo
 			if (data.localName().toString() != _name)
 				throw Error("Wrong application data file.");
 			
-			for each (var child:XML in data.children())
+            var children:XMLList = data.children();
+            var childrenLen:int = children.length();
+            
+			for (var i:int = 0; i < childrenLen; i++)
 			{
+                var child:XML = children[i];
+                
 				var value:IVO = null;
 				switch (child.localName().toString())
 				{
@@ -269,6 +274,7 @@ package vo
                     case QuestVO.NAME: value = new QuestVO(); break;
                     case StepVO.NAME: value = new StepVO(); break;
                     case GiveBaseVO.NAME: value = new GiveBaseVO(); break;
+                    case RewardVO.NAME: value = new RewardVO(); break;
 					
 					// /TODO
 					

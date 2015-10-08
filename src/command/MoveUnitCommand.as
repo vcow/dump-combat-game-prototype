@@ -75,24 +75,35 @@ package command
                     
                     var personnel:PersonnelVO = srcBase.basePersonnel;
                     var soldiers:Vector.<EmployeeVO> = new Vector.<EmployeeVO>();
-                    for (var i:int = personnel.children.length - 1; i >= 0; i--)
+                    
+                    if (personnel)
                     {
-                        var employee:EmployeeVO = EmployeeVO(personnel.children[i]);
-                        for each (var soldierId:String in unit.unitCrew)
+                        for (var i:int = personnel.children.length - 1; i >= 0; i--)
                         {
-                            if (employee.employeePersonId == soldierId)
+                            var employee:EmployeeVO = EmployeeVO(personnel.children[i]);
+                            for each (var soldierId:String in unit.unitCrew)
                             {
-                                soldiers.push(employee);
-                                personnel.children.splice(i, 1);
-                                break;
+                                if (employee.employeePersonId == soldierId)
+                                {
+                                    soldiers.push(employee);
+                                    personnel.children.splice(i, 1);
+                                    break;
+                                }
                             }
+                            
+                            if (soldiers.length == unit.unitCrew.length)
+                                break;
                         }
-                        
-                        if (soldiers.length == unit.unitCrew.length)
-                            break;
                     }
                     
                     personnel = dstBase.basePersonnel;
+                    
+                    if (!personnel)
+                    {
+                        personnel = new PersonnelVO();
+                        dstBase.children.push(personnel);
+                    }
+                    
                     for each (employee in soldiers)
                         personnel.children.push(employee);
                 }

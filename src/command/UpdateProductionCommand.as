@@ -122,7 +122,8 @@ package command
                         return;
                     }
                     
-                    resourcesDecor.pay(production.productionDesc.productionStartPrice);
+                    sendNotification(Const.CHANGE_RESOURCES, resourcesDecor.invertPrice(production.productionDesc.productionStartPrice));
+                    
                     productionsProxy.productionsVO.children.push(production);
                     
                     freeEngineers = (new ProductionsHelper(productionsProxy)).getFreeEngineers();

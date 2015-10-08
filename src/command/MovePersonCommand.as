@@ -19,6 +19,7 @@ package command
     import vo.EmployeeVO;
     import vo.ModuleDescVO;
     import vo.PersonVO;
+    import vo.PersonnelVO;
     import vo.PriceVO;
     import vo.ProfessionDescVO;
     
@@ -57,9 +58,14 @@ package command
                 var movePersonComplete:Boolean = false;
                 for each (var base:BaseVO in basesListProxy.basesListVO.children)
                 {
-                    for (var i:int = 0; i < base.basePersonnel.children.length; i++)
+                    var personnel:PersonnelVO = base.basePersonnel;
+                    
+                    if (!personnel)
+                        continue;
+                    
+                    for (var i:int = 0; i < personnel.children.length; i++)
                     {
-                        var employee:EmployeeVO = EmployeeVO(base.basePersonnel.children[i]);
+                        var employee:EmployeeVO = EmployeeVO(personnel.children[i]);
                         if (employee.employeePersonId == data.personId)
                         {
                             if (base.baseId != data.baseId)
@@ -68,8 +74,17 @@ package command
                                 var newBase:BaseVO = basesListProxy.getBase(data.baseId) as BaseVO;
                                 if (newBase && (new ModulesHelper(basesListProxy)).getSpace(ModuleDescVO.HOUSING, newBase) > 0)
                                 {
-                                    base.basePersonnel.children.splice(i, 1);
-                                    newBase.basePersonnel.children.push(employee);
+                                    personnel.children.splice(i, 1);
+                                    
+                                    var newBasePersonnel:PersonnelVO = newBase.basePersonnel;
+                                    
+                                    if (!newBasePersonnel)
+                                    {
+                                        newBasePersonnel = new PersonnelVO();
+                                        newBase.children.push(newBasePersonnel);
+                                    }
+                                    
+                                    newBasePersonnel.children.push(employee);
                                     sendNotification(Const.EMPLOYEE_IS_PLACED, employee);
                                 }
                                 else
@@ -119,7 +134,7 @@ package command
                                 return;
                             }
                             
-                            resourcesDecor.pay(price);
+                            sendNotification(Const.CHANGE_RESOURCES, resourcesDecor.invertPrice(price));
                         }
                         
                         person.personProfessionId = newProf.professionId;

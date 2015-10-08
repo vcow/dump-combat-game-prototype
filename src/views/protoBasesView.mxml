@@ -110,6 +110,7 @@
 			{
 				if (buildNewBaseAvailable)
 				{
+                    createBasePopUp.currentState = _basesListMediator.isFirstBase ? "woPrice" : "normal";
 					createBasePopUp.ruinsList = _basesListMediator.ruinsDataProvider;
 					createBasePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
 					PopUpManager.centerPopUp(createBasePopUp);

@@ -47,4 +47,8 @@
 	<triggerDesc id="foundBottle"/>
 	<!-- Исследование бутылки завершено -->
 	<triggerDesc id="bottleResearchComplete"/>
+	<!-- Захвачена база Центральная -->
+	<triggerDesc id="centralTaken"/>
+	<!-- Захвачена база Измаил -->
+	<triggerDesc id="ismailTaken"/>
 </triggersDict>

@@ -7,7 +7,12 @@
 						   xmlns:ui="views.ui.*"
                            xmlns:dropDownList="com.flextras.mobile.dropDownList.*"
 						   creationComplete="creationCompleteHandler(event)"
-                           filters="{proto.popUpShadow}">
+                           filters="{proto.popUpShadow}"
+                           currentState="normal">
+    <s:states>
+        <s:State name="normal"/>
+        <s:State name="woPrice"/>
+    </s:states>
 	
 	<s:BorderContainer>
 		<s:layout>
@@ -35,7 +40,7 @@
                                            labelFunction="ruinsListLabelFunction"/>
 			</s:VGroup>
 			
-			<s:VGroup gap="3" horizontalAlign="center">
+			<s:VGroup gap="3" horizontalAlign="center" includeIn="normal">
 				<s:Label text="@Resource(key='new.base.popup.price', bundle='common')"/>
 				
 				<ui:PriceView width="100%" price="{price}"/>

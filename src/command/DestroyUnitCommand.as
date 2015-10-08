@@ -86,7 +86,7 @@ package command
                 if (unit.unitDesc.resourceDesc && unit.unitDamage <= 0)
                 {
                     // У юнита есть ресурс и юнит не поврежден
-                    var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy, appDataProxy);
+                    var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy);
                     var price:PriceVO = resourcesDecor.joinResource(unit.unitDesc.unitResource, 1);
                     if (resourcesDecor.isEnouchSpace(price))
                     {

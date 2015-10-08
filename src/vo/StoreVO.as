@@ -21,6 +21,9 @@ package vo
 		 */
 		public function append(store:StoreVO):void
 		{
+            if (!store)
+                return;
+            
 			var newResources:Vector.<ResourceVO> = new Vector.<ResourceVO>();
 			
 			for each (var src:ResourceVO in store.children)

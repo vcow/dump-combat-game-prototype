@@ -3,23 +3,23 @@ package vo
     /**
      * 
      * @author y.vircowskiy
-     * Value Object результата
+     * Value Object награды
      * 
      */
     
-    public class ResultVO extends VO
+    public class RewardVO extends VO
     {
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public static const NAME:String = "result";
+        public static const NAME:String = "reward";
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public function ResultVO()
+        public function RewardVO()
         {
             super(NAME);
         }

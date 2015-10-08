@@ -6,11 +6,12 @@ package helpers
     
     import proxy.TriggersProxy;
     
+    import vo.GiveBaseVO;
     import vo.IVO;
     import vo.PriceVO;
     import vo.ResourceVO;
-    import vo.ResultVO;
     import vo.TriggerVO;
+    import vo.VO;
 
     /**
      * 
@@ -41,7 +42,7 @@ package helpers
          * @param result результат
          * @return выделенная цена, если таковая имеется в результате
          */
-        public function applyResult(result:ResultVO):Boolean
+        public function applyResult(result:VO):Boolean
         {
             if (!result)
                 return false;
@@ -62,6 +63,15 @@ package helpers
                         price.children.push(ResourceVO(item));
                         ProtoFacade.getInstance().sendNotification(Const.CHANGE_RESOURCES, price);
                         break;
+                    case GiveBaseVO.NAME:
+                        var giveBase:GiveBaseVO = GiveBaseVO(item);
+                        if (giveBase.giveBaseAsRuin)
+                            ProtoFacade.getInstance().sendNotification(Const.FOUND_RUINS, giveBase.giveBaseId);
+                        else
+                            ProtoFacade.getInstance().sendNotification(Const.CREATE_NEW_BASE, giveBase.giveBaseId);
+                        break;
+                    default:
+                        throw Error("Result type " + item.name + " not supported.");
                 }
             }
             return true;

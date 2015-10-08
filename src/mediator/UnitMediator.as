@@ -121,7 +121,7 @@ package mediator
         public function getAvailableWeaponFor(slot:int):ArrayCollection
         {
             var res:Array = [];
-            var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy, appDataProxy);
+            var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy);
             var conditionDecor:ConditionHelper = new ConditionHelper(triggersProxy);
             var selected:WeaponVO = getWeapon(slot);
             var weaponFound:Boolean = !selected;
@@ -178,7 +178,7 @@ package mediator
             var weapon:WeaponVO = getWeapon(slot);
             if (weapon)
             {
-                var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy, appDataProxy);
+                var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy);
                 for each (var ammoDesc:AmmoDescVO in ArmamentDict.getInstance().getAmmoForUnit(weapon.weaponId))
                 {
                     var rest:int = resourcesDecor.getResource(ammoDesc.ammoResource);
@@ -212,7 +212,7 @@ package mediator
             var res:Array = [];
             if (_unit)
             {
-                var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy, appDataProxy);
+                var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy);
                 for each (var ammoDesc:AmmoDescVO in ArmamentDict.getInstance().getAmmoForUnit(_unit.unitUnitId))
                 {
                     var rest:int = resourcesDecor.getResource(ammoDesc.ammoResource);
@@ -268,7 +268,7 @@ package mediator
         public function getAvailableArmorFor(slot:int):ArrayCollection
         {
             var res:Array = [];
-            var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy, appDataProxy);
+            var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy);
             var conditionDecor:ConditionHelper = new ConditionHelper(triggersProxy);
             var selected:ArmorVO = getArmor(slot);
             var armorFound:Boolean = !selected;
@@ -526,7 +526,7 @@ package mediator
         {
             if (!destroyAnyway && _unit.unitDesc.unitResource)
             {
-                var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy, appDataProxy);
+                var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy);
                 if (!resourcesDecor.isEnouchSpace(resourcesDecor.joinResource(_unit.unitDesc.unitResource, 1)))
                 {
                     // Не хватает места на складах под технику

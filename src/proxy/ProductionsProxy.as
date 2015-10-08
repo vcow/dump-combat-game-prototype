@@ -79,7 +79,12 @@ package proxy
                     if (baseId && base.baseId != baseId)
                         continue;
                     
-                    for each (var employee:EmployeeVO in base.basePersonnel.children)
+                    var personnel:PersonnelVO = base.basePersonnel;
+                    
+                    if (!personnel)
+                        continue;
+                    
+                    for each (var employee:EmployeeVO in personnel.children)
                     {
                         if (employee.employeePersonId == worker.workerPersonId)
                         {

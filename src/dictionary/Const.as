@@ -77,5 +77,8 @@ package dictionary
         public static const UNIT_DESTROYED:String = "untiDestroyed";                        //< Юнит расформирован
         public static const MOVE_UNIT:String = "moveUnit";                                  //< Перевести юнит на другую базу
         public static const UNIT_IS_PLACED:String = "unitIsPlaced";                         //< Юнит помещен на базу
+        public static const QUEST_STARTED:String = "questStarted";                          //< Запущен новый квест
+        public static const QUEST_FINISHED:String = "questFinished";                        //< Квест завершился
+        public static const FOUND_RUINS:String = "foundRuins";                              //< Найдены руины
 	}
 }

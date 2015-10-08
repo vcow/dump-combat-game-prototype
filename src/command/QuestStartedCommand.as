@@ -1,32 +1,32 @@
-package vo
+package command
 {
+    import org.puremvc.as3.patterns.command.MacroCommand;
+    
     /**
      * 
      * @author y.vircowskiy
-     * Value Object результата
+     * Запущен на выполнение новый квест
      * 
      */
     
-    public class ResultVO extends VO
+    public class QuestStartedCommand extends MacroCommand
     {
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public static const NAME:String = "result";
-        
-        //--------------------------------------------------------------------------
-        // 
-        //--------------------------------------------------------------------------
-        
-        public function ResultVO()
+        public function QuestStartedCommand()
         {
-            super(NAME);
+            super();
         }
         
-        //----------------------------------
-        //  VO
-        //----------------------------------
+        //--------------------------------------------------------------------------
+        // MacroCommand
+        //--------------------------------------------------------------------------
         
+        override protected function initializeMacroCommand():void
+        {
+            addSubCommand(CheckQuestsCommand);
+        }
     }
 }

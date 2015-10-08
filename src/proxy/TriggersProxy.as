@@ -33,6 +33,7 @@ package proxy
         
         public static const EMPLOYEES_COUNT_TRIGGER:String = "employeesCount";
         public static const RESOURCES_COUNT_TRIGGER:String = "resourcesCount";
+        public static const BASES_COUNT_TRIGGER:String = "basesCount";
         
         //--------------------------------------------------------------------------
         // 
@@ -96,8 +97,11 @@ package proxy
                         default: return false;
                     }
                     
-                    trigger.triggerValueValue = newValue;
-                    sendNotification(Const.TRIGGER_CHANGED, trigger.triggerDesc);
+                    if (trigger.triggerValueValue != newValue)
+                    {
+                        trigger.triggerValueValue = newValue;
+                        sendNotification(Const.TRIGGER_CHANGED, trigger.triggerDesc);
+                    }
                     return true;
                 }
             }
@@ -171,6 +175,9 @@ package proxy
                     if (resourceId)
                         return (new ResourcesHelper()).getResource(resourceId);
                     break;
+                case BASES_COUNT_TRIGGER:
+                    // Вернуть количество баз игрока
+                    return BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)).getBasesList().length;
                 default:
                     throw Error("Has no algorithm to calculate required trigger (" + triggerId + ").");
             }

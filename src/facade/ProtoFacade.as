@@ -8,12 +8,14 @@ package facade
 	import command.CreateNewBaseCommand;
 	import command.CreateNewPersonCommand;
 	import command.DestroyUnitCommand;
+	import command.FoundRuinsCommand;
 	import command.GameEventCommand;
 	import command.MobilizeUnitCommand;
 	import command.MovePersonCommand;
 	import command.MoveUnitCommand;
 	import command.NewPersonCreatedCommand;
 	import command.PlaceEmployeeCommand;
+	import command.QuestStartedCommand;
 	import command.ReloadUnitCommand;
 	import command.ReloadWeaponCommand;
 	import command.RemoveModuleCommand;
@@ -24,6 +26,7 @@ package facade
 	import command.SelectWeaponCommand;
 	import command.SendGameMessageCommand;
 	import command.StartUpCommand;
+	import command.TriggerChangedCommand;
 	import command.UpdateProductionCommand;
 	import command.UpdateResearchCommand;
 	
@@ -97,6 +100,9 @@ package facade
             registerCommand(Const.RELOAD_UNIT, ReloadUnitCommand);
             registerCommand(Const.DESTROY_UNIT, DestroyUnitCommand);
             registerCommand(Const.MOVE_UNIT, MoveUnitCommand);
+            registerCommand(Const.QUEST_STARTED, QuestStartedCommand);
+            registerCommand(Const.TRIGGER_CHANGED, TriggerChangedCommand);
+            registerCommand(Const.FOUND_RUINS, FoundRuinsCommand);
 		}
 	}
 }

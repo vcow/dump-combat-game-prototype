@@ -11,6 +11,7 @@ package helpers
 	import vo.BaseVO;
 	import vo.ModuleDescVO;
 	import vo.ModuleVO;
+	import vo.PersonnelVO;
 	import vo.ResourceVO;
 	import vo.StoreVO;
 
@@ -82,7 +83,8 @@ package helpers
                         }
                         break;
                     case ModuleDescVO.HOUSING:
-                        space -= base.basePersonnel.children.length;
+                        var personnel:PersonnelVO = base.basePersonnel;
+                        space -= personnel ? base.basePersonnel.children.length : 0;
                         break;
                     case ModuleDescVO.LAB:
                         space -= investigationsProxy.getEmployedScientists(null, base.baseId).length;

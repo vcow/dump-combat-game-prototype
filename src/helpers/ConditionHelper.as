@@ -36,7 +36,7 @@ package helpers
         /**
          * Получить результат для заданного условия. Условие передается в виде объекта,
          * содержащего поля с именами if#, or# and# not# и значениями trigger, value, min, max.
-         * @param condition условие
+         * @param condition условие (если null, всегда считается выполненным, если {} - всегда невыполненным)
          * @return true, если условие выполняется
          */
         public function parseCondition(condition:Object):Boolean

@@ -145,7 +145,7 @@ package helpers
             if (!unit.unitResource)
                 return true;
             
-            var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy, appDataProxy);
+            var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy);
             return resourcesDecor.isEnoughResources(resourcesDecor.joinResource(unit.unitResource, 1));
         }
         

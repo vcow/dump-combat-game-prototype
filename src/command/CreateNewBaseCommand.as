@@ -9,6 +9,7 @@ package command
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 	
 	import proxy.BasesListProxy;
+	import proxy.TriggersProxy;
 	
 	import vo.BaseTemplVO;
 	import vo.BaseVO;
@@ -61,6 +62,8 @@ package command
                 }
                 
                 var base:BaseVO = new BaseVO();
+                base.baseId = baseTempl.baseId;
+                base.baseName = baseTempl.baseName;
                 base.children.push(new ModulesVO());
                 
                 var basesList:BasesVO = basesListProxy.basesListVO;
@@ -76,18 +79,20 @@ package command
                 basesList.children.push(base);
                 
                 var modules:ModulesVO = base.baseModules;
-                var templateModules:ModulesVO = baseTempl.baseModules;
+                var ruinModules:ModulesVO = ruin.ruinModules;
                 
-                if (templateModules)
+                var templateModules:ModulesVO = baseTempl.baseModules;
+                modules.modulesMaxCount = templateModules ? templateModules.modulesMaxCount : (ruinModules ? ruinModules.children.length : 0);
+                
+                if (ruinModules)
                 {
-                    modules.modulesMaxCount = templateModules.modulesMaxCount;
-                    for each (var module:ModuleVO in templateModules.children)
-                    {
-                        var chance:Number = isNaN(module.moduleChance) ? module.moduleDesc.moduleChance : module.moduleChance;
-                        if (chance >= 1.0 || Math.random() < chance)
-                            modules.children.push(module.clone());
-                    }
+                    var numModules:int = Math.min(modules.modulesMaxCount, ruinModules.children.length);
+                    for (i = 0; i < numModules; i++)
+                        modules.children.push(ModuleVO(ruinModules.children[i]).clone());
                 }
+                
+                TriggersProxy(this.facade.retrieveProxy(TriggersProxy.NAME)).valueChanged(TriggersProxy.BASES_COUNT_TRIGGER);
+                sendNotification(Const.NEW_BASE_CREATED, base);
             }
 		}
 	}

@@ -51,6 +51,14 @@ package mediator
 			bases.sortOn("baseName");
 			return new ArrayCollection(bases);
 		}
+        
+        /**
+         * Флаг, указывающий, что это первая база игрока
+         */
+        public function get isFirstBase():Boolean
+        {
+            return basesListProxy.getBasesList().length == 0;
+        }
 		
 		/**
 		 * Источник данных для списка руин

@@ -11,6 +11,7 @@ package command
 	import proxy.LogProxy;
 	import proxy.PersonsProxy;
 	import proxy.ProductionsProxy;
+	import proxy.QuestsProxy;
 	import proxy.TimersProxy;
 	import proxy.TriggersProxy;
 	
@@ -48,6 +49,7 @@ package command
             this.facade.registerProxy(new ArmyProxy());
             this.facade.registerProxy(new EventsProxy());
             this.facade.registerProxy(new TimersProxy());
+            this.facade.registerProxy(new QuestsProxy());
 		}
 	}
 }

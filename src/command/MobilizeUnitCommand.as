@@ -23,6 +23,7 @@ package command
     import vo.MercenaryVO;
     import vo.ModuleDescVO;
     import vo.PersonVO;
+    import vo.PersonnelVO;
     import vo.ProfessionDescVO;
     import vo.UnitDescVO;
     import vo.UnitVO;
@@ -87,7 +88,12 @@ package command
                 var crew:Vector.<EmployeeVO> = new Vector.<EmployeeVO>();
                 for each (var base:BaseVO in basesListProxy.getBasesList())
                 {
-                    for each (var employee:EmployeeVO in base.basePersonnel.children)
+                    var personnel:PersonnelVO = base.basePersonnel;
+                    
+                    if (!personnel)
+                        continue;
+                    
+                    for each (var employee:EmployeeVO in personnel.children)
                     {
                         var person:PersonVO = personsProxy.getPerson(employee.employeePersonId);
                         
@@ -144,7 +150,7 @@ package command
                 }
                 
                 if (unitDesc.unitResource)
-                    resourcesDecor.pay(resourcesDecor.joinResource(unitDesc.unitResource, 1));  // Забрать со склада боевую машину
+                    sendNotification(Const.CHANGE_RESOURCES, resourcesDecor.invertPrice(resourcesDecor.joinResource(unitDesc.unitResource, 1))); // Забрать со склада боевую машину
                 
                 var unit:UnitVO = new UnitVO();
                 unit.unitId = VO.createGUID();
