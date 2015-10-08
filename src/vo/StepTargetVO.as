@@ -3,49 +3,49 @@ package vo
     /**
      * 
      * @author y.vircowskiy
-     * Value Object шага квеста
+     * Value Object цели шага квеста
      * 
      */
     
-    public class StepVO extends VO
+    public class StepTargetVO extends VO
     {
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public static const NAME:String = "step";
+        public static const NAME:String = "stepTarget";
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public function StepVO()
+        public function StepTargetVO()
         {
             super(NAME);
         }
         
         /**
-         * Награда, выдаваемая при переходе на шаг
+         * Условие завершения шага
          */
-        public function get stepResult():ResultVO
+        public function get stepTargetCondition():Object
         {
             for each (var item:IVO in children)
             {
-                if (item.name == ResultVO.NAME)
-                    return ResultVO(item);
+                if (item.name == ConditionVO.NAME)
+                    return ConditionVO(item).conditionData;
             }
             return null;
         }
         
         /**
-         * Цели шага
+         * Награда, выдаваемая по завершении шага
          */
-        public function get stepTargets():StepTargetsVO
+        public function get stepTargetResult():ResultVO
         {
             for each (var item:IVO in children)
             {
-                if (item.name == StepTargetsVO.NAME)
-                    return StepTargetsVO(item);
+                if (item.name == ResultVO.NAME)
+                    return ResultVO(item);
             }
             return null;
         }

@@ -10,8 +10,8 @@ package helpers
     import vo.IVO;
     import vo.PriceVO;
     import vo.ResourceVO;
+    import vo.ResultVO;
     import vo.TriggerVO;
-    import vo.VO;
 
     /**
      * 
@@ -42,7 +42,7 @@ package helpers
          * @param result результат
          * @return выделенная цена, если таковая имеется в результате
          */
-        public function applyResult(result:VO):Boolean
+        public function applyResult(result:ResultVO):Boolean
         {
             if (!result)
                 return false;

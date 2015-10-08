@@ -274,7 +274,8 @@ package vo
                     case QuestVO.NAME: value = new QuestVO(); break;
                     case StepVO.NAME: value = new StepVO(); break;
                     case GiveBaseVO.NAME: value = new GiveBaseVO(); break;
-                    case RewardVO.NAME: value = new RewardVO(); break;
+                    case StepTargetsVO.NAME: value = new StepTargetsVO(); break;
+                    case StepTargetVO.NAME: value = new StepTargetVO(); break;
 					
 					// /TODO
 					

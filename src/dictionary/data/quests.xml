@@ -8,29 +8,35 @@
 		Шаг содержит действия, выполняемые на этом этапе, условия завершения и награду, которая выдается в начале и по завершении шага -->
 		<step>
 			<!-- Награда, которая выдается при переходе на этот шаг -->
-			<reward>
+			<result>
 				<!-- Выдать юзеру начальную базу в виде руин -->
 				<giveBase id="4C3AC134-B7EF-4360-9915-39A6FB231071" asRuin="true"/>
-			</reward>
-			<!-- Шаг завершится, как только будет создана хоть одна база -->
-			<complete>
-				<if>
-					<trigger>basesCount</trigger>
-					<min type="int">1</min>
-				</if>
-			</complete>
-			<!-- Награда, которая дается по завершении шага -->
-			<result>
-				<!-- Начальное содержимое складов -->
-				<price>
-					<resource id="cash" count="10"/>
-					<resource id="food" count="500"/>
-				</price>
-				<!-- Захвачена одна (начальная) база -->
-				<trigger id="capturedBases" value="1" type="set"/>
-				<!-- Считать начальную базу захваченой -->
-				<trigger id="centralTaken" value="1" type="set"/>
 			</result>
+			<!-- Цели шага -->
+			<stepTargets>
+				<!-- Цель шага содержит в себе условие выполнения и награду, которую юзер получает по выполнении -->
+				<stepTarget>
+					<!-- Шаг завершится, как только будет создана хоть одна база -->
+					<condition>
+						<if>
+							<trigger>basesCount</trigger>
+							<min type="int">1</min>
+						</if>
+					</condition>
+					<!-- Загрузить в склады начальные ресурсы и выставить соответствующие триггеры -->
+					<result>
+						<!-- Начальное содержимое складов -->
+						<price>
+							<resource id="cash" count="10"/>
+							<resource id="food" count="500"/>
+						</price>
+						<!-- Захвачена одна (начальная) база -->
+						<trigger id="capturedBases" value="1" type="set"/>
+						<!-- Считать начальную базу захваченой -->
+						<trigger id="centralTaken" value="1" type="set"/>
+					</result>
+				</stepTarget>
+			</stepTargets>
 		</step>
 	</questDesc>
 </questsDict>
