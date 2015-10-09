@@ -2,8 +2,6 @@ package command
 {
     import dictionary.Const;
     
-    import flashx.textLayout.tlf_internal;
-    
     import helpers.ConditionHelper;
     import helpers.ResultHelper;
     
