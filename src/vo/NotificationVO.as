@@ -20,7 +20,6 @@ package vo
 		//--------------------------------------------------------------------------
 		
         public var notificationId:String;       //< Идентификатор нотификации
-        public var notificationChance:Number;   //< Вероятность срабатывания нотификации
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -62,7 +61,6 @@ package vo
 			// TODO: Сериализовать специфичные поля
 			
 			res.@id = notificationId;
-			res.@chance = notificationChance;
 			
 			// /TODO
 			
@@ -76,7 +74,6 @@ package vo
 			// TODO: десериализовать специфичные поля
 			
             notificationId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
-            notificationChance = data.hasOwnProperty("@chance") ? Number(data.@chance) : 1.0;
 			
 			// /TODO
 			

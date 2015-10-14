@@ -23,6 +23,7 @@ package helpers
         public static const OR:String = "or";
         public static const AND:String = "and";
         public static const NOT:String = "not";
+        public static const RANDOM:String = "random";
         
         //--------------------------------------------------------------------------
         // 
@@ -108,6 +109,10 @@ package helpers
                         break;
                     case NOT:
                         res = !parseCondition(data);
+                        break;
+                    case RANDOM:
+                        var chance:Number = Number(data);
+                        res = isNaN(chance) ? false : chance >= 1.0 || Math.random() <= chance;
                         break;
                     default:
                         throw Error("Usupported condition tag (" + op + ").");

@@ -23,6 +23,7 @@ package vo
 		//--------------------------------------------------------------------------
 		
         public var questStep:int;                   //< Текущий шаг квеста
+        public var questParent:String;              //< Родительский квест
         
         private var _questId:String;
         private var _questDesc:QuestDescVO;
@@ -73,6 +74,9 @@ package vo
 			
 			res.@id = questId;
             res.@step = questStep;
+            
+            if (questParent)
+                res.@parent = questParent;
 			
 			// /TODO
 			
@@ -87,6 +91,7 @@ package vo
 			
             questId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
             questStep = data.hasOwnProperty("@step") ? int(data.@step) : 0;
+            questParent = data.hasOwnProperty("@parent") ? data.@parent.toString() : "";
 			
 			// /TODO
 			

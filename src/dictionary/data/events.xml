@@ -13,60 +13,73 @@
 	<eventDesc id="5sec" interval="5s"/>
 	<!-- Минутный тик -->
 	<eventDesc id="min" interval="1m">
+		<!-- Увеличить значение триггера-счетчика минут -->
+		<trigger id="minutesLeft" value="1" type="inc"/>
 		<!-- Раз в минуту с определенной вероятностью находим палку -->
 		<!-- Действие отправки нотификации, инициирует нотификацию с именем, указанным в id
 		и содержимым раздела в качестве данных. Имеет следующие поля:
 		id={строковое значение} - имя инициируемой нотификации
-		chance={дробное значение от 1.0 до 0.0} - вероятность выполнения действия
 		Может содержать данные нотификации, которые будут преобразованы в иерархический объект с полями типа String,
 		если не указан иной тип (поддерживаемые типы: int, uint, float), и дополнительное условие инициации (поле
 		value может содержать несколько значений) -->
-		<notification id="artifactFinded" chance="0.3">
+		<notification id="artifactFinded">
 			<condition>
-				<if>
-					<trigger>employeesCount</trigger>
-					<value>laborer</value>
-					<min type="int">1</min>
-				</if>
+				<and>
+					<if>
+						<trigger>employeesCount</trigger>
+						<value>laborer</value>
+						<min type="int">1</min>
+					</if>
+					<random type="float">0.3</random>
+				</and>
 			</condition>
 			<data>
 				<resourceId>cudgel</resourceId>
 			</data>
 		</notification>
 		<!-- Раз в минуту с определенной вероятностью находим гвоздь -->
-		<notification id="artifactFinded" chance="0.5">
+		<notification id="artifactFinded">
 			<condition>
-				<if>
-					<trigger>employeesCount</trigger>
-					<value>laborer</value>
-					<min type="int">1</min>
-				</if>
+				<and>
+					<if>
+						<trigger>employeesCount</trigger>
+						<value>laborer</value>
+						<min type="int">1</min>
+					</if>
+					<random type="float">0.5</random>
+				</and>
 			</condition>
 			<data>
 				<resourceId>nail</resourceId>
 			</data>
 		</notification>
 		<!-- Раз в минуту с определенной вероятностью находим картон -->
-		<notification id="artifactFinded" chance="0.4">
+		<notification id="artifactFinded">
 			<condition>
-				<if>
-					<trigger>employeesCount</trigger>
-					<value>laborer</value>
-					<min type="int">1</min>
-				</if>
+				<and>
+					<if>
+						<trigger>employeesCount</trigger>
+						<value>laborer</value>
+						<min type="int">1</min>
+					</if>
+					<random type="float">0.4</random>
+				</and>
 			</condition>
 			<data>
 				<resourceId>cardboard</resourceId>
 			</data>
 		</notification>
 		<!-- Раз в минуту с определенной вероятностью находим веревку -->
-		<notification id="artifactFinded" chance="0.5">
+		<notification id="artifactFinded">
 			<condition>
-				<if>
-					<trigger>employeesCount</trigger>
-					<value>laborer</value>
-					<min type="int">1</min>
-				</if>
+				<and>
+					<if>
+						<trigger>employeesCount</trigger>
+						<value>laborer</value>
+						<min type="int">1</min>
+					</if>
+					<random type="float">0.5</random>
+				</and>
 			</condition>
 			<data>
 				<resourceId>rope</resourceId>
@@ -76,13 +89,16 @@
 	<!-- Трехминутный тик -->
 	<eventDesc id="3min" interval="3m">
 		<!-- Раз в три минуты с определенной вероятностью находим кожу -->
-		<notification id="artifactFinded" chance="0.3">
+		<notification id="artifactFinded">
 			<condition>
-				<if>
-					<trigger>employeesCount</trigger>
-					<value>laborer</value>
-					<min type="int">1</min>
-				</if>
+				<and>
+					<if>
+						<trigger>employeesCount</trigger>
+						<value>laborer</value>
+						<min type="int">1</min>
+					</if>
+					<random type="float">0.3</random>
+				</and>
 			</condition>
 			<data>
 				<resourceId>skin</resourceId>

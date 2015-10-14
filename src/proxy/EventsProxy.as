@@ -16,6 +16,7 @@ package proxy
     import vo.EventDescVO;
     import vo.IVO;
     import vo.NotificationVO;
+    import vo.TriggerVO;
     
     /**
      * 
@@ -73,11 +74,12 @@ package proxy
                         var notification:NotificationVO = NotificationVO(secondary);
                         
                         // Проверить наличие и выполнение условия отправки
-                        if ((new ConditionHelper(triggersProxy)).parseCondition(notification.notificationCondition) &&
-                            (notification.notificationChance >= 1.0 || Math.random() < notification.notificationChance))
-                        {
+                        if ((new ConditionHelper(triggersProxy)).parseCondition(notification.notificationCondition))
                             sendNotification(notification.notificationId, notification.notificationData);
-                        }
+                        break;
+                    case TriggerVO.NAME:            // Задать значение триггера
+                        var trigger:TriggerVO = TriggerVO(secondary);
+                        triggersProxy.setTriggerValue(trigger.triggerId, trigger.triggerValue, trigger.triggerValueType);
                         break;
                 }
             }
