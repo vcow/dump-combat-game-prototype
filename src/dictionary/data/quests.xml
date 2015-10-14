@@ -41,15 +41,79 @@
 		<step>
 			<stepTargets>
 				<stepTarget>
+					<!-- По прошествии 10 минут с вероятностью 30% в минуту выдать квест на первую вражескую базу -->
 					<condition>
 						<and>
 							<if>
 								<trigger>minutesLeft</trigger>
 								<min type="int">10</min>
 							</if>
-							<random type="float">0.5</random>
+							<random type="float">0.3</random>
 						</and>
 					</condition>
+					<result>
+						<giveQuest id="55CEBC68-A495-4183-98F4-BA1F75458044"/>
+					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
+	</questDesc>
+	
+	<!-- Квест на первую вражескую базу -->
+	<questDesc id="55CEBC68-A495-4183-98F4-BA1F75458044" name="{1st.enemy.quest.title}" description="{1st.enemy.quest.description}">
+		<step>
+			<stepTargets>
+				<stepTarget>
+					<!-- Если на стартовой базе игрока уже есть хоть один боевой юнит, напасть на базу игрока -->
+					<condition>
+						<if>
+							<trigger>unitsCount</trigger>
+							<value>4C3AC134-B7EF-4360-9915-39A6FB231071</value>
+							<min type="int">1</min>
+						</if>
+					</condition>
+					<result>
+						<attackBase target="4C3AC134-B7EF-4360-9915-39A6FB231071" attacker="357D63E3-9BDB-4699-905B-5D6DD16D8048"/>
+					</result>
+				</stepTarget>
+				<stepTarget>
+					<!-- Если на стартовой базе игрока пока нет ни одного боевого юнита, показать базу противника -->
+					<condition>
+						<not>
+							<if>
+								<trigger>unitsCount</trigger>
+								<value>4C3AC134-B7EF-4360-9915-39A6FB231071</value>
+							</if>
+						</not>
+					</condition>
+					<result>
+						<findBase id="357D63E3-9BDB-4699-905B-5D6DD16D8048"/>
+					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<stepTargets>
+				<!-- Юзер победил, квест завершается без награды, возвращаемся в вызывающий стартовый квест -->
+				<stepTarget>
+					<condition>
+						<if>
+							<trigger>ismailTaken</trigger>
+						</if>
+					</condition>
+				</stepTarget>
+				<!-- Юзер проиграл, игра завершена -->
+				<stepTarget>
+					<condition>
+						<not>
+							<if>
+								<trigger>basesCount</trigger>
+							</if>
+						</not>
+					</condition>
+					<result>
+						<gameOver/>
+					</result>
 				</stepTarget>
 			</stepTargets>
 		</step>

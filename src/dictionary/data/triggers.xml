@@ -11,6 +11,8 @@
 	<triggerDesc id="resourcesCount" computable="true"/>
 	<!-- Количество баз у игрока -->
 	<triggerDesc id="basesCount" computable="true"/>
+	<!-- Количество юнитов на указанной базе, количество всех юнитов, если база не указана -->
+	<triggerDesc id="unitsCount" computable="true"/>
 	<!-- Баз захвачено -->
 	<triggerDesc id="capturedBases"/>
 	<!-- Баз потеряно -->
