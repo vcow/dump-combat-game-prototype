@@ -11,8 +11,11 @@ package command
     import proxy.QuestsProxy;
     import proxy.TriggersProxy;
     
+    import vo.GiveQuestVO;
+    import vo.IVO;
     import vo.QuestVO;
     import vo.QuestsVO;
+    import vo.ResultVO;
     import vo.StepTargetVO;
     import vo.StepTargetsVO;
     import vo.StepVO;
@@ -62,25 +65,29 @@ package command
             return _resultDecor;
         }
         
-        //----------------------------------
-        //  SimpleCommand
-        //----------------------------------
-        
-        override public function execute(notification:INotification):void
+        private function processQuests(quests:Vector.<IVO>):void
         {
-            if (_checkInProcess)
-                return;
-            
             _checkInProcess = true;
-            
-            var quests:QuestsVO = QuestsProxy(this.facade.retrieveProxy(QuestsProxy.NAME)).questsVO;
             
             do {
                 var checkAgain:Boolean = false;     // Цикл перепроверки на случай выполнения нескольких шагов подряд
                 
-                for (var i:int = quests.children.length - 1; i >= 0; i--)
+                for (var i:int = quests.length - 1; i >= 0; i--)
                 {
-                    var quest:QuestVO = QuestVO(quests.children[i]);
+                    var quest:QuestVO = QuestVO(quests[i]);
+                    
+                    if (quest.children.length > 0)
+                    {
+                        // Есть дочерние квесты. Текущий квест не продолжится до их завершения
+                        _checkInProcess = false;
+                        
+                        processQuests(quest.children);
+                        
+                        _checkInProcess = true;
+                        
+                        if (quest.children.length > 0)
+                            continue;               // Еще остались незакрытые дочерние квесты
+                    }
                     
                     var applyNextStep:Boolean = false;
                     if (quest.questStep > 0)
@@ -96,7 +103,7 @@ package command
                                 if (applyNextStep)
                                 {
                                     // Выполнилось условие этой цели, выдать соответствующую награду
-                                    resultDecor.applyResult(stepTarget.stepTargetResult);
+                                    applyResult(stepTarget.stepTargetResult, quest);
                                     break;
                                 }
                             }
@@ -121,18 +128,53 @@ package command
                         if (quest.questStep > quest.questDecs.children.length)
                         {
                             // Квест завершен
-                            quests.children.splice(i, 1);
+                            quests.splice(i, 1);
                             sendNotification(Const.QUEST_FINISHED, quest.questId);
                             continue;
                         }
                         
                         currentStep = StepVO(quest.questDecs.children[quest.questStep - 1]);
-                        resultDecor.applyResult(currentStep.stepResult);            // Выдать награду нового шага
+                        applyResult(currentStep.stepResult, quest);         // Выдать награду нового шага
                     }
                 }
             } while (checkAgain);
             
             _checkInProcess = false;
+        }
+        
+        private function applyResult(result:ResultVO, parent:QuestVO):void
+        {
+            if (!resultDecor.applyResult(result))
+            {
+                for each (var item:IVO in result.children)
+                {
+                    switch (item.name)
+                    {
+                        case GiveQuestVO.NAME:      //< Выдать квест
+                            var giveQuest:GiveQuestVO = GiveQuestVO(item);
+                            var quest:QuestVO = QuestsProxy(this.facade.retrieveProxy(QuestsProxy.NAME)).startQuest(
+                                giveQuest.giveQuestId, giveQuest.giveQuestAsSubquest ? parent : null);
+                            
+                            _checkInProcess = false;
+                            processQuests(giveQuest.giveQuestAsSubquest ? quest.children : new <IVO>[ quest ]);
+                            _checkInProcess = true;
+                            break;
+                    }
+                }
+            }
+        }
+        
+        //----------------------------------
+        //  SimpleCommand
+        //----------------------------------
+        
+        override public function execute(notification:INotification):void
+        {
+            if (_checkInProcess)
+                return;
+            
+            var quests:QuestsVO = QuestsProxy(this.facade.retrieveProxy(QuestsProxy.NAME)).questsVO;
+            processQuests(quests.children);
         }
     }
 }

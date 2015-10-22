@@ -23,7 +23,6 @@ package vo
 		//--------------------------------------------------------------------------
 		
         public var questStep:int;                   //< Текущий шаг квеста
-        public var questParent:String;              //< Родительский квест
         public var questTimer:String;               //< Таймер задержки выполнения квеста
         
         private var _questId:String;
@@ -76,9 +75,6 @@ package vo
 			res.@id = questId;
             res.@step = questStep;
             
-            if (questParent)
-                res.@parent = questParent;
-            
             if (questTimer)
                 res.@timer = questTimer;
 			
@@ -95,7 +91,6 @@ package vo
 			
             questId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
             questStep = data.hasOwnProperty("@step") ? int(data.@step) : 0;
-            questParent = data.hasOwnProperty("@parent") ? data.@parent.toString() : "";
             questTimer = data.hasOwnProperty("@timer") ? data.@timer.toString() : "";
 			
 			// /TODO

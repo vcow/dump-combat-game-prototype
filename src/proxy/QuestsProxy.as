@@ -54,23 +54,31 @@ package proxy
         
         /**
          * Запустить на выполнение квест
-         * @param questId
+         * @param questId идентификатор запускаемого квеста
+         * @param parent родительский квест
+         * @return запущенный квест
          */
-        public function startQuest(questId:String):void
+        public function startQuest(questId:String, parent:QuestVO=null):QuestVO
         {
-            if (getQuest(questId))
-                return;         // Такой квест уже запущен
+            var quest:QuestVO = getQuest(questId);
+            if (quest)
+                return quest;         // Такой квест уже запущен
             
-            var quest:QuestVO = new QuestVO();
+            quest = new QuestVO();
             quest.questId = questId;
             quest.questStep = 0;
             
             if (!quest.questDecs)
                 throw Error("There is no quest " + questId + ".");
             
-            questsVO.children.push(quest);
+            if (parent)
+                parent.children.push(quest);
+            else
+                questsVO.children.push(quest);
             
             sendNotification(Const.QUEST_STARTED, quest.questId);
+            
+            return quest;
         }
 		
 		//----------------------------------

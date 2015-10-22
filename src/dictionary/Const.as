@@ -80,5 +80,8 @@ package dictionary
         public static const QUEST_STARTED:String = "questStarted";                          //< Запущен новый квест
         public static const QUEST_FINISHED:String = "questFinished";                        //< Квест завершился
         public static const FOUND_RUINS:String = "foundRuins";                              //< Найдены руины
+        public static const FIND_TARGET:String = "findTarget";                              //< Найти вражескую базу
+        public static const TARGET_FOUND:String = "targetFound";                            //< Найдена вражеская база
+        public static const ATTACK_BASE:String = "attackBase";                              //< Атаковать базу
 	}
 }

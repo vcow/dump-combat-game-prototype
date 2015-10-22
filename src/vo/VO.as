@@ -276,6 +276,11 @@ package vo
                     case GiveBaseVO.NAME: value = new GiveBaseVO(); break;
                     case StepTargetsVO.NAME: value = new StepTargetsVO(); break;
                     case StepTargetVO.NAME: value = new StepTargetVO(); break;
+                    case GameOverVO.NAME: value = new GameOverVO(); break;
+                    case GiveQuestVO.NAME: value = new GiveQuestVO(); break;
+                    case AttackBaseVO.NAME: value = new AttackBaseVO(); break;
+                    case AttackerVO.NAME: value = new AttackerVO(); break;
+                    case FindBaseVO.NAME: value = new FindBaseVO(); break;
 					
 					// /TODO
 					

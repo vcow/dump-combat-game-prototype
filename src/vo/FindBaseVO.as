@@ -1,31 +1,33 @@
 package vo
 {
+    import dictionary.Const;
+
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object описания квеста
+	 * Value Object Команды найти базу
 	 * 
 	 */
 	
-	public class QuestDefVO extends VO
+	public class FindBaseVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "questDef";
+		public static const NAME:String = "findBase";
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-        public var questDefId:String;           //< Идентификатор квеста по умолчанию
+        public var findBaseId:String;           //< Идентификатор найденной базы
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-		public function QuestDefVO()
+		public function FindBaseVO()
 		{
 			super(NAME);
 		}
@@ -40,7 +42,7 @@ package vo
             
             // TODO: Сериализовать специфичные поля
             
-            res.@id = questDefId;
+            res.@id = findBaseId;
             
             // /TODO
             
@@ -53,7 +55,7 @@ package vo
             
             // TODO: десериализовать специфичные поля
             
-            questDefId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
+            findBaseId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
             
             // /TODO
             

@@ -3,29 +3,30 @@ package vo
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object описания квеста
+	 * Value Object выдачи квеста
 	 * 
 	 */
 	
-	public class QuestDefVO extends VO
+	public class GiveQuestVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "questDef";
+		public static const NAME:String = "giveQuest";
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-        public var questDefId:String;           //< Идентификатор квеста по умолчанию
+        public var giveQuestId:String;              //< Идентификатор выдаваемого квеста
+        public var giveQuestAsSubquest:Boolean;     //< Выдать квест как подквест (выдавающий квест будет ждать завершения выданного квеста)
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-		public function QuestDefVO()
+		public function GiveQuestVO()
 		{
 			super(NAME);
 		}
@@ -40,7 +41,10 @@ package vo
             
             // TODO: Сериализовать специфичные поля
             
-            res.@id = questDefId;
+            res.@id = giveQuestId;
+            
+            if (giveQuestAsSubquest)
+                res.@asSubquest = giveQuestAsSubquest;
             
             // /TODO
             
@@ -53,7 +57,8 @@ package vo
             
             // TODO: десериализовать специфичные поля
             
-            questDefId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
+            giveQuestId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
+            giveQuestAsSubquest = data.hasOwnProperty("@asSubquest") ? data.@asSubquest.toString().toLowerCase() == "true" : false;
             
             // /TODO
             

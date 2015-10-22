@@ -1,31 +1,33 @@
 package vo
 {
+    import dictionary.Const;
+
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object описания квеста
+	 * Value Object атакующего юнита
 	 * 
 	 */
 	
-	public class QuestDefVO extends VO
+	public class AttackerVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "questDef";
+		public static const NAME:String = "attacker";
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-        public var questDefId:String;           //< Идентификатор квеста по умолчанию
+        public var attackerId:String;       //< Идентификатор атакующего юнита
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-		public function QuestDefVO()
+		public function AttackerVO()
 		{
 			super(NAME);
 		}
@@ -40,7 +42,7 @@ package vo
             
             // TODO: Сериализовать специфичные поля
             
-            res.@id = questDefId;
+            res.@id = attackerId;
             
             // /TODO
             
@@ -53,7 +55,7 @@ package vo
             
             // TODO: десериализовать специфичные поля
             
-            questDefId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
+            attackerId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
             
             // /TODO
             

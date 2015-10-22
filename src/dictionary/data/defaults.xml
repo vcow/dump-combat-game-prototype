@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <defaultsDict>
 	<!-- Стартовый квест -->
-	<questDef id="507AE97E-9816-4820-8303-225A0F86A340"/>
+	<questDef id="startQuest"/>
 	
 	<!-- Ресурсы, на которые не распространяется блокировка складов за неуплату -->
 	<unlocked>

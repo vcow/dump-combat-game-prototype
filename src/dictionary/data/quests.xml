@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <questsDict>
 	<!-- Стартовый квест -->
-	<questDesc id="507AE97E-9816-4820-8303-225A0F86A340" name="{start.quest.title}" description="{start.quest.description}">
+	<questDesc id="startQuest" name="{start.quest.title}" description="{start.quest.description}">
 	
 		<!-- Шаг квеста имеет следующие параметры:
 			label={строковое значение} - уникальный идентификатор метки, служит для создания условных переходов и циклов в сценарии
@@ -52,15 +52,25 @@
 						</and>
 					</condition>
 					<result>
-						<giveQuest id="55CEBC68-A495-4183-98F4-BA1F75458044"/>
+						<!-- Выдача юзеру нового квеста поддерживает следующие параметры:
+							id={строковое значение} - уникальный идентификатор квеста
+							asSubquest=["true","false"] - флаг, указывающий выдавать квест как подквест, т. е. выполнение
+								текущего квеста не продолжится вплоть до завершения выдаваемого (дочернего) -->
+						<giveQuest id="firstEnemyBaseQuest" asSubquest="true"/>
 					</result>
 				</stepTarget>
 			</stepTargets>
 		</step>
+		<step>
+			<!-- Игра завершена -->
+			<result>
+				<gameOver/>
+			</result>
+		</step>
 	</questDesc>
 	
 	<!-- Квест на первую вражескую базу -->
-	<questDesc id="55CEBC68-A495-4183-98F4-BA1F75458044" name="{1st.enemy.quest.title}" description="{1st.enemy.quest.description}">
+	<questDesc id="firstEnemyBaseQuest" name="{1st.enemy.quest.title}" description="{1st.enemy.quest.description}">
 		<step>
 			<stepTargets>
 				<stepTarget>
@@ -73,7 +83,15 @@
 						</if>
 					</condition>
 					<result>
-						<attackBase target="4C3AC134-B7EF-4360-9915-39A6FB231071" attacker="357D63E3-9BDB-4699-905B-5D6DD16D8048"/>
+						<!-- Атака базы поддерживает следующие параметры:
+							target={строковое значение} - идентификатор атакуемой базы
+							departure={строковое значение} - база отправления экспедиции
+							В качестве дочерних элементов выступает набор атакующих юнитов -->
+						<attackBase target="4C3AC134-B7EF-4360-9915-39A6FB231071" departure="357D63E3-9BDB-4699-905B-5D6DD16D8048">
+							<!-- Атакующий юнит поддерживает следующие параметры:
+								id={строковое значение} - идентификатор атакующего юнита -->
+							<attacker id="0796C85D-0BDF-4C46-8851-DF7E5DB92A8B"/>
+						</attackBase>
 					</result>
 				</stepTarget>
 				<stepTarget>
@@ -87,6 +105,8 @@
 						</not>
 					</condition>
 					<result>
+						<!-- Команда найти базу поддерживает следующие параметры:
+							id={строковое значение} - уникальный идентификатор найденной базы -->
 						<findBase id="357D63E3-9BDB-4699-905B-5D6DD16D8048"/>
 					</result>
 				</stepTarget>

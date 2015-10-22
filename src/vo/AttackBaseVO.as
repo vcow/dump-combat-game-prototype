@@ -1,31 +1,34 @@
 package vo
 {
+    import dictionary.Const;
+
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object описания квеста
+	 * Value Object нападения на базу
 	 * 
 	 */
 	
-	public class QuestDefVO extends VO
+	public class AttackBaseVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "questDef";
+		public static const NAME:String = "attackBase";
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-        public var questDefId:String;           //< Идентификатор квеста по умолчанию
+        public var attackBaseTarget:String;         //< Идентификатор базы, на которую происходит нападение
+        public var attackBaseDeparture:String;      //< Идентификатор базы, с которой происходит нападение
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-		public function QuestDefVO()
+		public function AttackBaseVO()
 		{
 			super(NAME);
 		}
@@ -40,7 +43,8 @@ package vo
             
             // TODO: Сериализовать специфичные поля
             
-            res.@id = questDefId;
+            res.@target = attackBaseTarget;
+            res.@departure = attackBaseDeparture;
             
             // /TODO
             
@@ -53,7 +57,8 @@ package vo
             
             // TODO: десериализовать специфичные поля
             
-            questDefId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
+            attackBaseTarget = data.hasOwnProperty("@target") ? data.@target.toString() : Const.NO_GUID;
+            attackBaseDeparture = data.hasOwnProperty("@departure") ? data.@departure.toString() : Const.NO_GUID;
             
             // /TODO
             
