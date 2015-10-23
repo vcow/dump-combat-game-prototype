@@ -159,7 +159,7 @@ package command
                                 giveQuest.giveQuestId, giveQuest.giveQuestAsSubquest ? parent : null);
                             
                             _checkInProcess = false;
-                            processQuests(giveQuest.giveQuestAsSubquest ? quest.children : new <IVO>[ quest ]);
+                            processQuests(giveQuest.giveQuestAsSubquest ? parent.children : new <IVO>[ quest ]);
                             _checkInProcess = true;
                             break;
                         case TimeoutVO.NAME:        //< Запустить таймаут
