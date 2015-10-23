@@ -46,6 +46,19 @@ package vo
 			}
 			return null;
 		}
+        
+        /**
+         * Данные по руинам базы
+         */
+        public function get baseArmy():ArmyVO
+        {
+            for each (var value:IVO in children)
+            {
+                if (value.name == ArmyVO.NAME)
+                    return value as ArmyVO;
+            }
+            return null;
+        }
 		
 		/**
 		 * Данные по модулям базы

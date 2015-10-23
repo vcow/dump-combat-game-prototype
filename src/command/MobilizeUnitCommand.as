@@ -16,6 +16,7 @@ package command
     import proxy.ArmyProxy;
     import proxy.BasesListProxy;
     import proxy.PersonsProxy;
+    import proxy.TriggersProxy;
     
     import vo.BaseVO;
     import vo.EmployeeVO;
@@ -174,6 +175,7 @@ package command
                 
                 garrison.children.push(mercenary);
                 
+                TriggersProxy(this.facade.retrieveProxy(TriggersProxy.NAME)).valueChanged(TriggersProxy.UNITS_COUNT_TRIGGER);
                 sendNotification(Const.UNIT_IS_MOBILIZED, unit.unitId);
             }
         }

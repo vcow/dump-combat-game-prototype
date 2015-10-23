@@ -14,6 +14,7 @@ package command
     import proxy.AppDataProxy;
     import proxy.ArmyProxy;
     import proxy.BasesListProxy;
+    import proxy.TriggersProxy;
     
     import vo.ArmorVO;
     import vo.BaseVO;
@@ -121,6 +122,7 @@ package command
                     }
                 }
                 
+                TriggersProxy(this.facade.retrieveProxy(TriggersProxy.NAME)).valueChanged(TriggersProxy.UNITS_COUNT_TRIGGER);
                 sendNotification(Const.UNIT_DESTROYED, unit.unitId);
             }
         }

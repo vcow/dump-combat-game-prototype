@@ -1,5 +1,6 @@
 package helpers
 {
+    import dictionary.BasesDict;
     import dictionary.UnitsDict;
     
     import facade.ProtoFacade;
@@ -9,11 +10,15 @@ package helpers
     import proxy.BasesListProxy;
     import proxy.PersonsProxy;
     
+    import vo.ArmyVO;
+    import vo.BaseTemplVO;
     import vo.BaseVO;
     import vo.GarrisonVO;
+    import vo.IVO;
     import vo.MercenaryVO;
     import vo.PersonVO;
     import vo.ProfessionDescVO;
+    import vo.TargetVO;
     import vo.UnitDescVO;
     import vo.UnitVO;
 
@@ -74,6 +79,36 @@ package helpers
             if (!_armyProxy)
                 _armyProxy = ArmyProxy(ProtoFacade.getInstance().retrieveProxy(ArmyProxy.NAME));
             return _armyProxy;
+        }
+        
+        /**
+         * Получить список юнита для указанной базы
+         * @param baseId идентификатор базы, для которой запрашиваются юниты, если null, запрашиваются юниты для всех баз игрока
+         * @return список юнитов для указанной базы
+         */
+        public function getUnitsOnBase(baseId:String=null):Vector.<UnitVO>
+        {
+            var units:Vector.<UnitVO> = new Vector.<UnitVO>();
+            if (baseId)
+            {
+                var base:IVO = basesListProxy.getBase(baseId);
+                if (base.name == BaseVO.NAME)
+                {
+                    for each (var mercenary:MercenaryVO in BaseVO(base).baseGarrison)
+                        units.push(armyProxy.getUnit(mercenary.mercenaryUnitId));
+                }
+                else if (base.name == TargetVO.NAME)
+                {
+                    var baseTempl:BaseTemplVO = BasesDict.getInstance().getBase(TargetVO(base).targetId);
+                    var army:ArmyVO = baseTempl ? baseTempl.baseArmy : null;
+                    if (army)
+                    {
+                        for each (var unit:UnitVO in army.children)
+                            units.push(unit);
+                    }
+                }
+            }
+            return units;
         }
         
         /**

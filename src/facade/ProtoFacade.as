@@ -1,6 +1,7 @@
 package facade
 {
 	import command.ArtifactFindedCommand;
+	import command.AttackBaseCommand;
 	import command.BuildModuleCommand;
 	import command.ChangeResourcesCommand;
 	import command.CompleteProductionCommand;
@@ -103,6 +104,7 @@ package facade
             registerCommand(Const.QUEST_STARTED, QuestStartedCommand);
             registerCommand(Const.TRIGGER_CHANGED, TriggerChangedCommand);
             registerCommand(Const.FOUND_RUINS, FoundRuinsCommand);
+            registerCommand(Const.ATTACK_BASE, AttackBaseCommand);
 		}
 	}
 }

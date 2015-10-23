@@ -3,6 +3,7 @@ package proxy
     import dictionary.Const;
     import dictionary.TriggersDict;
     
+    import helpers.ArmyHelper;
     import helpers.PersonnelHelper;
     import helpers.ResourcesHelper;
     
@@ -34,6 +35,7 @@ package proxy
         public static const EMPLOYEES_COUNT_TRIGGER:String = "employeesCount";
         public static const RESOURCES_COUNT_TRIGGER:String = "resourcesCount";
         public static const BASES_COUNT_TRIGGER:String = "basesCount";
+        public static const UNITS_COUNT_TRIGGER:String = "unitsCount";
         
         //--------------------------------------------------------------------------
         // 
@@ -178,6 +180,19 @@ package proxy
                 case BASES_COUNT_TRIGGER:
                     // Вернуть количество баз игрока
                     return BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)).getBasesList().length;
+                case UNITS_COUNT_TRIGGER:
+                    if (args.length == 0)
+                    {
+                        // Вернуть общее количество юнитов
+                        return (new ArmyHelper()).getUnitsOnBase().length;
+                    }
+                    else
+                    {
+                        // Вернуть количество боевых юнитов на указанной базе
+                        var baseId:String = args[0].toString();
+                        return (new ArmyHelper()).getUnitsOnBase(baseId).length;
+                    }
+                    break;
                 default:
                     throw Error("Has no algorithm to calculate required trigger (" + triggerId + ").");
             }

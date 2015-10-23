@@ -12,6 +12,7 @@ package command
     
     import proxy.ArmyProxy;
     import proxy.BasesListProxy;
+    import proxy.TriggersProxy;
     
     import vo.BaseVO;
     import vo.EmployeeVO;
@@ -120,6 +121,7 @@ package command
                     }
                 }
                 
+                TriggersProxy(this.facade.retrieveProxy(TriggersProxy.NAME)).valueChanged(TriggersProxy.UNITS_COUNT_TRIGGER);
                 sendNotification(Const.UNIT_IS_PLACED, unit);
             }
         }
