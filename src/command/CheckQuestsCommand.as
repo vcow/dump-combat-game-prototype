@@ -9,6 +9,7 @@ package command
     import org.puremvc.as3.patterns.command.SimpleCommand;
     
     import proxy.QuestsProxy;
+    import proxy.TimersProxy;
     import proxy.TriggersProxy;
     
     import vo.GiveQuestVO;
@@ -19,6 +20,7 @@ package command
     import vo.StepTargetVO;
     import vo.StepTargetsVO;
     import vo.StepVO;
+    import vo.TimeoutVO;
     
     /**
      * 
@@ -104,6 +106,7 @@ package command
                                 {
                                     // Выполнилось условие этой цели, выдать соответствующую награду
                                     applyResult(stepTarget.stepTargetResult, quest);
+                                    applyNextStep &&= quest.children.length == 0;
                                     break;
                                 }
                             }
@@ -144,7 +147,7 @@ package command
         
         private function applyResult(result:ResultVO, parent:QuestVO):void
         {
-            if (!resultDecor.applyResult(result))
+            if (result && !resultDecor.applyResult(result))
             {
                 for each (var item:IVO in result.children)
                 {
@@ -158,6 +161,11 @@ package command
                             _checkInProcess = false;
                             processQuests(giveQuest.giveQuestAsSubquest ? quest.children : new <IVO>[ quest ]);
                             _checkInProcess = true;
+                            break;
+                        case TimeoutVO.NAME:        //< Запустить таймаут
+                            var timeout:TimeoutVO = TimeoutVO(item);
+                            TimersProxy(this.facade.retrieveProxy(TimersProxy.NAME)).startTimer(
+                                timeout.timeoutDelay, timeout.timeoutResult);
                             break;
                     }
                 }
@@ -173,6 +181,20 @@ package command
             if (_checkInProcess)
                 return;
             
+            var data:String = notification.getBody() as String;
+            
+            if (data)
+            {
+                // Запрос на проверку конкретного квеста
+                var quest:QuestVO = QuestsProxy(this.facade.retrieveProxy(QuestsProxy.NAME)).getQuest(data);
+                if (quest)
+                {
+                    processQuests(new <IVO>[ quest ]);
+                    return;
+                }
+            }
+            
+            // Запрос на проверку всех квестов
             var quests:QuestsVO = QuestsProxy(this.facade.retrieveProxy(QuestsProxy.NAME)).questsVO;
             processQuests(quests.children);
         }

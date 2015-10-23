@@ -1,43 +1,42 @@
 package vo
 {
-	import dictionary.Const;
-	
+    import helpers.TimeHelper;
+
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object таймера
+	 * Value Object квестового таймаута
 	 * 
 	 */
 	
-	public class TimerVO extends VO
+	public class TimeoutVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "timer";
+		public static const NAME:String = "timeout";
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public var timerId:String;              //< Уникальный идентификатор таймера
-        public var timerStartTime:Number;       //< Время запуска таймера
-        public var timerDelay:Number;           //< Прдолжительность таймера
-		
+        public var timeoutDelay:Number;             //< Время таймаута в милисекундах
+        public var timeoutAsync:Boolean;            //< Флаг, указывающий на асинхронность таймера
+        
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function TimerVO()
+		public function TimeoutVO()
 		{
 			super(NAME);
 		}
         
         /**
-         * Результат завершения таймера
+         * Результат срабатывания таймаута
          */
-        public function get timerResult():ResultVO
+        public function get timeoutResult():ResultVO
         {
             for each (var item:IVO in children)
             {
@@ -57,9 +56,10 @@ package vo
 			
 			// TODO: Сериализовать специфичные поля
 			
-			res.@id = timerId || Const.NO_GUID;
-            res.@startTime = isNaN(timerStartTime) ? 0 : timerStartTime;
-            res.@delay = isNaN(timerDelay) ? 0 : timerDelay;
+			res.@delay = (new TimeHelper()).timeToStr(timeoutDelay);
+            
+            if (timeoutAsync)
+                res.@async = timeoutAsync;
 			
 			// /TODO
 			
@@ -72,9 +72,8 @@ package vo
 			
 			// TODO: десериализовать специфичные поля
 			
-            timerId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
-            timerStartTime = data.hasOwnProperty("@startTime") ? Number(data.@startTime) : 0;
-            timerDelay = data.hasOwnProperty("@delay") ? Number(data.@delay) : 0;
+            timeoutDelay = data.hasOwnProperty("@delay") ? (new TimeHelper()).strToTime(data.@delay.toString()) : NaN;
+            timeoutAsync = data.hasOwnProperty("@async") ? data.@async.toString().toLowerCase() == "true" : false;
 			
 			// /TODO
 			
@@ -82,4 +81,3 @@ package vo
 		}
 	}
 }
-	

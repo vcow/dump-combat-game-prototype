@@ -6,53 +6,71 @@
 		description={строковое значение} - описание модуля
 		space={числовое значение} - вместимость модуля
 		chance={дробное значение от 1.0 до 0.0} - вероятность сохранения модуля при захвате базы
+		builtEvent={строковое значение} - идентификатор события, по которому модуль считается построенным
 		Может содержать две цены - цену постройки модуля и цену обслуживания модуля -->
 	<!-- Жилой модуль -->
-	<moduleDesc id="housing" name="{housing.title}" description="{housing.description}" space="25" chance="0.3">
+	<moduleDesc id="housing" name="{housing.title}" description="{housing.description}" space="25" chance="0.3" builtEvent="constructionCompleted">
 		<price details="price">
 			<resource id="food" count="100"/>
 		</price>
 		<price details="fee" event="min">
 			<resource id="food" count="1"/>
 		</price>
-		<!-- Время создания содержит следующие параметры:
-			time=[{количество милисекунд},{время в формате ##h##m##s}] - время
-			event={строковое значение} - внутриигровое событие, которое генерируется по завершению таймера
-			notification={строковое значение} - нотификация, которая отправляется по завершению таймера
-			Может содержать дополнительные параметры для нотификации -->
-		<leadTime time="30s" event="constructionCompleted"/>
+		<!-- Время создания в виде таймаута. Для таймаута поддерживаются следующие параметры:
+			delay=[{количество милисекунд},{время в формате ##h##m##s}] - время таймаута
+			async=["true","false"] - флаг, указывающий таймеру выполняться асинхронно, если false, шаг ожидает окончания таймаута.
+			В качестве дочернего элемента таймаут может содержать результат, который будет применен по окончании таймаута. -->
+		<timeout delay="30s">
+			<result>
+				<!-- Для внутриигрового события поддерживаются следующие параметры:
+					id={строковое значение} - идентификатор события. -->
+				<event id="constructionCompleted"/>
+			</result>
+		</timeout>
 	</moduleDesc>
 	
 	<!-- Складской модуль -->
-	<moduleDesc id="store" name="{store.title}" description="{store.description}" space="1000" chance="0.4">
+	<moduleDesc id="store" name="{store.title}" description="{store.description}" space="1000" chance="0.4" builtEvent="constructionCompleted">
 		<price details="price">
 			<resource id="food" count="150"/>
 		</price>
 		<price details="fee" event="min">
 			<resource id="food" count="1"/>
 		</price>
-		<leadTime time="10s" event="constructionCompleted"/>
+		<timeout delay="10s">
+			<result>
+				<event id="constructionCompleted"/>
+			</result>
+		</timeout>
 	</moduleDesc>
 	
 	<!-- Лаборатория -->
-	<moduleDesc id="lab" name="{lab.title}" description="{lab.description}" space="15" chance="0.1">
+	<moduleDesc id="lab" name="{lab.title}" description="{lab.description}" space="15" chance="0.1" builtEvent="constructionCompleted">
 		<price details="price">
 			<resource id="food" count="200"/>
 		</price>
 		<price details="fee" event="min">
 			<resource id="food" count="5"/>
 		</price>
-		<leadTime time="1m" event="constructionCompleted"/>
+		<timeout delay="1m">
+			<result>
+				<event id="constructionCompleted"/>
+			</result>
+		</timeout>
 	</moduleDesc>
 	
 	<!-- Мастерская -->
-	<moduleDesc id="workshop" name="{workshop.title}" description="{workshop.description}" space="10" chance="0.3">
+	<moduleDesc id="workshop" name="{workshop.title}" description="{workshop.description}" space="10" chance="0.3" builtEvent="constructionCompleted">
 		<price details="price">
 			<resource id="food" count="170"/>
 		</price>
 		<price details="fee" event="min">
 			<resource id="food" count="3"/>
 		</price>
-		<leadTime time="30s" event="constructionCompleted"/>
+		<timeout delay="30s">
+			<result>
+				<event id="constructionCompleted"/>
+			</result>
+		</timeout>
 	</moduleDesc>
 </modulesDict>

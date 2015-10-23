@@ -124,7 +124,7 @@
                 if (moduleTypeSelector.selectedItem && moduleTypeSelector.selectedItem.leadTime)
                 {
                     leadTimeText = resourceManager.getString("common", "base.create.lead.time",
-                        [ (new TimeHelper()).getTimeDescription(moduleTypeSelector.selectedItem.leadTime.leadTimeTime) ]);
+                        [ (new TimeHelper()).getTimeDescription(moduleTypeSelector.selectedItem.leadTime) ]);
                     currentState = "hasLeadTime";
                 }
                 else

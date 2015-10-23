@@ -39,14 +39,27 @@
 			</stepTargets>
 		</step>
 		<step>
+			<result>
+				<!-- Для таймаута поддерживаются следующие параметры:
+					delay=[{количество милисекунд},{время в формате ##h##m##s}] - время таймаута
+					async=["true","false"] - флаг, указывающий таймеру выполняться асинхронно, если false, шаг ожидает окончания таймаута.
+					В качестве дочернего элемента таймаут может содержать результат, который будет применен по окончании таймаута. -->
+				<timeout delay="5m">
+					<result>
+						<trigger id="startQuestDelay1Out" value="1" type="set"/>
+					</result>
+				</timeout>
+			</result>
 			<stepTargets>
 				<stepTarget>
-					<!-- По прошествии 10 минут с вероятностью 30% в минуту выдать квест на первую вражескую базу -->
+					<!-- По прошествии 5 минут с вероятностью 30% в минуту выдать квест на первую вражескую базу -->
 					<condition>
 						<and>
 							<if>
+								<trigger>startQuestDelay1Out</trigger>
+							</if>
+							<if>
 								<trigger>minutesLeft</trigger>
-								<min type="int">10</min>
 							</if>
 							<random type="float">0.3</random>
 						</and>

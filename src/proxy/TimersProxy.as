@@ -6,12 +6,15 @@ package proxy
     
     import events.EventsManagerEvent;
     
+    import helpers.ResultHelper;
+    
     import managers.EventsManager;
     
     import org.puremvc.as3.patterns.proxy.Proxy;
     
+    import vo.EventVO;
     import vo.IVO;
-    import vo.LeadTimeVO;
+    import vo.ResultVO;
     import vo.TimerVO;
     import vo.TimersVO;
     import vo.VO;
@@ -74,13 +77,14 @@ package proxy
         
         /**
          * Инициировать таймер
-         * @param leadTime входные данные для запуска таймера
-         * @return уникальный идентификатор созданного таймера
+         * @param delay время срабатывания таймера
+         * @param result результат завершения таймера
+         * @return созданный таймер
          */
-        public function startTimer(leadTime:LeadTimeVO):String
+        public function startTimer(delay:Number, result:ResultVO):TimerVO
         {
-            if (!leadTime || !leadTime.leadTimeTime || leadTime.leadTimeTime < 0)
-                return Const.NO_GUID;
+            if (isNaN(delay) || delay < 1.0)
+                return null;
             
             var now:Number = (new Date()).time;
             var id:String = VO.createGUID();
@@ -88,28 +92,15 @@ package proxy
             var timer:TimerVO = new TimerVO();
             timer.timerId = id;
             timer.timerStartTime = now;
-            timer.timerDelay = leadTime.leadTimeTime;
+            timer.timerDelay = delay;
             
             timersVO.children.push(timer);
             applyTimer(timer);
             
-            var data:Object;
-            timersData[id] = data = {};
+            if (result)
+                timer.children.push(result);
             
-            if (leadTime.leadTimeNotification)
-            {
-                data.notification = leadTime.leadTimeNotification;
-                for (var key:String in leadTime.leadTimeData)
-                {
-                    data.notificationData = leadTime.leadTimeData;
-                    break;
-                }
-            }
-            
-            if (leadTime.leadTimeEvent)
-                data.event = leadTime.leadTimeEvent;
-            
-            return id;
+            return timer;
         }
         
         protected function get appDataProxy():AppDataProxy
@@ -140,17 +131,6 @@ package proxy
             
             if (listenForTicks)
                 EventsManager.getInstance().addEventListener(EventsManagerEvent.TICK, eventsManager_tickHandler);
-        }
-        
-        /**
-         * Данные работающих таймеров
-         */
-        protected function get timersData():Object
-        {
-            var data:Object = appDataProxy.stuff.timersData;
-            if (!data)
-                appDataProxy.stuff.timersData = data = {};
-            return data;
         }
         
         /**
@@ -207,16 +187,22 @@ package proxy
          */
         private function timerComplete(timer:TimerVO):void
         {
-            var data:Object = timersData[timer.timerId];
-            if (data)
+            var result:ResultVO = timer.timerResult;
+            if (result)
             {
-                delete timersData[timer.timerId];
-                
-                if (data.hasOwnProperty("notification"))
-                    sendNotification(data.notification, data.notificationData, timer.timerId);
-                
-                if (data.hasOwnProperty("event"))
-                    sendNotification(Const.GAME_EVENT, timer.timerId, data.event);
+                if (!(new ResultHelper()).applyResult(result))
+                {
+                    for each (var item:IVO in result.children)
+                    {
+                        switch (item.name)
+                        {
+                            case EventVO.NAME:
+                                var event:EventVO = EventVO(item);
+                                sendNotification(Const.GAME_EVENT, timer.timerId, event.eventId);
+                                break;
+                        }
+                    }
+                }
             }
         }
         

@@ -14,11 +14,12 @@ import proxy.BasesListProxy;
 import proxy.TimersProxy;
 
 import vo.BaseVO;
-import vo.LeadTimeVO;
 import vo.ModuleDescVO;
 import vo.ModuleVO;
 import vo.ModulesVO;
 import vo.PriceVO;
+import vo.TimeoutVO;
+import vo.TimerVO;
 import vo.VO;
     
     /**
@@ -79,12 +80,15 @@ import vo.VO;
                         module.moduleModuleId = data.moduleTypeId;
                         module.moduleId = VO.createGUID();
                         
-                        var leadTime:LeadTimeVO = moduleDesc.moduleLeadTime;
-                        if (leadTime && leadTime.leadTimeTime)
+                        var timeout:TimeoutVO = moduleDesc.moduleTimeout;
+                        if (timeout && !isNaN(timeout.timeoutDelay) && timeout.timeoutDelay >= 1.0)
                         {
                             // Модуль строится за определенное время
                             var timerProxy:TimersProxy = TimersProxy(this.facade.retrieveProxy(TimersProxy.NAME));
-                            module.moduleBuildTimer = timerProxy.startTimer(leadTime);
+                            var timer:TimerVO = timerProxy.startTimer(timeout.timeoutDelay, timeout.timeoutResult);
+                            
+                            if (timer)
+                                module.moduleBuildTimer = timer.timerId;
                         }
                         
                         modules.children.push(module);

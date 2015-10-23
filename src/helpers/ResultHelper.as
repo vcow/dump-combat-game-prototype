@@ -10,14 +10,15 @@ package helpers
     
     import vo.AttackBaseVO;
     import vo.AttackerVO;
+    import vo.EventVO;
     import vo.FindBaseVO;
     import vo.GiveBaseVO;
     import vo.GiveQuestVO;
     import vo.IVO;
     import vo.PriceVO;
-    import vo.QuestVO;
     import vo.ResourceVO;
     import vo.ResultVO;
+    import vo.TimeoutVO;
     import vo.TriggerVO;
 
     /**
@@ -90,6 +91,8 @@ package helpers
                             attackBase.attackBaseTarget, attackBase.attackBaseDeparture, army));
                         break;
                     case GiveQuestVO.NAME:      //< Выдать квест (не обрабатывается здесь из за рекурсивных вызовов из CheckQuestsCommand)
+                    case TimeoutVO.NAME:        //< Запуск таймаута (не обрабатывается здесь из за привязки к квесту, см. CheckQuestsCommand)
+                    case EventVO.NAME:          //< Отправка события (не обрабатывается здесь из за дополнительных параметров, см. TimersProxy)
                         return false;
                     default:
                         throw Error("Result type " + item.name + " not supported.");

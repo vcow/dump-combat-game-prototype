@@ -247,7 +247,7 @@ package vo
                     case NotificationVO.NAME: value = new NotificationVO(); break;
                     case TriggersVO.NAME: value = new TriggersVO(); break;
                     case TriggerValueVO.NAME: value = new TriggerValueVO(); break;
-                    case LeadTimeVO.NAME: value = new LeadTimeVO(); break;
+                    case EventVO.NAME: value = new EventVO(); break;
                     case TimerVO.NAME: value = new TimerVO(); break;
                     case TimersVO.NAME: value = new TimersVO(); break;
                     case ConditionVO.NAME: value = new ConditionVO(); break;
@@ -281,6 +281,7 @@ package vo
                     case AttackBaseVO.NAME: value = new AttackBaseVO(); break;
                     case AttackerVO.NAME: value = new AttackerVO(); break;
                     case FindBaseVO.NAME: value = new FindBaseVO(); break;
+                    case TimeoutVO.NAME: value = new TimeoutVO(); break;
 					
 					// /TODO
 					

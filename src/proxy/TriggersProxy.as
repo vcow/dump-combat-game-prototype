@@ -9,7 +9,6 @@ package proxy
     
     import org.puremvc.as3.patterns.proxy.Proxy;
     
-    import vo.TriggerDescVO;
     import vo.TriggerValueVO;
     import vo.TriggersVO;
     
@@ -68,10 +67,7 @@ package proxy
             trigger = new TriggerValueVO();
             trigger.triggerValueTriggerId = triggerId;
             
-            if (!trigger.triggerDesc)
-                throw Error("Requested the value of undefined trigger (" + triggerId + ").");
-            
-            if (trigger.triggerDesc.triggerIsComputable)
+            if (trigger.triggerDesc)
                 return calcTriggerValue(triggerId, args);
             
             return NaN;
@@ -102,7 +98,7 @@ package proxy
                     if (trigger.triggerValueValue != newValue)
                     {
                         trigger.triggerValueValue = newValue;
-                        sendNotification(Const.TRIGGER_CHANGED, trigger.triggerDesc);
+                        sendNotification(Const.TRIGGER_CHANGED, trigger.triggerValueTriggerId);
                     }
                     return true;
                 }
@@ -112,9 +108,6 @@ package proxy
             trigger.triggerValueTriggerId = triggerId;
             
             if (!trigger.triggerDesc)
-                throw Error("Trying to set the value of undefined trigger (" + triggerId + ").");
-            
-            if (!trigger.triggerDesc.triggerIsComputable)
             {
                 switch (type)
                 {
@@ -125,7 +118,7 @@ package proxy
                 }
                 
                 triggersVO.children.push(trigger);
-                sendNotification(Const.TRIGGER_CHANGED, trigger.triggerDesc);
+                sendNotification(Const.TRIGGER_CHANGED, trigger.triggerValueTriggerId);
                 return true;
             }
             
@@ -138,9 +131,8 @@ package proxy
          */
         public function valueChanged(triggerId:String):void
         {
-            var triggerDesc:TriggerDescVO = TriggersDict.getInstance().getTrigger(triggerId);
-            if (triggerDesc && triggerDesc.triggerIsComputable)
-                sendNotification(Const.TRIGGER_CHANGED, triggerDesc);
+            if (TriggersDict.getInstance().getTrigger(triggerId))
+                sendNotification(Const.TRIGGER_CHANGED, triggerId);
         }
         
         //--------------------------------------------------------------------------

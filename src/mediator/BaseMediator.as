@@ -104,7 +104,7 @@ package mediator
                         label: module.moduleName,
                         id: module.moduleId,
                         price: module.modulePrice,
-                        leadTime: module.moduleLeadTime
+                        leadTime: module.moduleTimeout ? module.moduleTimeout.timeoutDelay : NaN
                     });
                 }
                 _moduleTypesList = new ArrayCollection(types);

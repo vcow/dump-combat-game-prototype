@@ -33,6 +33,7 @@ package vo
 		public var moduleDescription:String;	//< Описание модуля
 		public var moduleSpace:int;				//< Вместительность модуля
 		public var moduleChance:Number;			//< Вероятность сохранения при захвате базы
+        public var moduleBuiltEvent:String;     //< Идентификатор события, по которому модуль считается построенным
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -80,12 +81,12 @@ package vo
         /**
          * Время на постройку модуля
          */
-        public function get moduleLeadTime():LeadTimeVO
+        public function get moduleTimeout():TimeoutVO
         {
             for each (var value:IVO in children)
             {
-                if (value.name == LeadTimeVO.NAME)
-                    return value as LeadTimeVO;
+                if (value.name == TimeoutVO.NAME)
+                    return value as TimeoutVO;
             }
             return null;
         }
@@ -105,6 +106,9 @@ package vo
 			res.@description = moduleDescription;
 			res.@space = moduleSpace;
 			res.@chance = moduleChance;
+            
+            if (moduleBuiltEvent)
+                res.@builtEvent = moduleBuiltEvent;
 			
 			// /TODO
 			
@@ -122,6 +126,7 @@ package vo
 			moduleDescription = data.hasOwnProperty("@description") ? VO.parseString(data.@description, "modules") : Const.NO_TEXT;
 			moduleSpace = data.hasOwnProperty("@space") ? int(data.@space) : 0;
 			moduleChance = data.hasOwnProperty("@chance") ? Number(data.@chance) : 0.0;
+            moduleBuiltEvent = data.hasOwnProperty("@builtEvent") ? data.@builtEvent.toString() : EventDescVO.DEFAULT_CONSTRUSTION_COMPLETED_EVENT;
 			
 			// /TODO
 			

@@ -1,40 +1,31 @@
 package vo
 {
-    import helpers.TimeHelper;
-
 	/**
 	 * 
 	 * @author jvirkovskiy
-	 * Value Object описания события
+	 * Value Object внутриигрового события
 	 * 
 	 */
 	
-	public class EventDescVO extends VO
+	public class EventVO extends VO
 	{
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public static const NAME:String = "eventDesc";
-        
-        public static const DEFAULT_PAY_EVENT:String = "payDay";
-        public static const DEFAULT_RESEARCH_EVENT:String = "research";
-        public static const DEFAULT_PRODUCT_EVENT:String = "product";
-        public static const DEFAULT_RECOVER_EVENT:String = "recover";
-        public static const DEFAULT_CONSTRUSTION_COMPLETED_EVENT:String = "constructionCompleted";
-        
-		//--------------------------------------------------------------------------
-		// 
-		//--------------------------------------------------------------------------
-		
-		public var eventId:String;				//< Идентификатор события
-		public var eventInterval:Number;        //< Временной интервал срабатывания события
+		public static const NAME:String = "event";
 		
 		//--------------------------------------------------------------------------
 		// 
 		//--------------------------------------------------------------------------
 		
-		public function EventDescVO()
+		public var eventId:String;              //< Идентификатор внутриигрового события
+		
+		//--------------------------------------------------------------------------
+		// 
+		//--------------------------------------------------------------------------
+		
+		public function EventVO()
 		{
 			super(NAME);
 		}
@@ -50,8 +41,6 @@ package vo
 			// TODO: Сериализовать специфичные поля
 			
 			res.@id = eventId;
-            if (!isNaN(eventInterval))
-                res.@interval = new TimeHelper().timeToStr(eventInterval);
 			
 			// /TODO
 			
@@ -65,7 +54,6 @@ package vo
 			// TODO: десериализовать специфичные поля
 			
             eventId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
-            eventInterval = data.hasOwnProperty("@interval") ? (new TimeHelper).strToTime(data.@interval.toString()) : NaN;
 			
 			// /TODO
 			
@@ -73,3 +61,4 @@ package vo
 		}
 	}
 }
+	

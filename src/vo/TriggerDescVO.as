@@ -20,7 +20,6 @@ package vo
 		//--------------------------------------------------------------------------
 		
         public var triggerId:String;            //< Идентификатор триггера
-        public var triggerIsComputable:Boolean; //< Признак вычислимого триггера
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -43,9 +42,6 @@ package vo
 			
 			res.@id = triggerId;
             
-            if (triggerIsComputable)
-                res.@computable = "true";
-			
 			// /TODO
 			
 			return res;
@@ -58,7 +54,6 @@ package vo
 			// TODO: десериализовать специфичные поля
 			
             triggerId = data.hasOwnProperty("@id") ? data.@id.toString() : "";
-            triggerIsComputable = data.hasOwnProperty("@computable") ? data.@computable.toString().toLowerCase() == "true" : false;
 			
 			// /TODO
 			

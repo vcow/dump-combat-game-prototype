@@ -66,8 +66,7 @@ package vo
             var fee:PriceVO = _moduleDesc.moduleFee;
             _feeEventId = fee ? fee.priceEventId : "";
             
-            var leadTime:LeadTimeVO = _moduleDesc.moduleLeadTime;
-            _builtEventId = leadTime ? leadTime.leadTimeEvent : "";
+            _builtEventId = _moduleDesc.moduleBuiltEvent;
         }
         
         public function get moduleModuleId():String

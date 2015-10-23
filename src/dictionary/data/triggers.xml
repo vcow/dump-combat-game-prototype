@@ -1,58 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Список внутриигровых триггеров -->
+<!-- Список внутриигровых вычислимых триггеров -->
 <triggersDict>
 	<!-- Описание триггера содержит следующие параметры:
-		id={строковое значение} - уникальный идентификатор триггера
-		computable=["true","false"] - признак вычислимого триггера, значение которого расчитывается
-		на основании текущего состояния, не может быть изменен, не сохраняется в состояниях игры. -->
+		id={строковое значение} - уникальный идентификатор триггера. -->
 	<!-- Количество сотрудников указанной професии, количество всех сотрудников, если профессия не указана -->
-	<triggerDesc id="employeesCount" computable="true"/>
+	<triggerDesc id="employeesCount"/>
 	<!-- Количество ресурсов указанного типа, количество всех ресурсов, если тип не указан -->
-	<triggerDesc id="resourcesCount" computable="true"/>
+	<triggerDesc id="resourcesCount"/>
 	<!-- Количество баз у игрока -->
-	<triggerDesc id="basesCount" computable="true"/>
+	<triggerDesc id="basesCount"/>
 	<!-- Количество юнитов на указанной базе, количество всех юнитов, если база не указана -->
-	<triggerDesc id="unitsCount" computable="true"/>
-	<!-- Баз захвачено -->
-	<triggerDesc id="capturedBases"/>
-	<!-- Баз потеряно -->
-	<triggerDesc id="lostBases"/>
-	<!-- Счетчик минут с начала игры -->
-	<triggerDesc id="minutesLeft"/>
-	<!-- Исследование палки завершено -->
-	<triggerDesc id="cudgelResearchComplete"/>
-	<!-- Исследование гвоздя завершено -->
-	<triggerDesc id="nailResearchComplete"/>
-	<!-- Исследование палицы завершено -->
-	<triggerDesc id="maceResearchComplete"/>
-	<!-- Найдена палка -->
-	<triggerDesc id="foundCudgel"/>
-	<!-- Найден гвоздь -->
-	<triggerDesc id="foundNail"/>
-	<!-- Найден картон -->
-	<triggerDesc id="foundCardboard"/>
-	<!-- Исследование картона завершено -->
-	<triggerDesc id="cardboardResearchComplete"/>
-	<!-- Найдена веревка -->
-	<triggerDesc id="foundRope"/>
-	<!-- Исследование веревки завершено -->
-	<triggerDesc id="ropeResearchComplete"/>
-	<!-- Исследование лука завершено -->
-	<triggerDesc id="bowResearchComplete"/>
-	<!-- Исследование стрелы завершено -->
-	<triggerDesc id="arrowResearchComplete"/>
-	<!-- Исследование стрелы с железным наконечником завершено -->
-	<triggerDesc id="arrowTippedResearchComplete"/>
-	<!-- Найдена кожа -->
-	<triggerDesc id="foundSkin"/>
-	<!-- Исследование кожи завершено -->
-	<triggerDesc id="skinResearchComplete"/>
-	<!-- Найдена бутылка -->
-	<triggerDesc id="foundBottle"/>
-	<!-- Исследование бутылки завершено -->
-	<triggerDesc id="bottleResearchComplete"/>
-	<!-- Захвачена база Центральная -->
-	<triggerDesc id="centralTaken"/>
-	<!-- Захвачена база Измаил -->
-	<triggerDesc id="ismailTaken"/>
+	<triggerDesc id="unitsCount"/>
 </triggersDict>
