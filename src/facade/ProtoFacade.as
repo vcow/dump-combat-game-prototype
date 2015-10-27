@@ -9,6 +9,7 @@ package facade
 	import command.CreateNewBaseCommand;
 	import command.CreateNewPersonCommand;
 	import command.DestroyUnitCommand;
+	import command.FindTargetCommand;
 	import command.FoundRuinsCommand;
 	import command.GameEventCommand;
 	import command.MobilizeUnitCommand;
@@ -105,6 +106,7 @@ package facade
             registerCommand(Const.TRIGGER_CHANGED, TriggerChangedCommand);
             registerCommand(Const.FOUND_RUINS, FoundRuinsCommand);
             registerCommand(Const.ATTACK_BASE, AttackBaseCommand);
+            registerCommand(Const.FIND_TARGET, FindTargetCommand);
 		}
 	}
 }

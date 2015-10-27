@@ -1,5 +1,13 @@
 package helpers
 {
+    import flash.display.DisplayObjectContainer;
+    
+    import mx.core.FlexGlobals;
+    import mx.managers.PopUpManager;
+    import mx.resources.ResourceManager;
+    
+    import spark.events.PopUpEvent;
+    
     import command.data.AttackBaseCmdData;
     
     import dictionary.Const;
@@ -7,6 +15,8 @@ package helpers
     import facade.ProtoFacade;
     
     import proxy.TriggersProxy;
+    
+    import views.modal.AlertPopUp;
     
     import vo.AttackBaseVO;
     import vo.AttackerVO;
@@ -20,6 +30,7 @@ package helpers
     import vo.ResultVO;
     import vo.TimeoutVO;
     import vo.TriggerVO;
+    import vo.UiMessageVO;
 
     /**
      * 
@@ -89,6 +100,26 @@ package helpers
                             army.push(attacker.attackerId);
                         ProtoFacade.getInstance().sendNotification(Const.ATTACK_BASE, new AttackBaseCmdData(
                             attackBase.attackBaseTarget, attackBase.attackBaseDeparture, army));
+                        break;
+                    case UiMessageVO.NAME:      //< Выдать сообщение для юзера
+                        var uiMessage:UiMessageVO = UiMessageVO(item);
+                        var alertPopUp:AlertPopUp = new AlertPopUp();
+                        alertPopUp.text = uiMessage.uiMessageText;
+                        alertPopUp.buttonFlags = uiMessage.uiMessageButtons;
+                        
+                        alertPopUp.addEventListener(PopUpEvent.CLOSE, function(event:PopUpEvent):void {
+                            if (event.data == Const.OK && uiMessage.uiMessageOkHandler)
+                                applyResult(uiMessage.uiMessageOkHandler.okResult);
+                            else if (event.data == Const.CANCEL && uiMessage.uiMessageCancelHandler)
+                                applyResult(uiMessage.uiMessageCancelHandler.cancelResult);
+                            else if (event.data == Const.YES && uiMessage.uiMessageYesHandler)
+                                applyResult(uiMessage.uiMessageYesHandler.yesResult);
+                            else if (event.data == Const.NO && uiMessage.uiMessageNoHandler)
+                                applyResult(uiMessage.uiMessageNoHandler.noResult);
+                        });
+                        
+                        alertPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+                        PopUpManager.centerPopUp(alertPopUp);
                         break;
                     case GiveQuestVO.NAME:      //< Выдать квест (не обрабатывается здесь из за рекурсивных вызовов из CheckQuestsCommand)
                     case TimeoutVO.NAME:        //< Запуск таймаута (не обрабатывается здесь из за привязки к квесту, см. CheckQuestsCommand)

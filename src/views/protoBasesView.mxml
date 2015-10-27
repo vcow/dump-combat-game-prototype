@@ -18,12 +18,20 @@
 	<s:actionContent>
 		<s:Button label="+" click="buildNewBase_clickHandler(event)"/>
 	</s:actionContent>
+    
+    <s:HGroup styleName="tabBarStyle" width="100%" gap="-1" height="30">
+        <s:RadioButton label="@Resource(key='bases.type.my', bundle='common')" width="100%" height="100%" groupName="typeRadioGroup" selected="true" value="my"/>
+        <s:RadioButton label="@Resource(key='bases.type.enemy', bundle='common')" width="100%" height="100%" groupName="typeRadioGroup" value="enemy"/>
+        <s:RadioButton label="@Resource(key='bases.type.ruin', bundle='common')" width="100%" height="100%" groupName="typeRadioGroup" value="ruin"/>
+    </s:HGroup>
 	
 	<s:List id="basesListView" verticalScrollPolicy="on" horizontalScrollPolicy="off"
 			width="100%" height="100%" change="basesListView_changeHandler(event)"
-			dataProvider="{basesList}" labelField="baseName"/>
+			dataProvider="{basesList}"/>
 	
 	<fx:Declarations>
+        <s:RadioButtonGroup id="typeRadioGroup" change="typeRadioGroup_changeHandler(event)"/>
+        
 		<modal:CreateBasePopUp id="createBasePopUp" close="createBasePopUp_closeHandler(event)"/>
 		<modal:RenameBasePopUp id="renameBasePopUp" close="renamePopUp_closeHandler(event)"/>
 	</fx:Declarations>
@@ -92,6 +100,11 @@
 					PopUpManager.centerPopUp(renameBasePopUp);
 				}
 			}
+            
+            public function updateList():void
+            {
+                _basesListMediator.updateList(typeRadioGroup.selectedValue.toString());
+            }
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
@@ -101,9 +114,16 @@
 			
 			protected function basesListView_changeHandler(event:IndexChangeEvent):void
 			{
-				var base:Object = basesList.getItemAt(event.newIndex);
-                if (base && base.hasOwnProperty("baseId"))
-                    navigator.pushView(BaseView, base.baseId);
+                switch (typeRadioGroup.selectedValue)
+                {
+                    case "my":
+                        navigator.pushView(BaseView, basesListView.selectedItem.id);
+                        break;
+                    case "enemy":
+                        break;
+                    case "ruin":
+                        break;
+                }
 			}
 			
 			protected function buildNewBase_clickHandler(event:MouseEvent):void
@@ -143,6 +163,11 @@
 					dispatchEvent(new BaseEvent(BaseEvent.RENAME, renameBasePopUp.baseId,
                         StringUtil.trim(renameBasePopUp.baseNameInput.text)));
 			}
+            
+            protected function typeRadioGroup_changeHandler(event:Event):void
+            {
+                updateList();
+            }
 			
 		]]>
 	</fx:Script>

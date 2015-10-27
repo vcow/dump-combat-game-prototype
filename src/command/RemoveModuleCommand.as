@@ -7,6 +7,8 @@ package command
     import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.command.SimpleCommand;
     
+    import proxy.TriggersProxy;
+    
     import vo.BaseVO;
     import vo.ModuleDescVO;
     import vo.ModuleVO;
@@ -56,6 +58,8 @@ package command
                     if (ModuleVO(modules.children[i]).moduleId == moduleId)
                     {
                         modules.children.splice(i, 1);
+                        
+                        TriggersProxy(this.facade.retrieveProxy(TriggersProxy.NAME)).valueChanged(TriggersProxy.MODULES_COUNT_TRIGGER);
                         sendNotification(Const.MODULES_CHANGED, base);
                     }
                 }

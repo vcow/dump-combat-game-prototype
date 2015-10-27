@@ -91,7 +91,11 @@ package command
                         modules.children.push(ModuleVO(ruinModules.children[i]).clone());
                 }
                 
-                TriggersProxy(this.facade.retrieveProxy(TriggersProxy.NAME)).valueChanged(TriggersProxy.BASES_COUNT_TRIGGER);
+                var triggersProxy:TriggersProxy = TriggersProxy(this.facade.retrieveProxy(TriggersProxy.NAME));
+                triggersProxy.valueChanged(TriggersProxy.BASES_COUNT_TRIGGER);
+                if (base.baseModules.children.length > 0)
+                    triggersProxy.valueChanged(TriggersProxy.MODULES_COUNT_TRIGGER);
+                
                 sendNotification(Const.NEW_BASE_CREATED, base);
             }
 		}

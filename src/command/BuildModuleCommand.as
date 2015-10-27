@@ -12,6 +12,7 @@ import org.puremvc.as3.patterns.command.SimpleCommand;
 
 import proxy.BasesListProxy;
 import proxy.TimersProxy;
+import proxy.TriggersProxy;
 
 import vo.BaseVO;
 import vo.ModuleDescVO;
@@ -92,6 +93,8 @@ import vo.VO;
                         }
                         
                         modules.children.push(module);
+                        
+                        TriggersProxy(this.facade.retrieveProxy(TriggersProxy.NAME)).valueChanged(TriggersProxy.MODULES_COUNT_TRIGGER);
                         sendNotification(Const.MODULES_CHANGED, base);
                     }
                 }

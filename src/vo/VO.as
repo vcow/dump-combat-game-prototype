@@ -282,6 +282,11 @@ package vo
                     case AttackerVO.NAME: value = new AttackerVO(); break;
                     case FindBaseVO.NAME: value = new FindBaseVO(); break;
                     case TimeoutVO.NAME: value = new TimeoutVO(); break;
+                    case UiMessageVO.NAME: value = new UiMessageVO(); break;
+                    case OkVO.NAME: value = new OkVO(); break;
+                    case CancelVO.NAME: value = new CancelVO(); break;
+                    case YesVO.NAME: value = new YesVO(); break;
+                    case NoVO.NAME: value = new NoVO(); break;
 					
 					// /TODO
 					

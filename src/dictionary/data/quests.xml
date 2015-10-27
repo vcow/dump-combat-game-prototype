@@ -11,6 +11,8 @@
 			<result>
 				<!-- Выдать юзеру начальную базу в виде руин -->
 				<giveBase id="4C3AC134-B7EF-4360-9915-39A6FB231071" asRuin="true"/>
+				<!-- Запустить квест на обучение -->
+				<giveQuest id="tutorialQuest"/>
 			</result>
 			<!-- Цели шага -->
 			<stepTargets>
@@ -147,6 +149,361 @@
 					<result>
 						<gameOver/>
 					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
+	</questDesc>
+	
+	<!-- Обучающий квест -->
+	<questDesc id="tutorialQuest" name="{tutorial.quest.title}" description="{tutorial.quest.description}">
+		<step>
+			<result>
+				<!-- Сообщение пользователю, поддерживает следующие параметры:
+					text={строковое значение} - текст сообщения
+					buttons={список строковых значений, разделенных запятыми} - список отображаемых кнопок из набора ["yes","no","ok","cancel"].
+					В качестве дочерних элементов может иметь обработчики нажатия кнопок, содержащие соответствующий result. -->
+				<uiMessage text="{tutorial.quest.intro}" buttons="ok">
+					<ok>
+						<result>
+							<trigger id="tutorialQuestStepCtr" value="1" type="set"/>
+						</result>
+					</ok>
+				</uiMessage>
+			</result>
+			<stepTargets>
+				<stepTarget>
+					<condition>
+						<if>
+							<trigger>tutorialQuestStepCtr</trigger>
+						</if>
+					</condition>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<result>
+				<uiMessage text="{tutorial.create.base}" buttons="ok"/>
+			</result>
+			<stepTargets>
+				<!-- Дождаться, когда юзер создаст первую базу -->
+				<stepTarget>
+					<condition>
+						<if>
+							<trigger>basesCount</trigger>
+							<min type="int">1</min>
+						</if>
+					</condition>
+					<result>
+						<uiMessage text="{tutorial.base.created}" buttons="ok">
+							<ok>
+								<result>
+									<trigger id="tutorialQuestStepCtr" value="1" type="inc"/>
+								</result>
+							</ok>
+						</uiMessage>
+					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<!-- Дождаться закрытия предыдущего окошка -->
+			<stepTargets>
+				<stepTarget>
+					<condition>
+						<if>
+							<trigger>tutorialQuestStepCtr</trigger>
+							<min type="int">2</min>
+						</if>
+					</condition>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<result>
+				<uiMessage text="{tutorial.hire.employee}" buttons="ok"/>
+			</result>
+			<stepTargets>
+				<!-- Дождаться, когда юзер наймет работников -->
+				<stepTarget>
+					<condition>
+						<if>
+							<trigger>employeesCount</trigger>
+							<value>laborer</value>
+							<min type="int">3</min>
+						</if>
+					</condition>
+					<result>
+						<uiMessage text="{tutorial.employee.hired}" buttons="ok">
+							<ok>
+								<result>
+									<trigger id="tutorialQuestStepCtr" value="1" type="inc"/>
+								</result>
+							</ok>
+						</uiMessage>
+					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<!-- Через пять секунд выдать юзеру артефакт - палку -->
+			<result>
+				<timeout delay="5s">
+					<result>
+						<resource id="cudgel" count="1"/>
+					</result>
+				</timeout>
+			</result>
+			<stepTargets>
+				<stepTarget>
+					<!-- На случай, если рабочие найдут раньше, реагировать также на другие базовые артефакты -->
+					<condition>
+						<and>
+							<if>
+								<trigger>tutorialQuestStepCtr</trigger>
+								<min type="int">3</min>
+							</if>
+							<or>
+								<if>
+									<trigger>foundCudgel</trigger>
+								</if>
+								<if>
+									<trigger>foundNail</trigger>
+								</if>
+								<if>
+									<trigger>foundCardboard</trigger>
+								</if>
+								<if>
+									<trigger>foundRope</trigger>
+								</if>
+							</or>
+						</and>
+					</condition>
+					<result>
+						<!-- При появлении любого из выше перечисленных артефактов, сообщить юзеру о нахождении артефакта -->
+						<uiMessage text="{tutorial.artifact.found}" buttons="ok">
+							<ok>
+								<result>
+									<trigger id="tutorialQuestStepCtr" value="1" type="inc"/>
+								</result>
+							</ok>
+						</uiMessage>
+					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<!-- Дождаться закрытия предыдущего окошка -->
+			<stepTargets>
+				<stepTarget>
+					<condition>
+						<if>
+							<trigger>tutorialQuestStepCtr</trigger>
+							<min type="int">4</min>
+						</if>
+					</condition>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<result>
+				<uiMessage text="{tutorial.build.lab}" buttons="ok"/>
+			</result>
+			<stepTargets>
+				<!-- Дождаться, когда юзер построит лабораторию -->
+				<stepTarget>
+					<condition>
+						<if>
+							<trigger>modulesCount</trigger>
+							<value>lab</value>
+						</if>
+					</condition>
+					<result>
+						<uiMessage text="{tutorial.hire.scietists}" buttons="ok">
+							<ok>
+								<result>
+									<trigger id="tutorialQuestStepCtr" value="1" type="inc"/>
+								</result>
+							</ok>
+						</uiMessage>
+					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<!-- Ждем, пока юзер наймет ученых -->
+			<stepTargets>
+				<stepTarget>
+					<condition>
+						<and>
+							<if>
+								<!-- Это на случай, если юзер уже нанял ученых, подождать чтобы закрылось предыдущее окно -->
+								<trigger>tutorialQuestStepCtr</trigger>
+								<min type="int">5</min>
+							</if>
+							<if>
+								<trigger>employeesCount</trigger>
+								<value>scientist</value>
+								<min type="int">2</min>
+							</if>
+						</and>
+					</condition>
+					<result>
+						<uiMessage text="{tutorial.begin.research}" buttons="ok"/>
+					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<!-- Ждем завершения какого-либо исследования -->
+			<stepTargets>
+				<stepTarget>
+					<condition>
+						<or>
+							<if>
+								<trigger>cudgelResearchComplete</trigger>
+							</if>
+							<if>
+								<trigger>nailResearchComplete</trigger>
+							</if>
+							<if>
+								<trigger>cardboardResearchComplete</trigger>
+							</if>
+							<if>
+								<trigger>ropeResearchComplete</trigger>
+							</if>
+						</or>
+					</condition>
+					<result>
+						<uiMessage text="{tutorial.research.complete}" buttons="ok"/>
+					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<!-- Ждем завершения какого-либо исследования, необходимого для начала производства -->
+			<stepTargets>
+				<stepTarget>
+					<condition>
+						<or>
+							<if>
+								<trigger>maceResearchComplete</trigger>
+							</if>
+							<if>
+								<trigger>cardboardResearchComplete</trigger>
+							</if>
+							<if>
+								<trigger>bowResearchComplete</trigger>
+							</if>
+						</or>
+					</condition>
+					<result>
+						<!-- При появлении любой из выше перечисленных технологий, сообщить юзеру о возможности производства -->
+						<uiMessage text="{tutorial.can.product}" buttons="ok">
+							<ok>
+								<result>
+									<trigger id="tutorialQuestStepCtr" value="1" type="inc"/>
+								</result>
+							</ok>
+						</uiMessage>
+					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<stepTargets>
+				<!-- Дождаться, когда юзер построит мастерскую -->
+				<stepTarget>
+					<condition>
+						<and>
+							<if>
+								<!-- Это на случай, если юзер уже построил мастерскую, подождать чтобы закрылось предыдущее окно -->
+								<trigger>tutorialQuestStepCtr</trigger>
+								<min type="int">6</min>
+							</if>
+							<if>
+								<trigger>modulesCount</trigger>
+								<value>workshop</value>
+							</if>
+						</and>
+					</condition>
+					<result>
+						<!-- Предложить юзеру нанять инженеров -->
+						<uiMessage text="{tutorial.hire.engineers}" buttons="ok">
+							<ok>
+								<result>
+									<trigger id="tutorialQuestStepCtr" value="1" type="inc"/>
+								</result>
+							</ok>
+						</uiMessage>
+					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<!-- Ждем, пока юзер наймет инженера -->
+			<stepTargets>
+				<stepTarget>
+					<condition>
+						<and>
+							<if>
+								<!-- Это на случай, если юзер уже нанял инженера, подождать чтобы закрылось предыдущее окно -->
+								<trigger>tutorialQuestStepCtr</trigger>
+								<min type="int">7</min>
+							</if>
+							<if>
+								<trigger>employeesCount</trigger>
+								<value>engineer</value>
+							</if>
+						</and>
+					</condition>
+					<result>
+						<uiMessage text="{tutorial.begin.production}" buttons="ok"/>
+					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<!-- Ждем завершения какого-либо производства -->
+			<stepTargets>
+				<stepTarget>
+					<condition>
+						<or>
+							<if>
+								<trigger>resourcesCount</trigger>
+								<value>mace</value>
+							</if>
+							<if>
+								<trigger>resourcesCount</trigger>
+								<value>cardboardArmor</value>
+							</if>
+							<if>
+								<trigger>resourcesCount</trigger>
+								<value>bow</value>
+							</if>
+						</or>
+					</condition>
+					<result>
+						<uiMessage text="{tutorial.production.complete}" buttons="ok">
+							<ok>
+								<result>
+									<trigger id="tutorialQuestStepCtr" value="1" type="inc"/>
+								</result>
+							</ok>
+						</uiMessage>
+					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<!-- Дождаться закрытия предыдущего окошка -->
+			<stepTargets>
+				<stepTarget>
+					<condition>
+						<if>
+							<trigger>tutorialQuestStepCtr</trigger>
+							<min type="int">8</min>
+						</if>
+					</condition>
 				</stepTarget>
 			</stepTargets>
 		</step>

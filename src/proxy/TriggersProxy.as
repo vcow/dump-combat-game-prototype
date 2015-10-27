@@ -9,6 +9,7 @@ package proxy
     
     import org.puremvc.as3.patterns.proxy.Proxy;
     
+    import vo.BaseVO;
     import vo.TriggerValueVO;
     import vo.TriggersVO;
     
@@ -35,6 +36,7 @@ package proxy
         public static const RESOURCES_COUNT_TRIGGER:String = "resourcesCount";
         public static const BASES_COUNT_TRIGGER:String = "basesCount";
         public static const UNITS_COUNT_TRIGGER:String = "unitsCount";
+        public static const MODULES_COUNT_TRIGGER:String = "modulesCount";
         
         //--------------------------------------------------------------------------
         // 
@@ -150,17 +152,27 @@ package proxy
             switch (triggerId)
             {
                 case EMPLOYEES_COUNT_TRIGGER:
+                    var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
                     if (args.length == 0)
                     {
                         // Вернуть общее количество сотрудников
-                        return (new PersonnelHelper()).getEmployees().length;
+                        return (new PersonnelHelper(basesListProxy)).getEmployees().length;
                     }
-                    else
+                    else if (args.length == 1)
                     {
-                        // Вернуть количество сотрудников указанной профессии
-                        var professionId:String = args[0].toString();
-                        if (professionId)
-                            return (new PersonnelHelper()).getEmployees(professionId).length;
+                        // Вернуть количество сотрудников указанной профессии для всех баз, или количество сотрудников для указанной базы
+                        if (basesListProxy.getBase(args[0].toString()))
+                            return (new PersonnelHelper(basesListProxy)).getEmployees(null, args[0].toString()).length;
+                        else
+                            return (new PersonnelHelper(basesListProxy)).getEmployees(args[0].toString()).length;
+                    }
+                    else if (args.length == 2)
+                    {
+                        // Вернуть количество сотрудников указанной профессии для указанной базы
+                        if (basesListProxy.getBase(args[0].toString()))
+                            return (new PersonnelHelper(basesListProxy)).getEmployees(args[1].toString(), args[0].toString()).length;
+                        else
+                            return (new PersonnelHelper(basesListProxy)).getEmployees(args[0].toString(), args[1].toString()).length;
                     }
                     break;
                 case RESOURCES_COUNT_TRIGGER:
@@ -184,6 +196,49 @@ package proxy
                         var baseId:String = args[0].toString();
                         return (new ArmyHelper()).getUnitsOnBase(baseId).length;
                     }
+                    break;
+                case MODULES_COUNT_TRIGGER:
+                    basesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
+                    var res:Number;
+                    
+                    if (args.length == 0)
+                    {
+                        // Количество всех модулей для всех баз
+                        res = 0;
+                        for each (var base:BaseVO in basesListProxy.getBasesList())
+                            res += base.baseModules.children.length;
+                    }
+                    else if (args.length == 1)
+                    {
+                        // Количество всех модулей для указанной базы, или модулей указанного типа для всех баз
+                        base = basesListProxy.getBase(args[0].toString()) as BaseVO;
+                        if (base)
+                            return base.baseModules.children.length;
+                        
+                        res = 0;
+                        var moduleId:String = args[0].toString();
+                        for each (base in basesListProxy.getBasesList())
+                            res += base.getModules(moduleId, true).length;
+                    }
+                    else if (args.length == 2)
+                    {
+                        // Количество модулей указанного типа для указанной базы
+                        base = basesListProxy.getBase(args[0].toString()) as BaseVO;
+                        if (base)
+                        {
+                            moduleId = args[1].toString();
+                        }
+                        else
+                        {
+                            moduleId = args[0].toString();
+                            base = basesListProxy.getBase(args[1].toString()) as BaseVO;
+                        }
+                        
+                        if (base)
+                            return base.getModules(moduleId, true).length;
+                    }
+                    
+                    return res;
                     break;
                 default:
                     throw Error("Has no algorithm to calculate required trigger (" + triggerId + ").");
