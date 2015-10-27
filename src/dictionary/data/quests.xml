@@ -162,23 +162,8 @@
 					text={строковое значение} - текст сообщения
 					buttons={список строковых значений, разделенных запятыми} - список отображаемых кнопок из набора ["yes","no","ok","cancel"].
 					В качестве дочерних элементов может иметь обработчики нажатия кнопок, содержащие соответствующий result. -->
-				<uiMessage text="{tutorial.quest.intro}" buttons="ok">
-					<ok>
-						<result>
-							<trigger id="tutorialQuestStepCtr" value="1" type="set"/>
-						</result>
-					</ok>
-				</uiMessage>
+				<uiMessage text="{tutorial.quest.intro}" buttons="ok"/>
 			</result>
-			<stepTargets>
-				<stepTarget>
-					<condition>
-						<if>
-							<trigger>tutorialQuestStepCtr</trigger>
-						</if>
-					</condition>
-				</stepTarget>
-			</stepTargets>
 		</step>
 		<step>
 			<result>
@@ -194,27 +179,8 @@
 						</if>
 					</condition>
 					<result>
-						<uiMessage text="{tutorial.base.created}" buttons="ok">
-							<ok>
-								<result>
-									<trigger id="tutorialQuestStepCtr" value="1" type="inc"/>
-								</result>
-							</ok>
-						</uiMessage>
+						<uiMessage text="{tutorial.base.created}" buttons="ok"/>
 					</result>
-				</stepTarget>
-			</stepTargets>
-		</step>
-		<step>
-			<!-- Дождаться закрытия предыдущего окошка -->
-			<stepTargets>
-				<stepTarget>
-					<condition>
-						<if>
-							<trigger>tutorialQuestStepCtr</trigger>
-							<min type="int">2</min>
-						</if>
-					</condition>
 				</stepTarget>
 			</stepTargets>
 		</step>
@@ -233,13 +199,7 @@
 						</if>
 					</condition>
 					<result>
-						<uiMessage text="{tutorial.employee.hired}" buttons="ok">
-							<ok>
-								<result>
-									<trigger id="tutorialQuestStepCtr" value="1" type="inc"/>
-								</result>
-							</ok>
-						</uiMessage>
+						<uiMessage text="{tutorial.employee.hired}" buttons="ok"/>
 					</result>
 				</stepTarget>
 			</stepTargets>
@@ -257,50 +217,25 @@
 				<stepTarget>
 					<!-- На случай, если рабочие найдут раньше, реагировать также на другие базовые артефакты -->
 					<condition>
-						<and>
+						<or>
 							<if>
-								<trigger>tutorialQuestStepCtr</trigger>
-								<min type="int">3</min>
+								<trigger>foundCudgel</trigger>
 							</if>
-							<or>
-								<if>
-									<trigger>foundCudgel</trigger>
-								</if>
-								<if>
-									<trigger>foundNail</trigger>
-								</if>
-								<if>
-									<trigger>foundCardboard</trigger>
-								</if>
-								<if>
-									<trigger>foundRope</trigger>
-								</if>
-							</or>
-						</and>
+							<if>
+								<trigger>foundNail</trigger>
+							</if>
+							<if>
+								<trigger>foundCardboard</trigger>
+							</if>
+							<if>
+								<trigger>foundRope</trigger>
+							</if>
+						</or>
 					</condition>
 					<result>
 						<!-- При появлении любого из выше перечисленных артефактов, сообщить юзеру о нахождении артефакта -->
-						<uiMessage text="{tutorial.artifact.found}" buttons="ok">
-							<ok>
-								<result>
-									<trigger id="tutorialQuestStepCtr" value="1" type="inc"/>
-								</result>
-							</ok>
-						</uiMessage>
+						<uiMessage text="{tutorial.artifact.found}" buttons="ok"/>
 					</result>
-				</stepTarget>
-			</stepTargets>
-		</step>
-		<step>
-			<!-- Дождаться закрытия предыдущего окошка -->
-			<stepTargets>
-				<stepTarget>
-					<condition>
-						<if>
-							<trigger>tutorialQuestStepCtr</trigger>
-							<min type="int">4</min>
-						</if>
-					</condition>
 				</stepTarget>
 			</stepTargets>
 		</step>
@@ -318,13 +253,7 @@
 						</if>
 					</condition>
 					<result>
-						<uiMessage text="{tutorial.hire.scietists}" buttons="ok">
-							<ok>
-								<result>
-									<trigger id="tutorialQuestStepCtr" value="1" type="inc"/>
-								</result>
-							</ok>
-						</uiMessage>
+						<uiMessage text="{tutorial.hire.scietists}" buttons="ok"/>
 					</result>
 				</stepTarget>
 			</stepTargets>
@@ -334,18 +263,11 @@
 			<stepTargets>
 				<stepTarget>
 					<condition>
-						<and>
-							<if>
-								<!-- Это на случай, если юзер уже нанял ученых, подождать чтобы закрылось предыдущее окно -->
-								<trigger>tutorialQuestStepCtr</trigger>
-								<min type="int">5</min>
-							</if>
-							<if>
-								<trigger>employeesCount</trigger>
-								<value>scientist</value>
-								<min type="int">2</min>
-							</if>
-						</and>
+						<if>
+							<trigger>employeesCount</trigger>
+							<value>scientist</value>
+							<min type="int">2</min>
+						</if>
 					</condition>
 					<result>
 						<uiMessage text="{tutorial.begin.research}" buttons="ok"/>
@@ -398,13 +320,7 @@
 					</condition>
 					<result>
 						<!-- При появлении любой из выше перечисленных технологий, сообщить юзеру о возможности производства -->
-						<uiMessage text="{tutorial.can.product}" buttons="ok">
-							<ok>
-								<result>
-									<trigger id="tutorialQuestStepCtr" value="1" type="inc"/>
-								</result>
-							</ok>
-						</uiMessage>
+						<uiMessage text="{tutorial.can.product}" buttons="ok"/>
 					</result>
 				</stepTarget>
 			</stepTargets>
@@ -414,27 +330,14 @@
 				<!-- Дождаться, когда юзер построит мастерскую -->
 				<stepTarget>
 					<condition>
-						<and>
-							<if>
-								<!-- Это на случай, если юзер уже построил мастерскую, подождать чтобы закрылось предыдущее окно -->
-								<trigger>tutorialQuestStepCtr</trigger>
-								<min type="int">6</min>
-							</if>
-							<if>
-								<trigger>modulesCount</trigger>
-								<value>workshop</value>
-							</if>
-						</and>
+						<if>
+							<trigger>modulesCount</trigger>
+							<value>workshop</value>
+						</if>
 					</condition>
 					<result>
 						<!-- Предложить юзеру нанять инженеров -->
-						<uiMessage text="{tutorial.hire.engineers}" buttons="ok">
-							<ok>
-								<result>
-									<trigger id="tutorialQuestStepCtr" value="1" type="inc"/>
-								</result>
-							</ok>
-						</uiMessage>
+						<uiMessage text="{tutorial.hire.engineers}" buttons="ok"/>
 					</result>
 				</stepTarget>
 			</stepTargets>
@@ -444,17 +347,10 @@
 			<stepTargets>
 				<stepTarget>
 					<condition>
-						<and>
-							<if>
-								<!-- Это на случай, если юзер уже нанял инженера, подождать чтобы закрылось предыдущее окно -->
-								<trigger>tutorialQuestStepCtr</trigger>
-								<min type="int">7</min>
-							</if>
-							<if>
-								<trigger>employeesCount</trigger>
-								<value>engineer</value>
-							</if>
-						</and>
+						<if>
+							<trigger>employeesCount</trigger>
+							<value>engineer</value>
+						</if>
 					</condition>
 					<result>
 						<uiMessage text="{tutorial.begin.production}" buttons="ok"/>
@@ -483,27 +379,8 @@
 						</or>
 					</condition>
 					<result>
-						<uiMessage text="{tutorial.production.complete}" buttons="ok">
-							<ok>
-								<result>
-									<trigger id="tutorialQuestStepCtr" value="1" type="inc"/>
-								</result>
-							</ok>
-						</uiMessage>
+						<uiMessage text="{tutorial.production.complete}" buttons="ok"/>
 					</result>
-				</stepTarget>
-			</stepTargets>
-		</step>
-		<step>
-			<!-- Дождаться закрытия предыдущего окошка -->
-			<stepTargets>
-				<stepTarget>
-					<condition>
-						<if>
-							<trigger>tutorialQuestStepCtr</trigger>
-							<min type="int">8</min>
-						</if>
-					</condition>
 				</stepTarget>
 			</stepTargets>
 		</step>

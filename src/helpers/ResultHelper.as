@@ -4,7 +4,6 @@ package helpers
     
     import mx.core.FlexGlobals;
     import mx.managers.PopUpManager;
-    import mx.resources.ResourceManager;
     
     import spark.events.PopUpEvent;
     
@@ -46,6 +45,9 @@ package helpers
         //--------------------------------------------------------------------------
         
         private var _triggersProxy:TriggersProxy;
+        
+        private static var _messagesQueue:Vector.<UiMessageVO> = new Vector.<UiMessageVO>();
+        private static var _alertPopUp:AlertPopUp;
         
         //--------------------------------------------------------------------------
         // 
@@ -103,23 +105,10 @@ package helpers
                         break;
                     case UiMessageVO.NAME:      //< Выдать сообщение для юзера
                         var uiMessage:UiMessageVO = UiMessageVO(item);
-                        var alertPopUp:AlertPopUp = new AlertPopUp();
-                        alertPopUp.text = uiMessage.uiMessageText;
-                        alertPopUp.buttonFlags = uiMessage.uiMessageButtons;
-                        
-                        alertPopUp.addEventListener(PopUpEvent.CLOSE, function(event:PopUpEvent):void {
-                            if (event.data == Const.OK && uiMessage.uiMessageOkHandler)
-                                applyResult(uiMessage.uiMessageOkHandler.okResult);
-                            else if (event.data == Const.CANCEL && uiMessage.uiMessageCancelHandler)
-                                applyResult(uiMessage.uiMessageCancelHandler.cancelResult);
-                            else if (event.data == Const.YES && uiMessage.uiMessageYesHandler)
-                                applyResult(uiMessage.uiMessageYesHandler.yesResult);
-                            else if (event.data == Const.NO && uiMessage.uiMessageNoHandler)
-                                applyResult(uiMessage.uiMessageNoHandler.noResult);
-                        });
-                        
-                        alertPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
-                        PopUpManager.centerPopUp(alertPopUp);
+                        if (_alertPopUp)
+                            _messagesQueue.push(uiMessage);
+                        else
+                            createPopUp(uiMessage);
                         break;
                     case GiveQuestVO.NAME:      //< Выдать квест (не обрабатывается здесь из за рекурсивных вызовов из CheckQuestsCommand)
                     case TimeoutVO.NAME:        //< Запуск таймаута (не обрабатывается здесь из за привязки к квесту, см. CheckQuestsCommand)
@@ -130,6 +119,32 @@ package helpers
                 }
             }
             return true;
+        }
+        
+        private function createPopUp(uiMessage:UiMessageVO):void
+        {
+            _alertPopUp = new AlertPopUp();
+            _alertPopUp.text = uiMessage.uiMessageText;
+            _alertPopUp.buttonFlags = uiMessage.uiMessageButtons;
+            
+            _alertPopUp.addEventListener(PopUpEvent.CLOSE, function(event:PopUpEvent):void {
+                if (event.data == Const.OK && uiMessage.uiMessageOkHandler)
+                    applyResult(uiMessage.uiMessageOkHandler.okResult);
+                else if (event.data == Const.CANCEL && uiMessage.uiMessageCancelHandler)
+                    applyResult(uiMessage.uiMessageCancelHandler.cancelResult);
+                else if (event.data == Const.YES && uiMessage.uiMessageYesHandler)
+                    applyResult(uiMessage.uiMessageYesHandler.yesResult);
+                else if (event.data == Const.NO && uiMessage.uiMessageNoHandler)
+                    applyResult(uiMessage.uiMessageNoHandler.noResult);
+                
+                _alertPopUp = null;
+                
+                if (_messagesQueue.length > 0)
+                    createPopUp(_messagesQueue.shift());
+            });
+            
+            _alertPopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
+            PopUpManager.centerPopUp(_alertPopUp);
         }
     }
 }
