@@ -287,6 +287,8 @@ package vo
                     case CancelVO.NAME: value = new CancelVO(); break;
                     case YesVO.NAME: value = new YesVO(); break;
                     case NoVO.NAME: value = new NoVO(); break;
+                    case RaidsVO.NAME: value = new RaidsVO(); break;
+                    case RaidVO.NAME: value = new RaidVO(); break;
 					
 					// /TODO
 					

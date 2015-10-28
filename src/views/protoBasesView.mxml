@@ -6,7 +6,13 @@
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:modal="views.modal.*"
 		title="@Resource(key='bases.title', bundle='common')"
-		creationComplete="creationCompleteHandler(event)">
+		creationComplete="creationCompleteHandler(event)"
+        currentState="myBases">
+    <s:states>
+        <s:State name="myBases"/>
+        <s:State name="otherBases"/>
+    </s:states>
+    
 	<s:layout>
 		<s:VerticalLayout gap="0"/>
 	</s:layout>
@@ -15,9 +21,9 @@
 		<s:Button label="&lt;" click="{navigator.popView();}"/>
 	</s:navigationContent>
 	
-	<s:actionContent>
+	<s:actionContent.myBases>
 		<s:Button label="+" click="buildNewBase_clickHandler(event)"/>
-	</s:actionContent>
+	</s:actionContent.myBases>
     
     <s:HGroup styleName="tabBarStyle" width="100%" gap="-1" height="30">
         <s:RadioButton label="@Resource(key='bases.type.my', bundle='common')" width="100%" height="100%" groupName="typeRadioGroup" selected="true" value="my"/>
@@ -31,9 +37,6 @@
 	
 	<fx:Declarations>
         <s:RadioButtonGroup id="typeRadioGroup" change="typeRadioGroup_changeHandler(event)"/>
-        
-		<modal:CreateBasePopUp id="createBasePopUp" close="createBasePopUp_closeHandler(event)"/>
-		<modal:RenameBasePopUp id="renameBasePopUp" close="renamePopUp_closeHandler(event)"/>
 	</fx:Declarations>
 	
 	<fx:Metadata>
@@ -94,6 +97,8 @@
 			{
 				if (baseVO)
 				{
+                    var renameBasePopUp:RenameBasePopUp = new RenameBasePopUp();
+                    renameBasePopUp.addEventListener(PopUpEvent.CLOSE, renamePopUp_closeHandler);
 					renameBasePopUp.baseName = baseVO.baseName;
 					renameBasePopUp.baseId = baseVO.baseId;
 					renameBasePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
@@ -103,6 +108,8 @@
             
             public function updateList():void
             {
+                var selectedValue:String = typeRadioGroup.selectedValue.toString();
+                currentState = selectedValue == "my" ? "myBases" : "otherBases";
                 _basesListMediator.updateList(typeRadioGroup.selectedValue.toString());
             }
 			
@@ -122,16 +129,26 @@
                     case "enemy":
                         break;
                     case "ruin":
+                        buildNewBase(basesListView.selectedItem.id);
+                        basesListView.selectedIndex = -1;
                         break;
                 }
 			}
 			
 			protected function buildNewBase_clickHandler(event:MouseEvent):void
 			{
+                buildNewBase();
+            }
+            
+            private function buildNewBase(ruinId:String=null):void
+            {
 				if (buildNewBaseAvailable)
 				{
+                    var createBasePopUp:CreateBasePopUp = new CreateBasePopUp();
+                    createBasePopUp.addEventListener(PopUpEvent.CLOSE, createBasePopUp_closeHandler);
                     createBasePopUp.currentState = _basesListMediator.isFirstBase ? "woPrice" : "normal";
 					createBasePopUp.ruinsList = _basesListMediator.ruinsDataProvider;
+                    createBasePopUp.selectedRuin = ruinId;
 					createBasePopUp.open(DisplayObjectContainer(FlexGlobals.topLevelApplication), true);
 					PopUpManager.centerPopUp(createBasePopUp);
 				}
@@ -146,6 +163,9 @@
 			
 			private function createBasePopUp_closeHandler(event:PopUpEvent):void
 			{
+                var createBasePopUp:CreateBasePopUp = CreateBasePopUp(event.target);
+                createBasePopUp.removeEventListener(PopUpEvent.CLOSE, createBasePopUp_closeHandler);
+                
 				if (event.data == Const.OK)
 				{
 					var ruinVO:RuinVO = createBasePopUp.ruinsSelector.selectedItem as RuinVO;
@@ -159,6 +179,9 @@
 			
 			protected function renamePopUp_closeHandler(event:PopUpEvent):void
 			{
+                var renameBasePopUp:RenameBasePopUp = RenameBasePopUp(event.target);
+                renameBasePopUp. removeEventListener(PopUpEvent.CLOSE, renamePopUp_closeHandler);
+                
 				if (event.data == Const.OK)
 					dispatchEvent(new BaseEvent(BaseEvent.RENAME, renameBasePopUp.baseId,
                         StringUtil.trim(renameBasePopUp.baseNameInput.text)));

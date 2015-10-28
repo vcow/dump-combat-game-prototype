@@ -319,5 +319,55 @@
 				</stepTarget>
 			</stepTargets>
 		</step>
+		<step>
+			<result>
+				<!-- Предлагаем юзеру нанять солдата -->
+				<uiMessage text="{tutorial.hire.soldier}" buttons="ok"/>
+			</result>
+			<!-- Ждем, пока юзер наймет солдата -->
+			<stepTargets>
+				<stepTarget>
+					<condition>
+						<if>
+							<trigger>employeesCount</trigger>
+							<value>soldier</value>
+						</if>
+					</condition>
+					<result>
+						<uiMessage text="{tutorial.soldier.hired}" buttons="ok"/>
+					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<!-- Ждем, пока юзер экипирует боевой юнит -->
+			<stepTargets>
+				<stepTarget>
+					<condition>
+						<if>
+							<trigger>unitsCount</trigger>
+						</if>
+					</condition>
+					<result>
+						<uiMessage text="{tutorial.unit.equipped}" buttons="ok"/>
+					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<!-- Ждем, пока юзер организует рейд -->
+			<stepTargets>
+				<stepTarget>
+					<condition>
+						<if>
+							<trigger>raidsCount</trigger>
+						</if>
+					</condition>
+					<result>
+						<uiMessage text="{tutorial.first.raid}" buttons="ok"/>
+					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
 	</questDesc>
 </questsDict>

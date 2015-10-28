@@ -32,12 +32,17 @@ package proxy
         public static const INC:String = "inc";
         public static const DEC:String = "dec";
         
-        public static const EMPLOYEES_COUNT_TRIGGER:String = "employeesCount";
-        public static const RESOURCES_COUNT_TRIGGER:String = "resourcesCount";
-        public static const BASES_COUNT_TRIGGER:String = "basesCount";
-        public static const TARGETS_COUNT_TRIGGER:String = "targetsCount";
-        public static const UNITS_COUNT_TRIGGER:String = "unitsCount";
-        public static const MODULES_COUNT_TRIGGER:String = "modulesCount";
+        public static const FORTUNATE_RAID_FLAG:uint = 1;
+        public static const UNFORTUNATE_RAID_FLAG:uint = 2;
+        public static const ACTIVE_RAID_FLAG:uint = 4;
+        
+        public static const EMPLOYEES_COUNT_TRIGGER:String = "employeesCount";      //< Количество сотрудников на базах
+        public static const RESOURCES_COUNT_TRIGGER:String = "resourcesCount";      //< Количество ресурсов
+        public static const BASES_COUNT_TRIGGER:String = "basesCount";              //< Количество баз
+        public static const TARGETS_COUNT_TRIGGER:String = "targetsCount";          //< Количество известных вражеских баз
+        public static const UNITS_COUNT_TRIGGER:String = "unitsCount";              //< Количество юнитов на базах
+        public static const MODULES_COUNT_TRIGGER:String = "modulesCount";          //< Количество модулей на базах
+        public static const RAIDS_COUNT_TRIGGER:String = "raidsCount";              //< Количество совершенных рейдов
         
         //--------------------------------------------------------------------------
         // 
@@ -243,7 +248,18 @@ package proxy
                     }
                     
                     return res;
-                    break;
+                case RAIDS_COUNT_TRIGGER:
+                    // Вернуть количество рейдов
+                    var flags:uint = args.length > 0 ? uint(args[0]) : FORTUNATE_RAID_FLAG | UNFORTUNATE_RAID_FLAG | ACTIVE_RAID_FLAG;
+                    var raidsProxy:RaidsProxy = RaidsProxy(this.facade.retrieveProxy(RaidsProxy.NAME));
+                    res = 0;
+                    if (flags & FORTUNATE_RAID_FLAG)
+                        res += raidsProxy.getFortunateRaids().length;
+                    if (flags & UNFORTUNATE_RAID_FLAG)
+                        res += raidsProxy.getUnfortunateRaids().length;
+                    if (flags & ACTIVE_RAID_FLAG)
+                        res += raidsProxy.getActiveRaids().length;
+                    return res;
                 default:
                     throw Error("Has no algorithm to calculate required trigger (" + triggerId + ").");
             }

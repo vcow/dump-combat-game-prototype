@@ -73,10 +73,10 @@
 			
 			import spark.events.IndexChangeEvent;
 			
-			import vo.BaseTemplVO;
 			import dictionary.BasesDict;
 			import dictionary.Const;
 			
+			import vo.BaseTemplVO;
 			import vo.PriceVO;
 			import vo.RuinVO;
 			
@@ -85,6 +85,7 @@
 			//--------------------------------------------------------------------------
 			
 			private var _ruinsList:ArrayCollection;
+            private var _selectedRuin:String;
 			
 			[Bindable]
 			private var price:PriceVO;
@@ -99,15 +100,22 @@
 					return;
 				
 				_ruinsList = value;
-				if (initialized)
-					creationCompleteHandler(null);
+                updateRuinsSelector();
 			}
+            
+            public function set selectedRuin(value:String):void
+            {
+                if (value == _selectedRuin)
+                    return;
+                
+                _selectedRuin = value;
+                updateRuinsSelector();
+            }
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
-				ruinsSelector.dataProvider = _ruinsList;
-				ruinsSelector.selectedIndex = _ruinsList.length > 0 ? 0 : -1;
-				ruinsSelector_changeHandler(null);
+                ruinsSelector.dataProvider = _ruinsList;
+                updateRuinsSelector();
 			}
 			
 			protected function ruinsSelector_changeHandler(event:IndexChangeEvent):void
@@ -123,6 +131,28 @@
 				var base:BaseTemplVO = ruin ? BasesDict.getInstance().getBase(ruin.ruinId) : null;
 				return base && base.baseRuin ? base.baseRuin.ruinName : Const.NO_TEXT;
 			}
+            
+            private function updateRuinsSelector():void
+            {
+                if (!initialized || !_ruinsList)
+                    return;
+                
+                var selectedIndex:int = _ruinsList.length > 0 ? 0 : -1;
+                if (_selectedRuin)
+                {
+                    for (var i:int = 0; i < _ruinsList.length; i++)
+                    {
+                        if (_ruinsList[i].ruinId == _selectedRuin)
+                        {
+                            selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+                
+                ruinsSelector.selectedIndex = selectedIndex;
+                ruinsSelector_changeHandler(null);
+            }
 		]]>
 	</fx:Script>
 </s:SkinnablePopUpContainer>
