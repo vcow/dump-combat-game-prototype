@@ -9,6 +9,7 @@ package command
     import org.puremvc.as3.patterns.command.SimpleCommand;
     
     import proxy.BasesListProxy;
+    import proxy.TriggersProxy;
     
     import vo.BaseTemplVO;
     import vo.TargetVO;
@@ -47,10 +48,11 @@ package command
                 
                 basesListProxy.basesListVO.children.push(target);
                 
+                TriggersProxy(this.facade.retrieveProxy(TriggersProxy.NAME)).valueChanged(TriggersProxy.TARGETS_COUNT_TRIGGER);
+                sendNotification(Const.TARGET_FOUND, target.targetId);
+                
                 var message:String = ResourceManager.getInstance().getString("messages", "base.found", [ target.targetName ]);
                 sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
-                
-                sendNotification(Const.TARGET_FOUND, target.targetId);
             }
         }
     }

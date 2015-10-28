@@ -41,116 +41,23 @@
 			</stepTargets>
 		</step>
 		<step>
-			<result>
-				<!-- Для таймаута поддерживаются следующие параметры:
-					delay=[{количество милисекунд},{время в формате ##h##m##s}] - время таймаута
-					async=["true","false"] - флаг, указывающий таймеру выполняться асинхронно, если false, шаг ожидает окончания таймаута.
-					В качестве дочернего элемента таймаут может содержать результат, который будет применен по окончании таймаута. -->
-				<timeout delay="5m">
-					<result>
-						<trigger id="startQuestDelay1Out" value="1" type="set"/>
-					</result>
-				</timeout>
-			</result>
+			<!-- Дождаться завершения обучающего квеста -->
 			<stepTargets>
 				<stepTarget>
-					<!-- По прошествии 5 минут с вероятностью 30% в минуту выдать квест на первую вражескую базу -->
 					<condition>
-						<and>
-							<if>
-								<trigger>startQuestDelay1Out</trigger>
-							</if>
-							<if>
-								<trigger>minutesLeft</trigger>
-							</if>
-							<random type="float">0.3</random>
-						</and>
+						<if>
+							<trigger>tutorialQuestComplete</trigger>
+						</if>
 					</condition>
-					<result>
-						<!-- Выдача юзеру нового квеста поддерживает следующие параметры:
-							id={строковое значение} - уникальный идентификатор квеста
-							asSubquest=["true","false"] - флаг, указывающий выдавать квест как подквест, т. е. выполнение
-								текущего квеста не продолжится вплоть до завершения выдаваемого (дочернего) -->
-						<giveQuest id="firstEnemyBaseQuest" asSubquest="true"/>
-					</result>
 				</stepTarget>
 			</stepTargets>
 		</step>
+		
 		<step>
 			<!-- Игра завершена -->
 			<result>
 				<gameOver/>
 			</result>
-		</step>
-	</questDesc>
-	
-	<!-- Квест на первую вражескую базу -->
-	<questDesc id="firstEnemyBaseQuest" name="{1st.enemy.quest.title}" description="{1st.enemy.quest.description}">
-		<step>
-			<stepTargets>
-				<stepTarget>
-					<!-- Если на стартовой базе игрока уже есть хоть один боевой юнит, напасть на базу игрока -->
-					<condition>
-						<if>
-							<trigger>unitsCount</trigger>
-							<value>4C3AC134-B7EF-4360-9915-39A6FB231071</value>
-							<min type="int">1</min>
-						</if>
-					</condition>
-					<result>
-						<!-- Атака базы поддерживает следующие параметры:
-							target={строковое значение} - идентификатор атакуемой базы
-							departure={строковое значение} - база отправления экспедиции
-							В качестве дочерних элементов выступает набор атакующих юнитов -->
-						<attackBase target="4C3AC134-B7EF-4360-9915-39A6FB231071" departure="357D63E3-9BDB-4699-905B-5D6DD16D8048">
-							<!-- Атакующий юнит поддерживает следующие параметры:
-								id={строковое значение} - идентификатор атакующего юнита -->
-							<attacker id="0796C85D-0BDF-4C46-8851-DF7E5DB92A8B"/>
-						</attackBase>
-					</result>
-				</stepTarget>
-				<stepTarget>
-					<!-- Если на стартовой базе игрока пока нет ни одного боевого юнита, показать базу противника -->
-					<condition>
-						<not>
-							<if>
-								<trigger>unitsCount</trigger>
-								<value>4C3AC134-B7EF-4360-9915-39A6FB231071</value>
-							</if>
-						</not>
-					</condition>
-					<result>
-						<!-- Команда найти базу поддерживает следующие параметры:
-							id={строковое значение} - уникальный идентификатор найденной базы -->
-						<findBase id="357D63E3-9BDB-4699-905B-5D6DD16D8048"/>
-					</result>
-				</stepTarget>
-			</stepTargets>
-		</step>
-		<step>
-			<stepTargets>
-				<!-- Юзер победил, квест завершается без награды, возвращаемся в вызывающий стартовый квест -->
-				<stepTarget>
-					<condition>
-						<if>
-							<trigger>ismailTaken</trigger>
-						</if>
-					</condition>
-				</stepTarget>
-				<!-- Юзер проиграл, игра завершена -->
-				<stepTarget>
-					<condition>
-						<not>
-							<if>
-								<trigger>basesCount</trigger>
-							</if>
-						</not>
-					</condition>
-					<result>
-						<gameOver/>
-					</result>
-				</stepTarget>
-			</stepTargets>
 		</step>
 	</questDesc>
 	
@@ -380,6 +287,34 @@
 					</condition>
 					<result>
 						<uiMessage text="{tutorial.production.complete}" buttons="ok"/>
+					</result>
+				</stepTarget>
+			</stepTargets>
+		</step>
+		<step>
+			<result>
+				<!-- По прошествии пяти секунд выдаем юзеру вражескую базу -->
+				<!-- Для таймаута поддерживаются следующие параметры:
+					delay=[{количество милисекунд},{время в формате ##h##m##s}] - время таймаута
+					async=["true","false"] - флаг, указывающий таймеру выполняться асинхронно, если false, шаг ожидает окончания таймаута.
+					В качестве дочернего элемента таймаут может содержать результат, который будет применен по окончании таймаута. -->
+				<timeout delay="5s">
+					<result>
+						<!-- Команда найти базу поддерживает следующие параметры:
+							id={строковое значение} - уникальный идентификатор найденной базы -->
+						<findBase id="357D63E3-9BDB-4699-905B-5D6DD16D8048"/>
+					</result>
+				</timeout>
+			</result>
+			<stepTargets>
+				<stepTarget>
+					<condition>
+						<if>
+							<trigger>targetsCount</trigger>
+						</if>
+					</condition>
+					<result>
+						<uiMessage text="{tutorial.enemy.found}" buttons="ok"/>
 					</result>
 				</stepTarget>
 			</stepTargets>

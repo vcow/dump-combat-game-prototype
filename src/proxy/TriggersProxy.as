@@ -35,6 +35,7 @@ package proxy
         public static const EMPLOYEES_COUNT_TRIGGER:String = "employeesCount";
         public static const RESOURCES_COUNT_TRIGGER:String = "resourcesCount";
         public static const BASES_COUNT_TRIGGER:String = "basesCount";
+        public static const TARGETS_COUNT_TRIGGER:String = "targetsCount";
         public static const UNITS_COUNT_TRIGGER:String = "unitsCount";
         public static const MODULES_COUNT_TRIGGER:String = "modulesCount";
         
@@ -184,6 +185,9 @@ package proxy
                 case BASES_COUNT_TRIGGER:
                     // Вернуть количество баз игрока
                     return BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)).getBasesList().length;
+                case TARGETS_COUNT_TRIGGER:
+                    // Вернуть количество известных вражеских баз игрока
+                    return BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME)).getTargetsList().length;
                 case UNITS_COUNT_TRIGGER:
                     if (args.length == 0)
                     {
