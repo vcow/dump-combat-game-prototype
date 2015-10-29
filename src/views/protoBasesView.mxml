@@ -48,6 +48,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+            import views.ui.BeginRaidView;
             import mx.collections.ArrayCollection;
             import mx.core.FlexGlobals;
             import mx.events.FlexEvent;
@@ -127,6 +128,7 @@
                         navigator.pushView(BaseView, basesListView.selectedItem.id);
                         break;
                     case "enemy":
+                        navigator.pushView(BeginRaidView, basesListView.selectedItem.id);
                         break;
                     case "ruin":
                         buildNewBase(basesListView.selectedItem.id);

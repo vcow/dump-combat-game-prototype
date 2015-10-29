@@ -27,6 +27,7 @@ package vo
         public static const DEF_STRENGTH:String = "defStrength";
         public static const HEALTH:String = "health";
         public static const AGILITY:String = "agility";
+        public static const SPEED:String = "speed";
         public static const OBSERVANCY:String = "observancy";
         public static const STEALTHINESS:String = "stealthiness";
         
@@ -55,12 +56,11 @@ package vo
         /**
          * Получить значение указанного поля
          * @param fieldKey название поля, значение которого требуется получить
-         * @param base базовые значения (для относительных величин)
+         * @param baseValue базовое значение (для относительных величин)
          * @return расчетное значение поля, или NaN, если поле не найдено или не вычисляется
          */
-        public function getFieldValue(fieldKey:String, base:ModifiersVO=null):Number
+        public function getFieldValue(fieldKey:String, baseValue:Number=NaN):Number
         {
-            var baseValue:Number = base ? parse(base.modifiersData.fieldKey) : NaN;
             return parse(modifiersData[fieldKey], baseValue);
         }
         
@@ -80,7 +80,7 @@ package vo
         protected function parse(value:*, baseValue:Number=NaN):Number
         {
             if (value == null)
-                return NaN;
+                return baseValue;
             
             var raw:String = value.toString();
             if (raw.search(/^[0-9\.]+>$/) == 0)

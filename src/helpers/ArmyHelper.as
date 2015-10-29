@@ -82,22 +82,24 @@ package helpers
         }
         
         /**
-         * Получить список юнита для указанной базы
+         * Получить список юнитов для указанной базы (своей или вражеской), или всех своих юнитов, если база не указана
          * @param baseId идентификатор базы, для которой запрашиваются юниты, если null, запрашиваются юниты для всех баз игрока
          * @return список юнитов для указанной базы
          */
         public function getUnitsOnBase(baseId:String=null):Vector.<UnitVO>
         {
             var units:Vector.<UnitVO> = new Vector.<UnitVO>();
-            if (baseId)
+            for each (var base:IVO in basesListProxy.basesListVO.children)
             {
-                var base:IVO = basesListProxy.getBase(baseId);
-                if (base.name == BaseVO.NAME)
+                if (base.name == BaseVO.NAME && (!baseId || BaseVO(base).baseId == baseId))
                 {
-                    for each (var mercenary:MercenaryVO in BaseVO(base).baseGarrison)
+                    for each (var mercenary:MercenaryVO in BaseVO(base).baseGarrison.children)
                         units.push(armyProxy.getUnit(mercenary.mercenaryUnitId));
+                    
+                    if (baseId)
+                        break;
                 }
-                else if (base.name == TargetVO.NAME)
+                else if (baseId && base.name == TargetVO.NAME && TargetVO(base).targetId == baseId)
                 {
                     var baseTempl:BaseTemplVO = BasesDict.getInstance().getBase(TargetVO(base).targetId);
                     var army:ArmyVO = baseTempl ? baseTempl.baseArmy : null;
@@ -106,6 +108,7 @@ package helpers
                         for each (var unit:UnitVO in army.children)
                             units.push(unit);
                     }
+                    break;
                 }
             }
             return units;

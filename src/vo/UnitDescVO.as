@@ -85,6 +85,19 @@ package vo
             }
             return null;
         }
+        
+        /**
+         * Базовые модификаторы юнита
+         */
+        public function get unitModifiers():ModifiersVO
+        {
+            for each (var item:IVO in children)
+            {
+                if (item.name == ModifiersVO.NAME)
+                    return item as ModifiersVO;
+            }
+            return null;
+        }
 		
 		//----------------------------------
 		//  VO

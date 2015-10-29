@@ -322,7 +322,7 @@
 		<step>
 			<result>
 				<!-- Предлагаем юзеру нанять солдата -->
-				<uiMessage text="{tutorial.hire.soldier}" buttons="ok"/>
+				<uiMessage text="{tutorial.hire.solgier}" buttons="ok"/>
 			</result>
 			<!-- Ждем, пока юзер наймет солдата -->
 			<stepTargets>
@@ -330,11 +330,11 @@
 					<condition>
 						<if>
 							<trigger>employeesCount</trigger>
-							<value>soldier</value>
+							<value>solgier</value>
 						</if>
 					</condition>
 					<result>
-						<uiMessage text="{tutorial.soldier.hired}" buttons="ok"/>
+						<uiMessage text="{tutorial.solgier.hired}" buttons="ok"/>
 					</result>
 				</stepTarget>
 			</stepTargets>

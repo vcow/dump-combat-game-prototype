@@ -76,6 +76,19 @@ package vo
             }
             return null;
         }
+        
+        /**
+         * Модификаторы
+         */
+        public function get armorModifiers():ModifiersVO
+        {
+            for each (var item:IVO in children)
+            {
+                if (item.name == ModifiersVO.NAME)
+                    return item as ModifiersVO;
+            }
+            return null;
+        }
 		
 		//----------------------------------
 		//  VO

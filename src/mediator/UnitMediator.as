@@ -76,6 +76,7 @@ package mediator
         public function UnitMediator(viewComponent:Object=null)
         {
             super(NAME, viewComponent);
+            applyViewComponent();
         }
         
         /**

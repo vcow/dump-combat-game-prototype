@@ -42,6 +42,7 @@ package mediator
         public function ProductionListMediator(viewComponent:Object=null)
         {
             super(NAME, viewComponent);
+            applyViewComponent();
         }
         
         /**

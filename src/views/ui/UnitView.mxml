@@ -196,13 +196,13 @@
                 <s:Button label="@Resource(key='army.unit.soldier.equip', bundle='common')" label.unit="@Resource(key='army.unit.equip', bundle='common')"
                           enabled="{clipAvailable}" click="equip_clickHandler(event)" width="150"/>
             </s:BorderContainer>
+            
+            <s:HGroup width="100%" paddingTop="5">
+                <s:Button label="@Resource(key='army.unit.move', bundle='common')" width="50%" click="move_clickHandler(event)"/>
+                <s:Button label="@Resource(key='army.unit.destroy', bundle='common')" width="50%" click="destroy_clickHandler(event)"/>
+            </s:HGroup>
         </s:VGroup>
     </s:Scroller>
-    
-    <s:HGroup width="100%">
-        <s:Button label="@Resource(key='army.unit.move', bundle='common')" width="50%" click="move_clickHandler(event)"/>
-        <s:Button label="@Resource(key='army.unit.destroy', bundle='common')" width="50%" click="destroy_clickHandler(event)"/>
-    </s:HGroup>
     
 	<fx:Declarations>
 	</fx:Declarations>

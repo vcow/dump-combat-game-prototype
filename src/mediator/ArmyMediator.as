@@ -54,6 +54,7 @@ package mediator
         public function ArmyMediator(viewComponent:Object=null)
         {
             super(NAME, viewComponent);
+            applyViewComponent();
         }
         
         /**

@@ -32,6 +32,7 @@ package mediator
         public function ResearchMediator(viewComponent:Object=null)
         {
             super(NAME, viewComponent);
+            applyViewComponent();
         }
         
         //--------------------------------------------------------------------------

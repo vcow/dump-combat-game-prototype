@@ -34,6 +34,7 @@ package mediator
         public function ProductionMediator(viewComponent:Object=null)
         {
             super(NAME, viewComponent);
+            applyViewComponent();
         }
         
         //--------------------------------------------------------------------------

@@ -38,6 +38,7 @@ package mediator
         public function InvestigationsMediator(viewComponent:Object=null)
         {
             super(NAME, viewComponent);
+            applyViewComponent();
         }
         
         /**

@@ -48,6 +48,7 @@ package mediator
             super(NAME, viewComponent);
             
             PersonTemplatesManager.getInstance();
+            applyViewComponent();
         }
         
         /**
