@@ -1,5 +1,7 @@
 package vo
 {
+    import flash.utils.Dictionary;
+
     /**
      * 
      * @author y.vircowskiy
@@ -55,13 +57,22 @@ package vo
         
         /**
          * Получить значение указанного поля
-         * @param fieldKey название поля, значение которого требуется получить
-         * @param baseValue базовое значение (для относительных величин)
-         * @return расчетное значение поля, или NaN, если поле не найдено или не вычисляется
+         * @param baseValues базовые значения (для относительных величин)
+         * @return расчетные значение полей
          */
-        public function getFieldValue(fieldKey:String, baseValue:Number=NaN):Number
+        public function getProperties(baseValues:Dictionary=null):Dictionary
         {
-            return parse(modifiersData[fieldKey], baseValue);
+            var props:Dictionary = new Dictionary();
+            for (var key:String in baseValues)
+                props[key] = baseValues[key];
+                
+            for (key in modifiersData)
+            {
+                var value:Number = parse(modifiersData[key], Number(props[key]));
+                if (!isNaN(value))
+                    props[key] = value;
+            }
+            return props;
         }
         
         /**

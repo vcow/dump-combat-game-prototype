@@ -4,27 +4,37 @@
 
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
         xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:dropDownList="com.flextras.mobile.dropDownList.*"
         title="{raidTitle}"
-        creationComplete="creationCompleteHandler(event)" xmlns:dropDownList="com.flextras.mobile.dropDownList.*">
+        creationComplete="creationCompleteHandler(event)"
+        currentState="ready">
+    <s:states>
+        <s:State name="ready"/>
+        <s:State name="alreadyAttacked"/>
+    </s:states>
+        
     <s:layout>
-        <s:VerticalLayout gap="5" paddingLeft="5" paddingRight="5" paddingTop="5"/>
+        <s:VerticalLayout gap="5" paddingLeft="5" paddingRight="5" paddingTop="5"
+                          horizontalAlign.alreadyAttacked="center" paddingTop.alreadyAttacked="30"/>
     </s:layout>
     
     <s:navigationContent>
         <s:Button label="&lt;" click="{navigator.popView();}"/>
     </s:navigationContent>
     
-    <s:BorderContainer width="100%" cornerRadius="4">
+    <s:Label text="@Resource(key='raid.already.attacked', bundle='common')" textAlign="center" fontSize="21" includeIn="alreadyAttacked"/>
+    
+    <s:BorderContainer width="100%" cornerRadius="4" includeIn="ready">
         <s:layout>
             <s:VerticalLayout horizontalAlign="center" paddingLeft="10" paddingRight="10" paddingTop="5" paddingBottom="5"/>
         </s:layout>
         
         <s:Label text="@Resource(key='raid.departure.title', bundle='common')"/>
         
-        <dropDownList:DropDownList id="departureSelector" width="100%"/>
+        <dropDownList:DropDownList id="departureSelector" width="100%" dataProvider="{basesList}"/>
     </s:BorderContainer>
     
-    <s:BorderContainer width="100%" height="100%" cornerRadius="4">
+    <s:BorderContainer width="100%" height="100%" cornerRadius="4" includeIn="ready">
         <s:layout>
             <s:VerticalLayout gap="4" paddingLeft="5" paddingRight="5" paddingBottom="5" paddingTop="5" horizontalAlign="center"/>
         </s:layout>
@@ -37,14 +47,59 @@
                 <s:layout>
                     <s:VerticalLayout gap="0" paddingRight="5"/>
                 </s:layout>
+                <s:itemRenderer>
+                    <fx:Component>
+                        <s:DataRenderer width="100%">
+                            <s:layout>
+                                <s:HorizontalLayout gap="15" paddingLeft="10" paddingRight="5" paddingTop="2" paddingBottom="2" verticalAlign="middle"/>
+                            </s:layout>
+                            
+                            <s:CheckBox selected="{checked}" click="checkbox_clickHandler(event)"/>
+                            <s:Label text="{label}" maxDisplayedLines="1" width="100%"/>
+                                <fx:Script>
+                                    <![CDATA[
+                                        [Bindable]
+                                        private var checked:Boolean;
+                                        
+                                        [Bindable]
+                                        private var label:String;
+                                        
+                                        override public function set data(value:Object):void
+                                        {
+                                            super.data = value;
+                                            if (data)
+                                            {
+                                                checked = Boolean(data.check);
+                                                label = data.label;
+                                            }
+                                            else
+                                            {
+                                                checked = false;
+                                                label = "";
+                                            }
+                                        }
+                                        
+                                        protected function checkbox_clickHandler(event:MouseEvent):void
+                                        {
+                                            if (data)
+                                                data.check = event.currentTarget.selected;
+                                            
+                                            dispatchEvent(new Event(Event.CHANGE, true));
+                                        }
+                                    ]]>
+                                </fx:Script>
+                        </s:DataRenderer>
+                    </fx:Component>
+                </s:itemRenderer>
                 
             </s:DataGroup>
         </s:Scroller>
     </s:BorderContainer>
     
-    <s:HGroup width="100%" paddingTop="5" paddingBottom="5" horizontalAlign="center">
+    <s:HGroup width="100%" paddingTop="5" paddingBottom="5" horizontalAlign="center" includeIn="ready">
         
-        <s:Button label="@Resource(key='raid.get.button', bundle='common')" width="100"/>
+        <s:Button label="@Resource(key='raid.get.button', bundle='common')" width="100"
+                  enabled="{armyReady}" click="get_clickHandler(event)"/>
     </s:HGroup>
     
     <fx:Declarations>
@@ -52,6 +107,7 @@
     
     <fx:Metadata>
         [ResourceBundle("common")]
+        [Event(name="beginRaid", type="events.BeginRaidEvent")]
     </fx:Metadata>
     
     <fx:Script>
@@ -60,6 +116,8 @@
             import mx.events.FlexEvent;
             
             import dictionary.Const;
+            
+            import events.BeginRaidEvent;
             
             import facade.ProtoFacade;
             
@@ -81,6 +139,12 @@
             [Bindable]
             private var unitsList:ArrayCollection;
             
+            [Bindable]
+            private var basesList:ArrayCollection;
+            
+            [Bindable]
+            private var armyReady:Boolean;
+            
             //--------------------------------------------------------------------------
             // 
             //--------------------------------------------------------------------------
@@ -93,14 +157,22 @@
                 if (!_beginRaidMediator)
                     return;
                 
+                armyReady = false;
+                
+                currentState = _beginRaidMediator.targetAlreadyAttacked ? "alreadyAttacked" : "ready";
+                
                 raidTitle = resourceManager.getString("common", "raid.title", [ _beginRaidMediator.targetName ]);
                 unitsList = _beginRaidMediator.unitsList;
+                basesList = _beginRaidMediator.basesList;
+                
+                if (basesList.length > 0 && departureSelector)
+                    departureSelector.selectedIndex = 0;
             }
             
             /**
              * Идентификатор базы, на которую производится нападение
              */
-            public function get tagetBaseId():String
+            public function get targetBaseId():String
             {
                 return data ? data.toString() : Const.NO_GUID;
             }
@@ -111,10 +183,43 @@
             
             protected function creationCompleteHandler(event:FlexEvent):void
             {
+                addEventListener(Event.CHANGE, army_changeHandler, false, 0, true);
+                
                 _beginRaidMediator = BeginRaidMediator(ProtoFacade.getInstance().retrieveMediator(BeginRaidMediator.NAME));
                 _beginRaidMediator.setViewComponent(this);
                 
                 updateList();
+            }
+            
+            private function army_changeHandler(event:Event):void
+            {
+                event.stopPropagation();
+                
+                for each (var item:Object in unitsList)
+                {
+                    if (item.check)
+                    {
+                        armyReady = true;
+                        return;
+                    }
+                }
+                armyReady = false;
+            }
+            
+            protected function get_clickHandler(event:MouseEvent):void
+            {
+                var units:Array = [];
+                for each (var item:Object in unitsList)
+                {
+                    if (item.check)
+                        units.push(item.id);
+                }
+                
+                if (units.length > 0 && departureSelector.selectedItem)
+                {
+                    dispatchEvent(new BeginRaidEvent(BeginRaidEvent.BEGIN_RAID, departureSelector.selectedItem.id, units));
+                    navigator.popView();
+                }
             }
             
             //----------------------------------

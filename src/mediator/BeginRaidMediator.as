@@ -2,7 +2,11 @@ package mediator
 {
     import mx.collections.ArrayCollection;
     
+    import command.data.AttackBaseCmdData;
+    
     import dictionary.Const;
+    
+    import events.BeginRaidEvent;
     
     import helpers.ArmyHelper;
     import helpers.BattleHelper;
@@ -12,12 +16,14 @@ package mediator
     
     import proxy.ArmyProxy;
     import proxy.BasesListProxy;
+    import proxy.RaidsProxy;
     
     import views.ui.BeginRaidView;
     
     import vo.BaseVO;
     import vo.IVO;
     import vo.ModifiersVO;
+    import vo.RaidVO;
     import vo.TargetVO;
     import vo.UnitVO;
     
@@ -31,6 +37,7 @@ package mediator
         
         private var _basesListProxy:BasesListProxy;
         private var _armyProxy:ArmyProxy;
+        private var _raidsProxy:RaidsProxy;
         
         //--------------------------------------------------------------------------
         // 
@@ -61,6 +68,13 @@ package mediator
             return _armyProxy;
         }
         
+        protected function get raidsProxy():RaidsProxy
+        {
+            if (!_raidsProxy)
+                _raidsProxy = RaidsProxy(this.facade.retrieveProxy(RaidsProxy.NAME));
+            return _raidsProxy;
+        }
+        
         /**
          * Имя атакуемой базы
          */
@@ -68,13 +82,29 @@ package mediator
         {
             if (beginRaidView)
             {
-                var base:IVO = basesListProxy.getBase(beginRaidView.tagetBaseId);
+                var base:IVO = basesListProxy.getBase(beginRaidView.targetBaseId);
                 if (base is BaseVO)
                     return BaseVO(base).baseName;
                 if (base is TargetVO)
                     return TargetVO(base).targetName;
             }
             return Const.NO_TEXT;
+        }
+        
+        /**
+         * Флаг, указывающий на то, что целевая база уже была атакована
+         */
+        public function get targetAlreadyAttacked():Boolean
+        {
+            if (beginRaidView)
+            {
+                for each (var raid:RaidVO in raidsProxy.getActiveRaids())
+                {
+                    if (raid.raidTarget == beginRaidView.targetBaseId)
+                        return true;
+                }
+            }
+            return false;
         }
         
         /**
@@ -98,6 +128,24 @@ package mediator
                     });
                 }
             }
+            list.sortOn("label");
+            return new ArrayCollection(list);
+        }
+        
+        /**
+         * Список баз игрока
+         */
+        public function get basesList():ArrayCollection
+        {
+            var list:Array = [];
+            for each (var base:BaseVO in basesListProxy.getBasesList())
+            {
+                list.push({
+                    label: base.baseName,
+                    id: base.baseId
+                });
+            }
+            list.sortOn("label");
             return new ArrayCollection(list);
         }
         
@@ -111,6 +159,7 @@ package mediator
             
             // TODO: Удалить все обработчики событий, если таковые были установлены
             
+            beginRaidView.removeEventListener(BeginRaidEvent.BEGIN_RAID, beginRaidHandler);
             
             // /TODO
         }
@@ -125,8 +174,22 @@ package mediator
             
             // TODO: Проинициализировать поля компонента актуальными значениями, устновить оброботчики событий, если нужно
             
+            beginRaidView.addEventListener(BeginRaidEvent.BEGIN_RAID, beginRaidHandler);
             
             // /TODO
+        }
+        
+        /**
+         * Юзер инициировал рейд
+         * @param event событие
+         */
+        private function beginRaidHandler(event:BeginRaidEvent):void
+        {
+            var army:Vector.<String> = new Vector.<String>();
+            for each (var item:String in event.units)
+                army.push(item);
+            
+            sendNotification(Const.ATTACK_BASE, new AttackBaseCmdData(beginRaidView.targetBaseId, event.departureBase, army));
         }
         
         //----------------------------------

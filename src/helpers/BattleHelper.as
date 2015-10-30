@@ -1,5 +1,7 @@
 package helpers
 {
+    import flash.utils.Dictionary;
+    
     import dictionary.ArmamentDict;
     
     import facade.ProtoFacade;
@@ -43,6 +45,22 @@ package helpers
         }
         
         /**
+         * Получить список всех свойств юнита с модификациями
+         * @param unitId идентификатор юнита
+         * @return список модифицированных свойств
+         */
+        public function getUnitProperties(unitId:String):Dictionary
+        {
+            var props:Dictionary = new Dictionary();
+            var unit:UnitVO = _armyProxy.getUnit(unitId);
+            
+            if (unit)
+                props = updateValueWith(new <IVO>[ unit ], props);
+            
+            return props;
+        }
+        
+        /**
          * Получить свойство юнита
          * @param propertyName название свойства
          * @param unitId идентификатор юнита
@@ -50,31 +68,18 @@ package helpers
          */
         public function getUnitProperty(propertyName:String, unitId:String):Number
         {
-            var unit:UnitVO = _armyProxy.getUnit(unitId);
-            
-            if (!unit)
-                return 0;
-            
-            var modifiers:ModifiersVO = unit.unitDesc.unitModifiers;
-            var value:Number = modifiers ? modifiers.getFieldValue(propertyName) : NaN;
-            
-            if (isNaN(value))
-                value = 0;
-            
-            value = updateValueWith(propertyName, unit.children, value);
-            
-            return value;
+            return Number(getUnitProperties(unitId)[propertyName]);
         }
         
         /**
          * Вспомогательная функция, суммирует эффекты от всего задействованного вооружения
-         * @param propertyName название параметра
          * @param items список вооружения
-         * @param baseValue базовое значение параметра
-         * @return модифицированное значение параметра
+         * @param base базовые значения параметров
+         * @return модифицированные значения параметров
          */
-        private function updateValueWith(propertyName:String, items:Vector.<IVO>, baseValue:Number):Number
+        private function updateValueWith(items:Vector.<IVO>, base:Dictionary):Dictionary
         {
+            var unitList:Vector.<UnitVO> = new Vector.<UnitVO>();
             var weaponList:Vector.<WeaponVO> = new Vector.<WeaponVO>();
             var armorList:Vector.<ArmorVO> = new Vector.<ArmorVO>();
             var ammoList:Vector.<AmmoVO> = new Vector.<AmmoVO>();
@@ -86,36 +91,46 @@ package helpers
                 var item:IVO = items[i];
                 switch (item.name)
                 {
+                    case UnitVO.NAME: unitList.push(UnitVO(item)); break;
                     case WeaponVO.NAME: weaponList.push(WeaponVO(item)); break;
                     case ArmorVO.NAME: armorList.push(ArmorVO(item)); break;
                     case AmmoVO.NAME: ammoList.push(AmmoVO(item)); break;
                 }
             }
             
+            for (i = 0; i < unitList.length; i++)
+            {
+                var unit:UnitVO = unitList[i];
+                var modifiers:ModifiersVO = unit.unitDesc.unitModifiers;
+                base = modifiers ? modifiers.getProperties(base) : base;
+                
+                base = updateValueWith(unit.children, base);
+            }
+            
             for (i = 0; i < weaponList.length; i++)
             {
                 var weapon:WeaponVO = weaponList[i];
-                var modifiers:ModifiersVO = weapon.weaponDesc.weaponModifiers;
-                baseValue = modifiers ? modifiers.getFieldValue(propertyName, baseValue) : baseValue;
+                modifiers = weapon.weaponDesc.weaponModifiers;
+                base = modifiers ? modifiers.getProperties(base) : base;
                 
-                baseValue = updateValueWith(propertyName, weapon.children, baseValue);
+                base = updateValueWith(weapon.children, base);
             }
             
             for (i = 0; i < armorList.length; i++)
             {
                 var armor:ArmorVO = armorList[i];
                 modifiers = armor.armorDesc.armorModifiers;
-                baseValue = modifiers ? modifiers.getFieldValue(propertyName, baseValue) : baseValue;
+                base = modifiers ? modifiers.getProperties(base) : base;
             }
             
             if (ammoList.length > 0)
             {
                 var ammo:AmmoVO = ammoList[0];
                 modifiers = ammo.ammoDesc.ammoModifiers;
-                baseValue = modifiers ? modifiers.getFieldValue(propertyName, baseValue) : baseValue;
+                base = modifiers ? modifiers.getProperties(base) : base;
             }
             
-            return baseValue;
+            return base;
         }
     }
 }
