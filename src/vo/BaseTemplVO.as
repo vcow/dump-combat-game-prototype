@@ -23,7 +23,6 @@ package vo
 		
 		public var baseId:String;				//< Идентификатор базы
 		public var baseName:String;				//< Название базы
-		public var baseLevel:int;				//< Уровень базы
 		
 		//--------------------------------------------------------------------------
 		// 
@@ -48,30 +47,80 @@ package vo
 		}
         
         /**
-         * Данные по руинам базы
+         * Данные по армии базы
+         * @param level уровень базы, для которого запрашивается армия
+         * @return данные по армии
          */
-        public function get baseArmy():ArmyVO
+        public function getBaseArmy(level:int=0):ArmyVO
         {
-            for each (var value:IVO in children)
+            var l:LevelVO = getLevel(level);
+            if (l)
             {
-                if (value.name == ArmyVO.NAME)
-                    return value as ArmyVO;
+                for each (var value:IVO in l.children)
+                {
+                    if (value.name == ArmyVO.NAME)
+                        return value as ArmyVO;
+                }
             }
             return null;
         }
 		
 		/**
 		 * Данные по модулям базы
-		 */
-		public function get baseModules():ModulesVO
+         * @param level уровень базы, для которого запрашиваются модули
+         * @return данные по модулям
+         */
+		public function getBaseModules(level:int=0):ModulesVO
 		{
-			for each (var value:IVO in children)
-			{
-				if (value.name == ModulesVO.NAME)
-					return value as ModulesVO;
-			}
+            var l:LevelVO = getLevel(level);
+            if (l)
+            {
+    			for each (var value:IVO in l.children)
+    			{
+    				if (value.name == ModulesVO.NAME)
+    					return value as ModulesVO;
+    			}
+            }
 			return null;
 		}
+        
+        /**
+         * Вспомогательная функция получения подходящего уровня
+         * @param level искомый уровень
+         * @return ближайший подходящий уровень
+         */
+        private function getLevel(level:int):LevelVO
+        {
+            var currentLevel:LevelVO;
+            for each (var item:IVO in children)
+            {
+                if (item.name == LevelVO.NAME)
+                {
+                    var l:LevelVO = LevelVO(item);
+                    if (l.levelValue > level)
+                    {
+                        continue;
+                    }
+                    else if (l.levelValue == level)
+                    {
+                        currentLevel = l;
+                        break;
+                    }
+                    else if (l.levelValue < level)
+                    {
+                        if (!currentLevel)
+                        {
+                            currentLevel = l;
+                            continue;
+                        }
+                    
+                        if (currentLevel.levelValue < l.levelValue)
+                            currentLevel = l;
+                    }
+                }
+            }
+            return currentLevel;
+        }
 		
 		//----------------------------------
 		//  VO
@@ -85,7 +134,6 @@ package vo
 			
 			res.@id = baseId;
 			res.@name = baseName;
-			res.@level = baseLevel;
 			
 			// /TODO
 			
@@ -100,7 +148,6 @@ package vo
 			
 			baseId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
 			baseName = data.hasOwnProperty("@name") ? VO.parseString(data.@name, "bases") : Const.NO_TEXT;
-			baseLevel = data.hasOwnProperty("@level") ? int(data.@level) : 0;
 			
 			// /TODO
 			

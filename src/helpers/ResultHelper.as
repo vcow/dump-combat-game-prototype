@@ -7,8 +7,6 @@ package helpers
     
     import spark.events.PopUpEvent;
     
-    import command.data.AttackBaseCmdData;
-    
     import dictionary.Const;
     
     import facade.ProtoFacade;
@@ -17,8 +15,6 @@ package helpers
     
     import views.modal.AlertPopUp;
     
-    import vo.AttackBaseVO;
-    import vo.AttackerVO;
     import vo.EventVO;
     import vo.FindBaseVO;
     import vo.GiveBaseVO;
@@ -94,14 +90,6 @@ package helpers
                     case FindBaseVO.NAME:       //< Найти новую вражескую базу
                         var findBase:FindBaseVO = FindBaseVO(item);
                         ProtoFacade.getInstance().sendNotification(Const.FIND_TARGET, findBase.findBaseId);
-                        break;
-                    case AttackBaseVO.NAME:     //< Атаковать базу
-                        var attackBase:AttackBaseVO = AttackBaseVO(item);
-                        var army:Vector.<String> = new Vector.<String>();
-                        for each (var attacker:AttackerVO in attackBase.children)
-                            army.push(attacker.attackerId);
-                        ProtoFacade.getInstance().sendNotification(Const.ATTACK_BASE, new AttackBaseCmdData(
-                            attackBase.attackBaseTarget, attackBase.attackBaseDeparture, army));
                         break;
                     case UiMessageVO.NAME:      //< Выдать сообщение для юзера
                         var uiMessage:UiMessageVO = UiMessageVO(item);

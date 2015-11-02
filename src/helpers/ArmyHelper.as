@@ -84,9 +84,10 @@ package helpers
         /**
          * Получить список юнитов для указанной базы (своей или вражеской), или всех своих юнитов, если база не указана
          * @param baseId идентификатор базы, для которой запрашиваются юниты, если null, запрашиваются юниты для всех баз игрока
+         * @param level текущий уровень
          * @return список юнитов для указанной базы
          */
-        public function getUnitsOnBase(baseId:String=null):Vector.<UnitVO>
+        public function getUnitsOnBase(baseId:String=null, level:int=0):Vector.<UnitVO>
         {
             var units:Vector.<UnitVO> = new Vector.<UnitVO>();
             for each (var base:IVO in basesListProxy.basesListVO.children)
@@ -102,7 +103,7 @@ package helpers
                 else if (baseId && base.name == TargetVO.NAME && TargetVO(base).targetId == baseId)
                 {
                     var baseTempl:BaseTemplVO = BasesDict.getInstance().getBase(TargetVO(base).targetId);
-                    var army:ArmyVO = baseTempl ? baseTempl.baseArmy : null;
+                    var army:ArmyVO = baseTempl ? baseTempl.getBaseArmy(level) : null;
                     if (army)
                     {
                         for each (var unit:UnitVO in army.children)

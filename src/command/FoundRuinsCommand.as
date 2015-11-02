@@ -5,6 +5,7 @@ package command
     import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.command.SimpleCommand;
     
+    import proxy.AppDataProxy;
     import proxy.BasesListProxy;
     
     import vo.BaseTemplVO;
@@ -53,7 +54,7 @@ package command
             basesListProxy.basesListVO.children.push(ruin);
             
             var modules:ModulesVO = ruin.ruinModules;
-            var templateModules:ModulesVO = baseTempl.baseModules;
+            var templateModules:ModulesVO = baseTempl.getBaseModules(AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME)).currentLevel);
             
             if (templateModules)
             {

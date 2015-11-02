@@ -15,6 +15,8 @@ package vo
 		
 		public static const NAME:String = "app";
         
+        public var applicationLevel:int;                //< Текущий уровень игрока
+        
         private var _stuff:Object;
 		
 		//--------------------------------------------------------------------------
@@ -69,12 +71,30 @@ package vo
 		//----------------------------------
 		//  VO
 		//----------------------------------
+        
+        override protected function getSelfXMLObject():XML
+        {
+            var res:XML = super.getSelfXMLObject();
+            
+            // TODO: Сериализовать специфичные поля
+            
+            res.@level = applicationLevel;
+            
+            // /TODO
+            
+            return res;
+        }
+        
 		
 		override public function deserialize(data:XML):Boolean
 		{
 			super.deserialize(data);
 			
 			// TODO: десериализовать специфичные поля
+            
+            applicationLevel = data.hasOwnProperty("@level") ? int(data.@level) : 0;
+            
+            // /TODO
 			
 			return true;
 		}

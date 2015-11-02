@@ -4,8 +4,6 @@ package proxy
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	
-	import managers.EventsManager;
-	
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
 	import vo.ApplicationVO;
@@ -48,6 +46,14 @@ package proxy
         public function get stuff():Object
         {
             return applicationVO.stuff;
+        }
+        
+        /**
+         * Текущий уровень игрока
+         */
+        public function get currentLevel():int
+        {
+            return applicationVO.applicationLevel;
         }
 		
 		/**

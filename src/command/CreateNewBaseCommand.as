@@ -8,6 +8,7 @@ package command
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 	
+	import proxy.AppDataProxy;
 	import proxy.BasesListProxy;
 	import proxy.TriggersProxy;
 	
@@ -81,7 +82,7 @@ package command
                 var modules:ModulesVO = base.baseModules;
                 var ruinModules:ModulesVO = ruin.ruinModules;
                 
-                var templateModules:ModulesVO = baseTempl.baseModules;
+                var templateModules:ModulesVO = baseTempl.getBaseModules(AppDataProxy(this.facade.retrieveProxy(AppDataProxy.NAME)).currentLevel);
                 modules.modulesMaxCount = templateModules ? templateModules.modulesMaxCount : (ruinModules ? ruinModules.children.length : 0);
                 
                 if (ruinModules)

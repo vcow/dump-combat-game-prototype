@@ -62,9 +62,10 @@ package dictionary
 		/**
 		 * Сгенерировать руины базы на основании шаблона
 		 * @param baseId идентификатор базы, для которой генерятся руины
+         * @param level запрашиваемый уровень базы
 		 * @return сгенерированный Value Object руин базы
 		 */
-		public function getRuinForBase(baseId:String):RuinVO
+		public function getRuinForBase(baseId:String, level:int=0):RuinVO
 		{
 			var ruin:RuinVO = new RuinVO();
 			var base:BaseTemplVO = getBase(baseId);
@@ -74,7 +75,7 @@ package dictionary
 				var ruinModules:ModulesVO = new ModulesVO();		// Сохранившиеся модули
 				ruin.children.push(ruinModules);
 				
-				var modules:ModulesVO = base.baseModules;
+				var modules:ModulesVO = base.getBaseModules(level);
 				if (modules)
 				{
 					ruinModules.modulesMaxCount = modules.modulesMaxCount;

@@ -3,23 +3,26 @@
 	<!-- Шаблон базы может содержать следующие параметры:
 		id={строковое значение} - уникальный идентификатор базы (или руин)
 		name={строковое значение} - наименование базы
-		level={числовое значение} - уровень базы
 		В качестве дочерних объектов, может содержать список модулей, описание для руин. -->
 	<!-- Шаблон стартовой базы, с которой игрок начинает -->
-	<baseTempl id="4C3AC134-B7EF-4360-9915-39A6FB231071" name="{start.title}" level="1">
-		<!-- Список модулей содержит следующие параметры:
-			maxCount={числовое значение} - максимальное количество модулей, которое может
-			быть построено на этой базе
-			Содержит стартовый список модулей базы -->
-		<modules maxCount="25">
-			<!-- Модуль базы содержит следующие параметры:
-				id={строковое значение} - идентификатор модуля
-				moduleId={строковое значение} - идентификатор типа модуля
-				chance={дробное значение от 1.0 до 0.0} - шанс сохранения модуля в руинах после захвата базы
-				(переопределяет соответствующее значение для типа модуля из библиотеки типов модулей)-->
-			<module id="3A7B0860-3ED0-40AA-BBF0-838591FB8961" moduleId="housing" chance="1.0"/>
-			<module id="F7E6C9D2-58D8-4C92-8E0D-1DDBE96A3D6D" moduleId="store" chance="1.0"/>
-		</modules>
+	<baseTempl id="4C3AC134-B7EF-4360-9915-39A6FB231071" name="{start.title}">
+		<!-- Уровень базы, поддерживает следующие параметры:
+			value={числовое значение} - уровень базы, для которого актуальны дочерние значения -->
+		<level value="0">
+			<!-- Список модулей содержит следующие параметры:
+				maxCount={числовое значение} - максимальное количество модулей, которое может
+				быть построено на этой базе
+				Содержит стартовый список модулей базы -->
+			<modules maxCount="25">
+				<!-- Модуль базы содержит следующие параметры:
+					id={строковое значение} - идентификатор модуля
+					moduleId={строковое значение} - идентификатор типа модуля
+					chance={дробное значение от 1.0 до 0.0} - шанс сохранения модуля в руинах после захвата базы
+					(переопределяет соответствующее значение для типа модуля из библиотеки типов модулей)-->
+				<module id="3A7B0860-3ED0-40AA-BBF0-838591FB8961" moduleId="housing" chance="1.0"/>
+				<module id="F7E6C9D2-58D8-4C92-8E0D-1DDBE96A3D6D" moduleId="store" chance="1.0"/>
+			</modules>
+		</level>
 		<!-- Награда за захват базы -->
 		<result>
 			<trigger id="capturedBases" value="1" type="inc"/>
@@ -41,22 +44,24 @@
 	</baseTempl>
 	
 	<!-- Шаблон базы противника для первого уровня -->
-	<baseTempl id="357D63E3-9BDB-4699-905B-5D6DD16D8048" name="{level1.enemy1.title}" level="1">
-		<modules maxCount="15">
-			<module id="CD5895DB-40B7-4182-BFE9-18D3227BEAF2" moduleId="housing"/>
-			<module id="765B7C66-BC2B-44B3-BF9E-2A909164F37C" moduleId="housing"/>
-			<module id="30EFBF48-F84C-455E-9D65-9C54C3F4C1FF" moduleId="store"/>
-			<module id="89F72E31-DB70-4185-A7C9-A644ED633990" moduleId="store"/>
-			<module id="FF93734B-4C8B-4B3E-861E-95E8170D5D41" moduleId="lab"/>
-			<module id="D4D4C7BE-FE34-46C5-BACC-649470C66435" moduleId="workshop"/>
-		</modules>
-		<!-- Гарнизон базы, состоит из фантомных юнитов -->
-		<army>
-			<unit id="0796C85D-0BDF-4C46-8851-DF7E5DB92A8B" name="Пехотинец Нарцис" unit="infantry" damage="0">
-				<weapon id="cudgel" slot="0"/>
-				<armor id="cardboardArmor" slot="0"/>
-			</unit>
-		</army>
+	<baseTempl id="357D63E3-9BDB-4699-905B-5D6DD16D8048" name="{level1.enemy1.title}">
+		<level value="0">
+			<modules maxCount="15">
+				<module id="CD5895DB-40B7-4182-BFE9-18D3227BEAF2" moduleId="housing"/>
+				<module id="765B7C66-BC2B-44B3-BF9E-2A909164F37C" moduleId="housing"/>
+				<module id="30EFBF48-F84C-455E-9D65-9C54C3F4C1FF" moduleId="store"/>
+				<module id="89F72E31-DB70-4185-A7C9-A644ED633990" moduleId="store"/>
+				<module id="FF93734B-4C8B-4B3E-861E-95E8170D5D41" moduleId="lab"/>
+				<module id="D4D4C7BE-FE34-46C5-BACC-649470C66435" moduleId="workshop"/>
+			</modules>
+			<!-- Гарнизон базы, состоит из фантомных юнитов -->
+			<army>
+				<unit id="0796C85D-0BDF-4C46-8851-DF7E5DB92A8B" name="Пехотинец Нарцис" unit="infantry" damage="0">
+					<weapon id="cudgel" slot="0"/>
+					<armor id="cardboardArmor" slot="0"/>
+				</unit>
+			</army>
+		</level>
 		<result>
 			<price>
 				<resource id="food" count="348"/>
