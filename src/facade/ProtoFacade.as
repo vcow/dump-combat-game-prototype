@@ -17,6 +17,7 @@ package facade
 	import command.MoveUnitCommand;
 	import command.NewPersonCreatedCommand;
 	import command.PlaceEmployeeCommand;
+	import command.PropertyRedistributionCommand;
 	import command.QuestStartedCommand;
 	import command.ReloadUnitCommand;
 	import command.ReloadWeaponCommand;
@@ -107,6 +108,7 @@ package facade
             registerCommand(Const.FOUND_RUINS, FoundRuinsCommand);
             registerCommand(Const.ATTACK_BASE, AttackBaseCommand);
             registerCommand(Const.FIND_TARGET, FindTargetCommand);
+            registerCommand(Const.PROPERTY_REDISTRIBUTION, PropertyRedistributionCommand);
 		}
 	}
 }

@@ -41,6 +41,14 @@ package dictionary
 				_instance = new BasesDict();
 			return _instance;
 		}
+        
+        /**
+         * Список всех шаблонов баз
+         */
+        public function get bases():Vector.<BaseTemplVO>
+        {
+            return _bases;
+        }
 		
 		/**
 		 * Получить информацию по базе

@@ -6,6 +6,7 @@ package command
 	import proxy.AppDataProxy;
 	import proxy.ArmyProxy;
 	import proxy.BasesListProxy;
+	import proxy.EnemiesProxy;
 	import proxy.EventsProxy;
 	import proxy.InvestigationsProxy;
 	import proxy.LogProxy;
@@ -49,6 +50,7 @@ package command
             this.facade.registerProxy(new InvestigationsProxy());
             this.facade.registerProxy(new ProductionsProxy());
             this.facade.registerProxy(new ArmyProxy());
+            this.facade.registerProxy(new EnemiesProxy());
             this.facade.registerProxy(new EventsProxy());
             this.facade.registerProxy(new TimersProxy());
             this.facade.registerProxy(new QuestsProxy());

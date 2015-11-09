@@ -97,6 +97,8 @@ package command
                 if (base.baseModules.children.length > 0)
                     triggersProxy.valueChanged(TriggersProxy.MODULES_COUNT_TRIGGER);
                 
+                sendNotification(Const.PROPERTY_REDISTRIBUTION);
+                
                 sendNotification(Const.NEW_BASE_CREATED, base);
             }
 		}

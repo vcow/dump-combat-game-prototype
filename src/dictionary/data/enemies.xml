@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<enemiesDict>
+	<!-- Описание врага содержит следующие параметры:
+		id={строковое значение} - уникальный идентификатор врага
+		name={строковое значение} - имя врага
+		description={строковое значение} - описание врага. -->
+	<enemyDesc id="E2FC7133-81E8-43BA-AEF2-1A307066AE15" name="{enemy1.name}" description="{enemy1.description}"/>
+</enemiesDict>

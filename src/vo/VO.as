@@ -278,7 +278,6 @@ package vo
                     case StepTargetVO.NAME: value = new StepTargetVO(); break;
                     case GameOverVO.NAME: value = new GameOverVO(); break;
                     case GiveQuestVO.NAME: value = new GiveQuestVO(); break;
-                    case FindBaseVO.NAME: value = new FindBaseVO(); break;
                     case TimeoutVO.NAME: value = new TimeoutVO(); break;
                     case UiMessageVO.NAME: value = new UiMessageVO(); break;
                     case OkVO.NAME: value = new OkVO(); break;
@@ -288,6 +287,10 @@ package vo
                     case RaidsVO.NAME: value = new RaidsVO(); break;
                     case RaidVO.NAME: value = new RaidVO(); break;
                     case LevelVO.NAME: value = new LevelVO(); break;
+                    case EnemiesVO.NAME: value = new EnemiesVO(); break;
+                    case EnemyDescVO.NAME: value = new EnemyDescVO(); break;
+                    case EnemyVO.NAME: value = new EnemyVO(); break;
+                    case PropertyVO.NAME: value = new PropertyVO(); break;
 					
 					// /TODO
 					

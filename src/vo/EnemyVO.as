@@ -1,37 +1,62 @@
 package vo
 {
     import dictionary.Const;
+    import dictionary.EnemiesDict;
     
     /**
      * 
      * @author y.vircowskiy
-     * Выдать юзеру базу
+     * Value Object врага
      * 
      */
     
-    public class GiveBaseVO extends VO
+    public class EnemyVO extends VO
     {
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public static const NAME:String = "giveBase";
+        public static const NAME:String = "enemy";
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public var giveBaseId:String;           //< Идентификатор выдаваемой базы
-        public var giveBaseAsRuin:Boolean;      //< Флаг, указывающий выдавать базу как руины
-        public var giveBaseOwner:String;        //< Идентификатор владельца базы
+        private var _enemyId:String;
+        private var _enemyDesc:EnemyDescVO;
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public function GiveBaseVO()
+        public function EnemyVO()
         {
             super(NAME);
+        }
+        
+        /**
+         * Уникальный идентификатор врага
+         */
+        public function get enemyId():String
+        {
+            return _enemyId;
+        }
+        
+        public function set enemyId(value:String):void
+        {
+            if (value == _enemyId)
+                return;
+            
+            _enemyId = value;
+            _enemyDesc = EnemiesDict.getInstance().getEnemy(_enemyId);
+        }
+        
+        /**
+         * Описание врага
+         */
+        public function get enemyDesc():EnemyDescVO
+        {
+            return _enemyDesc;
         }
         
         //----------------------------------
@@ -44,9 +69,7 @@ package vo
             
             // TODO: Сериализовать специфичные поля
             
-            res.@id = giveBaseId;
-            res.@asRuin = giveBaseAsRuin;
-            res.@owner = giveBaseOwner;
+            res.@id = enemyId || Const.NO_GUID;
             
             // /TODO
             
@@ -59,9 +82,7 @@ package vo
             
             // TODO: десериализовать специфичные поля
             
-            giveBaseId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
-            giveBaseAsRuin = data.hasOwnProperty("@asRuin") ? data.@asRuin.toString().toLowerCase() == "true" : false;
-            giveBaseOwner = data.hasOwnProperty("@owner") ? data.@owner.toString() : "";
+            enemyId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
             
             // /TODO
             

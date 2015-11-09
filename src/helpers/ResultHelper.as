@@ -7,6 +7,8 @@ package helpers
     
     import spark.events.PopUpEvent;
     
+    import command.data.PropertyCmdData;
+    
     import dictionary.Const;
     
     import facade.ProtoFacade;
@@ -16,7 +18,6 @@ package helpers
     import views.modal.AlertPopUp;
     
     import vo.EventVO;
-    import vo.FindBaseVO;
     import vo.GiveBaseVO;
     import vo.GiveQuestVO;
     import vo.IVO;
@@ -84,12 +85,10 @@ package helpers
                         var giveBase:GiveBaseVO = GiveBaseVO(item);
                         if (giveBase.giveBaseAsRuin)
                             ProtoFacade.getInstance().sendNotification(Const.FOUND_RUINS, giveBase.giveBaseId);
+                        else if (giveBase.giveBaseOwner)
+                            ProtoFacade.getInstance().sendNotification(Const.FIND_TARGET, new PropertyCmdData(giveBase.giveBaseId, giveBase.giveBaseOwner));
                         else
                             ProtoFacade.getInstance().sendNotification(Const.CREATE_NEW_BASE, giveBase.giveBaseId);
-                        break;
-                    case FindBaseVO.NAME:       //< Найти новую вражескую базу
-                        var findBase:FindBaseVO = FindBaseVO(item);
-                        ProtoFacade.getInstance().sendNotification(Const.FIND_TARGET, findBase.findBaseId);
                         break;
                     case UiMessageVO.NAME:      //< Выдать сообщение для юзера
                         var uiMessage:UiMessageVO = UiMessageVO(item);

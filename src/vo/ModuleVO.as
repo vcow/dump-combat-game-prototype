@@ -7,7 +7,7 @@ package vo
     
     import helpers.ModulesHelper;
     import helpers.ResourcesHelper;
-
+    
     [ResourceBundle("messages")]
     
 	/**
@@ -140,6 +140,10 @@ package vo
                     // Сработал таймер окончания постройки этого модуля
                     moduleBuildTimer = "";
                     sendNotification(Const.MODULES_CHANGED, (new ModulesHelper()).getModulePlace(moduleId));
+                    
+                    var base:BaseVO = (new ModulesHelper()).getModulePlace(moduleId);
+                    message = ResourceManager.getInstance().getString("messages", "module.complete", [ base.baseName, moduleDesc.moduleName ]);
+                    sendNotification(Const.SEND_GAME_MESSAGE, message, Const.MESSAGE);
                 }
                 else
                 {

@@ -138,6 +138,9 @@ package vo
                     if (productionRest <= 0)
                     {
                         // Производство завершено
+                        message = ResourceManager.getInstance().getString("messages", "complete.production", [ productionDesc.productionName ]);
+                        sendNotification(Const.SEND_GAME_MESSAGE, message, Const.MESSAGE);
+                        
                         sendNotification(Const.COMPLETE_PRODUCTION, productionId);
                     }
                 }

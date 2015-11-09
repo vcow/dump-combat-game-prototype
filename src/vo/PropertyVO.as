@@ -5,31 +5,29 @@ package vo
     /**
      * 
      * @author y.vircowskiy
-     * Выдать юзеру базу
+     * Value Object собственности (врага)
      * 
      */
     
-    public class GiveBaseVO extends VO
+    public class PropertyVO extends VO
     {
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public static const NAME:String = "giveBase";
+        public static const NAME:String = "property";
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public var giveBaseId:String;           //< Идентификатор выдаваемой базы
-        public var giveBaseAsRuin:Boolean;      //< Флаг, указывающий выдавать базу как руины
-        public var giveBaseOwner:String;        //< Идентификатор владельца базы
+        public var propertyId:String;           // Идентификатор собственности
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public function GiveBaseVO()
+        public function PropertyVO()
         {
             super(NAME);
         }
@@ -44,9 +42,7 @@ package vo
             
             // TODO: Сериализовать специфичные поля
             
-            res.@id = giveBaseId;
-            res.@asRuin = giveBaseAsRuin;
-            res.@owner = giveBaseOwner;
+            res.@id = propertyId;
             
             // /TODO
             
@@ -59,9 +55,7 @@ package vo
             
             // TODO: десериализовать специфичные поля
             
-            giveBaseId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
-            giveBaseAsRuin = data.hasOwnProperty("@asRuin") ? data.@asRuin.toString().toLowerCase() == "true" : false;
-            giveBaseOwner = data.hasOwnProperty("@owner") ? data.@owner.toString() : "";
+            propertyId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
             
             // /TODO
             

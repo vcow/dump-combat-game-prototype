@@ -1,5 +1,7 @@
 package vo
 {
+    import mx.resources.ResourceManager;
+    
     import dictionary.Const;
     import dictionary.InvestigationsDict;
     
@@ -100,6 +102,9 @@ package vo
                 if (researchPercent >= 1.0)
                 {
                     // Исследование завершено
+                    var message:String = ResourceManager.getInstance().getString("messages", "complete.research", [ researchDesc.researchTitle ]);
+                    sendNotification(Const.SEND_GAME_MESSAGE, message, Const.MESSAGE);
+                    
                     sendNotification(Const.COMPLETE_RESEARCH, researchId);
                 }
             }
