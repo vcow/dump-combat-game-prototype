@@ -3,6 +3,7 @@ package command
 	import dictionary.BasesDict;
 	import dictionary.Const;
 	
+	import helpers.PropertyHelper;
 	import helpers.ResourcesHelper;
 	
 	import org.puremvc.as3.interfaces.INotification;
@@ -97,7 +98,7 @@ package command
                 if (base.baseModules.children.length > 0)
                     triggersProxy.valueChanged(TriggersProxy.MODULES_COUNT_TRIGGER);
                 
-                sendNotification(Const.PROPERTY_REDISTRIBUTION);
+                (new PropertyHelper(basesListProxy)).redistributeProperty();
                 
                 sendNotification(Const.NEW_BASE_CREATED, base);
             }

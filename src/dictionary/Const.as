@@ -83,6 +83,5 @@ package dictionary
         public static const FIND_TARGET:String = "findTarget";                              //< Найти вражескую базу
         public static const TARGET_FOUND:String = "targetFound";                            //< Найдена вражеская база
         public static const ATTACK_BASE:String = "attackBase";                              //< Атаковать базу
-        public static const PROPERTY_REDISTRIBUTION:String = "propertyRedistribution";      //< Произошло перераспределение собственности
 	}
 }

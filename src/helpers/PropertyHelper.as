@@ -1,12 +1,9 @@
-package command
+package helpers
 {
-    import command.data.PropertyCmdData;
-    
     import dictionary.BasesDict;
     import dictionary.Const;
     
-    import org.puremvc.as3.interfaces.INotification;
-    import org.puremvc.as3.patterns.command.SimpleCommand;
+    import facade.ProtoFacade;
     
     import proxy.BasesListProxy;
     import proxy.EnemiesProxy;
@@ -14,48 +11,48 @@ package command
     import vo.BaseVO;
     import vo.EnemyVO;
     import vo.PropertyVO;
-    
+
     /**
      * 
      * @author y.vircowskiy
-     * Произошло перераспределение собственности
+     * Декоратор вражеской собственности
      * 
      */
-    
-    public class PropertyRedistributionCommand extends SimpleCommand
+    public class PropertyHelper
     {
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        public function PropertyRedistributionCommand()
+        private var _enemiesProxy:EnemiesProxy;
+        private var _basesListProxy:BasesListProxy;
+        
+        //--------------------------------------------------------------------------
+        // 
+        //--------------------------------------------------------------------------
+        
+        public function PropertyHelper(basesListProxy:BasesListProxy=null, enemiesProxy:EnemiesProxy=null)
         {
-            super();
+            _enemiesProxy = enemiesProxy || EnemiesProxy(ProtoFacade.getInstance().retrieveProxy(EnemiesProxy.NAME));
+            _basesListProxy = basesListProxy || BasesListProxy(ProtoFacade.getInstance().retrieveProxy(BasesListProxy.NAME));
         }
         
-        //----------------------------------
-        //  SimpleCommand
-        //----------------------------------
-        
-        override public function execute(notification:INotification):void
+        public function redistributeProperty(baseId:String=null, ownerId:String=null):void
         {
-            var data:PropertyCmdData = notification.getBody() as PropertyCmdData;
-            var enemiesProxy:EnemiesProxy = EnemiesProxy(this.facade.retrieveProxy(EnemiesProxy.NAME));
-            var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
             var propertyChanged:Boolean;
             
-            if (data && data.baseId)
+            if (baseId)
             {
                 // Одна из баз перешла другому владельцу
                 var movProperty:PropertyVO;
-                for each (var enemy:EnemyVO in enemiesProxy.enemiesVO.children)
+                for each (var enemy:EnemyVO in _enemiesProxy.enemiesVO.children)
                 {
                     for (var i:int = enemy.children.length - 1; i >= 0; i--)
                     {
                         var property:PropertyVO = PropertyVO(enemy.children[i]);
-                        if (property.propertyId == data.baseId)
+                        if (property.propertyId == baseId)
                         {
-                            if (enemy.enemyId == (data.ownerId || Const.NO_GUID))
+                            if (enemy.enemyId == (ownerId || Const.NO_GUID))
                                 return;     // Новый владелец уже является хозяином базы
                             
                             enemy.children.splice(i, 1);
@@ -68,7 +65,7 @@ package command
                         break;
                 }
                 
-                var base:BaseVO = basesListProxy.getBase(data.baseId) as BaseVO;
+                var base:BaseVO = _basesListProxy.getBase(baseId) as BaseVO;
                 if (base)
                 {
                     // База перешла к игроку
@@ -77,18 +74,18 @@ package command
                 else
                 {
                     // База перешла к другому врагу
-                    enemy = enemiesProxy.getEnemy(data.ownerId);
+                    enemy = _enemiesProxy.getEnemy(ownerId);
                     
                     if (!enemy)
-                        throw Error("Unknown enemy (" + data.ownerId + ").");
+                        throw Error("Unknown enemy (" + ownerId + ").");
                     
                     if (!movProperty)
                     {
-                        if (!BasesDict.getInstance().getBase(data.baseId))
-                            throw Error("Base " + data.baseId + " does not exist.");
+                        if (!BasesDict.getInstance().getBase(baseId))
+                            throw Error("Base " + baseId + " does not exist.");
                         
                         movProperty = new PropertyVO();
-                        movProperty.propertyId = data.baseId;
+                        movProperty.propertyId = baseId;
                     }
                     
                     enemy.children.push(movProperty);
@@ -99,8 +96,8 @@ package command
             {
                 // Изменился список баз у игрока
                 // Находим и изымаем у врагов все базы, которые в настоящий момент принадлежат игроку
-                var bases:Vector.<BaseVO> = basesListProxy.getBasesList();
-                for each (enemy in enemiesProxy.enemiesVO.children)
+                var bases:Vector.<BaseVO> = _basesListProxy.getBasesList();
+                for each (enemy in _enemiesProxy.enemiesVO.children)
                 {
                     for (i = enemy.children.length - 1; i >= 0; i--)
                     {

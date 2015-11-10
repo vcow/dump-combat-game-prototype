@@ -2,11 +2,12 @@ package command
 {
     import mx.resources.ResourceManager;
     
-    import command.data.PropertyCmdData;
+    import command.data.FindTargetCmdData;
     
     import dictionary.BasesDict;
     import dictionary.Const;
-    import dictionary.EnemiesDict;
+    
+    import helpers.PropertyHelper;
     
     import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.command.SimpleCommand;
@@ -38,7 +39,7 @@ package command
         
         override public function execute(notification:INotification):void
         {
-            var data:PropertyCmdData = notification.getBody() as PropertyCmdData;
+            var data:FindTargetCmdData = notification.getBody() as FindTargetCmdData;
             if (data)
             {
                 var baseTempl:BaseTemplVO = BasesDict.getInstance().getBase(data.baseId);
@@ -50,7 +51,7 @@ package command
                     {
                         // Эта база уже есть в списке известных
                         if (EnemiesProxy(this.facade.retrieveProxy(EnemiesProxy.NAME)).getOwner(data.baseId) != data.ownerId)
-                            sendNotification(Const.PROPERTY_REDISTRIBUTION, data);      // У этой базы сменился владелец
+                            (new PropertyHelper(basesListProxy)).redistributeProperty(data.baseId, data.ownerId);   // У этой базы сменился владелец
                         return;
                     }
                     
@@ -62,7 +63,7 @@ package command
                     
                     TriggersProxy(this.facade.retrieveProxy(TriggersProxy.NAME)).valueChanged(TriggersProxy.TARGETS_COUNT_TRIGGER);
                     
-                    sendNotification(Const.PROPERTY_REDISTRIBUTION, data);
+                    (new PropertyHelper(basesListProxy)).redistributeProperty(data.baseId, data.ownerId);
                     
                     sendNotification(Const.TARGET_FOUND, target.targetId);
                     

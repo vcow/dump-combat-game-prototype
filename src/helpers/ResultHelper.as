@@ -7,7 +7,7 @@ package helpers
     
     import spark.events.PopUpEvent;
     
-    import command.data.PropertyCmdData;
+    import command.data.FindTargetCmdData;
     
     import dictionary.Const;
     
@@ -86,7 +86,7 @@ package helpers
                         if (giveBase.giveBaseAsRuin)
                             ProtoFacade.getInstance().sendNotification(Const.FOUND_RUINS, giveBase.giveBaseId);
                         else if (giveBase.giveBaseOwner)
-                            ProtoFacade.getInstance().sendNotification(Const.FIND_TARGET, new PropertyCmdData(giveBase.giveBaseId, giveBase.giveBaseOwner));
+                            ProtoFacade.getInstance().sendNotification(Const.FIND_TARGET, new FindTargetCmdData(giveBase.giveBaseId, giveBase.giveBaseOwner));
                         else
                             ProtoFacade.getInstance().sendNotification(Const.CREATE_NEW_BASE, giveBase.giveBaseId);
                         break;
