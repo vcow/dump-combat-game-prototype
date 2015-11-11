@@ -29,8 +29,7 @@ package vo
 		// 
 		//--------------------------------------------------------------------------
 		
-        public var moduleInactive:uint;             //< Количество ходов, которое модуль пребывает в неактивном состоянии
-                                                    //< (если 0, модуль активен)
+        public var moduleInactive:uint;             //< Количество ходов, которое модуль пребывает в неактивном состоянии (если 0, модуль активен)
 		public var moduleChance:Number;             //< Вероятность сохранения модуля после захвата базы
                                                     //< (если не NaN, переопределяет значение из словаря модулей ModuleDescVO)
         public var moduleId:String;                 //< Уникальный идентификатор модуля
@@ -99,10 +98,12 @@ package vo
 		
         override public function event(eventId:String, data:Object=null):void
         {
-            if (_feeEventId && eventId == _feeEventId)
+            if (_feeEventId && eventId == _feeEventId && !moduleBuildTimer)
             {
                 // Событие, по которому взымается плата за эксплуатацию модуля
 				var resourcesDecor:ResourcesHelper = new ResourcesHelper();
+                var modulesDecor:ModulesHelper = new ModulesHelper();
+                
                 if (resourcesDecor.isEnoughResources(fee))
                 {
                     sendNotification(Const.CHANGE_RESOURCES, invFee);
@@ -110,7 +111,7 @@ package vo
                     if (moduleInactive > 0)
                     {
                         moduleInactive = 0;
-                        sendNotification(Const.MODULES_CHANGED, (new ModulesHelper()).getModulePlace(moduleId));
+                        sendNotification(Const.MODULES_CHANGED, modulesDecor.getModulePlace(moduleId));
                         
                         var message:String = ResourceManager.getInstance().getString("messages", "module.resumed", [ moduleDesc.moduleName ]);
                         sendNotification(Const.SEND_GAME_MESSAGE, message, Const.MESSAGE);
@@ -125,7 +126,7 @@ package vo
                     
                     if (moduleWasActive)
                     {
-                        sendNotification(Const.MODULES_CHANGED, (new ModulesHelper()).getModulePlace(moduleId));
+                        sendNotification(Const.MODULES_CHANGED, modulesDecor.getModulePlace(moduleId));
                         
                         message = ResourceManager.getInstance().getString("messages", "disconnected.for.non.payment", [ moduleDesc.moduleName ]);
                         sendNotification(Const.SEND_GAME_MESSAGE, message, Const.WARNING);
@@ -137,11 +138,13 @@ package vo
                 var timerId:String = data ? data.toString() : "";
                 if (moduleBuildTimer == timerId)
                 {
+                    modulesDecor = new ModulesHelper();
+                    
                     // Сработал таймер окончания постройки этого модуля
                     moduleBuildTimer = "";
-                    sendNotification(Const.MODULES_CHANGED, (new ModulesHelper()).getModulePlace(moduleId));
+                    sendNotification(Const.MODULES_CHANGED, modulesDecor.getModulePlace(moduleId));
                     
-                    var base:BaseVO = (new ModulesHelper()).getModulePlace(moduleId);
+                    var base:BaseVO = modulesDecor.getModulePlace(moduleId);
                     message = ResourceManager.getInstance().getString("messages", "module.complete", [ base.baseName, moduleDesc.moduleName ]);
                     sendNotification(Const.SEND_GAME_MESSAGE, message, Const.MESSAGE);
                 }

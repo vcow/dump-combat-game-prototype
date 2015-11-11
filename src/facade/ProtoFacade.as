@@ -1,6 +1,7 @@
 package facade
 {
 	import command.ArtifactFindedCommand;
+	import command.AssaultCommand;
 	import command.AttackBaseCommand;
 	import command.BuildModuleCommand;
 	import command.ChangeResourcesCommand;
@@ -9,6 +10,7 @@ package facade
 	import command.CreateNewBaseCommand;
 	import command.CreateNewPersonCommand;
 	import command.DestroyUnitCommand;
+	import command.DisbandCommand;
 	import command.FindTargetCommand;
 	import command.FoundRuinsCommand;
 	import command.GameEventCommand;
@@ -28,6 +30,7 @@ package facade
 	import command.SelectWeaponCommand;
 	import command.SendGameMessageCommand;
 	import command.StartUpCommand;
+	import command.TimerCompleteCommand;
 	import command.TriggerChangedCommand;
 	import command.UpdateProductionCommand;
 	import command.UpdateResearchCommand;
@@ -107,6 +110,9 @@ package facade
             registerCommand(Const.FOUND_RUINS, FoundRuinsCommand);
             registerCommand(Const.ATTACK_BASE, AttackBaseCommand);
             registerCommand(Const.FIND_TARGET, FindTargetCommand);
+            registerCommand(Const.TIMER_COMPLETE, TimerCompleteCommand);
+            registerCommand(Const.DISBAND, DisbandCommand);
+            registerCommand(Const.ASSAULT, AssaultCommand);
 		}
 	}
 }

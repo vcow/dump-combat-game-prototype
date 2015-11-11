@@ -17,6 +17,9 @@ package command
     import proxy.TriggersProxy;
     
     import vo.BaseTemplVO;
+    import vo.BaseVO;
+    import vo.IVO;
+    import vo.RuinVO;
     import vo.TargetVO;
     
     /**
@@ -47,12 +50,35 @@ package command
                 {
                     var basesListProxy:BasesListProxy = BasesListProxy(this.facade.retrieveProxy(BasesListProxy.NAME));
                     
-                    if (basesListProxy.getBase(baseTempl.baseId))
+                    var base:IVO = basesListProxy.getBase(baseTempl.baseId);
+                    if (base)
                     {
                         // Эта база уже есть в списке известных
-                        if (EnemiesProxy(this.facade.retrieveProxy(EnemiesProxy.NAME)).getOwner(data.baseId) != data.ownerId)
-                            (new PropertyHelper(basesListProxy)).redistributeProperty(data.baseId, data.ownerId);   // У этой базы сменился владелец
-                        return;
+                        switch (base.name)
+                        {
+                            case RuinVO:
+                                // Эта база ранее числилась в руинах, удалить ее из руин и пересоздать как цель
+                                for (var i:int = 0; i < basesListProxy.basesListVO.children.length; i++)
+                                {
+                                    base = basesListProxy.basesListVO.children[i];
+                                    if (base.name == RuinVO.NAME && RuinVO(base).ruinId == baseTempl.baseId)
+                                    {
+                                        basesListProxy.basesListVO.children.splice(i, 1);
+                                        break;
+                                    }
+                                }
+                                break;
+                            case TargetVO.NAME:
+                                if (EnemiesProxy(this.facade.retrieveProxy(EnemiesProxy.NAME)).getOwner(data.baseId) != data.ownerId)
+                                {
+                                    // У этой базы сменился владелец
+                                    (new PropertyHelper(basesListProxy)).redistributeProperty(data.baseId, data.ownerId);
+                                }
+                                return;
+                            case BaseVO.NAME:
+                                // Юзер нашел собственную базу
+                                return;
+                        }
                     }
                     
                     var target:TargetVO = new TargetVO();

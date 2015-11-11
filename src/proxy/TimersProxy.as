@@ -81,7 +81,7 @@ package proxy
          * @param result результат завершения таймера
          * @return созданный таймер
          */
-        public function startTimer(delay:Number, result:ResultVO):TimerVO
+        public function startTimer(delay:Number, result:ResultVO=null):TimerVO
         {
             if (isNaN(delay) || delay < 1.0)
                 return null;
@@ -204,6 +204,8 @@ package proxy
                     }
                 }
             }
+            
+            sendNotification(Const.TIMER_COMPLETE, timer.timerId);
         }
         
         //----------------------------------

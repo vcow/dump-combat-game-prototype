@@ -11,6 +11,7 @@ package command
 	
 	import proxy.AppDataProxy;
 	import proxy.BasesListProxy;
+	import proxy.EnemiesProxy;
 	import proxy.TriggersProxy;
 	
 	import vo.BaseTemplVO;
@@ -48,6 +49,12 @@ package command
 			var ruin:RuinVO = basesListProxy.getBase(notification.getBody().toString()) as RuinVO;
             if (ruin)
             {
+                if (EnemiesProxy(this.facade.retrieveProxy(EnemiesProxy.NAME)).getOwner(ruin.ruinId))
+                {
+                    // Руины уже захвачены
+                    return;
+                }
+                
                 var resourcesDecor:ResourcesHelper = new ResourcesHelper(basesListProxy);
                 
                 var baseTempl:BaseTemplVO = BasesDict.getInstance().getBase(ruin.ruinId);

@@ -16,6 +16,7 @@ package mediator
     
     import proxy.ArmyProxy;
     import proxy.BasesListProxy;
+    import proxy.EnemiesProxy;
     import proxy.RaidsProxy;
     
     import views.ui.BeginRaidView;
@@ -185,11 +186,17 @@ package mediator
          */
         private function beginRaidHandler(event:BeginRaidEvent):void
         {
-            var army:Vector.<String> = new Vector.<String>();
+            var army:Vector.<UnitVO> = new Vector.<UnitVO>();
             for each (var item:String in event.units)
-                army.push(item);
+            {
+                var unit:UnitVO = armyProxy.getUnit(item);
+                if (unit)
+                    army.push(unit);
+            }
             
-            sendNotification(Const.ATTACK_BASE, new AttackBaseCmdData(beginRaidView.targetBaseId, event.departureBase, army));
+            var enemiesProxy:EnemiesProxy = EnemiesProxy(this.facade.retrieveProxy(EnemiesProxy.NAME));
+            sendNotification(Const.ATTACK_BASE, new AttackBaseCmdData(beginRaidView.targetBaseId, null, event.departureBase,
+                enemiesProxy.getOwner(event.departureBase), army));
         }
         
         //----------------------------------

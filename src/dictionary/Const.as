@@ -83,5 +83,11 @@ package dictionary
         public static const FIND_TARGET:String = "findTarget";                              //< Найти вражескую базу
         public static const TARGET_FOUND:String = "targetFound";                            //< Найдена вражеская база
         public static const ATTACK_BASE:String = "attackBase";                              //< Атаковать базу
+        public static const CONFIRM_ATTACK_BASE:String = "confirmAttackBase";               //< Подтверждение атаки от юзера
+        public static const TIMER_COMPLETE:String = "timerComplete";                        //< Завершил работу какой-то таймер
+        public static const CAMPAIGN_BEGAN:String = "campaignBegan";                        //< Поход начался
+        public static const CAMPAIGN_COMPLETED:String = "campaignCompleted";                //< Поход завершился
+        public static const ASSAULT:String = "assault";                                     //< Инициировать штурм базы
+        public static const DISBAND:String = "disband";                                     //< Расформировать отряд
 	}
 }

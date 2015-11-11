@@ -23,8 +23,11 @@ package vo
 		
         public var raidId:String;                   //< Идентификатор рейда
         public var raidTarget:String;               //< База, на которую происходит нападение
+        public var raidTargetOwner:String;          //< Идентификатор владельца базы, на которую происходит нападение
         public var raidDeparture:String;            //< База, c которой происходит нападение
+        public var raidDepartureOwner:String;       //< Идентификатор владельца базы, с которой происходит нападение
         public var raidTimer:String;                //< Идентификатор таймера до момента сражения
+        public var raidDelayed:Boolean;             //< Флаг, указывающий на то, что рейд находится в состоянии ожидания решения
         public var raidVictorious:Boolean;          //< Флаг, указывающий, что рейд был успешным
 		
 		//--------------------------------------------------------------------------
@@ -48,13 +51,18 @@ package vo
 			
 			res.@id = raidId || VO.createGUID();
             res.@target = raidTarget;
+            res.@targetOwner = raidTargetOwner;
             res.@departure = raidDeparture;
+            res.@departureOwner = raidDepartureOwner;
             
             if (raidTimer)
                 res.@timer = raidTimer;
             
             if (raidVictorious)
                 res.@victorious = raidVictorious;
+            
+            if (raidDelayed)
+                res.@delayed = raidDelayed;
 			
 			// /TODO
 			
@@ -69,9 +77,12 @@ package vo
 			
             raidId = data.hasOwnProperty("@id") ? data.@id.toString() : Const.NO_GUID;
             raidTarget = data.hasOwnProperty("@target") ? data.@target.toString() : Const.NO_GUID;
+            raidTargetOwner = data.hasOwnProperty("@targetOwner") ? data.@targetOwner.toString() : "";
             raidDeparture = data.hasOwnProperty("@departure") ? data.@departure.toString() : Const.NO_GUID;
+            raidDepartureOwner = data.hasOwnProperty("@departureOwner") ? data.@departureOwner.toString() : "";
             raidTimer = data.hasOwnProperty("@timer") ? data.@timer.toString() : "";
             raidVictorious = data.hasOwnProperty("@victorious") ? data.@victorious.toString().toLowerCase() == "true" : false;
+            raidDelayed = data.hasOwnProperty("@delayed") ? data.@delayed.toString().toLowerCase() == "true" : false;
 			
 			// /TODO
 			

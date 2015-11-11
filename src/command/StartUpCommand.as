@@ -28,6 +28,7 @@ package command
 		{
 			addSubCommand(ModelPrepareCommand);
 			addSubCommand(ViewPrepareCommand);
+            addSubCommand(StartupCheckCommand);
 		}
 	}
 }

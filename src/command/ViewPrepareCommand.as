@@ -5,6 +5,7 @@ package command
 	import mediator.BaseMediator;
 	import mediator.BasesListMediator;
 	import mediator.BeginRaidMediator;
+	import mediator.ConfirmAttackMediator;
 	import mediator.InvestigationsMediator;
 	import mediator.LogMediator;
 	import mediator.PersonMediator;
@@ -57,6 +58,7 @@ package command
             this.facade.registerMediator(new ArmyMediator());
             this.facade.registerMediator(new UnitMediator());
             this.facade.registerMediator(new BeginRaidMediator());
+            this.facade.registerMediator(new ConfirmAttackMediator());
 		}
 	}
 }
