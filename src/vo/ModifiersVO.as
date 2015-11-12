@@ -64,13 +64,27 @@ package vo
         {
             var props:Dictionary = new Dictionary();
             for (var key:String in baseValues)
-                props[key] = baseValues[key];
+                props[key] = (baseValues[key] as Array).slice();
                 
             for (key in modifiersData)
             {
-                var value:Number = parse(modifiersData[key], Number(props[key]));
-                if (!isNaN(value))
-                    props[key] = value;
+                var prev:Array = (props[key] as Array) || [ NaN ];
+                
+                for (var i:int = 0; i < prev.length; i++)
+                {
+                    var value:Number = parse(modifiersData[key], Number(prev[i]));
+                    if (!isNaN(value))
+                        prev[i] = value;
+                }
+                
+                for (i = prev.length - 1; i >= 0; i--)
+                {
+                    if (isNaN(prev[i]))
+                        prev.splice(i, 1);
+                }
+                
+                if (prev.length > 0)
+                    props[key] = prev;
             }
             return props;
         }

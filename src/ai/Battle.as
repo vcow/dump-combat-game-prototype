@@ -2,6 +2,12 @@ package ai
 {
     import ai.battle.Field;
     
+    import facade.ProtoFacade;
+    
+    import helpers.BattleHelper;
+    
+    import proxy.ArmyProxy;
+    
     import vo.UnitVO;
 
     /**
@@ -25,6 +31,9 @@ package ai
         
         private var _field:Field;
         
+        private var _armyProxy:ArmyProxy;
+        private var _battleDecor:BattleHelper;
+        
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
@@ -36,6 +45,9 @@ package ai
          */
         public function Battle(army1:Vector.<UnitVO>, army2:Vector.<UnitVO>)
         {
+            _armyProxy = ArmyProxy(ProtoFacade.getInstance().retrieveProxy(ArmyProxy.NAME));
+            _battleDecor = new BattleHelper(_armyProxy);
+            
             _army1 = army1;
             _army2 = army2;
             

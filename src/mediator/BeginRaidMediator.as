@@ -120,7 +120,7 @@ package mediator
             for each (var unit:UnitVO in units)
             {
                 // Для рейда годятся только юниты, которые могут передвигаться
-                if (battleDecor.getUnitProperty(ModifiersVO.SPEED, unit.unitId))
+                if (battleDecor.getMaxUnitProperty(ModifiersVO.SPEED, unit.unitId))
                 {
                     list.push({
                         label: unit.unitName,

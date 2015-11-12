@@ -66,9 +66,15 @@ package helpers
          * @param unitId идентификатор юнита
          * @return значение свойства
          */
-        public function getUnitProperty(propertyName:String, unitId:String):Number
+        public function getMaxUnitProperty(propertyName:String, unitId:String):Number
         {
-            return Number(getUnitProperties(unitId)[propertyName]);
+            var props:Array = getUnitProperties(unitId)[propertyName];
+            if (props && props.length > 0)
+            {
+                props.sort(Array.NUMERIC);
+                return Number(props[props.length - 1]);
+            }
+            return NaN;
         }
         
         /**
@@ -125,12 +131,76 @@ package helpers
             
             if (ammoList.length > 0)
             {
-                var ammo:AmmoVO = ammoList[0];
-                modifiers = ammo.ammoDesc.ammoModifiers;
-                base = modifiers ? modifiers.getProperties(base) : base;
+                var bases:Array = [];
+                
+                for (i = 0; i < ammoList.length; i++)
+                {
+                    var ammo:AmmoVO = ammoList[i];
+                    modifiers = ammo.ammoDesc.ammoModifiers;
+                    var sub:Dictionary = modifiers ? modifiers.getProperties(cloneBase(base)) : cloneBase(base);
+                    
+                    bases.push(sub);
+                }
+                
+                base = joinBases(bases);
             }
             
             return base;
+        }
+        
+        private function cloneBase(base:Dictionary):Dictionary
+        {
+            var res:Dictionary = new Dictionary();
+            for (var key:String in base)
+                res[key] = (base[key] as Array).slice();
+            return res;
+        }
+        
+        public function joinBases(bases:Array):Dictionary
+        {
+            var res:Dictionary = new Dictionary();
+            for each (var base:Dictionary in bases)
+            {
+                for (var key:String in base)
+                {
+                    var values:Array = res[key] as Array;
+                    if (values)
+                        res[key] = values.concat(base[key] as Array);
+                    else
+                        res[key] = (base[key] as Array).slice();
+                }
+            }
+            
+            for each (values in res)
+            {
+                if (values.length > 0)
+                {
+                    values.sort(Array.NUMERIC);
+                    var value:Number = values[values.length - 1];
+                    for (var i:int = values.length - 2; i >= 0; i--)
+                    {
+                        if (values[i] == value)
+                            values.splice(i, 1);
+                        else
+                            value = values[i];
+                    }
+                }
+            }
+            
+            do {
+                var hasEmpty:Boolean = false;
+                for (key in res)
+                {
+                    if ((res[key] as Array).length == 0)
+                    {
+                        delete res[key];
+                        hasEmpty = true;
+                        break;
+                    }
+                }
+            } while (hasEmpty);
+            
+            return res;
         }
     }
 }
