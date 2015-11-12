@@ -195,8 +195,8 @@ package mediator
             }
             
             var enemiesProxy:EnemiesProxy = EnemiesProxy(this.facade.retrieveProxy(EnemiesProxy.NAME));
-            sendNotification(Const.ATTACK_BASE, new AttackBaseCmdData(beginRaidView.targetBaseId, null, event.departureBase,
-                enemiesProxy.getOwner(event.departureBase), army));
+            sendNotification(Const.ATTACK_BASE, new AttackBaseCmdData(beginRaidView.targetBaseId,
+                enemiesProxy.getOwner(beginRaidView.targetBaseId), event.departureBase, null, army));
         }
         
         //----------------------------------

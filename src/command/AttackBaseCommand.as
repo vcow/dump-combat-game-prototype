@@ -81,7 +81,7 @@ package command
                     if (departureOwner == null)
                         return;     // Игрок напал сам на себя
                     
-                    var enemyDesc:EnemyDescVO = EnemiesDict.getInstance().getEnemy(data.departureOwner);
+                    var enemyDesc:EnemyDescVO = EnemiesDict.getInstance().getEnemy(departureOwner);
                     if (!enemyDesc)
                         return;     // Такого врага не существует
                     
@@ -100,7 +100,7 @@ package command
                     if (targetOwner == null)
                         return;     // Игрок напал сам на себя
                     
-                    enemyDesc = EnemiesDict.getInstance().getEnemy(data.targetOwner);
+                    enemyDesc = EnemiesDict.getInstance().getEnemy(targetOwner);
                     if (!enemyDesc)
                         return;     // Такого врага не существует
                     

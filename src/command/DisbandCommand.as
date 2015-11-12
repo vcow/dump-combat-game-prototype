@@ -4,13 +4,16 @@ package command
     import org.puremvc.as3.patterns.command.SimpleCommand;
     
     import proxy.BasesListProxy;
+    import proxy.PersonsProxy;
     import proxy.RaidsProxy;
     import proxy.TimersProxy;
     import proxy.TriggersProxy;
     
     import vo.BaseVO;
+    import vo.PersonVO;
     import vo.RaidVO;
     import vo.TimerVO;
+    import vo.UnitVO;
     
     /**
      * 
@@ -48,6 +51,28 @@ package command
                     {
                         if (RaidVO(raidsProxy.raidsVO.children[i]).raidId == raid.raidId)
                         {
+                            var soldiers:Vector.<String> = new Vector.<String>();
+                            for each (var unit:UnitVO in raid.children)
+                            {
+                                for each (var soldier:String in unit.unitCrew)
+                                    soldiers.push(soldier);
+                            }
+                            
+                            var personsProxy:PersonsProxy = PersonsProxy(this.facade.retrieveProxy(PersonsProxy.NAME));
+                            for (var j:int = personsProxy.personsVO.children.length - 1; j >= 0 && soldiers.length > 0; j--)
+                            {
+                                var person:PersonVO = PersonVO(personsProxy.personsVO.children[j]);
+                                for (var k:int = 0; k < soldiers.length; k++)
+                                {
+                                    if (person.personId == soldiers[k])
+                                    {
+                                        personsProxy.personsVO.children.splice(j, 1);
+                                        soldiers.splice(k, 1);
+                                        break;
+                                    }
+                                }
+                            }
+                            
                             raidsProxy.raidsVO.children.splice(i, 1);
                             TriggersProxy(this.facade.retrieveProxy(TriggersProxy.NAME)).valueChanged(TriggersProxy.RAIDS_COUNT_TRIGGER);
                             break;

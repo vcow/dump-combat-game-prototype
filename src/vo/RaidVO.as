@@ -51,9 +51,13 @@ package vo
 			
 			res.@id = raidId || VO.createGUID();
             res.@target = raidTarget;
-            res.@targetOwner = raidTargetOwner;
             res.@departure = raidDeparture;
-            res.@departureOwner = raidDepartureOwner;
+            
+            if (raidTargetOwner)
+                res.@targetOwner = raidTargetOwner;
+            
+            if (raidDepartureOwner)
+                res.@departureOwner = raidDepartureOwner;
             
             if (raidTimer)
                 res.@timer = raidTimer;

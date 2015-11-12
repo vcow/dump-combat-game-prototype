@@ -2,6 +2,7 @@ package helpers
 {
     import dictionary.BasesDict;
     import dictionary.Const;
+    import dictionary.EnemiesDict;
     
     import facade.ProtoFacade;
     
@@ -74,10 +75,16 @@ package helpers
                 else
                 {
                     // База перешла к другому врагу
-                    enemy = _enemiesProxy.getEnemy(ownerId);
-                    
-                    if (!enemy)
+                    if (!EnemiesDict.getInstance().getEnemy(ownerId))
                         throw Error("Unknown enemy (" + ownerId + ").");
+                    
+                    enemy = _enemiesProxy.getEnemy(ownerId);
+                    if (!enemy)
+                    {
+                        enemy = new EnemyVO();
+                        enemy.enemyId = ownerId;
+                        _enemiesProxy.enemiesVO.children.push(enemy);
+                    }
                     
                     if (!movProperty)
                     {
