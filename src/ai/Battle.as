@@ -4,8 +4,7 @@ package ai
     
     import ai.battle.Combatant;
     import ai.battle.Field;
-    
-    import facade.ProtoFacade;
+    import ai.battle.Fight;
     
     import helpers.BattleHelper;
     
@@ -62,8 +61,7 @@ package ai
          */
         public function Battle(army1:Vector.<UnitVO>, army2:Vector.<UnitVO>)
         {
-            _armyProxy = ArmyProxy(ProtoFacade.getInstance().retrieveProxy(ArmyProxy.NAME));
-            _battleDecor = new BattleHelper(_armyProxy);
+            _battleDecor = new BattleHelper();
             
             _army1 = new Vector.<Combatant>();
             for each (var unit:UnitVO in army1)
@@ -120,13 +118,15 @@ package ai
             
             makePairs();
             
-            while (_moving1.length && _moving2.length)
+            while (_moving1.length && _moving2.length && _pairs.length)
                 calcStep();
             
-            if (_moving1.length > 0)
+            if (_moving2.length == 0)
                 _winner = 1;
-            else
+            else if (_moving1.length == 0)
                 _winner = 2;
+            else
+                _winner = 0;
         }
         
         /**
@@ -134,7 +134,10 @@ package ai
          */
         private function calcStep():void
         {
-            
+            for (var i:int = _pairs.length - 1; i >= 0; i--)
+            {
+                var fight:Fight = new Fight(_pairs[i], _field, _log);
+            }
         }
         
         /**
@@ -216,7 +219,7 @@ package ai
             {
                 for (var i:int = 0; i < 2; i++)
                 {
-                    if (pair[i].unitId == unit.unitId)
+                    if (pair[i] === unit)
                         return Combatant(i == 0 ? pair[1] : pair[0]);
                 }
             }
@@ -251,28 +254,20 @@ package ai
                 
                 for each (var unit:Combatant in army)
                 {
-                    var props:Dictionary = _battleDecor.getUnitProperties(unit.unitId);
+                    var props:Dictionary = _battleDecor.getUnitProperties(unit.unit);
                     
-                    var prop:Array = props[ModifiersVO.SPEED] as Array;
-                    if (prop && prop.length > 0)
+                    var prop:Number = _battleDecor.getMaxUnitProperty(ModifiersVO.SPEED, unit.unit, props);
+                    if (prop)
                     {
-                        prop.sort(Array.NUMERIC);
-                        if (prop[prop.length - 1])
-                        {
-                            movingUnits.push(unit);
-                            continue;
-                        }
+                        movingUnits.push(unit);
+                        continue;
                     }
                     
-                    prop = props[ModifiersVO.REACH] as Array;
-                    if (prop && prop.length > 0)
+                    prop = _battleDecor.getMaxUnitProperty(ModifiersVO.REACH, unit.unit, props);
+                    if (prop)
                     {
-                        prop.sort(Array.NUMERIC);
-                        if (prop[prop.length - 1])
-                        {
-                            towerUnits.push(unit);
-                            continue;
-                        }
+                        towerUnits.push(unit);
+                        continue;
                     }
                     
                     mineUnits.push(unit);
@@ -300,7 +295,7 @@ package ai
                 // Расставить по левому краю башни первой армии
                 var y:int = _towers1.length < h ? (h - _towers1.length) / 2 : 0;
                 for each (unit in _towers1)
-                    _field.setUnit(unit.unit, x, y++);
+                    _field.setUnit(unit, x, y++);
                 
                 x++;
             }
@@ -313,7 +308,7 @@ package ai
                 {
                     unit = Combatant(_moving1[i]);
                     
-                    if (_field.setUnit(unit.unit, x, y++))
+                    if (_field.setUnit(unit, x, y++))
                         i++;
                     
                     if (y >= _field.height)
@@ -333,7 +328,7 @@ package ai
                 {
                     unit = Combatant(_mines1[i]);
                     
-                    if (_field.setUnit(unit.unit, x, y++))
+                    if (_field.setUnit(unit, x, y++))
                         i++;
                     
                     if (y >= _field.height)
@@ -352,7 +347,7 @@ package ai
                 // Расставить по правому краю башни первой армии
                 y = _towers2.length < h ? (h - _towers2.length) / 2 : 0;
                 for each (unit in _towers2)
-                    _field.setUnit(unit.unit, x, y++);
+                    _field.setUnit(unit, x, y++);
                 
                 x--;
             }
@@ -365,7 +360,7 @@ package ai
                 {
                     unit = Combatant(_moving2[i]);
                     
-                    if (_field.setUnit(unit.unit, x, y++))
+                    if (_field.setUnit(unit, x, y++))
                         i++;
                     
                     if (y >= _field.height)
@@ -385,7 +380,7 @@ package ai
                 {
                     unit = Combatant(_mines2[i]);
                     
-                    if (_field.setUnit(unit.unit, x, y++))
+                    if (_field.setUnit(unit, x, y++))
                         i++;
                     
                     if (y >= _field.height)

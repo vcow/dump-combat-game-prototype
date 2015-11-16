@@ -115,12 +115,12 @@ package mediator
         {
             var list:Array = [];
             var units:Vector.<UnitVO> = (new ArmyHelper(basesListProxy, null, null, armyProxy)).getUnitsOnBase();
-            var battleDecor:BattleHelper = new BattleHelper(armyProxy);
+            var battleDecor:BattleHelper = new BattleHelper();
             
             for each (var unit:UnitVO in units)
             {
                 // Для рейда годятся только юниты, которые могут передвигаться
-                if (battleDecor.getMaxUnitProperty(ModifiersVO.SPEED, unit.unitId))
+                if (battleDecor.getMaxUnitProperty(ModifiersVO.SPEED, unit))
                 {
                     list.push({
                         label: unit.unitName,

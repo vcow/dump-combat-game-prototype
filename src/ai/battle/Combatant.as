@@ -21,6 +21,13 @@ package ai.battle
         // 
         //--------------------------------------------------------------------------
         
+        public var x:Number;
+        public var y:Number;
+        
+        //--------------------------------------------------------------------------
+        // 
+        //--------------------------------------------------------------------------
+        
         public function Combatant(unit:UnitVO)
         {
             _unit = unit;
@@ -29,11 +36,6 @@ package ai.battle
         public function get unit():UnitVO
         {
             return _unit;
-        }
-        
-        public function get unitId():String
-        {
-            return _unit.unitId;
         }
     }
 }

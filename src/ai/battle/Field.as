@@ -1,7 +1,5 @@
 package ai.battle
 {
-    import vo.UnitVO;
-
     /**
      * 
      * @author y.vircowskiy
@@ -18,7 +16,7 @@ package ai.battle
         private var _width:int;
         private var _height:int;
         
-        private var _field:Vector.<Vector.<Vector.<UnitVO>>>;
+        private var _field:Vector.<Vector.<Vector.<Combatant>>>;
         
         //--------------------------------------------------------------------------
         // 
@@ -37,12 +35,12 @@ package ai.battle
             _width = width;
             _height = height;
             
-            _field = new Vector.<Vector.<UnitVO>>(_width);
+            _field = new Vector.<Vector.<Combatant>>(_width);
             for (var i:int = 0; i < _width; i++)
             {
-                var col:Vector.<Vector.<UnitVO>> = new Vector.<Vector.<UnitVO>>(_height);
+                var col:Vector.<Vector.<Combatant>> = new Vector.<Vector.<Combatant>>(_height);
                 for (var j:int = 0; j < _height; j++)
-                    col[j] = new Vector.<UnitVO>();
+                    col[j] = new Vector.<Combatant>();
                 _field[i] = col;
             }
         }
@@ -71,14 +69,18 @@ package ai.battle
          * @param single флаг, указывающий ставить юнит только в свободную ячейку
          * @return true, если юнит установлен, false, если ячейка занята
          */
-        public function setUnit(unit:UnitVO, x:int, y:int, single:Boolean=true):Boolean
+        public function setUnit(unit:Combatant, x:int, y:int, single:Boolean=true):Boolean
         {
             if (x >= 0 && x < _width && y >= 0 && y < _height && !_field[x][y])
             {
-                var cell:Vector.<UnitVO> = _field[x][y];
+                var cell:Vector.<Combatant> = _field[x][y];
                 if (!single || cell.length == 0)
                 {
                     _field[x][y].push(unit);
+                    
+                    unit.x = x;
+                    unit.y = y;
+                    
                     return true;
                 }
             }
@@ -91,7 +93,7 @@ package ai.battle
          * @param y позиция по вертикали
          * @return юниты в указанной позиции
          */
-        public function getUnits(x:int, y:int):Vector.<UnitVO>
+        public function getUnits(x:int, y:int):Vector.<Combatant>
         {
             return x >= 0 && x < _width && y >= 0 && y < _height ? _field[x][y] : null;
         }

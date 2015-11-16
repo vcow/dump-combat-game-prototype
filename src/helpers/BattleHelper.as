@@ -4,10 +4,6 @@ package helpers
     
     import dictionary.ArmamentDict;
     
-    import facade.ProtoFacade;
-    
-    import proxy.ArmyProxy;
-    
     import vo.AmmoVO;
     import vo.ArmorVO;
     import vo.IVO;
@@ -28,53 +24,109 @@ package helpers
         // 
         //--------------------------------------------------------------------------
         
+        private var _hitDistance:Number;
+        private var _hitWeapon:IVO;
         
         //--------------------------------------------------------------------------
         // 
         //--------------------------------------------------------------------------
         
-        private var _armyProxy:ArmyProxy;
-        
-        //--------------------------------------------------------------------------
-        // 
-        //--------------------------------------------------------------------------
-        
-        public function BattleHelper(armyProxy:ArmyProxy=null)
+        public function BattleHelper()
         {
-            _armyProxy = armyProxy || ArmyProxy(ProtoFacade.getInstance().retrieveProxy(ArmyProxy.NAME));
+        }
+        
+        /**
+         * Нанести удар
+         * @param unit идентификатор юнита, наносящего удар
+         * @param distsnce дистанция, на которую производится удар
+         * @return список повреждений, нанесенных ударом
+         */
+        public function hit(unit:UnitVO, distsnce:Number):Dictionary
+        {
+            _hitDistance = distsnce;
+            
+            var props:Dictionary = updateValueWith(new <IVO>[ unit ], new Dictionary());
+            
+            var dmg:Dictionary = new Dictionary();
+            if (_hitWeapon)
+            {
+                if (_hitWeapon.name == AmmoVO.NAME)
+                    removeAmmo(unit, AmmoVO(_hitWeapon).ammoId);    // Изъять отстрелянный снаряд
+                
+                const dmgProps:Array = [ ModifiersVO.DMG_STRENGTH, ModifiersVO.BLUNT_DMG, ModifiersVO.SHARP_DMG, ModifiersVO.SPIKE_DMG, ModifiersVO.FIRE_DMG ];
+                for each (var dmgProp:String in dmgProps)
+                {
+                    var p:Array = props[dmgProp] as Array;
+                    if (p && p.length > 0)
+                        dmg[dmgProp] = p[p.length - 1];
+                }
+            }
+            
+            return dmg;
+        }
+        
+        /**
+         * Оружие, нанесшее удар
+         */
+        public function get hitWeapon():IVO
+        {
+            return _hitWeapon;
         }
         
         /**
          * Получить список всех свойств юнита с модификациями
-         * @param unitId идентификатор юнита
+         * @param unit идентификатор юнита
          * @return список модифицированных свойств
          */
-        public function getUnitProperties(unitId:String):Dictionary
+        public function getUnitProperties(unit:UnitVO):Dictionary
         {
-            var props:Dictionary = new Dictionary();
-            var unit:UnitVO = _armyProxy.getUnit(unitId);
+            _hitDistance = NaN;
+            _hitWeapon = null;
             
-            if (unit)
-                props = updateValueWith(new <IVO>[ unit ], props);
-            
-            return props;
+            return updateValueWith(new <IVO>[ unit ], new Dictionary());
         }
         
         /**
          * Получить свойство юнита
          * @param propertyName название свойства
-         * @param unitId идентификатор юнита
+         * @param unit идентификатор юнита
          * @return значение свойства
          */
-        public function getMaxUnitProperty(propertyName:String, unitId:String):Number
+        public function getMaxUnitProperty(propertyName:String, unit:UnitVO, properties:Dictionary=null):Number
         {
-            var props:Array = getUnitProperties(unitId)[propertyName];
+            var props:Array = (properties ? properties[propertyName] : getUnitProperties(unit)[propertyName]) as Array;
             if (props && props.length > 0)
             {
                 props.sort(Array.NUMERIC);
                 return Number(props[props.length - 1]);
             }
             return NaN;
+        }
+        
+        /**
+         * Удалить отстрелянный снаряд
+         * @param weapon оружие
+         * @param ammo снаряд
+         */
+        private function removeAmmo(weapon:IVO, ammoId:String):Boolean
+        {
+            for (var i:int = 0; i < weapon.children.length; i++)
+            {
+                var item:IVO = weapon.children[i];
+                if (item.name == AmmoVO.NAME && AmmoVO(item).ammoId == ammoId)
+                {
+                    weapon.children.splice(i, 1);
+                    return true;
+                }
+            }
+            
+            for each (item in weapon.children)
+            {
+                if (removeAmmo(item, ammoId))
+                    return true;
+            }
+            
+            return false;
         }
         
         /**
@@ -111,6 +163,27 @@ package helpers
                 base = modifiers ? modifiers.getProperties(base) : base;
                 
                 base = updateValueWith(unit.children, base);
+                
+                if (!isNaN(_hitDistance) && _hitWeapon)
+                {
+                    if (_hitWeapon)
+                    {
+                        // Найдено оружие, способное нанести удар на указанное расстояние, прекращаем дальнейший расчет
+                        return base;
+                    }
+                    
+                    var reach:Array = base[ModifiersVO.REACH] as Array;
+                    if (reach && reach.length > 0)
+                    {
+                        reach.sort(Array.NUMERIC);
+                        if (reach[reach.length - 1] >= _hitDistance)
+                        {
+                            // Этот юнит может поразить на указанной дистанции, прекратить дальнейший расчет
+                            _hitWeapon = unit;
+                            return base;
+                        }
+                    }
+                }
             }
             
             for (i = 0; i < weaponList.length; i++)
@@ -119,7 +192,28 @@ package helpers
                 modifiers = weapon.weaponDesc.weaponModifiers;
                 base = modifiers ? modifiers.getProperties(base) : base;
                 
+                if (!isNaN(_hitDistance))
+                {
+                    reach = base[ModifiersVO.REACH] as Array;
+                    if (reach && reach.length > 0)
+                    {
+                        reach.sort(Array.NUMERIC);
+                        if (reach[reach.length - 1] >= _hitDistance)
+                        {
+                            // Это оружие может поразить на указанной дистанции, прекратить дальнейший расчет
+                            _hitWeapon = weapon;
+                            return base;
+                        }
+                    }
+                }
+                
                 base = updateValueWith(weapon.children, base);
+                
+                if (!isNaN(_hitDistance) && _hitWeapon)
+                {
+                    // Найден снаряд, способный поразить на указанной дистанции, прекратить дальнейший расчет
+                    return base;
+                }
             }
             
             for (i = 0; i < armorList.length; i++)
@@ -138,6 +232,21 @@ package helpers
                     var ammo:AmmoVO = ammoList[i];
                     modifiers = ammo.ammoDesc.ammoModifiers;
                     var sub:Dictionary = modifiers ? modifiers.getProperties(cloneBase(base)) : cloneBase(base);
+                    
+                    if (!isNaN(_hitDistance))
+                    {
+                        reach = sub[ModifiersVO.REACH] as Array;
+                        if (reach && reach.length > 0)
+                        {
+                            reach.sort(Array.NUMERIC);
+                            if (reach[reach.length - 1] >= _hitDistance)
+                            {
+                                // Этот снаряд может поразить на указанной дистанции, прекратить дальнейший расчет
+                                _hitWeapon = ammo;
+                                return sub;
+                            }
+                        }
+                    }
                     
                     bases.push(sub);
                 }
