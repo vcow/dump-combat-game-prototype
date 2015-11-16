@@ -18,7 +18,7 @@ package ai.battle
         private var _width:int;
         private var _height:int;
         
-        private var _field:Vector.<Vector.<UnitVO>>;
+        private var _field:Vector.<Vector.<Vector.<UnitVO>>>;
         
         //--------------------------------------------------------------------------
         // 
@@ -39,7 +39,28 @@ package ai.battle
             
             _field = new Vector.<Vector.<UnitVO>>(_width);
             for (var i:int = 0; i < _width; i++)
-                _field[i] = new Vector.<UnitVO>(_height);
+            {
+                var col:Vector.<Vector.<UnitVO>> = new Vector.<Vector.<UnitVO>>(_height);
+                for (var j:int = 0; j < _height; j++)
+                    col[j] = new Vector.<UnitVO>();
+                _field[i] = col;
+            }
+        }
+        
+        /**
+         * Ширина поля
+         */
+        public function get width():int
+        {
+            return _width;
+        }
+        
+        /**
+         * Высота поля
+         */
+        public function get height():int
+        {
+            return _height;
         }
         
         /**
@@ -47,25 +68,30 @@ package ai.battle
          * @param unit юнит
          * @param x позиция по горизонтали
          * @param y позиция по вертикали
+         * @param single флаг, указывающий ставить юнит только в свободную ячейку
          * @return true, если юнит установлен, false, если ячейка занята
          */
-        public function setUnit(unit:UnitVO, x:int, y:int):Boolean
+        public function setUnit(unit:UnitVO, x:int, y:int, single:Boolean=true):Boolean
         {
             if (x >= 0 && x < _width && y >= 0 && y < _height && !_field[x][y])
             {
-                _field[x][y] = unit;
-                return true;
+                var cell:Vector.<UnitVO> = _field[x][y];
+                if (!single || cell.length == 0)
+                {
+                    _field[x][y].push(unit);
+                    return true;
+                }
             }
             return false;
         }
         
         /**
-         * Получить юнит из указанной позиции
+         * Получить юниты из указанной позиции
          * @param x позиция по горизонтали
          * @param y позиция по вертикали
-         * @return юнит в указанной позиции
+         * @return юниты в указанной позиции
          */
-        public function getUnit(x:int, y:int):UnitVO
+        public function getUnits(x:int, y:int):Vector.<UnitVO>
         {
             return x >= 0 && x < _width && y >= 0 && y < _height ? _field[x][y] : null;
         }
