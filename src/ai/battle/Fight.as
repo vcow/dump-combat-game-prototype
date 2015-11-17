@@ -67,13 +67,15 @@ package ai.battle
          */
         private function calcFight():void
         {
-            var d:Number = Math.sqrt((_c2.x - _c1.x) * (_c2.x - _c1.x) + (_c2.y - _c1.y) * (_c2.y - _c1.y));
+            var dx:Number = _c2.x - _c1.x;
+            var dy:Number = _c2.y - _c1.y;
+            var l:Number = Math.sqrt(dx * dx + dy * dy);
             
             var params1:Dictionary = _battleDecor.getUnitProperties(_c1.unit);
             var params2:Dictionary = _battleDecor.getUnitProperties(_c2.unit);
             
-            if (!calcHit(d, params1, params2, _c1, _c2))
-                calcHit(d, params2, params1, _c2, _c1);
+            if (!calcHit(l, dx, dy, params1, params2, _c1, _c2))
+                calcHit(l, -dx, -dy, params2, params1, _c2, _c1);
         }
         
         /**
@@ -85,13 +87,13 @@ package ai.battle
          * @param c2 избиваемый юнит
          * @return true, если второй юнит убит
          */
-        private function calcHit(d:Number, params1:Dictionary, params2:Dictionary, c1:Combatant, c2:Combatant):Boolean
+        private function calcHit(l:Number, dx:Number, dy:Number, params1:Dictionary, params2:Dictionary, c1:Combatant, c2:Combatant):Boolean
         {
             var reach:Number = _battleDecor.getMaxUnitProperty(ModifiersVO.REACH, c1.unit, params1);
-            if (!isNaN(reach) && reach >= d)
+            if (!isNaN(reach) && reach >= l || l < 1.0)
             {
                 // Первый боец находится на расстоянии удара от своего противника
-                var dmg:Dictionary = _battleDecor.hit(c1.unit, d);
+                var dmg:Dictionary = _battleDecor.hit(c1.unit, l);
                 
                 if (!_battleDecor.hitWeapon)
                 {
@@ -143,7 +145,31 @@ package ai.battle
             }
             else
             {
-                // Первый боец не достих расстояния удара, продолжить сближение
+                // Боец не достиг расстояния удара, продолжить сближение
+                
+                var speed:Number = _battleDecor.getMaxUnitProperty(ModifiersVO.SPEED, c1.unit, params1);
+                if (speed && speed > 0)
+                {
+                    var k:Number = speed / l;
+                    
+                    var oldX:int = Math.round(c1.x);
+                    var oldY:int = Math.round(c1.y);
+                    
+                    c1.x += dx * k;
+                    c1.y += dy * k;
+                    
+                    var newX:int = Math.round(c1.x);
+                    var newY:int = Math.round(c1.y);
+                    
+                    if (newX != oldX || newY != oldY)
+                    {
+                        if (_field.moveUnit(c1, newX, newY))
+                        {
+                            // Боец находится в одной ячейке с другими юнитами, проверить на мину
+                            // TODO: 
+                        }
+                    }
+                }
             }
             
             return false;
@@ -157,6 +183,52 @@ package ai.battle
          */
         private function hit(combatant:Combatant, params:Dictionary, damage:Dictionary):void
         {
+            const dmgProps:Array = [ ModifiersVO.DMG_STRENGTH, ModifiersVO.BLUNT_DMG, ModifiersVO.SHARP_DMG, ModifiersVO.SPIKE_DMG, ModifiersVO.FIRE_DMG ];
+            const defProps:Array = [ ModifiersVO.DEF_STRENGTH, ModifiersVO.BLUNT_DEF, ModifiersVO.SHARP_DEF, ModifiersVO.SPIKE_DEF, ModifiersVO.FIRE_DEF ];
+            
+            var dmg:Array = [];
+            var def:Array = [];
+            
+            for (var i:int = 0; i < 5; i++)
+            {
+                var value:Number = _battleDecor.getMaxUnitProperty(defProps[i], combatant.unit, params);
+                def.push(isNaN(value) ? 0 : value);
+                
+                value = Number(damage[dmgProps[i]]);
+                dmg.push(isNaN(value) ? 0 : value);
+            }
+            
+            var normalize:Function = function(props:Array):void {
+                var x:Number = props[1] + props[2] + props[3] + props[4];
+                props[1] /= x * props[0];
+                props[2] /= x * props[0];
+                props[3] /= x * props[0];
+                props[4] /= x * props[0];
+                props.shift();
+            };
+            
+            normalize(dmg);
+            normalize(def);
+            
+            var d:Number = 0;
+            for (i = 0; i < 4; i++)
+                d += Math.max(dmg[i] - def[i], 0);
+            
+            var health:Number = _battleDecor.getMaxUnitProperty(ModifiersVO.HEALTH, combatant.unit, params);
+            if (health)
+            {
+                var msg:String = combatant.unit.unitName + " gets " + Math.round(d) + " points of damage. ";
+                
+                d /= health;
+                combatant.unit.unitDamage += d;
+                
+                msg += "The current percentage of damage is " + Math.round(combatant.unit.unitDamage * 100.0) + "%.";
+                _log.push(msg);
+            }
+            else
+            {
+                combatant.unit.unitDamage = 1.0;
+            }
         }
     }
 }

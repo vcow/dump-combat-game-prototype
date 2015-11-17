@@ -88,6 +88,18 @@ package ai.battle
         }
         
         /**
+         * Переместить юнит на поле
+         * @param unit юнит
+         * @param x новая позиция по горизонтали
+         * @param y новая позиция по вертикали
+         * @return true, если эта ячейка уже занята каким-то другим юнитом
+         */
+        public function moveUnit(unit:Combatant, x:int, y:int):Boolean
+        {
+            return false
+        }
+        
+        /**
          * Получить юниты из указанной позиции
          * @param x позиция по горизонтали
          * @param y позиция по вертикали
